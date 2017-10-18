@@ -1,0 +1,6 @@
+[submodule "shape-producer"]
+	path = shape-producer
+	url = ssh://git@github.com/KIT-CMS/shape-producer
+[submodule "datacard-producer"]
+	path = datacard-producer
+	url = ssh://git@github.com/KIT-CMS/datacard-producer
