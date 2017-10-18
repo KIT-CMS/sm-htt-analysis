@@ -61,7 +61,7 @@ def main(args):
     # Channels and processes
     mt = MT()
     directory = args.directory
-    data = Process("data", DataEstimation(era, directory, mt))
+    data = Process("data_obs", DataEstimation(era, directory, mt))
     ztt = Process("Ztt", ZttEstimation(era, directory, mt))
     zll = Process("Zll", ZllEstimation(era, directory, mt))
     wjets = Process("WJets", WJetsEstimation(era, directory, mt))
