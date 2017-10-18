@@ -54,12 +54,21 @@ def main(args):
 
     # Add shapes systematics
     db.add_shape_systematic("tauEsThreeProng", 1.0, ["Htt", "Ztt"])
+    db.add_shape_systematic("tauEsOneProng", 1.0, ["Htt", "Ztt"])
+    db.add_shape_systematic("tauEsOneProngOnePiZero", 1.0, ["Htt", "Ztt"])
     db.add_shape_systematic("zPtReweightWeight", 1.0, ["Ztt", "Zll"])
 
     # Add normalization systematics
-    db.add_normalization_systematic("lumi", signals + backgrounds, 1.05)
-    db.add_normalization_systematic("norm_Ztt", "Ztt", 1.10)
-    db.add_normalization_systematic("norm_tt", "tt", 1.01)
+    db.add_normalization_systematic("lumi", signals + backgrounds, 1.025)
+    db.add_normalization_systematic("trigger_efficiency", signals + backgrounds, 1.02)
+    db.add_normalization_systematic("muon_efficiency", signals + backgrounds, 1.02)
+    db.add_normalization_systematic("tau_efficiency", signals + backgrounds, 1.02)
+    db.add_normalization_systematic("norm_Ztt", "Ztt", 1.04)
+    db.add_normalization_systematic("norm_Zll", "Zll", 1.04)
+    db.add_normalization_systematic("norm_tt", "tt", 1.06)
+    db.add_normalization_systematic("norm_VV", "VV", 1.05)
+    db.add_normalization_systematic("norm_WJets", "WJets", 1.04)
+    db.add_normalization_systematic("QCD_extrapolation", "QCD", 1.06)
 
     # Extract shapes
     db.extract_shapes("mt", "smhtt", "Run2016", "pt_1")
