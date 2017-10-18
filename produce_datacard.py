@@ -49,14 +49,15 @@ def main(args):
     db.add_signals("125", "smhtt", "Run2016", "mt", signals, category_pairs)
 
     backgrounds = ["Zll", "WJets", "VV", "tt", "QCD"]
-    db.add_backgrounds("125", "smhtt", "Run2016", "mt", backgrounds, category_pairs)
+    db.add_backgrounds("125", "smhtt", "Run2016", "mt", backgrounds,
+                       category_pairs)
 
     # Add shapes systematics
     db.add_shape_systematic("tauEsThreeProng", 1.0, "Ztt")
     db.add_shape_systematic("zPtReweightWeight", 1.0, ["Ztt", "Zll"])
 
     # Add normalization systematics
-    db.add_normalization_systematic("lumi", signals+backgrounds, 1.05)
+    db.add_normalization_systematic("lumi", signals + backgrounds, 1.05)
     db.add_normalization_systematic("norm_Ztt", "Ztt", 1.10)
     db.add_normalization_systematic("norm_tt", "tt", 1.01)
 

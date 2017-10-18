@@ -42,7 +42,8 @@ def parse_arguments():
         help="Directory with Artus outputs.")
     parser.add_argument(
         "--datasets",
-        default="/portal/ekpbms3/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/datasets.json",
+        default=
+        "/portal/ekpbms3/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/datasets.json",
         type=str,
         help="Kappa datsets database.")
     parser.add_argument(
@@ -77,8 +78,7 @@ def main(args):
         "inclusive", MT(), Cuts(Cut("mt_1<50", "mt")), variable=pt_1)
 
     # Nominal histograms
-    systematics = Systematics(
-        "shapes.root", num_threads=args.num_threads)
+    systematics = Systematics("shapes.root", num_threads=args.num_threads)
     for process in [data, ztt, zll, wjets, tt, vv, qcd]:
         systematics.add(
             Systematic(
