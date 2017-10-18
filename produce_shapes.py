@@ -63,6 +63,7 @@ def main(args):
     mt = MT()
     directory = args.directory
     data = Process("data_obs", DataEstimation(era, directory, mt))
+    htt = Process("Htt", HttEstimation(era, directory, mt))
     ztt = Process("Ztt", ZttEstimation(era, directory, mt))
     zll = Process("Zll", ZllEstimation(era, directory, mt))
     wjets = Process("WJets", WJetsEstimation(era, directory, mt))
@@ -79,7 +80,7 @@ def main(args):
 
     # Nominal histograms
     systematics = Systematics("shapes.root", num_threads=args.num_threads)
-    for process in [data, ztt, zll, wjets, tt, vv, qcd]:
+    for process in [data, htt, ztt, zll, wjets, tt, vv, qcd]:
         systematics.add(
             Systematic(
                 category=inclusive,
@@ -93,7 +94,7 @@ def main(args):
     tau_es_3prong_variations = create_systematic_variations(
         "tauEsThreeProng", DifferentPipeline)
     for variation in tau_es_3prong_variations:
-        for process in [ztt]:
+        for process in [htt, ztt]:
             systematics.add_systematic_variation(
                 variation=variation, process=process, channel=mt, era=era)
 

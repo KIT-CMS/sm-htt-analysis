@@ -45,15 +45,15 @@ def main(args):
 
     db.add_observation("125", "smhtt", "Run2016", "mt", category_pairs)
 
-    signals = ["Ztt"]
+    signals = ["Htt"]
     db.add_signals("125", "smhtt", "Run2016", "mt", signals, category_pairs)
 
-    backgrounds = ["Zll", "WJets", "VV", "tt", "QCD"]
+    backgrounds = ["Ztt", "Zll", "WJets", "VV", "tt", "QCD"]
     db.add_backgrounds("125", "smhtt", "Run2016", "mt", backgrounds,
                        category_pairs)
 
     # Add shapes systematics
-    db.add_shape_systematic("tauEsThreeProng", 1.0, "Ztt")
+    db.add_shape_systematic("tauEsThreeProng", 1.0, ["Htt", "Ztt"])
     db.add_shape_systematic("zPtReweightWeight", 1.0, ["Ztt", "Zll"])
 
     # Add normalization systematics
