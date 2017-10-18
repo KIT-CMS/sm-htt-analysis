@@ -64,6 +64,9 @@ def main(args):
     # Extract shapes
     db.extract_shapes("mt", "smhtt", "Run2016", "pt_1")
 
+    # Replace observation with Asimov dataset
+    db.replace_observation_by_asimov_dataset()
+
     # Write datacard
     db.print_datacard()
     db.write("datacard")
