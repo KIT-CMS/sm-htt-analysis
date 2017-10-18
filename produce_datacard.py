@@ -40,7 +40,7 @@ def main(args):
     db = DatacardBuilder(args.shapes)
 
     # Register observations, signals and backgrounds
-    categories = ["inclusive"]
+    categories = ["mt_inclusive"]
     category_pairs = db.make_pairs(categories)
 
     db.add_observation("125", "smhtt", "Run2016", "mt", category_pairs)
