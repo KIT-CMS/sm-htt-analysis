@@ -4,3 +4,6 @@
 [submodule "datacard-producer"]
 	path = datacard-producer
 	url = ssh://git@github.com/KIT-CMS/datacard-producer
+[submodule "htt-ml"]
+	path = htt-ml
+	url = ssh://git@github.com/KIT-CMS/htt-ml
