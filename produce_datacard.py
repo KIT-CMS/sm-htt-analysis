@@ -61,18 +61,18 @@ def main(args):
     db.add_normalization_systematic("norm_Ztt", "Ztt", 1.10)
     db.add_normalization_systematic("norm_tt", "tt", 1.01)
 
+    # Extract shapes
+    db.extract_shapes("mt", "smhtt", "Run2016", "pt_1")
+
+    # Replace observation with Asimov dataset
+    db.replace_observation_by_asimov_dataset()
+
     # Add bin-by-bin systematics
     db.add_bin_by_bin_systematics(
         signals + backgrounds,
         add_threshold=0.1,
         merge_threshold=0.5,
         fix_norm=True)
-
-    # Extract shapes
-    db.extract_shapes("mt", "smhtt", "Run2016", "pt_1")
-
-    # Replace observation with Asimov dataset
-    db.replace_observation_by_asimov_dataset()
 
     # Perform auto-rebinning
     db.auto_rebin(threshold=1.0, mode=0)
