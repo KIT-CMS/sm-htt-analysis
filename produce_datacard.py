@@ -67,6 +67,9 @@ def main(args):
     # Replace observation with Asimov dataset
     db.replace_observation_by_asimov_dataset()
 
+    # Perform auto-rebinning
+    db.auto_rebin(threshold=1.0, mode=0)
+
     # Write datacard
     db.print_datacard()
     db.write("datacard")
