@@ -61,7 +61,7 @@ def main(args):
     db.add_normalization_systematic("norm_tt", "tt", 1.01)
 
     # Extract shapes
-    db.extract_shapes("mt", "smhtt", "Run2016", "pt_1", "125")
+    db.extract_shapes("mt", "smhtt", "Run2016", "pt_1")
 
     # Write datacard
     db.print_datacard()
