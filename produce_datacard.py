@@ -61,6 +61,13 @@ def main(args):
     db.add_normalization_systematic("norm_Ztt", "Ztt", 1.10)
     db.add_normalization_systematic("norm_tt", "tt", 1.01)
 
+    # Add bin-by-bin systematics
+    db.add_bin_by_bin_systematics(
+        signals + backgrounds,
+        add_threshold=0.1,
+        merge_threshold=0.5,
+        fix_norm=True)
+
     # Extract shapes
     db.extract_shapes("mt", "smhtt", "Run2016", "pt_1")
 
