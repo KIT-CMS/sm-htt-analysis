@@ -8,4 +8,5 @@
 *.log
 *.txt
 .nfs*
-*dataset.yaml
+*dataset_config.yaml
+fold*

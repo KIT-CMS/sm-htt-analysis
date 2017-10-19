@@ -1,0 +1,41 @@
+# Training datasets for different folds
+datasets:
+    - ml/fold0_mt_training_dataset.root
+    - ml/fold1_mt_training_dataset.root
+
+# Base path for all output files
+output_path: ml/
+
+# Define classes based on tree names in dataset file
+classes:
+    - Htt
+    - Ztt
+    - Zll
+    - tt
+    - VV
+
+# Set class weights
+class_weights:
+    Htt: 1.0
+    Ztt: 1.0
+    Zll: 1.0
+    tt: 1.0
+    VV: 1.0
+
+# Define global scale factor, which is multiplied to all event weights
+global_weight_scale: 10000.0
+
+# Set event weight variable
+event_weights: training_weight
+
+# Define list of variables to be used for training
+variables:
+    - pt_1
+    - pt_2
+    - eta_1
+    - eta_2
+    - iso_1
+    - iso_2
+
+# Split of dataset in training and validation (in TMVA called training and testing)
+train_test_split: 0.75
