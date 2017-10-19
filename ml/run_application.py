@@ -7,7 +7,7 @@ from multiprocessing import Pool
 from subprocess import call
 
 import logging
-logger = logging.getLogger("write_dataset_config")
+logger = logging.getLogger("run_application")
 logger.setLevel(logging.DEBUG)
 handler = logging.StreamHandler()
 formatter = logging.Formatter("%(name)s - %(levelname)s - %(message)s")

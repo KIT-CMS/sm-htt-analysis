@@ -12,7 +12,7 @@ import yaml
 import os
 
 import logging
-logger = logging.getLogger("write_dataset_config")
+logger = logging.getLogger("write_application_filelist")
 logger.setLevel(logging.DEBUG)
 handler = logging.StreamHandler()
 formatter = logging.Formatter("%(name)s - %(levelname)s - %(message)s")
