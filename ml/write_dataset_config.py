@@ -22,9 +22,11 @@ logger.addHandler(handler)
 
 def parse_arguments():
     logger.debug("Parse arguments.")
-    parser = argparse.ArgumentParser(description="Write dataset config for creation of training dataset for a specific channel.")
-    parser.add_argument(
-        "--channel", required=True, help="Analysis channel")
+    parser = argparse.ArgumentParser(
+        description=
+        "Write dataset config for creation of training dataset for a specific channel."
+    )
+    parser.add_argument("--channel", required=True, help="Analysis channel")
     parser.add_argument(
         "--base-path", required=True, help="Path to Artus output files")
     parser.add_argument(
@@ -38,7 +40,9 @@ def parse_arguments():
     parser.add_argument(
         "--event-branch", required=True, help="Branch with event numbers")
     parser.add_argument(
-        "--training-weight-branch", required=True, help="Branch with training weights")
+        "--training-weight-branch",
+        required=True,
+        help="Branch with training weights")
     parser.add_argument(
         "--output-config", required=True, help="Output dataset config file")
     parser.add_argument(
@@ -77,9 +81,14 @@ def main(args):
             TTEstimation(era, args.base_path, channel)
     ]:
         output_config["processes"][estimation.name] = {
-            "files": [str(f).replace(args.base_path+"/", "") for f in estimation.get_files()],
-            "cut_string": estimation.get_cuts().expand(),
-            "weight_string": estimation.get_weights().extract()
+            "files": [
+                str(f).replace(args.base_path + "/", "")
+                for f in estimation.get_files()
+            ],
+            "cut_string":
+            estimation.get_cuts().expand(),
+            "weight_string":
+            estimation.get_weights().extract()
         }
 
     # Same sign selection for data-driven QCD
