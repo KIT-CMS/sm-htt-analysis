@@ -1,10 +1,10 @@
 # Training datasets for different folds
 datasets:
-    - ml/fold0_mt_training_dataset.root
-    - ml/fold1_mt_training_dataset.root
+    - ml/mt/fold0_mt_training_dataset.root
+    - ml/mt/fold1_mt_training_dataset.root
 
 # Base path for all output files
-output_path: ml/
+output_path: ml/mt
 
 # Define classes based on tree names in dataset file
 classes:
