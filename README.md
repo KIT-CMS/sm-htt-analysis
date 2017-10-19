@@ -30,6 +30,8 @@ source setup_cvmfs_sft.sh
 ```bash
 # Software stack:
 source setup_cvmfs_sft.sh
+# Python modules:
+source setup_python.sh
 ```
 
 ```bash
@@ -40,7 +42,9 @@ python produce_shapes.py
 
 ```bash
 # Software stack:
-# Source CMSSW_7_4_7 for CombineHarvester
+# Source CMSSW_7_4_7 for CombineHarvester python bindings
+# Python modules:
+source setup_python.sh
 ```
 
 ```bash
