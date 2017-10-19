@@ -52,6 +52,7 @@ def main(args):
             ZllEstimation(era, args.directory, channel),
             VVEstimation(era, args.directory, channel),
             TTEstimation(era, args.directory, channel),
+            WJetsEstimation(era, args.directory, channel),
             DataEstimation(era, args.directory, channel)
     ]:
         # Get files for estimation method

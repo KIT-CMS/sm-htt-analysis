@@ -6,6 +6,7 @@ ROOT.PyConfig.IgnoreCommandLineOptions = True  # disable ROOT internal argument 
 import argparse
 import yaml
 import os
+import copy
 
 from shape_producer.channel import *
 from shape_producer.estimation_methods_2016 import *
@@ -78,21 +79,32 @@ def main(args):
             ZttEstimation(era, args.base_path, channel),
             ZllEstimation(era, args.base_path, channel),
             VVEstimation(era, args.base_path, channel),
-            TTEstimation(era, args.base_path, channel)
+            TTEstimation(era, args.base_path, channel),
+            WJetsEstimation(era, args.base_path, channel)
     ]:
         output_config["processes"][estimation.name] = {
             "files": [
                 str(f).replace(args.base_path + "/", "")
                 for f in estimation.get_files()
             ],
-            "cut_string":
-            estimation.get_cuts().expand(),
+            "cut_string": (estimation.get_cuts() + channel.cuts).expand(),
             "weight_string":
             estimation.get_weights().extract()
         }
 
     # Same sign selection for data-driven QCD
-    # TODO
+    estimation = DataEstimation(era, args.base_path, channel)
+    channel_ss = copy.deepcopy(channel)
+    channel_ss.cuts.get("os").invert()
+    output_config["processes"][estimation.name] = {
+        "files": [
+            str(f).replace(args.base_path + "/", "")
+            for f in estimation.get_files()
+        ],
+        "cut_string": (estimation.get_cuts() + channel_ss.cuts).expand(),
+        "weight_string":
+        estimation.get_weights().extract()
+    }
 
     # Write output config
     logger.info("Write config to file: {}".format(args.output_config))
