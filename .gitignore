@@ -10,3 +10,4 @@
 .nfs*
 *dataset_config.yaml
 fold*
+mt/
