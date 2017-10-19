@@ -60,9 +60,12 @@ def main(args):
 
     # Add normalization systematics
     db.add_normalization_systematic("lumi", signals + backgrounds, 1.025)
-    db.add_normalization_systematic("trigger_efficiency", signals + backgrounds, 1.02)
-    db.add_normalization_systematic("muon_efficiency", signals + backgrounds, 1.02)
-    db.add_normalization_systematic("tau_efficiency", signals + backgrounds, 1.02)
+    db.add_normalization_systematic("trigger_efficiency",
+                                    signals + backgrounds, 1.02)
+    db.add_normalization_systematic("muon_efficiency", signals + backgrounds,
+                                    1.02)
+    db.add_normalization_systematic("tau_efficiency", signals + backgrounds,
+                                    1.02)
     db.add_normalization_systematic("norm_Ztt", "Ztt", 1.04)
     db.add_normalization_systematic("norm_Zll", "Zll", 1.04)
     db.add_normalization_systematic("norm_tt", "tt", 1.06)

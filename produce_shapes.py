@@ -97,7 +97,7 @@ def main(args):
         "tauEsOneProng", DifferentPipeline)
     tau_es_1prong1pizero_variations = create_systematic_variations(
         "tauEsOneProngOnePiZero", DifferentPipeline)
-    for variation in tau_es_3prong_variations+tau_es_1prong_variations+tau_es_1prong1pizero_variations:
+    for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
         for process in [htt, ztt]:
             systematics.add_systematic_variation(
                 variation=variation, process=process, channel=mt, era=era)
