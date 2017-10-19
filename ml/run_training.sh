@@ -2,7 +2,6 @@
 
 CHANNEL=$1
 
-
 export KERAS_BACKEND=theano
 export OMP_NUM_THREADS=12
 export THEANO_FLAGS=gcc.cxxflags=-march=corei7
