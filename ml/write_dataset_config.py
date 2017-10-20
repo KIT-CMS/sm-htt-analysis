@@ -94,6 +94,7 @@ def main(args):
 
     # Same sign selection for data-driven QCD
     estimation = DataEstimation(era, args.base_path, channel)
+    estimation.name = "QCD"
     channel_ss = copy.deepcopy(channel)
     channel_ss.cuts.get("os").invert()
     output_config["processes"][estimation.name] = {
