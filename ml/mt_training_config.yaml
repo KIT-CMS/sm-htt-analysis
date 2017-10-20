@@ -12,7 +12,6 @@ classes:
     - Ztt
     - Zll
     - tt
-    - VV
     - QCD
 
 # Set class weights
@@ -21,7 +20,6 @@ class_weights:
     Ztt: 1.0
     Zll: 1.0
     tt: 10.0
-    VV: 1.0
     QCD: 1.0
 
 # Define global scale factor, which is multiplied to all event weights

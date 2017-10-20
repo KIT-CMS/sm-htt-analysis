@@ -78,7 +78,7 @@ def main(args):
             HttEstimation(era, args.base_path, channel),
             ZttEstimation(era, args.base_path, channel),
             ZllEstimation(era, args.base_path, channel),
-            VVEstimation(era, args.base_path, channel),
+#            VVEstimation(era, args.base_path, channel),
             TTEstimation(era, args.base_path, channel),
             WJetsEstimation(era, args.base_path, channel)
     ]:
