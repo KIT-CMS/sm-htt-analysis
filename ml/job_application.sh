@@ -8,7 +8,7 @@ FOLDERS=${@:5}
 
 for FOLDER in $FOLDERS
 do
-python htt-ml/application/TMVA_application.py \
+python htt-ml/application/keras_application.py \
     $DATASET_CONFIG \
     $TRAINING_CONFIG \
     $ANALYSIS_CONFIG \

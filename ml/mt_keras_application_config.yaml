@@ -4,8 +4,12 @@
 # NOTE: To be indepedent, the classifier trained on fold 1 needs to be
 # booked first and vice versa.
 classifiers:
-    - ml/mt/fold1_training/weights/TMVAMulticlass_PyKeras_fold1.weights.xml
-    - ml/mt/fold0_training/weights/TMVAMulticlass_PyKeras_fold0.weights.xml
+    - ml/mt/fold1_keras_model.h5
+    - ml/mt/fold0_keras_model.h5
+
+preprocessing:
+    - ml/mt/fold1_preprocessing.pickle
+    - ml/mt/fold0_preprocessing.pickle
 
 # Prefix of new branches with method's responses
 branch_prefix: "mt_mva_"
