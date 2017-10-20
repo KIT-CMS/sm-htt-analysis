@@ -13,29 +13,54 @@ classes:
     - Zll
     - tt
     - VV
+    - QCD
 
 # Set class weights
 class_weights:
-    Htt: 1.0
+    Htt: 50.0
     Ztt: 1.0
     Zll: 1.0
-    tt: 1.0
+    tt: 10.0
     VV: 1.0
+    QCD: 1.0
 
 # Define global scale factor, which is multiplied to all event weights
-global_weight_scale: 10000.0
+global_weight_scale: 1.0
 
 # Set event weight variable
 event_weights: training_weight
 
 # Define list of variables to be used for training
 variables:
+    #- m_sv
+    - mjj
+    #- H_pt
+    - m_vis
+    - mt_1
+    - mt_2
+    - ptvis
+    - pt_tt
+    - dijetpt
+    - met
+    - dijetphi
+    - jdeta
+    #- H_mass
     - pt_1
     - pt_2
-    - eta_1
     - eta_2
-    - iso_1
-    - iso_2
+    - jpt_1
+    - jpt_2
+    - jphi_2
+    - jm_1
+    - jm_2
+    - bpt_1
+    - bpt_2
+    - beta_1
+    - beta_2
+    - bphi_1
+    - bphi_2
+    - njets
+    - nbtag
 
 # Split of dataset in training and validation (in TMVA called training and testing)
 train_test_split: 0.75

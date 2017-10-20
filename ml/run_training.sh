@@ -3,7 +3,7 @@
 CHANNEL=$1
 
 export KERAS_BACKEND=theano
-export OMP_NUM_THREADS=12
+export OMP_NUM_THREADS=24
 export THEANO_FLAGS=gcc.cxxflags=-march=corei7
 
 mkdir -p ml/${CHANNEL}
