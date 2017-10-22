@@ -22,7 +22,7 @@ source setup_cvmfs_sft.sh
 ### Application
 
 ```bash
-# TODO
+./ml/run_application.sh CHANNEL
 ```
 
 ## Create shapes of systematics
