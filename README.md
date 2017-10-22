@@ -59,9 +59,20 @@ python produce_datacard.py
 
 ```bash
 # Software stack:
-# Source CMSSW_7_4_7 for combine
+source setup_cmssw.sh
 ```
 
 ```bash
-# TODO: add combine calls on datacards to extract signal strenght, significance, ...
+# Signal strength:
+combine -M MaxLikelihoodFit -m 125 datacard.txt
+
+# Significance:
+combine -M ProfileLikelihood -t -1 --expectSignal 1 --toysFrequentist --significance -m 125 datacard.txt
+
+# Nuisance impacts:
+text2workspace.py -m 125 datacard.txt -o workspace.root
+combineTool.py -M Impacts -m 125 -d workspace.root --doInitialFit
+combineTool.py -M Impacts -m 125 -d workspace.root --doFits --parallel 10
+combineTool.py -M Impacts -m 125 -d workspace.root --output impacts.json
+plotImpacts.py -i impacts.json -o impacts
 ```
