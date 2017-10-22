@@ -41,8 +41,12 @@ python produce_shapes.py
 ## Build datacards
 
 ```bash
+# Install CMSSW:
+bash init_cmssw.sh
+
 # Software stack:
-# Source CMSSW_7_4_7 for CombineHarvester python bindings
+source setup_cmssw.sh
+
 # Python modules:
 source setup_python.sh
 ```
