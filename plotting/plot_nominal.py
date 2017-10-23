@@ -10,22 +10,11 @@ import logging
 logger = logging.getLogger("")
 
 
-def setup_logging(output_file, level=logging.DEBUG):
-    logger.setLevel(level)
-    formatter = logging.Formatter("%(name)s - %(levelname)s - %(message)s")
-
-    handler = logging.StreamHandler()
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-
-    file_handler = logging.FileHandler(output_file, "w")
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
-
-
 def parse_arguments():
     parser = argparse.ArgumentParser(
-        description="Plot categories using HarryPlotter.")
+        description=
+        "Plot categories using HarryPlotter from shapes produced by shape-producer module."
+    )
 
     parser.add_argument(
         "-v",
@@ -58,6 +47,19 @@ def parse_arguments():
         help="Number of processes used for plotting")
 
     return parser.parse_args()
+
+
+def setup_logging(output_file, level=logging.DEBUG):
+    logger.setLevel(level)
+    formatter = logging.Formatter("%(name)s - %(levelname)s - %(message)s")
+
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+    file_handler = logging.FileHandler(output_file, "w")
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
 
 
 config_template = {
@@ -136,6 +138,8 @@ def main(args):
             ]
             configs.append(config)
 
+    for key in configs[0]:
+        print(key, configs[0][key])
     higgsplot.HiggsPlotter(
         list_of_config_dicts=configs,
         list_of_args_strings=[""],
@@ -144,5 +148,5 @@ def main(args):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    setup_logging("plot.log", logging.DEBUG)
+    setup_logging("plot_nominal.log", logging.DEBUG)
     main(args)

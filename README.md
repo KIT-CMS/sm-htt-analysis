@@ -85,5 +85,17 @@ plotImpacts.py -i impacts.json -o impacts
 ```
 
 ```bash
-./plotting/plot.py -v VARIABLES -c CATEGORIES
+# Plot categories with statistical uncertainties only from nominal shapes
+# created using the shape-producer module
+./plotting/plot_nominal.py -v VARIABLES -c CATEGORIES
+
+# Prefit plots
+PostFitShapes -m 125 -d datacard.txt -o datacard_shapes_prefit.root
+./plotting/plot_shapes.py -i datacard_shapes_prefit.root -f mt_inclusive_prefit
+
+# Postfit plots
+combine -M MaxLikelihoodFit -m 125 datacard.txt
+
+PostFitShapes -m 125 -d datacard.txt -o datacard_shapes_postfit_sb.root -f mlfit.root:fit_s --postfit
+./plotting/plot_shapes.py -i datacard_shapes_postfit_sb.root -f mt_inclusive_postfit
 ```

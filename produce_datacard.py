@@ -91,7 +91,7 @@ def main(args):
 
     # Write datacard
     db.print_datacard()
-    db.write("datacard")
+    db.write("datacard.txt", "datacard_shapes.root")
 
 
 if __name__ == "__main__":
