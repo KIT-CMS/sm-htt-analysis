@@ -55,7 +55,7 @@ def main(args):
     # Add shapes systematics
     db.add_shape_systematic("tauEsThreeProng", 1.0, ["Htt", "Ztt"])
     db.add_shape_systematic("tauEsOneProng", 1.0, ["Htt", "Ztt"])
-    db.add_shape_systematic("tauEsOneProngOnePiZero", 1.0, ["Htt", "Ztt"])
+    db.add_shape_systematic("tauEsOneProngPiZeros", 1.0, ["Htt", "Ztt"])
     db.add_shape_systematic("zPtReweightWeight", 1.0, ["Ztt", "Zll"])
 
     # Add normalization systematics

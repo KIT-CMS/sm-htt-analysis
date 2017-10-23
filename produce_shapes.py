@@ -37,7 +37,7 @@ def parse_arguments():
 
     parser.add_argument(
         "--directory",
-        default="/storage/jbod/wunsch/htt_2017-06-21_eleScale",
+        default="/storage/jbod/wunsch/Run2Analysis_alex",
         type=str,
         help="Directory with Artus outputs.")
     parser.add_argument(
@@ -96,7 +96,7 @@ def main(args):
     tau_es_1prong_variations = create_systematic_variations(
         "tauEsOneProng", DifferentPipeline)
     tau_es_1prong1pizero_variations = create_systematic_variations(
-        "tauEsOneProngOnePiZero", DifferentPipeline)
+        "tauEsOneProngPiZeros", DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
         for process in [htt, ztt]:
             systematics.add_systematic_variation(
