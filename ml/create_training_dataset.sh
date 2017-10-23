@@ -6,7 +6,7 @@ mkdir -p ml/${CHANNEL}
 
 python ml/write_dataset_config.py \
     --channel ${CHANNEL} \
-    --base-path /storage/jbod/wunsch/htt_2017-06-21_eleScale \
+    --base-path /storage/jbod/wunsch/Run2Analysis_alex \
     --database /portal/ekpbms3/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/datasets.json \
     --output-path $PWD/ml/mt \
     --output-filename ${CHANNEL}_training_dataset.root \
