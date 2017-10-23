@@ -109,6 +109,13 @@ def main(args):
             systematics.add_systematic_variation(
                 variation=variation, process=process, channel=mt, era=era)
 
+
+    inclusive_pt_2 = Category("inclusive", MT(), Cuts(Cut("mt_1<50", "mt")), variable=Variable("pt_2", ConstantBinning(12, 20, 100)))
+    inclusive_mt_1 = Category("inclusive", MT(), Cuts(), variable=Variable("mt_1", ConstantBinning(12, 0, 120)))
+
+    systematics.add_extra_category(inclusive_pt_2, inclusive)
+    systematics.add_extra_category(inclusive_mt_1, inclusive)
+
     # Produce histograms
     systematics.produce()
 
