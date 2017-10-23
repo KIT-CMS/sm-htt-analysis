@@ -76,3 +76,14 @@ combineTool.py -M Impacts -m 125 -d workspace.root --doFits --parallel 10
 combineTool.py -M Impacts -m 125 -d workspace.root --output impacts.json
 plotImpacts.py -i impacts.json -o impacts
 ```
+
+## Plotting
+
+```bash
+# Software stack:
+# TODO: CMSSW_7_4_7 with HarryPlotter
+```
+
+```bash
+./plotting/plot.py -v VARIABLES -c CATEGORIES
+```
