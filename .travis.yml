@@ -1,0 +1,13 @@
+sudo: false
+
+language: python
+
+git:
+    submodules: false
+
+install:
+    - pip install --upgrade pip
+    - pip install yapf
+
+script:
+    - utils/travis_yapf_format.sh
