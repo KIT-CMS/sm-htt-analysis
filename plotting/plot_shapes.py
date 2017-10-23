@@ -72,7 +72,7 @@ config_template = {
     "title": "",
     "lumis": [35.87],
     "energies": [13],
-    "year": "2017",
+    "year": "2016",
     "analysis_modules": ["Ratio"],
     "ratio_result_nicks": ["ratio_Bkg", "ratio_Data"],
     "y_subplot_lims": [0.5, 1.5],
