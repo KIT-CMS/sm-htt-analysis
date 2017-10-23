@@ -92,17 +92,17 @@ def main(args):
 
     # Shape variations
     tau_es_3prong_variations = create_systematic_variations(
-        "tauEsThreeProng", DifferentPipeline)
+        "CMS_scale_t_3prong0pi0_13TeV", "tauEsThreeProng", DifferentPipeline)
     tau_es_1prong_variations = create_systematic_variations(
-        "tauEsOneProng", DifferentPipeline)
+        "CMS_scale_t_1prong0pi0_13TeV", "tauEsOneProng", DifferentPipeline)
     tau_es_1prong1pizero_variations = create_systematic_variations(
-        "tauEsOneProngPiZeros", DifferentPipeline)
+        "CMS_scale_t_1prong1pi0_13TeV", "tauEsOneProngPiZeros", DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
         for process in [htt, ztt]:
             systematics.add_systematic_variation(
                 variation=variation, process=process, channel=mt, era=era)
 
-    zpt_variations = create_systematic_variations("zPtReweightWeight",
+    zpt_variations = create_systematic_variations("CMS_htt_dyShape_13TeV", "zPtReweightWeight",
                                                   SquareAndRemoveWeight)
     for variation in zpt_variations:
         for process in [ztt, zll]:
