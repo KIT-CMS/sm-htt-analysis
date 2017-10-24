@@ -3,6 +3,7 @@
 CHANNEL=$1
 
 source utils/setup_cvmfs_sft.sh
+source utils/setup_python.sh
 
 python ml/write_application_filelist.py \
     --directory /storage/jbod/wunsch/Run2Analysis_alex_classified \
