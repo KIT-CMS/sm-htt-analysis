@@ -2,6 +2,8 @@
 
 CHANNEL=$1
 
+source utils/setup_cvmfs_sft.sh
+
 export KERAS_BACKEND=theano
 export OMP_NUM_THREADS=24
 export THEANO_FLAGS=gcc.cxxflags=-march=corei7

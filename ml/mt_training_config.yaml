@@ -11,6 +11,7 @@ classes:
     - Htt
     - Ztt
     - Zll
+    - WJets
     - tt
     - QCD
 
@@ -19,6 +20,7 @@ class_weights:
     Htt: 50.0
     Ztt: 1.0
     Zll: 1.0
+    WJets: 1.0
     tt: 10.0
     QCD: 1.0
 
