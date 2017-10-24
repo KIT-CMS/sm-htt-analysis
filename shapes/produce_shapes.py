@@ -37,7 +37,7 @@ def parse_arguments():
 
     parser.add_argument(
         "--directory",
-        default="/storage/jbod/wunsch/Run2Analysis_alex",
+        default="/storage/jbod/wunsch/Run2Analysis_alex_classified",
         type=str,
         help="Directory with Artus outputs.")
     parser.add_argument(
@@ -72,57 +72,94 @@ def main(args):
     qcd = Process("QCD",
                   QCDEstimation(era, directory, mt, [ztt, zll, wjets, tt, vv],
                                 data))
-
     # Variables and categories
-    pt_1 = Variable("pt_1", ConstantBinning(12, 20, 100))
-    inclusive = Category(
-        "inclusive", MT(), Cuts(Cut("mt_1<50", "mt")), variable=pt_1)
+    probability = Variable("mt_keras2_max_score", ConstantBinning(8, 0.2, 1.0))
+    mt_cut = Cut("mt_1<50", "mt")
+    mt_htt = Category(
+        "Htt",
+        MT(),
+        Cuts(mt_cut, Cut("mt_keras2_max_index==0", "exclusive_probability")),
+        variable=probability)
+    mt_ztt = Category(
+        "Ztt",
+        MT(),
+        Cuts(mt_cut, Cut("mt_keras2_max_index==1", "exclusive_probability")),
+        variable=probability)
+    mt_zll = Category(
+        "Zll",
+        MT(),
+        Cuts(mt_cut, Cut("mt_keras2_max_index==2", "exclusive_probability")),
+        variable=probability)
+    mt_wjets = Category(
+        "WJets",
+        MT(),
+        Cuts(mt_cut, Cut("mt_keras2_max_index==3", "exclusive_probability")),
+        variable=probability)
+    mt_tt = Category(
+        "tt",
+        MT(),
+        Cuts(mt_cut, Cut("mt_keras2_max_index==4", "exclusive_probability")),
+        variable=probability)
+    mt_qcd = Category(
+        "QCD",
+        MT(),
+        Cuts(mt_cut, Cut("mt_keras2_max_index==5", "exclusive_probability")),
+        variable=probability)
 
     # Nominal histograms
     systematics = Systematics("shapes.root", num_threads=args.num_threads)
     for process in [data, htt, ztt, zll, wjets, tt, vv, qcd]:
-        systematics.add(
-            Systematic(
-                category=inclusive,
-                process=process,
-                analysis="smhtt",
-                era=era,
-                variation=Nominal(),
-                mass="125"))
+        for category in [mt_ztt, mt_tt]:
+            systematics.add(
+                Systematic(
+                    category=category,
+                    process=process,
+                    analysis="smhtt",
+                    era=era,
+                    variation=Nominal(),
+                    mass="125"))
 
-    # Shape variations
+    # Shapes variations
+
+    # Tau energy scale shapes
     tau_es_3prong_variations = create_systematic_variations(
         "CMS_scale_t_3prong0pi0_13TeV", "tauEsThreeProng", DifferentPipeline)
     tau_es_1prong_variations = create_systematic_variations(
         "CMS_scale_t_1prong0pi0_13TeV", "tauEsOneProng", DifferentPipeline)
     tau_es_1prong1pizero_variations = create_systematic_variations(
-        "CMS_scale_t_1prong1pi0_13TeV", "tauEsOneProngPiZeros", DifferentPipeline)
+        "CMS_scale_t_1prong1pi0_13TeV", "tauEsOneProngPiZeros",
+        DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
         for process in [htt, ztt]:
             systematics.add_systematic_variation(
                 variation=variation, process=process, channel=mt, era=era)
 
-    zpt_variations = create_systematic_variations("CMS_htt_dyShape_13TeV", "zPtReweightWeight",
-                                                  SquareAndRemoveWeight)
+    # Z pt reweighting shapes
+    zpt_variations = create_systematic_variations(
+        "CMS_htt_dyShape_13TeV", "zPtReweightWeight", SquareAndRemoveWeight)
     for variation in zpt_variations:
         for process in [ztt, zll]:
             systematics.add_systematic_variation(
                 variation=variation, process=process, channel=mt, era=era)
 
-    weight_variations = []
-    weight_variations.append( ReplaceWeight("CMS_some_zll_systematic", "decay_mode_reweight", Weight("(((decayMode_2 == 0)*1.0) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.0) + ((decayMode_2 == 10)*1.03))", "decay_mode_reweight"), "Up"))
-    weight_variations.append( ReplaceWeight("CMS_some_zll_systematic", "decay_mode_reweight", Weight("(((decayMode_2 == 0)*1.0) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.0) + ((decayMode_2 == 10)*0.97))", "decay_mode_reweight"), "Down"))
-
-    for variation in weight_variations:
+    # Zll reweighting shapes
+    zll_weight_variations = []
+    zll_weight_variations.append(
+        ReplaceWeight(
+            "CMS_some_zll_systematic", "decay_mode_reweight",
+            Weight(
+                "(((decayMode_2 == 0)*1.0) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.0) + ((decayMode_2 == 10)*1.03))",
+                "decay_mode_reweight"), "Up"))
+    zll_weight_variations.append(
+        ReplaceWeight(
+            "CMS_some_zll_systematic", "decay_mode_reweight",
+            Weight(
+                "(((decayMode_2 == 0)*1.0) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.0) + ((decayMode_2 == 10)*0.97))",
+                "decay_mode_reweight"), "Down"))
+    for variation in zll_weight_variations:
         for process in [zll]:
             systematics.add_systematic_variation(
                 variation=variation, process=process, channel=mt, era=era)
-
-    inclusive_pt_2 = Category("inclusive", MT(), Cuts(Cut("mt_1<50", "mt")), variable=Variable("pt_2", ConstantBinning(12, 20, 100)))
-    inclusive_mt_1 = Category("inclusive", MT(), Cuts(), variable=Variable("mt_1", ConstantBinning(12, 0, 120)))
-
-    systematics.add_extra_category(inclusive_pt_2, inclusive)
-    systematics.add_extra_category(inclusive_mt_1, inclusive)
 
     # Produce histograms
     systematics.produce()
