@@ -2,6 +2,8 @@
 
 CHANNEL=$1
 
+source utils/setup_cvmfs_sft.sh
+
 python ml/write_application_filelist.py \
     --directory /storage/jbod/wunsch/Run2Analysis_alex_classified \
     --database /portal/ekpbms3/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/datasets.json \
