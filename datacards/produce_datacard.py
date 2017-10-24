@@ -53,9 +53,12 @@ def main(args):
                        category_pairs)
 
     # Add shapes systematics
-    db.add_shape_systematic("CMS_scale_t_3prong0pi0_13TeV", 1.0, ["Htt", "Ztt"])
-    db.add_shape_systematic("CMS_scale_t_1prong0pi0_13TeV", 1.0, ["Htt", "Ztt"])
-    db.add_shape_systematic("CMS_scale_t_1prong1pi0_13TeV", 1.0, ["Htt", "Ztt"])
+    db.add_shape_systematic("CMS_scale_t_3prong0pi0_13TeV", 1.0,
+                            ["Htt", "Ztt"])
+    db.add_shape_systematic("CMS_scale_t_1prong0pi0_13TeV", 1.0,
+                            ["Htt", "Ztt"])
+    db.add_shape_systematic("CMS_scale_t_1prong1pi0_13TeV", 1.0,
+                            ["Htt", "Ztt"])
     db.add_shape_systematic("CMS_htt_dyShape_13TeV", 1.0, ["Ztt", "Zll"])
 
     # Add normalization systematics
