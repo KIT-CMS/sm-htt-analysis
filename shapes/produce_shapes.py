@@ -109,6 +109,14 @@ def main(args):
             systematics.add_systematic_variation(
                 variation=variation, process=process, channel=mt, era=era)
 
+    weight_variations = []
+    weight_variations.append( ReplaceWeight("CMS_some_zll_systematic", "decay_mode_reweight", Weight("(((decayMode_2 == 0)*1.0) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.0) + ((decayMode_2 == 10)*1.03))", "decay_mode_reweight"), "Up"))
+    weight_variations.append( ReplaceWeight("CMS_some_zll_systematic", "decay_mode_reweight", Weight("(((decayMode_2 == 0)*1.0) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.0) + ((decayMode_2 == 10)*0.97))", "decay_mode_reweight"), "Down"))
+
+    for variation in weight_variations:
+        for process in [zll]:
+            systematics.add_systematic_variation(
+                variation=variation, process=process, channel=mt, era=era)
 
     inclusive_pt_2 = Category("inclusive", MT(), Cuts(Cut("mt_1<50", "mt")), variable=Variable("pt_2", ConstantBinning(12, 20, 100)))
     inclusive_mt_1 = Category("inclusive", MT(), Cuts(), variable=Variable("mt_1", ConstantBinning(12, 0, 120)))
