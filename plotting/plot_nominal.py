@@ -41,6 +41,8 @@ def parse_arguments():
         default="shapes.root",
         help="ROOT files with shapes of processes")
     parser.add_argument(
+        "--x-label", type=str, default=None, help="Label on x-axis")
+    parser.add_argument(
         "--num-processes",
         type=int,
         default=10,
@@ -125,7 +127,10 @@ def main(args):
             ]
             config["filename"] = "_".join(
                 [channel, category, analysis, era, variable, mass])
-            config["x_label"] = "_".join([channel, variable])
+            if not args.x_label == None:
+                config["x_label"] = args.x_label
+            else:
+                config["x_label"] = "_".join([channel, variable])
             config["title"] = "_".join(["channel", channel])
             config["stacks"] = ["mc"] * len(bkg_processes_names) + [
                 "data"
