@@ -121,28 +121,53 @@ def main(args):
 
     # Shapes variations
 
-    # Tau energy scale shapes
+    # Tau energy scale
     tau_es_3prong_variations = create_systematic_variations(
-        "CMS_scale_t_3prong0pi0_13TeV", "tauEsThreeProng", DifferentPipeline)
+        "CMS_scale_t_3prong0pi0", "tauEsThreeProng", DifferentPipeline)
     tau_es_1prong_variations = create_systematic_variations(
-        "CMS_scale_t_1prong0pi0_13TeV", "tauEsOneProng", DifferentPipeline)
+        "CMS_scale_t_1prong0pi0", "tauEsOneProng", DifferentPipeline)
     tau_es_1prong1pizero_variations = create_systematic_variations(
-        "CMS_scale_t_1prong1pi0_13TeV", "tauEsOneProngPiZeros",
-        DifferentPipeline)
+        "CMS_scale_t_1prong1pi0", "tauEsOneProngPiZeros", DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
         for process in [htt, ztt]:
             systematics.add_systematic_variation(
                 variation=variation, process=process, channel=mt, era=era)
 
-    # Z pt reweighting shapes
+    # Jet energy scale
+    jet_es_variations = create_systematic_variations("CMS_scale_j", "jecUnc",
+                                                     DifferentPipeline)
+    for variation in jet_es_variations:
+        for process in [htt, ztt, zll, wjets, tt, vv]:
+            systematics.add_systematic_variation(
+                variation=variation, process=process, channel=mt, era=era)
+
+    # MET energy scale
+    met_es_variations = create_systematic_variations(
+        "CMS_htt_scale_met", "metUnclusteredEn", DifferentPipeline)
+    for variation in met_es_variations:
+        for process in [htt, ztt, zll, wjets, tt, vv]:
+            systematics.add_systematic_variation(
+                variation=variation, process=process, channel=mt, era=era)
+
+    # Z pt reweighting
     zpt_variations = create_systematic_variations(
-        "CMS_htt_dyShape_13TeV", "zPtReweightWeight", SquareAndRemoveWeight)
+        "CMS_htt_dyShape", "zPtReweightWeight", SquareAndRemoveWeight)
     for variation in zpt_variations:
         for process in [ztt, zll]:
             systematics.add_systematic_variation(
                 variation=variation, process=process, channel=mt, era=era)
 
-    # Zll reweighting shapes
+    # top pt reweighting
+    top_pt_variations = create_systematic_variations(
+        "CMS_htt_ttbarShape", "topPtReweightWeight", SquareAndRemoveWeight)
+    for variation in top_pt_variations:
+        for process in [tt]:
+            systematics.add_systematic_variation(
+                variation=variation, process=process, channel=mt, era=era)
+
+    # TODO: Example for replacing weights
+    """
+    # Zll reweighting
     zll_weight_variations = []
     zll_weight_variations.append(
         ReplaceWeight(
@@ -160,6 +185,7 @@ def main(args):
         for process in [zll]:
             systematics.add_systematic_variation(
                 variation=variation, process=process, channel=mt, era=era)
+    """
 
     # Produce histograms
     systematics.produce()
