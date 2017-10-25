@@ -48,7 +48,7 @@ def parse_arguments():
         help="Kappa datsets database.")
     parser.add_argument(
         "--num-threads",
-        default=8,
+        default=20,
         type=int,
         help="Number of threads to be used.")
 
@@ -109,7 +109,7 @@ def main(args):
     # Nominal histograms
     systematics = Systematics("shapes.root", num_threads=args.num_threads)
     for process in [data, htt, ztt, zll, wjets, tt, vv, qcd]:
-        for category in [mt_ztt, mt_tt]:
+        for category in [mt_ztt, mt_zll, mt_wjets, mt_tt, mt_qcd]:
             systematics.add(
                 Systematic(
                     category=category,
