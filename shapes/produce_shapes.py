@@ -65,12 +65,13 @@ def main(args):
     data = Process("data_obs", DataEstimation(era, directory, mt))
     htt = Process("Htt", HttEstimation(era, directory, mt))
     ztt = Process("Ztt", ZttEstimation(era, directory, mt))
-    zll = Process("Zll", ZllEstimation(era, directory, mt))
+    zl = Process("Zl", ZlEstimation(era, directory, mt))
+    zj = Process("Zj", ZjEstimation(era, directory, mt))
     wjets = Process("WJets", WJetsEstimation(era, directory, mt))
     tt = Process("tt", TTEstimation(era, directory, mt))
     vv = Process("VV", VVEstimation(era, directory, mt))
     qcd = Process("QCD",
-                  QCDEstimation(era, directory, mt, [ztt, zll, wjets, tt, vv],
+                  QCDEstimation(era, directory, mt, [ztt, zj, zl, wjets, tt, vv],
                                 data))
     # Variables and categories
     probability = Variable("mt_keras2_max_score", ConstantBinning(8, 0.2, 1.0))
@@ -109,7 +110,7 @@ def main(args):
     # Nominal histograms
     systematics = Systematics("shapes.root", num_threads=args.num_threads)
     for category in [mt_htt, mt_ztt, mt_zll, mt_wjets, mt_tt, mt_qcd]:
-        for process in [data, htt, ztt, zll, wjets, tt, vv, qcd]:
+        for process in [data, htt, ztt, zl, zj, wjets, tt, vv, qcd]:
             systematics.add(
                 Systematic(
                     category=category,
@@ -137,7 +138,7 @@ def main(args):
     jet_es_variations = create_systematic_variations("CMS_scale_j", "jecUnc",
                                                      DifferentPipeline)
     for variation in jet_es_variations:
-        for process in [htt, ztt, zll, wjets, tt, vv]:
+        for process in [htt, ztt, zl, zj, wjets, tt, vv]:
             systematics.add_systematic_variation(
                 variation=variation, process=process, channel=mt, era=era)
 
@@ -145,7 +146,7 @@ def main(args):
     met_es_variations = create_systematic_variations(
         "CMS_htt_scale_met", "metUnclusteredEn", DifferentPipeline)
     for variation in met_es_variations:
-        for process in [htt, ztt, zll, wjets, tt, vv]:
+        for process in [htt, ztt, zl, zj, wjets, tt, vv]:
             systematics.add_systematic_variation(
                 variation=variation, process=process, channel=mt, era=era)
 
@@ -153,7 +154,7 @@ def main(args):
     zpt_variations = create_systematic_variations(
         "CMS_htt_dyShape", "zPtReweightWeight", SquareAndRemoveWeight)
     for variation in zpt_variations:
-        for process in [ztt, zll]:
+        for process in [ztt, zl, zj]:
             systematics.add_systematic_variation(
                 variation=variation, process=process, channel=mt, era=era)
 
