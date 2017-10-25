@@ -62,13 +62,15 @@ bash init_cmssw.sh
 # created using the shape-producer module
 ./plotting/plot_nominal.py -v VARIABLES -c CATEGORIES
 
+# Create prefit and postfit shapes
+./combine/prefit_postfit_shapes.sh
+
 # Prefit plots
-PostFitShapes -m 125 -d datacard.txt -o datacard_shapes_prefit.root
-./plotting/plot_shapes.py -i datacard_shapes_prefit.root -f mt_inclusive_prefit
+./plotting/plot_shapes.py -i datacard_shapes_prefit.root -f FOLDERS
 
-# Postfit plots
-combine -M MaxLikelihoodFit -m 125 datacard.txt
+# Postfit plots (signal plus background)
+./plotting/plot_shapes.py -i datacard_shapes_postfit_sb.root -f FOLDERS
 
-PostFitShapes -m 125 -d datacard.txt -o datacard_shapes_postfit_sb.root -f mlfit.root:fit_s --postfit
-./plotting/plot_shapes.py -i datacard_shapes_postfit_sb.root -f mt_inclusive_postfit
+# Postfit plots (background only)
+./plotting/plot_shapes.py -i datacard_shapes_postfit_b.root -f FOLDERS
 ```
