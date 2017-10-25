@@ -108,8 +108,8 @@ def main(args):
 
     # Nominal histograms
     systematics = Systematics("shapes.root", num_threads=args.num_threads)
-    for process in [data, htt, ztt, zll, wjets, tt, vv, qcd]:
-        for category in [mt_ztt, mt_zll, mt_wjets, mt_tt, mt_qcd]:
+    for category in [mt_htt, mt_ztt, mt_zll, mt_wjets, mt_tt, mt_qcd]:
+        for process in [data, htt, ztt, zll, wjets, tt, vv, qcd]:
             systematics.add(
                 Systematic(
                     category=category,

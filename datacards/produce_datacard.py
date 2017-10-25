@@ -40,7 +40,7 @@ def main(args):
     db = DatacardBuilder(args.shapes)
 
     # Register observations, signals and backgrounds
-    categories = ["mt_inclusive"]
+    categories = ["mt_Htt", "mt_Ztt", "mt_Zll", "mt_WJets", "mt_tt", "mt_QCD"]
     category_pairs = db.make_pairs(categories)
 
     db.add_observation("125", "smhtt", "Run2016", "mt", category_pairs)
@@ -77,7 +77,7 @@ def main(args):
     db.add_normalization_systematic("QCD_extrapolation", "QCD", 1.06)
 
     # Extract shapes
-    db.extract_shapes("mt", "smhtt", "Run2016", "pt_1")
+    db.extract_shapes("mt", "smhtt", "Run2016", "mt_keras2_max_score")
 
     # Replace observation with Asimov dataset
     db.replace_observation_by_asimov_dataset()
