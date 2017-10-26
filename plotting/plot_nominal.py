@@ -47,6 +47,7 @@ def parse_arguments():
         type=int,
         default=10,
         help="Number of processes used for plotting")
+    parser.add_argument("--scale-signal", type=int, default=1, help="Scale the signal yield by this factor")
 
     return parser.parse_args()
 
@@ -79,7 +80,7 @@ config_template = {
     "lumis": [35.87],
     "energies": [13],
     "year": "2016",
-    "analysis_modules": ["Ratio"],
+    "analysis_modules": ["ScaleHistograms","Ratio"],
     "ratio_result_nicks": ["ratio_Bkg", "ratio_Data"],
     "y_subplot_lims": [0.5, 1.5],
     "y_rel_lims": [0.9, 1.3],
@@ -92,6 +93,16 @@ def main(args):
     bkg_processes_names = ["ztt", "zl", "zj", "wj", "ttt", "ttj",
                            "qcd"]  # enforced by HarryPlotter
     bkg_processes = ["Ztt", "Zl", "Zj", "WJets", "ttt", "ttj", "QCD"]  # names in ROOT file
+    signal_processes_names = ["htt125", "ggh125", "qqh125" ] 
+    scale_signal = args.scale_signal
+    config_template["scales"] = scale_signal
+    config_template["scale_nicks"] = signal_processes_names
+    if scale_signal != 1:
+        postfix = "_"+str(scale_signal)
+    else:
+        postfix = ""
+    signal_processes_labels = [label+postfix for label in ["htt125", "ggh125", "qqh125" ] ]
+    signal_processes = ["Htt", "qqh", "ggh"]
     categories = args.categories
     channel = args.channel
     analysis = args.analysis
@@ -104,21 +115,15 @@ def main(args):
         for variable in variables:
             config = deepcopy(config_template)
             config["files"] = [args.shapes]
-            config["markers"] = ["HIST"] * len(bkg_processes_names) + [
-                "E"
-            ] + config["markers"]
-            config["legend_markers"] = ["F"] * len(bkg_processes_names) + [
-                "ELP"
-            ] + config["legend_markers"]
-            config["labels"] = bkg_processes_names + ["data"
-                                                      ] + config["labels"]
-            config["colors"] = bkg_processes_names + ["data"
-                                                      ] + config["colors"]
-            config["nicks"] = bkg_processes_names + ["data"]
+            config["markers"] = ["HIST"] * len(bkg_processes_names) + ["LINE"] * len(signal_processes_names) + ["E"] + config["markers"]
+            config["legend_markers"] = ["F"] * len(bkg_processes_names) + ["L"] * len(signal_processes_names)+ ["ELP"]+ config["legend_markers"]
+            config["labels"] = bkg_processes_names + signal_processes_labels + ["data"] + config["labels"]
+            config["colors"] = bkg_processes_names + signal_processes_names + ["data"] + config["colors"]
+            config["nicks"] = bkg_processes_names + signal_processes_names + ["data"]
             config["x_expressions"] = [
                 "#" + "#".join([
                     channel, category, process, analysis, era, variable, mass
-                ]) + "#" for process in bkg_processes
+                ]) + "#" for process in bkg_processes + signal_processes
             ] + [
                 "#" + "#".join([
                     channel, category, "data_obs", analysis, era, variable,
@@ -132,9 +137,7 @@ def main(args):
             else:
                 config["x_label"] = "_".join([channel, variable])
             config["title"] = "_".join(["channel", channel])
-            config["stacks"] = ["mc"] * len(bkg_processes_names) + [
-                "data"
-            ] + config["stacks"]
+            config["stacks"] = ["mc"] * len(bkg_processes_names) + signal_processes_names + ["data"] + config["stacks"]
             config["ratio_denominator_nicks"] = [
                 " ".join(bkg_processes_names)
             ] * 2
