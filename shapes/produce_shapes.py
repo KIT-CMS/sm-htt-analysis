@@ -63,15 +63,20 @@ def main(args):
     mt = MT()
     directory = args.directory
     data = Process("data_obs", DataEstimation(era, directory, mt))
-    htt = Process("Htt", HttEstimation(era, directory, mt))
+
+    ggh = Process("ggh", ggHEstimation(era, directory, mt))
+    qqh = Process("qqh", qqHEstimation(era, directory, mt))
+    #vh = Process("vh", VHEstimation(era, directory, mt)) # TODO: not yet evaluated by Keras
+
     ztt = Process("Ztt", ZttEstimation(era, directory, mt))
-    zl = Process("Zl", ZlEstimation(era, directory, mt))
-    zj = Process("Zj", ZjEstimation(era, directory, mt))
+    zl = Process("Zl", ZlEstimationMT(era, directory, mt))
+    zj = Process("Zj", ZjEstimationMT(era, directory, mt))
     wjets = Process("WJets", WJetsEstimation(era, directory, mt))
-    tt = Process("tt", TTEstimation(era, directory, mt))
+    ttt = Process("ttt", TTTEstimationMT(era, directory, mt))
+    ttj = Process("ttj", TTJEstimationMT(era, directory, mt))
     vv = Process("VV", VVEstimation(era, directory, mt))
     qcd = Process("QCD",
-                  QCDEstimation(era, directory, mt, [ztt, zj, zl, wjets, tt, vv],
+                  QCDEstimation(era, directory, mt, [ztt, zj, zl, wjets, ttt, ttj, vv],
                                 data))
     # Variables and categories
     probability = Variable("mt_keras2_max_score", ConstantBinning(8, 0.2, 1.0))
@@ -110,7 +115,7 @@ def main(args):
     # Nominal histograms
     systematics = Systematics("shapes.root", num_threads=args.num_threads)
     for category in [mt_htt, mt_ztt, mt_zll, mt_wjets, mt_tt, mt_qcd]:
-        for process in [data, htt, ztt, zl, zj, wjets, tt, vv, qcd]:
+        for process in [data, ggh, qqh, ztt, zl, zj, wjets, ttt, ttj, vv, qcd]:
             systematics.add(
                 Systematic(
                     category=category,
@@ -130,7 +135,7 @@ def main(args):
     tau_es_1prong1pizero_variations = create_systematic_variations(
         "CMS_scale_t_1prong1pi0", "tauEsOneProngPiZeros", DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
-        for process in [htt, ztt]:
+        for process in [ggh, qqh, ztt]:
             systematics.add_systematic_variation(
                 variation=variation, process=process, channel=mt, era=era)
 
@@ -138,7 +143,7 @@ def main(args):
     jet_es_variations = create_systematic_variations("CMS_scale_j", "jecUnc",
                                                      DifferentPipeline)
     for variation in jet_es_variations:
-        for process in [htt, ztt, zl, zj, wjets, tt, vv]:
+        for process in [ggh, qqh, ztt, zl, zj, wjets, ttt, ttj, vv]:
             systematics.add_systematic_variation(
                 variation=variation, process=process, channel=mt, era=era)
 
@@ -146,7 +151,7 @@ def main(args):
     met_es_variations = create_systematic_variations(
         "CMS_htt_scale_met", "metUnclusteredEn", DifferentPipeline)
     for variation in met_es_variations:
-        for process in [htt, ztt, zl, zj, wjets, tt, vv]:
+        for process in [ggh, qqh, ztt, zl, zj, wjets, ttt, ttj, vv]:
             systematics.add_systematic_variation(
                 variation=variation, process=process, channel=mt, era=era)
 
@@ -162,7 +167,7 @@ def main(args):
     top_pt_variations = create_systematic_variations(
         "CMS_htt_ttbarShape", "topPtReweightWeight", SquareAndRemoveWeight)
     for variation in top_pt_variations:
-        for process in [tt]:
+        for process in [ttt, ttj]:
             systematics.add_systematic_variation(
                 variation=variation, process=process, channel=mt, era=era)
 
