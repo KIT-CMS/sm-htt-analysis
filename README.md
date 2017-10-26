@@ -1,5 +1,9 @@
 # Standard Model Higgs boson to two tau leptons analysis
 
+Convention of names of processes:
+Backgrounds: W, QCD, TTT, TTJ (only TT in emu), ZL, ZJ, ZT
+Signals: ggH, qqH, WH, ZH, total: HTT
+
 ## Apply machine learning methods
 
 ### Create training dataset

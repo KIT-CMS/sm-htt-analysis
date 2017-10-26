@@ -92,8 +92,8 @@ config_template = {
 def main(args):
     bkg_processes_names = ["ztt", "zl", "zj", "wj", "ttt", "ttj",
                            "qcd"]  # enforced by HarryPlotter
-    bkg_processes = ["Ztt", "Zl", "Zj", "WJets", "ttt", "ttj", "QCD"]  # names in ROOT file
-    signal_processes_names = ["htt125", "ggh125", "qqh125" ] 
+    bkg_processes = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "QCD"]  # names in ROOT file
+    signal_processes_names = ["htt125", "ggh125", "qqh125" ] # enforced by HarryPlotter
     scale_signal = args.scale_signal
     config_template["scales"] = scale_signal
     config_template["scale_nicks"] = signal_processes_names
@@ -101,8 +101,8 @@ def main(args):
         postfix = "_"+str(scale_signal)
     else:
         postfix = ""
-    signal_processes_labels = [label+postfix for label in ["htt125", "ggh125", "qqh125" ] ]
-    signal_processes = ["Htt", "qqh", "ggh"]
+    signal_processes_labels = [label+postfix for label in signal_processes_names ]
+    signal_processes = ["HTT", "qqH", "ggH"]
     categories = args.categories
     channel = args.channel
     analysis = args.analysis
