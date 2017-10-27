@@ -67,7 +67,7 @@ def main(args):
     HTT = Process("HTT", HTTEstimation(era, directory, mt))
     ggH = Process("ggH", ggHEstimation(era, directory, mt))
     qqH = Process("qqH", qqHEstimation(era, directory, mt))
-    #vh = Process("vh", VHEstimation(era, directory, mt)) # TODO: not yet evaluated by Keras
+    VH = Process("VH", VHEstimation(era, directory, mt))
 
     ZTT = Process("ZTT", ZTTEstimation(era, directory, mt))
     ZL = Process("ZL", ZLEstimationMT(era, directory, mt))
@@ -77,46 +77,48 @@ def main(args):
     TTJ = Process("TTJ", TTJEstimationMT(era, directory, mt))
     VV = Process("VV", VVEstimation(era, directory, mt))
     QCD = Process("QCD",
-                  QCDEstimation(era, directory, mt, [ZTT, ZJ, ZL, W, TTT, TTJ, VV],
-                                data))
+                  QCDEstimation(era, directory, mt,
+                                [ZTT, ZJ, ZL, W, TTT, TTJ, VV], data))
     # Variables and categories
-    probability = Variable("mt_keras3_max_score", ConstantBinning(8, 0.2, 1.0))
+    probability = Variable("mt_keras4_max_score", ConstantBinning(6, 0.2, 1.0))
     mt_cut = Cut("mt_1<50", "mt")
     mt_HTT = Category(
         "HTT",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras3_max_index==0", "exclusive_probability")),
+        Cuts(mt_cut, Cut("mt_keras4_max_index==0", "exclusive_probability")),
         variable=probability)
     mt_ZTT = Category(
         "ZTT",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras3_max_index==1", "exclusive_probability")),
+        Cuts(mt_cut, Cut("mt_keras4_max_index==1", "exclusive_probability")),
         variable=probability)
     mt_ZLL = Category(
         "ZLL",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras3_max_index==2", "exclusive_probability")),
+        Cuts(mt_cut, Cut("mt_keras4_max_index==2", "exclusive_probability")),
         variable=probability)
     mt_W = Category(
         "W",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras3_max_index==3", "exclusive_probability")),
+        Cuts(mt_cut, Cut("mt_keras4_max_index==3", "exclusive_probability")),
         variable=probability)
     mt_TT = Category(
         "TT",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras3_max_index==4", "exclusive_probability")),
+        Cuts(mt_cut, Cut("mt_keras4_max_index==4", "exclusive_probability")),
         variable=probability)
     mt_QCD = Category(
         "QCD",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras3_max_index==5", "exclusive_probability")),
+        Cuts(mt_cut, Cut("mt_keras4_max_index==5", "exclusive_probability")),
         variable=probability)
 
     # Nominal histograms
     systematics = Systematics("shapes.root", num_threads=args.num_threads)
     for category in [mt_HTT, mt_ZTT, mt_ZLL, mt_W, mt_TT, mt_QCD]:
-        for process in [data, HTT, ggH, qqH, ZTT, ZL, ZJ, W, TTT, TTJ, VV, QCD]:
+        for process in [
+                data, HTT, VH, ggH, qqH, ZTT, ZL, ZJ, W, TTT, TTJ, VV, QCD
+        ]:
             systematics.add(
                 Systematic(
                     category=category,
@@ -136,7 +138,7 @@ def main(args):
     tau_es_1prong1pizero_variations = create_systematic_variations(
         "CMS_scale_t_1prong1pi0", "tauEsOneProngPiZeros", DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
-        for process in [HTT, ggH, qqH, ZTT]:
+        for process in [HTT, VH, ggH, qqH, ZTT]:
             systematics.add_systematic_variation(
                 variation=variation, process=process, channel=mt, era=era)
 
@@ -144,7 +146,7 @@ def main(args):
     jet_es_variations = create_systematic_variations("CMS_scale_j", "jecUnc",
                                                      DifferentPipeline)
     for variation in jet_es_variations:
-        for process in [HTT, ggH, qqH, ZTT, ZL, ZJ, W, TTT, TTJ, VV]:
+        for process in [HTT, VH, ggH, qqH, ZTT, ZL, ZJ, W, TTT, TTJ, VV]:
             systematics.add_systematic_variation(
                 variation=variation, process=process, channel=mt, era=era)
 
@@ -152,7 +154,7 @@ def main(args):
     met_es_variations = create_systematic_variations(
         "CMS_htt_scale_met", "metUnclusteredEn", DifferentPipeline)
     for variation in met_es_variations:
-        for process in [HTT, ggH, qqH, ZTT, ZL, ZJ, W, TTT, TTJ, VV]:
+        for process in [HTT, VH, ggH, qqH, ZTT, ZL, ZJ, W, TTT, TTJ, VV]:
             systematics.add_systematic_variation(
                 variation=variation, process=process, channel=mt, era=era)
 
