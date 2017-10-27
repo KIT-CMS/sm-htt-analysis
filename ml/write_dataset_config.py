@@ -74,13 +74,27 @@ def main(args):
     output_config["processes"] = {}
 
     # MC-driven processes
+    classes_map = { # Define here the mappig of the process estimations to the training classes
+            "ggH": "htt",
+            "qqH": "htt",
+            "VH": "htt",
+            "ZTT": "ztt",
+            "ZL": "zll",
+            "ZJ": "zll",
+            "TTT": "tt",
+            "TTJ": "tt",
+            "W": "w"
+            }
     for estimation in [
-            HttEstimation(era, args.base_path, channel),
-            ZttEstimation(era, args.base_path, channel),
-            ZllEstimation(era, args.base_path, channel),
-#            VVEstimation(era, args.base_path, channel),
-            TTEstimation(era, args.base_path, channel),
-            WJetsEstimation(era, args.base_path, channel)
+            ggHEstimation(era, args.base_path, channel),
+            qqHEstimation(era, args.base_path, channel),
+            VHEstimation(era, args.base_path, channel),
+            ZTTEstimation(era, args.base_path, channel),
+            ZLEstimationMT(era, args.base_path, channel),
+            ZJEstimationMT(era, args.base_path, channel),
+            TTTEstimationMT(era, args.base_path, channel),
+            TTJEstimationMT(era, args.base_path, channel),
+            WEstimation(era, args.base_path, channel)
     ]:
         output_config["processes"][estimation.name] = {
             "files": [
@@ -89,7 +103,9 @@ def main(args):
             ],
             "cut_string": (estimation.get_cuts() + channel.cuts).expand(),
             "weight_string":
-            estimation.get_weights().extract()
+            estimation.get_weights().extract(),
+            "class":
+            classes_map[estimation.name]
         }
 
     # Same sign selection for data-driven QCD
@@ -104,7 +120,9 @@ def main(args):
         ],
         "cut_string": (estimation.get_cuts() + channel_ss.cuts).expand(),
         "weight_string":
-        estimation.get_weights().extract()
+        estimation.get_weights().extract(),
+        "class":
+        "qcd"
     }
 
     # Write output config

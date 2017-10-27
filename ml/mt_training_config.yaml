@@ -8,21 +8,21 @@ output_path: ml/mt
 
 # Define classes based on tree names in dataset file
 classes:
-    - Htt
-    - Ztt
-    - Zll
-    - WJets
+    - htt
+    - ztt
+    - zll
+    - w
     - tt
-    - QCD
+    - qcd
 
 # Set class weights
 class_weights:
-    Htt: 50.0
-    Ztt: 1.0
-    Zll: 1.0
-    WJets: 1.0
+    htt: 50.0
+    ztt: 1.0
+    zll: 1.0
+    w: 1.0
     tt: 10.0
-    QCD: 1.0
+    qcd: 1.0
 
 # Define global scale factor, which is multiplied to all event weights
 global_weight_scale: 1.0
@@ -68,4 +68,4 @@ train_test_split: 0.75
 # Define the model parameter
 model:
     batch_size: 1000
-    epochs: 10
+    epochs: 50

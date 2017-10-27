@@ -47,12 +47,15 @@ def main(args):
         raise Exception
 
     for estimation in [
-            HttEstimation(era, args.directory, channel),
-            ZttEstimation(era, args.directory, channel),
-            ZllEstimation(era, args.directory, channel),
-            VVEstimation(era, args.directory, channel),
-            TTEstimation(era, args.directory, channel),
-            WJetsEstimation(era, args.directory, channel),
+            ggHEstimation(era, args.directory, channel),
+            qqHEstimation(era, args.directory, channel),
+            VHEstimation(era, args.directory, channel),
+            ZTTEstimation(era, args.directory, channel),
+            ZLEstimationMT(era, args.directory, channel),
+            ZJEstimationMT(era, args.directory, channel),
+            TTTEstimationMT(era, args.directory, channel),
+            TTJEstimationMT(era, args.directory, channel),
+            WEstimation(era, args.directory, channel),
             DataEstimation(era, args.directory, channel)
     ]:
         # Get files for estimation method
