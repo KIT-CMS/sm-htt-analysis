@@ -56,6 +56,7 @@ def main(args):
             TTTEstimationMT(era, args.directory, channel),
             TTJEstimationMT(era, args.directory, channel),
             WEstimation(era, args.directory, channel),
+            VVEstimation(era, args.directory, channel),
             DataEstimation(era, args.directory, channel)
     ]:
         # Get files for estimation method
