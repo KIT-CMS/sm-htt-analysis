@@ -6,7 +6,7 @@ source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
 
 python ml/write_application_filelist.py \
-    --directory /storage/jbod/wunsch/Run2Analysis_alex_classified \
+    --directory /storage/jbod/wunsch/Run2Analysis_alex_classified2 \
     --database /portal/ekpbms3/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/datasets.json \
     --channel ${CHANNEL} \
     --output ml/${CHANNEL}/application_filelist.yaml

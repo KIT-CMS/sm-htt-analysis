@@ -17,7 +17,7 @@ classes:
 
 # Set class weights
 class_weights:
-    htt: 50.0
+    htt: 10.0
     ztt: 1.0
     zll: 1.0
     w: 1.0
@@ -68,4 +68,4 @@ train_test_split: 0.75
 # Define the model parameter
 model:
     batch_size: 1000
-    epochs: 50
+    epochs: 100
