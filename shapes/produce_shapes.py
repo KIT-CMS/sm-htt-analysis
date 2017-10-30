@@ -4,7 +4,7 @@
 from shape_producer.cutstring import Cut, Cuts
 from shape_producer.systematics import Systematics, Systematic
 from shape_producer.categories import Category
-from shape_producer.binning import ConstantBinning
+from shape_producer.binning import ConstantBinning, VariableBinning
 from shape_producer.variable import Variable
 from shape_producer.systematic_variations import Nominal, DifferentPipeline, SquareAndRemoveWeight, create_systematic_variations
 from shape_producer.process import Process
@@ -37,7 +37,7 @@ def parse_arguments():
 
     parser.add_argument(
         "--directory",
-        default="/storage/jbod/wunsch/Run2Analysis_alex_classified",
+        default="/storage/jbod/wunsch/Run2Analysis_alex_classified2",
         type=str,
         help="Directory with Artus outputs.")
     parser.add_argument(
@@ -87,38 +87,43 @@ def main(args):
                   QCDEstimation(era, directory, mt,
                                 [ZTT, ZJ, ZL, W, TTT, TTJ, VV], data))
     # Variables and categories
-    probability = Variable("mt_keras4_max_score", ConstantBinning(6, 0.2, 1.0))
+    probability_signal = Variable(
+        "mt_keras7_max_score",
+        VariableBinning([0.2, 0.4, 0.5, 0.6, 0.7, 0.8, 0.85, 0.9, 0.95, 1.0]))
+    probability_background = Variable("mt_keras7_max_score",
+                                  VariableBinning(
+                                      [0.2, 0.4, 0.5, 0.6, 0.7, 1.0]))
     mt_cut = Cut("mt_1<50", "mt")
     mt_HTT = Category(
         "HTT",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras4_max_index==0", "exclusive_probability")),
-        variable=probability)
+        Cuts(mt_cut, Cut("mt_keras7_max_index==0", "exclusive_probability")),
+        variable=probability_signal)
     mt_ZTT = Category(
         "ZTT",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras4_max_index==1", "exclusive_probability")),
-        variable=probability)
+        Cuts(mt_cut, Cut("mt_keras7_max_index==1", "exclusive_probability")),
+        variable=probability_background)
     mt_ZLL = Category(
         "ZLL",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras4_max_index==2", "exclusive_probability")),
-        variable=probability)
+        Cuts(mt_cut, Cut("mt_keras7_max_index==2", "exclusive_probability")),
+        variable=probability_background)
     mt_W = Category(
         "W",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras4_max_index==3", "exclusive_probability")),
-        variable=probability)
+        Cuts(mt_cut, Cut("mt_keras7_max_index==3", "exclusive_probability")),
+        variable=probability_background)
     mt_TT = Category(
         "TT",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras4_max_index==4", "exclusive_probability")),
-        variable=probability)
+        Cuts(mt_cut, Cut("mt_keras7_max_index==4", "exclusive_probability")),
+        variable=probability_background)
     mt_QCD = Category(
         "QCD",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras4_max_index==5", "exclusive_probability")),
-        variable=probability)
+        Cuts(mt_cut, Cut("mt_keras7_max_index==5", "exclusive_probability")),
+        variable=probability_background)
 
     # Nominal histograms
     systematics = Systematics("shapes.root", num_threads=args.num_threads, backend=args.backend)
