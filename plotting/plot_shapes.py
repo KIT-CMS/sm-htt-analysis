@@ -83,9 +83,10 @@ config_template = {
 
 
 def main(args):
-    bkg_processes_names = ["ztt", "zll", "wj", "tt",
+    bkg_processes_names = ["ztt", "zl", "zj", "wj", "ttt", "ttj",
                            "qcd"]  # enforced by HarryPlotter
-    bkg_processes = ["Ztt", "Zll", "WJets", "tt", "QCD"]  # names in ROOT file
+    bkg_processes = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ",
+                     "QCD"]  # names in ROOT file
 
     configs = []
     for folder in args.folders:

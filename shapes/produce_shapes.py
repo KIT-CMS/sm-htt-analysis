@@ -51,11 +51,10 @@ def parse_arguments():
         default=20,
         type=int,
         help="Number of threads to be used.")
-
     parser.add_argument(
         "--backend",
         default="classic",
-        choices = ["classic", "tdf"],
+        choices=["classic", "tdf"],
         type=str,
         help="Backend. Use classic or tdf.")
 
@@ -91,8 +90,8 @@ def main(args):
         "mt_keras7_max_score",
         VariableBinning([0.2, 0.4, 0.5, 0.6, 0.7, 0.8, 0.85, 0.9, 0.95, 1.0]))
     probability_background = Variable("mt_keras7_max_score",
-                                  VariableBinning(
-                                      [0.2, 0.4, 0.5, 0.6, 0.7, 1.0]))
+                                      VariableBinning(
+                                          [0.2, 0.4, 0.5, 0.6, 0.7, 1.0]))
     mt_cut = Cut("mt_1<50", "mt")
     mt_HTT = Category(
         "HTT",
@@ -126,7 +125,8 @@ def main(args):
         variable=probability_background)
 
     # Nominal histograms
-    systematics = Systematics("shapes.root", num_threads=args.num_threads, backend=args.backend)
+    systematics = Systematics(
+        "shapes.root", num_threads=args.num_threads, backend=args.backend)
     for category in [mt_HTT, mt_ZTT, mt_ZLL, mt_W, mt_TT, mt_QCD]:
         for process in [
                 data, HTT, VH, ggH, qqH, ZTT, ZL, ZJ, W, TTT, TTJ, VV, QCD
