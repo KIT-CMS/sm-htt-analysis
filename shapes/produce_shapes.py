@@ -52,6 +52,13 @@ def parse_arguments():
         type=int,
         help="Number of threads to be used.")
 
+    parser.add_argument(
+        "--backend",
+        default="classic",
+        choices = ["classic", "tdf"],
+        type=str,
+        help="Backend. Use classic or tdf.")
+
     return parser.parse_args()
 
 
@@ -114,7 +121,7 @@ def main(args):
         variable=probability)
 
     # Nominal histograms
-    systematics = Systematics("shapes.root", num_threads=args.num_threads)
+    systematics = Systematics("shapes.root", num_threads=args.num_threads, backend=args.backend)
     for category in [mt_HTT, mt_ZTT, mt_ZLL, mt_W, mt_TT, mt_QCD]:
         for process in [
                 data, HTT, VH, ggH, qqH, ZTT, ZL, ZJ, W, TTT, TTJ, VV, QCD
