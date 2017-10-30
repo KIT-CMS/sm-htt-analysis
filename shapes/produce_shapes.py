@@ -87,41 +87,41 @@ def main(args):
                                 [ZTT, ZJ, ZL, W, TTT, TTJ, VV], data))
     # Variables and categories
     probability_signal = Variable(
-        "mt_keras7_max_score",
+        "mt_keras8_max_score",
         VariableBinning([0.2, 0.4, 0.5, 0.6, 0.7, 0.8, 0.85, 0.9, 0.95, 1.0]))
-    probability_background = Variable("mt_keras7_max_score",
+    probability_background = Variable("mt_keras8_max_score",
                                       VariableBinning(
-                                          [0.2, 0.4, 0.5, 0.6, 0.7, 1.0]))
+                                          [0.2, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]))
     mt_cut = Cut("mt_1<50", "mt")
     mt_HTT = Category(
         "HTT",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras7_max_index==0", "exclusive_probability")),
+        Cuts(mt_cut, Cut("mt_keras8_max_index==0", "exclusive_probability")),
         variable=probability_signal)
     mt_ZTT = Category(
         "ZTT",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras7_max_index==1", "exclusive_probability")),
+        Cuts(mt_cut, Cut("mt_keras8_max_index==1", "exclusive_probability")),
         variable=probability_background)
     mt_ZLL = Category(
         "ZLL",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras7_max_index==2", "exclusive_probability")),
+        Cuts(mt_cut, Cut("mt_keras8_max_index==2", "exclusive_probability")),
         variable=probability_background)
     mt_W = Category(
         "W",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras7_max_index==3", "exclusive_probability")),
+        Cuts(mt_cut, Cut("mt_keras8_max_index==3", "exclusive_probability")),
         variable=probability_background)
     mt_TT = Category(
         "TT",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras7_max_index==4", "exclusive_probability")),
+        Cuts(mt_cut, Cut("mt_keras8_max_index==4", "exclusive_probability")),
         variable=probability_background)
     mt_QCD = Category(
         "QCD",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras7_max_index==5", "exclusive_probability")),
+        Cuts(mt_cut, Cut("mt_keras8_max_index==5", "exclusive_probability")),
         variable=probability_background)
 
     # Nominal histograms

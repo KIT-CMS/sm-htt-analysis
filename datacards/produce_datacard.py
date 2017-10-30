@@ -74,7 +74,7 @@ def main(args):
     # TODO: tt and z normalizations
 
     # Extract shapes
-    db.extract_shapes("mt", "smhtt", "Run2016", "mt_keras7_max_score")
+    db.extract_shapes("mt", "smhtt", "Run2016", "mt_keras8_max_score")
 
     # Replace observation with Asimov dataset
     db.replace_observation_by_asimov_dataset()
