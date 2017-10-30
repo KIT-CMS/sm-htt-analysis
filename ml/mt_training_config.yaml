@@ -68,4 +68,5 @@ train_test_split: 0.75
 # Define the model parameter
 model:
     batch_size: 1000
-    epochs: 100
+    epochs: 10000
+    early_stopping: 3
