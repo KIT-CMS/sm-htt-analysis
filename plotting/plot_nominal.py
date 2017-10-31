@@ -86,7 +86,7 @@ config_template = {
     "year": "2016",
     "analysis_modules": ["ScaleHistograms", "Ratio"],
     "ratio_result_nicks": ["ratio_Bkg", "ratio_Data"],
-    "y_subplot_lims": [0.5, 1.5],
+    "y_subplot_lims": [0.0, 2.0],
     "y_rel_lims": [0.9, 1.3],
     "y_subplot_label": "#scale[0.8]{Ratio to Bkg.}",
     "subplot_lines": [0.5, 1.0, 1.5]
@@ -100,6 +100,8 @@ def main(args):
                      "QCD"]  # names in ROOT file
     signal_processes_names = ["htt125", "ggh125",
                               "qqh125"]  # enforced by HarryPlotter
+    signal_processes = ["HTT", "qqH", "ggH"]  # name in ROOT file
+
     scale_signal = args.scale_signal
     config_template["scales"] = scale_signal
     config_template["scale_nicks"] = signal_processes_names
@@ -110,7 +112,7 @@ def main(args):
     signal_processes_labels = [
         label + postfix for label in signal_processes_names
     ]
-    signal_processes = ["HTT", "qqH", "ggH"]
+
     categories = args.categories
     channel = args.channel
     analysis = args.analysis

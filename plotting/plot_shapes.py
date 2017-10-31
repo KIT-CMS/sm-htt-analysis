@@ -75,7 +75,7 @@ config_template = {
     "year": "2016",
     "analysis_modules": ["Ratio"],
     "ratio_result_nicks": ["ratio_Bkg", "ratio_Data"],
-    "y_subplot_lims": [0.5, 1.5],
+    "y_subplot_lims": [0.0, 2.0],
     "y_rel_lims": [0.9, 1.3],
     "y_subplot_label": "#scale[0.8]{Ratio to Bkg.}",
     "subplot_lines": [0.5, 1.0, 1.5]
@@ -87,28 +87,37 @@ def main(args):
                            "qcd"]  # enforced by HarryPlotter
     bkg_processes = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ",
                      "QCD"]  # names in ROOT file
+    signal_processes_names = ["htt125"]  # enforced by HarryPlotter
+    signal_processes = ["HTT"]  # name in ROOT file
 
     configs = []
     for folder in args.folders:
         config = deepcopy(config_template)
         config["files"] = [args.input]
         config["markers"] = ["HIST"] * len(bkg_processes_names) + [
-            "E"
-        ] + config["markers"]
+            "LINE"
+        ] * len(signal_processes_names) + ["E"] + config["markers"]
         config["legend_markers"] = ["F"] * len(bkg_processes_names) + [
-            "ELP"
-        ] + config["legend_markers"]
-        config["labels"] = bkg_processes_names + ["data"] + config["labels"]
-        config["colors"] = bkg_processes_names + ["data"] + config["colors"]
-        config["nicks"] = bkg_processes_names + ["data"]
+            "L"
+        ] * len(signal_processes_names) + ["ELP"] + config["legend_markers"]
+        config["labels"] = bkg_processes_names + signal_processes_names + [
+            "data"
+        ] + config["labels"]
+        config["colors"] = bkg_processes_names + signal_processes_names + [
+            "data"
+        ] + config["colors"]
+        config[
+            "nicks"] = bkg_processes_names + signal_processes_names + ["data"]
         config["folders"] = [folder]
-        config["x_expressions"] = bkg_processes + ["data_obs"]
+        config[
+            "x_expressions"] = bkg_processes + signal_processes + ["data_obs"]
         config["filename"] = folder
         config["x_label"] = args.x_label
         config["title"] = args.title
-        config["stacks"] = ["mc"] * len(bkg_processes_names) + [
-            "data"
-        ] + config["stacks"]
+        config["stacks"] = ["mc"] * len(
+            bkg_processes_names) + signal_processes_names + [
+                "data"
+            ] + config["stacks"]
         config["ratio_denominator_nicks"] = [" ".join(bkg_processes_names)] * 2
         config["ratio_numerator_nicks"] = [
             " ".join(bkg_processes_names), "data"
