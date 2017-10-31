@@ -94,10 +94,10 @@ def main(args):
     training = args.training
     probability_signal = Variable(
         "mt_{}_max_score".format(training),
-        VariableBinning([0.2, 0.5, 0.8, 0.85, 0.9, 0.95, 1.0]))
+        VariableBinning([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]))
     probability_background = Variable("mt_{}_max_score".format(training),
                                       VariableBinning(
-                                          [0.2, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]))
+                                          [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]))
     mt_cut = Cut("mt_1<50", "mt")
     mt_HTT = Category(
         "HTT",

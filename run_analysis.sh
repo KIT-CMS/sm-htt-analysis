@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Select training of machine learning method
-TRAINING=keras11
+TRAINING=keras13
 
 # Error handling to ensure that script is executed from top-level directory of
 # this repository
