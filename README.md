@@ -1,10 +1,10 @@
 # Standard Model Higgs boson to two tau leptons analysis
 
-Convention of names of processes:
-Backgrounds: W, QCD, TTT, TTJ (only TT in emu), ZL, ZJ, ZT
+## Convention of process names
 Signals: ggH, qqH, WH, ZH, total: HTT
+Backgrounds: W, QCD, TTT, TTJ (only TT in emu), ZL, ZJ, ZT
 
-## Apply machine learning methods
+## Train and apply machine learning methods
 
 ### Create training dataset
 
@@ -24,57 +24,10 @@ Signals: ggH, qqH, WH, ZH, total: HTT
 ./ml/run_application.sh CHANNEL
 ```
 
-## Create shapes of systematics
+## Run analysis
+
+The script `run_analysis.sh` in the top-level directory of this repository guides through all steps. The analysis ntuples need to be annotated with the ML method's response first with the workflow shown above.
 
 ```bash
-./shapes/produce_shapes.sh
-```
-
-## Build datacards
-
-```bash
-# Install CMSSW:
-bash init_cmssw.sh
-```
-
-```bash
-./datacards/produce_datacard.sh
-```
-
-## Run statistical inference
-
-```bash
-# Signal strength:
-./combine/signal_strength.sh
-
-# Significance:
-./combine/significance.sh
-
-# Nuisance impacts:
-./combine/nuisance_impacts.sh
-```
-
-## Plotting
-
-```bash
-# Software stack:
-# TODO: CMSSW_7_4_7 with HarryPlotter
-```
-
-```bash
-# Plot categories with statistical uncertainties only from nominal shapes
-# created using the shape-producer module
-./plotting/plot_nominal.py -v VARIABLES -c CATEGORIES
-
-# Create prefit and postfit shapes
-./combine/prefit_postfit_shapes.sh
-
-# Prefit plots
-./plotting/plot_shapes.py -i datacard_shapes_prefit.root -f FOLDERS
-
-# Postfit plots (signal plus background)
-./plotting/plot_shapes.py -i datacard_shapes_postfit_sb.root -f FOLDERS
-
-# Postfit plots (background only)
-./plotting/plot_shapes.py -i datacard_shapes_postfit_b.root -f FOLDERS
+./run_analysis.sh
 ```

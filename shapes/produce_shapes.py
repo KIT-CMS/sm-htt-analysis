@@ -47,6 +47,11 @@ def parse_arguments():
         type=str,
         help="Kappa datsets database.")
     parser.add_argument(
+        "--training",
+        type=str,
+        required=True,
+        help="Training of machine learning method to be used.")
+    parser.add_argument(
         "--num-threads",
         default=20,
         type=int,
@@ -86,42 +91,43 @@ def main(args):
                   QCDEstimation(era, directory, mt,
                                 [ZTT, ZJ, ZL, W, TTT, TTJ, VV], data))
     # Variables and categories
+    training = args.training
     probability_signal = Variable(
-        "mt_keras8_max_score",
-        VariableBinning([0.2, 0.4, 0.5, 0.6, 0.7, 0.8, 0.85, 0.9, 0.95, 1.0]))
-    probability_background = Variable("mt_keras8_max_score",
+        "mt_{}_max_score".format(training),
+        VariableBinning([0.2, 0.5, 0.8, 0.85, 0.9, 0.95, 1.0]))
+    probability_background = Variable("mt_{}_max_score".format(training),
                                       VariableBinning(
                                           [0.2, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]))
     mt_cut = Cut("mt_1<50", "mt")
     mt_HTT = Category(
         "HTT",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras8_max_index==0", "exclusive_probability")),
+        Cuts(mt_cut, Cut("mt_{}_max_index==0".format(training), "exclusive_probability")),
         variable=probability_signal)
     mt_ZTT = Category(
         "ZTT",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras8_max_index==1", "exclusive_probability")),
+        Cuts(mt_cut, Cut("mt_{}_max_index==1".format(training), "exclusive_probability")),
         variable=probability_background)
     mt_ZLL = Category(
         "ZLL",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras8_max_index==2", "exclusive_probability")),
+        Cuts(mt_cut, Cut("mt_{}_max_index==2".format(training), "exclusive_probability")),
         variable=probability_background)
     mt_W = Category(
         "W",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras8_max_index==3", "exclusive_probability")),
+        Cuts(mt_cut, Cut("mt_{}_max_index==3".format(training), "exclusive_probability")),
         variable=probability_background)
     mt_TT = Category(
         "TT",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras8_max_index==4", "exclusive_probability")),
+        Cuts(mt_cut, Cut("mt_{}_max_index==4".format(training), "exclusive_probability")),
         variable=probability_background)
     mt_QCD = Category(
         "QCD",
         MT(),
-        Cuts(mt_cut, Cut("mt_keras8_max_index==5", "exclusive_probability")),
+        Cuts(mt_cut, Cut("mt_{}_max_index==5".format(training), "exclusive_probability")),
         variable=probability_background)
 
     # Nominal histograms

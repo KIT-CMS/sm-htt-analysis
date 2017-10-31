@@ -32,6 +32,11 @@ def parse_arguments():
         default="shapes.root",
         type=str,
         help="Nominal shapes and systematic variations.")
+    parser.add_argument(
+        "--training",
+        type=str,
+        required=True,
+        help="Training of machine learning method to be used.")
 
     return parser.parse_args()
 
@@ -74,7 +79,7 @@ def main(args):
     # TODO: tt and z normalizations
 
     # Extract shapes
-    db.extract_shapes("mt", "smhtt", "Run2016", "mt_keras8_max_score")
+    db.extract_shapes("mt", "smhtt", "Run2016", "mt_{}_max_score".format(args.training))
 
     # Replace observation with Asimov dataset
     db.replace_observation_by_asimov_dataset()
@@ -87,7 +92,7 @@ def main(args):
         fix_norm=True)
 
     # Perform auto-rebinning
-    db.auto_rebin(threshold=1.0, mode=0)
+    #db.auto_rebin(threshold=1.0, mode=0)
 
     # Write datacard
     db.print_datacard()

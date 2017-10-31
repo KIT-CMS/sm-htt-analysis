@@ -17,7 +17,7 @@ classes:
 
 # Set class weights
 class_weights:
-    htt: 10.0
+    htt: 50.0
     ztt: 1.0
     zll: 1.0
     w: 1.0
@@ -32,7 +32,7 @@ event_weights: training_weight
 
 # Define list of variables to be used for training
 variables:
-    #- m_sv
+    - m_sv
     - mjj
     #- H_pt
     - m_vis
@@ -67,6 +67,6 @@ train_test_split: 0.75
 
 # Define the model parameter
 model:
-    batch_size: 1000
+    batch_size: 10000
     epochs: 10000
-    early_stopping: 3
+    early_stopping: 5
