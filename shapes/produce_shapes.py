@@ -67,74 +67,78 @@ def main(args):
     era = Run2016(args.datasets)
 
     # Channels and processes
-    directory = args.directory
     # yapf: disable
+    directory = args.directory
     mt = MT()
     mt_processes = {
-        "data"  : Process("data_obs",DataEstimation( era, directory, mt)),
-        "HTT"   : Process("HTT",     HTTEstimation(  era, directory, mt)),
-        "ggH"   : Process("ggH",     ggHEstimation(  era, directory, mt)),
-        "qqH"   : Process("qqH",     qqHEstimation(  era, directory, mt)),
-        "VH"    : Process("VH",      VHEstimation(   era, directory, mt)),
-        "ZTT"   : Process("ZTT",     ZTTEstimation(  era, directory, mt)),
-        "ZL"    : Process("ZL",      ZLEstimationMT( era, directory, mt)),
-        "ZJ"    : Process("ZJ",      ZJEstimationMT( era, directory, mt)),
-        "W"     : Process("W",       WEstimation(    era, directory, mt)),
-        "TTT"   : Process("TTT",     TTTEstimationMT(era, directory, mt)),
-        "TTJ"   : Process("TTJ",     TTJEstimationMT(era, directory, mt)),
-        "VV"    : Process("VV",      VVEstimation(   era, directory, mt))
+        "data"  : Process("data_obs", DataEstimation (era, directory, mt)),
+        "HTT"   : Process("HTT",      HTTEstimation  (era, directory, mt)),
+        "ggH"   : Process("ggH",      ggHEstimation  (era, directory, mt)),
+        "qqH"   : Process("qqH",      qqHEstimation  (era, directory, mt)),
+        "VH"    : Process("VH",       VHEstimation   (era, directory, mt)),
+        "ZTT"   : Process("ZTT",      ZTTEstimation  (era, directory, mt)),
+        "ZL"    : Process("ZL",       ZLEstimationMT (era, directory, mt)),
+        "ZJ"    : Process("ZJ",       ZJEstimationMT (era, directory, mt)),
+        "W"     : Process("W",        WEstimation    (era, directory, mt)),
+        "TTT"   : Process("TTT",      TTTEstimationMT(era, directory, mt)),
+        "TTJ"   : Process("TTJ",      TTJEstimationMT(era, directory, mt)),
+        "VV"    : Process("VV",       VVEstimation   (era, directory, mt))
         }
     mt_processes["QCD"] = Process("QCD", QCDEstimation(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV"]], mt_processes["data"]))
     et = ET()
     et_processes = {
-        "data"  : Process("data_obs",DataEstimation( era, directory, et)),
-        "HTT"   : Process("HTT",     HTTEstimation(  era, directory, et)),
-        "ggH"   : Process("ggH",     ggHEstimation(  era, directory, et)),
-        "qqH"   : Process("qqH",     qqHEstimation(  era, directory, et)),
-        "VH"    : Process("VH",      VHEstimation(   era, directory, et)),
-        "ZTT"   : Process("ZTT",     ZTTEstimation(  era, directory, et)),
-        "ZL"    : Process("ZL",      ZLEstimationET( era, directory, et)),
-        "ZJ"    : Process("ZJ",      ZJEstimationET( era, directory, et)),
-        "W"     : Process("W",       WEstimation(    era, directory, et)),
-        "TTT"   : Process("TTT",     TTTEstimationET(era, directory, et)),
-        "TTJ"   : Process("TTJ",     TTJEstimationET(era, directory, et)),
-        "VV"    : Process("VV",      VVEstimation(   era, directory, et))
+        "data"  : Process("data_obs", DataEstimation (era, directory, et)),
+        "HTT"   : Process("HTT",      HTTEstimation  (era, directory, et)),
+        "ggH"   : Process("ggH",      ggHEstimation  (era, directory, et)),
+        "qqH"   : Process("qqH",      qqHEstimation  (era, directory, et)),
+        "VH"    : Process("VH",       VHEstimation   (era, directory, et)),
+        "ZTT"   : Process("ZTT",      ZTTEstimation  (era, directory, et)),
+        "ZL"    : Process("ZL",       ZLEstimationET (era, directory, et)),
+        "ZJ"    : Process("ZJ",       ZJEstimationET (era, directory, et)),
+        "W"     : Process("W",        WEstimation    (era, directory, et)),
+        "TTT"   : Process("TTT",      TTTEstimationET(era, directory, et)),
+        "TTJ"   : Process("TTJ",      TTJEstimationET(era, directory, et)),
+        "VV"    : Process("VV",       VVEstimation(   era, directory, et))
         }
     et_processes["QCD"] = Process("QCD", QCDEstimation(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV"]], et_processes["data"]))
-    # yapf: enable
-    mT_cut = Cut("mt_1<50", "mt")
-    training = {"et": "keras1", "mt": "keras13"}
+
+
     # Variables
+    training = {"et": "keras1", "mt": "keras13"}
+
     et_score_signal = Variable(
         "et_{tr}_max_score".format(tr=training["et"]),
         VariableBinning([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]))
     et_score_background = Variable(
         "et_{tr}_max_score".format(tr=training["et"]),
         VariableBinning([0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0]))
+
     mt_score_signal = Variable(
         "mt_{tr}_max_score".format(tr=training["mt"]),
         VariableBinning([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]))
     mt_score_background = Variable(
         "mt_{tr}_max_score".format(tr=training["mt"]),
         VariableBinning([0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0]))
+
     # Categories
+    mT_cut = Cut("mt_1<50", "mt")
+
     et_categories = []
     et_categories.append(
         Category(
             "HTT",
             et,
             Cuts(mT_cut,
-                 Cut("et_{tr}_max_index==0".format(tr=training["et"]),
-                     "exclusive_score")),
+                 Cut("et_{tr}_max_index==0".format(tr=training["et"]), "exclusive_score")),
             variable=et_score_signal))
     for i, label in enumerate(["ZTT", "ZLL", "W", "TT", "QCD"]):
         et_categories.append(
             Category(
                 label,
                 et,
-                Cuts(mT_cut,
-                     Cut("et_{tr}_max_index=={index}".format(
-                         tr=training["et"], index=i + 1), "exclusive_score")),
+                Cuts(
+                    mT_cut,
+                    Cut("et_{tr}_max_index=={index}".format(tr=training["et"], index=i+1), "exclusive_score")),
                 variable=et_score_background))
 
     mt_categories = []
@@ -143,20 +147,20 @@ def main(args):
             "HTT",
             mt,
             Cuts(mT_cut,
-                 Cut("mt_{tr}_max_index==0".format(tr=training["mt"]),
-                     "exclusive_score")),
+                 Cut("mt_{tr}_max_index==0".format(tr=training["mt"]), "exclusive_score")),
             variable=mt_score_signal))
     for i, label in enumerate(["ZTT", "ZLL", "W", "TT", "QCD"]):
         mt_categories.append(
             Category(
                 label,
                 mt,
-                Cuts(mT_cut,
-                     Cut("mt_{tr}_max_index=={index}".format(
-                         tr=training["mt"], index=i), "exclusive_score")),
+                Cuts(
+                    mT_cut,
+                    Cut("mt_{tr}_max_index=={index}".format(tr=training["mt"], index=i+1), "exclusive_score")),
                 variable=mt_score_background))
 
     # Nominal histograms
+    # yapf: enable
     for processes, categories in zip([et_processes, mt_processes],
                                      [et_categories, mt_categories]):
         for process, category in product(processes.values(), categories):
