@@ -12,5 +12,6 @@ git clone https://github.com/cms-analysis/CombineHarvester.git CombineHarvester 
 
 # NOTE: Remove this as soon as HarryPlotter is replaced.
 git clone https://github.com/KIT-CMS/KITHiggsToTauTau HiggsAnalysis/KITHiggsToTauTau -b master
+git clone https://github.com/KIT-CMS/Artus -b master
 
 scramv1 b -j 24
