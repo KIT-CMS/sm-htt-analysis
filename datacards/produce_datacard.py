@@ -33,9 +33,10 @@ def parse_arguments():
         type=str,
         help="Nominal shapes and systematic variations.")
     parser.add_argument(
-        "--mt", default=False, action="store_true", help="Enable mt channel.")
-    parser.add_argument(
-        "--et", default=False, action="store_true", help="Enable et channel.")
+        "--channels",
+        nargs="+",
+        required=True,
+        help="Select channels to be included in the datacard.")
 
     return parser.parse_args()
 
@@ -48,21 +49,7 @@ def main(args):
     signals = ["HTT"]
     backgrounds = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "QCD"]
 
-    if args.mt:
-        mt_categories = [
-            "mt_HTT", "mt_ZTT", "mt_ZLL", "mt_W", "mt_TT", "mt_QCD"
-        ]
-        mt_category_pairs = db.make_pairs(mt_categories)
-
-        db.add_observation("125", "smhtt", "Run2016", "mt", mt_category_pairs)
-        db.add_signals("125", "smhtt", "Run2016", "mt", signals,
-                       mt_category_pairs)
-        db.add_backgrounds("125", "smhtt", "Run2016", "mt", backgrounds,
-                           mt_category_pairs)
-
-        channels.append("mt")
-
-    if args.et:
+    if "et" in args.channels:
         et_categories = [
             "et_HTT", "et_ZTT", "et_ZLL", "et_W", "et_TT", "et_QCD"
         ]
@@ -75,6 +62,20 @@ def main(args):
                            et_category_pairs)
 
         channels.append("et")
+
+    if "mt" in args.channels:
+        mt_categories = [
+            "mt_HTT", "mt_ZTT", "mt_ZLL", "mt_W", "mt_TT", "mt_QCD"
+        ]
+        mt_category_pairs = db.make_pairs(mt_categories)
+
+        db.add_observation("125", "smhtt", "Run2016", "mt", mt_category_pairs)
+        db.add_signals("125", "smhtt", "Run2016", "mt", signals,
+                       mt_category_pairs)
+        db.add_backgrounds("125", "smhtt", "Run2016", "mt", backgrounds,
+                           mt_category_pairs)
+
+        channels.append("mt")
 
     # Add shapes systematics
     db.add_shape_systematic("CMS_scale_t_3prong0pi0", 1.0, channels,
@@ -101,10 +102,10 @@ def main(args):
     # TODO: tt and z normalizations
 
     # Extract shapes
-    if args.mt:
-        db.extract_shapes("mt", "smhtt", "Run2016", "mt_keras13_max_score")
-    if args.et:
+    if "et" in args.channels:
         db.extract_shapes("et", "smhtt", "Run2016", "et_keras1_max_score")
+    if "mt" in args.channels:
+        db.extract_shapes("mt", "smhtt", "Run2016", "mt_keras13_max_score")
 
     # Replace observation with Asimov dataset
     db.replace_observation_by_asimov_dataset()

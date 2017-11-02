@@ -19,10 +19,10 @@ KAPPA_DATABASE=/portal/ekpbms3/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/d
 ./shapes/produce_shapes.sh $ARTUS_OUTPUTS $KAPPA_DATABASE
 
 # Make control plots of produced shapes
-./plotting/plot_control.sh
+./plotting/plot_control.sh et mt
 
 # Write datacard
-./datacards/produce_datacard.sh $TRAINING
+./datacards/produce_datacard.sh et mt
 
 # Run statistical inference
 ./combine/significance.sh | tee significance.log
@@ -31,4 +31,4 @@ KAPPA_DATABASE=/portal/ekpbms3/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/d
 
 # Make prefit and postfit shapes
 ./combine/prefit_postfit_shapes.sh
-./plotting/plot_shapes.sh
+./plotting/plot_shapes.sh et mt
