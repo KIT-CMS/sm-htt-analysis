@@ -67,6 +67,7 @@ train_test_split: 0.75
 
 # Define the model parameter
 model:
+    name: smhtt
     batch_size: 10000
     epochs: 10000
     early_stopping: 5
