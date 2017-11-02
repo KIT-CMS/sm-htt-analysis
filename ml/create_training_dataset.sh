@@ -11,7 +11,7 @@ python ml/write_dataset_config.py \
     --channel ${CHANNEL} \
     --base-path /storage/jbod/wunsch/Run2Analysis_alex \
     --database /portal/ekpbms3/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/datasets.json \
-    --output-path $PWD/ml/mt \
+    --output-path $PWD/ml/${CHANNEL} \
     --output-filename ${CHANNEL}_training_dataset.root \
     --tree-path ${CHANNEL}_nominal/ntuple \
     --event-branch event \
