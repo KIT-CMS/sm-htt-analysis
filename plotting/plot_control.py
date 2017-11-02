@@ -32,7 +32,7 @@ def parse_arguments():
         help="Categories")
     parser.add_argument("--era", type=str, default="Run2016", help="Era")
     parser.add_argument("--mass", type=str, default="125", help="Mass")
-    parser.add_argument("--channel", type=str, default="mt", help="Channel")
+    parser.add_argument("--channel", type=str, required=True, help="Channel")
     parser.add_argument(
         "--analysis", type=str, default="smhtt", help="Analysis")
     parser.add_argument(

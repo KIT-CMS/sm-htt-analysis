@@ -10,7 +10,9 @@ from shape_producer.systematic_variations import Nominal, DifferentPipeline, Squ
 from shape_producer.process import Process
 from shape_producer.estimation_methods_2016 import *
 from shape_producer.era import Run2016
-from shape_producer.channel import MT
+from shape_producer.channel import ET, MT
+
+from itertools import product
 
 import argparse
 
@@ -37,23 +39,14 @@ def parse_arguments():
 
     parser.add_argument(
         "--directory",
-        default="/storage/jbod/wunsch/Run2Analysis_alex_classified2",
+        required=True,
         type=str,
         help="Directory with Artus outputs.")
     parser.add_argument(
-        "--datasets",
-        default=
-        "/portal/ekpbms3/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/datasets.json",
-        type=str,
-        help="Kappa datsets database.")
-    parser.add_argument(
-        "--training",
-        type=str,
-        required=True,
-        help="Training of machine learning method to be used.")
+        "--datasets", required=True, type=str, help="Kappa datsets database.")
     parser.add_argument(
         "--num-threads",
-        default=20,
+        default=32,
         type=int,
         help="Number of threads to be used.")
     parser.add_argument(
@@ -67,76 +60,106 @@ def parse_arguments():
 
 
 def main(args):
+    # Container for all distributions to be drawn
+    systematics = Systematics("shapes.root", num_threads=args.num_threads)
+
     # Era
     era = Run2016(args.datasets)
 
     # Channels and processes
-    mt = MT()
     directory = args.directory
-    data = Process("data_obs", DataEstimation(era, directory, mt))
-
-    HTT = Process("HTT", HTTEstimation(era, directory, mt))
-    ggH = Process("ggH", ggHEstimation(era, directory, mt))
-    qqH = Process("qqH", qqHEstimation(era, directory, mt))
-    VH = Process("VH", VHEstimation(era, directory, mt))
-
-    ZTT = Process("ZTT", ZTTEstimation(era, directory, mt))
-    ZL = Process("ZL", ZLEstimationMT(era, directory, mt))
-    ZJ = Process("ZJ", ZJEstimationMT(era, directory, mt))
-    W = Process("W", WEstimation(era, directory, mt))
-    TTT = Process("TTT", TTTEstimationMT(era, directory, mt))
-    TTJ = Process("TTJ", TTJEstimationMT(era, directory, mt))
-    VV = Process("VV", VVEstimation(era, directory, mt))
-    QCD = Process("QCD",
-                  QCDEstimation(era, directory, mt,
-                                [ZTT, ZJ, ZL, W, TTT, TTJ, VV], data))
-    # Variables and categories
-    training = args.training
-    probability_signal = Variable(
-        "mt_{}_max_score".format(training),
+    # yapf: disable
+    mt = MT()
+    mt_processes = {
+        "data"  : Process("data_obs",DataEstimation( era, directory, mt)),
+        "HTT"   : Process("HTT",     HTTEstimation(  era, directory, mt)),
+        "ggH"   : Process("ggH",     ggHEstimation(  era, directory, mt)),
+        "qqH"   : Process("qqH",     qqHEstimation(  era, directory, mt)),
+        "VH"    : Process("VH",      VHEstimation(   era, directory, mt)),
+        "ZTT"   : Process("ZTT",     ZTTEstimation(  era, directory, mt)),
+        "ZL"    : Process("ZL",      ZLEstimationMT( era, directory, mt)),
+        "ZJ"    : Process("ZJ",      ZJEstimationMT( era, directory, mt)),
+        "W"     : Process("W",       WEstimation(    era, directory, mt)),
+        "TTT"   : Process("TTT",     TTTEstimationMT(era, directory, mt)),
+        "TTJ"   : Process("TTJ",     TTJEstimationMT(era, directory, mt)),
+        "VV"    : Process("VV",      VVEstimation(   era, directory, mt))
+        }
+    mt_processes["QCD"] = Process("QCD", QCDEstimation(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV"]], mt_processes["data"]))
+    et = ET()
+    et_processes = {
+        "data"  : Process("data_obs",DataEstimation( era, directory, et)),
+        "HTT"   : Process("HTT",     HTTEstimation(  era, directory, et)),
+        "ggH"   : Process("ggH",     ggHEstimation(  era, directory, et)),
+        "qqH"   : Process("qqH",     qqHEstimation(  era, directory, et)),
+        "VH"    : Process("VH",      VHEstimation(   era, directory, et)),
+        "ZTT"   : Process("ZTT",     ZTTEstimation(  era, directory, et)),
+        "ZL"    : Process("ZL",      ZLEstimationET( era, directory, et)),
+        "ZJ"    : Process("ZJ",      ZJEstimationET( era, directory, et)),
+        "W"     : Process("W",       WEstimation(    era, directory, et)),
+        "TTT"   : Process("TTT",     TTTEstimationET(era, directory, et)),
+        "TTJ"   : Process("TTJ",     TTJEstimationET(era, directory, et)),
+        "VV"    : Process("VV",      VVEstimation(   era, directory, et))
+        }
+    et_processes["QCD"] = Process("QCD", QCDEstimation(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV"]], et_processes["data"]))
+    # yapf: enable
+    mT_cut = Cut("mt_1<50", "mt")
+    training = {"et": "keras1", "mt": "keras13"}
+    # Variables
+    et_score_signal = Variable(
+        "et_{tr}_max_score".format(tr=training["et"]),
         VariableBinning([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]))
-    probability_background = Variable("mt_{}_max_score".format(training),
-                                      VariableBinning(
-                                          [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]))
-    mt_cut = Cut("mt_1<50", "mt")
-    mt_HTT = Category(
-        "HTT",
-        MT(),
-        Cuts(mt_cut, Cut("mt_{}_max_index==0".format(training), "exclusive_probability")),
-        variable=probability_signal)
-    mt_ZTT = Category(
-        "ZTT",
-        MT(),
-        Cuts(mt_cut, Cut("mt_{}_max_index==1".format(training), "exclusive_probability")),
-        variable=probability_background)
-    mt_ZLL = Category(
-        "ZLL",
-        MT(),
-        Cuts(mt_cut, Cut("mt_{}_max_index==2".format(training), "exclusive_probability")),
-        variable=probability_background)
-    mt_W = Category(
-        "W",
-        MT(),
-        Cuts(mt_cut, Cut("mt_{}_max_index==3".format(training), "exclusive_probability")),
-        variable=probability_background)
-    mt_TT = Category(
-        "TT",
-        MT(),
-        Cuts(mt_cut, Cut("mt_{}_max_index==4".format(training), "exclusive_probability")),
-        variable=probability_background)
-    mt_QCD = Category(
-        "QCD",
-        MT(),
-        Cuts(mt_cut, Cut("mt_{}_max_index==5".format(training), "exclusive_probability")),
-        variable=probability_background)
+    et_score_background = Variable(
+        "et_{tr}_max_score".format(tr=training["et"]),
+        VariableBinning([0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0]))
+    mt_score_signal = Variable(
+        "mt_{tr}_max_score".format(tr=training["mt"]),
+        VariableBinning([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]))
+    mt_score_background = Variable(
+        "mt_{tr}_max_score".format(tr=training["mt"]),
+        VariableBinning([0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0]))
+    # Categories
+    et_categories = []
+    et_categories.append(
+        Category(
+            "HTT",
+            et,
+            Cuts(mT_cut,
+                 Cut("et_{tr}_max_index==0".format(tr=training["et"]),
+                     "exclusive_score")),
+            variable=et_score_signal))
+    for i, label in enumerate(["ZTT", "ZLL", "W", "TT", "QCD"]):
+        et_categories.append(
+            Category(
+                label,
+                et,
+                Cuts(mT_cut,
+                     Cut("et_{tr}_max_index=={index}".format(
+                         tr=training["et"], index=i + 1), "exclusive_score")),
+                variable=et_score_background))
+
+    mt_categories = []
+    mt_categories.append(
+        Category(
+            "HTT",
+            mt,
+            Cuts(mT_cut,
+                 Cut("mt_{tr}_max_index==0".format(tr=training["mt"]),
+                     "exclusive_score")),
+            variable=mt_score_signal))
+    for i, label in enumerate(["ZTT", "ZLL", "W", "TT", "QCD"]):
+        mt_categories.append(
+            Category(
+                label,
+                mt,
+                Cuts(mT_cut,
+                     Cut("mt_{tr}_max_index=={index}".format(
+                         tr=training["mt"], index=i), "exclusive_score")),
+                variable=mt_score_background))
 
     # Nominal histograms
-    systematics = Systematics(
-        "shapes.root", num_threads=args.num_threads, backend=args.backend)
-    for category in [mt_HTT, mt_ZTT, mt_ZLL, mt_W, mt_TT, mt_QCD]:
-        for process in [
-                data, HTT, VH, ggH, qqH, ZTT, ZL, ZJ, W, TTT, TTJ, VV, QCD
-        ]:
+    for processes, categories in zip([et_processes, mt_processes],
+                                     [et_categories, mt_categories]):
+        for process, category in product(processes.values(), categories):
             systematics.add(
                 Systematic(
                     category=category,
@@ -156,41 +179,87 @@ def main(args):
     tau_es_1prong1pizero_variations = create_systematic_variations(
         "CMS_scale_t_1prong1pi0", "tauEsOneProngPiZeros", DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
-        for process in [HTT, VH, ggH, qqH, ZTT]:
+        for process_nick in ["HTT", "VH", "ggH", "qqH", "ZTT"]:
             systematics.add_systematic_variation(
-                variation=variation, process=process, channel=mt, era=era)
+                variation=variation,
+                process=et_processes[process_nick],
+                channel=et,
+                era=era)
+            systematics.add_systematic_variation(
+                variation=variation,
+                process=mt_processes[process_nick],
+                channel=mt,
+                era=era)
 
     # Jet energy scale
     jet_es_variations = create_systematic_variations("CMS_scale_j", "jecUnc",
                                                      DifferentPipeline)
     for variation in jet_es_variations:
-        for process in [HTT, VH, ggH, qqH, ZTT, ZL, ZJ, W, TTT, TTJ, VV]:
+        for process_nick in [
+                "HTT", "VH", "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT",
+                "TTJ", "VV"
+        ]:
             systematics.add_systematic_variation(
-                variation=variation, process=process, channel=mt, era=era)
+                variation=variation,
+                process=et_processes[process_nick],
+                channel=et,
+                era=era)
+            systematics.add_systematic_variation(
+                variation=variation,
+                process=mt_processes[process_nick],
+                channel=mt,
+                era=era)
 
     # MET energy scale
     met_es_variations = create_systematic_variations(
         "CMS_htt_scale_met", "metUnclusteredEn", DifferentPipeline)
     for variation in met_es_variations:
-        for process in [HTT, VH, ggH, qqH, ZTT, ZL, ZJ, W, TTT, TTJ, VV]:
+        for process_nick in [
+                "HTT", "VH", "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT",
+                "TTJ", "VV"
+        ]:
             systematics.add_systematic_variation(
-                variation=variation, process=process, channel=mt, era=era)
+                variation=variation,
+                process=et_processes[process_nick],
+                channel=et,
+                era=era)
+            systematics.add_systematic_variation(
+                variation=variation,
+                process=mt_processes[process_nick],
+                channel=mt,
+                era=era)
 
     # Z pt reweighting
     zpt_variations = create_systematic_variations(
         "CMS_htt_dyShape", "zPtReweightWeight", SquareAndRemoveWeight)
     for variation in zpt_variations:
-        for process in [ZTT, ZL, ZJ]:
+        for process_nick in ["ZTT", "ZL", "ZJ"]:
             systematics.add_systematic_variation(
-                variation=variation, process=process, channel=mt, era=era)
+                variation=variation,
+                process=et_processes[process_nick],
+                channel=et,
+                era=era)
+            systematics.add_systematic_variation(
+                variation=variation,
+                process=mt_processes[process_nick],
+                channel=mt,
+                era=era)
 
     # top pt reweighting
     top_pt_variations = create_systematic_variations(
         "CMS_htt_ttbarShape", "topPtReweightWeight", SquareAndRemoveWeight)
     for variation in top_pt_variations:
-        for process in [TTT, TTJ]:
+        for process_nick in ["TTT", "TTJ"]:
             systematics.add_systematic_variation(
-                variation=variation, process=process, channel=mt, era=era)
+                variation=variation,
+                process=et_processes[process_nick],
+                channel=et,
+                era=era)
+            systematics.add_systematic_variation(
+                variation=variation,
+                process=mt_processes[process_nick],
+                channel=mt,
+                era=era)
 
     # TODO: Example for replacing weights
     """

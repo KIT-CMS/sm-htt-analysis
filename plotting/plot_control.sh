@@ -2,6 +2,5 @@
 
 source utils/setup_cmssw.sh
 
-TRAINING=$1
-
-./plotting/plot_control.py -v mt_${TRAINING}_max_score -c mt_ZTT mt_ZLL mt_W mt_TT mt_QCD --scale-signal 50
+./plotting/plot_control.py -v et_keras1_max_score -c et_ZTT et_ZLL et_W et_TT et_QCD --scale-signal 50 --channel et
+./plotting/plot_control.py -v mt_keras13_max_score -c mt_ZTT mt_ZLL mt_W mt_TT mt_QCD --scale-signal 50 --channel mt
