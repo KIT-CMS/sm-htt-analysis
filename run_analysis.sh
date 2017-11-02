@@ -31,4 +31,4 @@ KAPPA_DATABASE=/portal/ekpbms3/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/d
 
 # Make prefit and postfit shapes
 ./combine/prefit_postfit_shapes.sh
-./plotting/plot_shapes.sh et mt
+./plotting/plot_shapes.sh
