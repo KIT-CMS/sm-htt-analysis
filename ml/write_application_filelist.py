@@ -37,46 +37,86 @@ def main(args):
     # Write arparse arguments to YAML config
     filelist = {}
 
-    # Set up era and channel
+    # Set up era
     era = Run2016(args.database)
 
+    logger.debug("Write filelist for channel %s.", args.channel)
+
+    ############################################################################
+
+    # Channel: mt
     if args.channel == "mt":
         channel = MT()
-    else:
-        logger.fatal("Channel %s is not implemented.", args.channel)
-        raise Exception
+        for estimation in [
+                ggHEstimation(era, args.directory, channel),
+                qqHEstimation(era, args.directory, channel),
+                VHEstimation(era, args.directory, channel),
+                ZTTEstimation(era, args.directory, channel),
+                ZLEstimationMT(era, args.directory, channel),
+                ZJEstimationMT(era, args.directory, channel),
+                TTTEstimationMT(era, args.directory, channel),
+                TTJEstimationMT(era, args.directory, channel),
+                WEstimation(era, args.directory, channel),
+                VVEstimation(era, args.directory, channel),
+                DataEstimation(era, args.directory, channel)
+        ]:
+            # Get files for estimation method
+            logger.debug("Get files for estimation method %s.", estimation.name)
+            files = [str(f) for f in estimation.get_files()]
 
-    for estimation in [
-            ggHEstimation(era, args.directory, channel),
-            qqHEstimation(era, args.directory, channel),
-            VHEstimation(era, args.directory, channel),
-            ZTTEstimation(era, args.directory, channel),
-            ZLEstimationMT(era, args.directory, channel),
-            ZJEstimationMT(era, args.directory, channel),
-            TTTEstimationMT(era, args.directory, channel),
-            TTJEstimationMT(era, args.directory, channel),
-            WEstimation(era, args.directory, channel),
-            VVEstimation(era, args.directory, channel),
-            DataEstimation(era, args.directory, channel)
-    ]:
-        # Get files for estimation method
-        logger.debug("Get files for estimation method %s.", estimation.name)
-        files = [str(f) for f in estimation.get_files()]
+            # Go through files and get folders for channel
+            for f in files:
+                if not os.path.exists(f):
+                    logger.fatal("File does not exist: %s", f)
+                    raise Exception
 
-        # Go through files and get folders for channel
-        for f in files:
-            if not os.path.exists(f):
-                logger.fatal("File does not exist: %s", f)
-                raise Exception
+                folders = []
+                f_ = ROOT.TFile(f)
+                for k in f_.GetListOfKeys():
+                    if "{}_".format(args.channel) in k.GetName():
+                        folders.append(k.GetName())
+                f_.Close()
 
-            folders = []
-            f_ = ROOT.TFile(f)
-            for k in f_.GetListOfKeys():
-                if "{}_".format(args.channel) in k.GetName():
-                    folders.append(k.GetName())
-            f_.Close()
+                filelist[f] = folders
 
-            filelist[f] = folders
+    ############################################################################
+
+    # Channel: et
+    if args.channel == "et":
+        channel = ET()
+        for estimation in [
+                ggHEstimation(era, args.directory, channel),
+                qqHEstimation(era, args.directory, channel),
+                VHEstimation(era, args.directory, channel),
+                ZTTEstimation(era, args.directory, channel),
+                ZLEstimationET(era, args.directory, channel),
+                ZJEstimationET(era, args.directory, channel),
+                TTTEstimationET(era, args.directory, channel),
+                TTJEstimationET(era, args.directory, channel),
+                WEstimation(era, args.directory, channel),
+                VVEstimation(era, args.directory, channel),
+                DataEstimation(era, args.directory, channel)
+        ]:
+            # Get files for estimation method
+            logger.debug("Get files for estimation method %s.", estimation.name)
+            files = [str(f) for f in estimation.get_files()]
+
+            # Go through files and get folders for channel
+            for f in files:
+                if not os.path.exists(f):
+                    logger.fatal("File does not exist: %s", f)
+                    raise Exception
+
+                folders = []
+                f_ = ROOT.TFile(f)
+                for k in f_.GetListOfKeys():
+                    if "{}_".format(args.channel) in k.GetName():
+                        folders.append(k.GetName())
+                f_.Close()
+
+                filelist[f] = folders
+
+    ############################################################################
 
     # Write output filelist
     logger.info("Write filelist to file: {}".format(args.output))
