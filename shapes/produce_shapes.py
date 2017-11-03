@@ -15,6 +15,7 @@ from shape_producer.channel import ET, MT
 from itertools import product
 
 import argparse
+import yaml
 
 import logging
 logger = logging.getLogger("")
@@ -44,6 +45,8 @@ def parse_arguments():
         help="Directory with Artus outputs.")
     parser.add_argument(
         "--datasets", required=True, type=str, help="Kappa datsets database.")
+    parser.add_argument(
+        "--binning", required=True, type=str, help="Binning configuration.")
     parser.add_argument(
         "--num-threads",
         default=32,
@@ -103,61 +106,39 @@ def main(args):
     et_processes["QCD"] = Process("QCD", QCDEstimationET(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV"]], et_processes["data"]))
 
 
-    # Variables
+    # Variables and categories
     training = {"et": "keras1", "mt": "keras13"}
+    binning = yaml.load(open(args.binning))
 
-    et_score_signal = Variable(
-        "et_{tr}_max_score".format(tr=training["et"]),
-        VariableBinning([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]))
-    et_score_background = Variable(
-        "et_{tr}_max_score".format(tr=training["et"]),
-        VariableBinning([0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0]))
-
-    mt_score_signal = Variable(
-        "mt_{tr}_max_score".format(tr=training["mt"]),
-        VariableBinning([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]))
-    mt_score_background = Variable(
-        "mt_{tr}_max_score".format(tr=training["mt"]),
-        VariableBinning([0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0]))
-
-    # Categories
     mT_cut = Cut("mt_1<50", "mt")
 
     et_categories = []
-    et_categories.append(
-        Category(
-            "HTT",
-            et,
-            Cuts(mT_cut,
-                 Cut("et_{tr}_max_index==0".format(tr=training["et"]), "exclusive_score")),
-            variable=et_score_signal))
-    for i, label in enumerate(["ZTT", "ZLL", "W", "TT", "QCD"]):
+    for i, label in enumerate(["HTT", "ZTT", "ZLL", "W", "TT", "QCD"]):
+        score = Variable(
+            "et_{tr}_max_score".format(tr=training["et"]),
+             VariableBinning(binning["channels"]["et"][label.lower()]))
         et_categories.append(
             Category(
                 label,
                 et,
                 Cuts(
                     mT_cut,
-                    Cut("et_{tr}_max_index=={index}".format(tr=training["et"], index=i+1), "exclusive_score")),
-                variable=et_score_background))
+                    Cut("et_{tr}_max_index=={index}".format(tr=training["et"], index=i), "exclusive_score")),
+                variable=score))
 
     mt_categories = []
-    mt_categories.append(
-        Category(
-            "HTT",
-            mt,
-            Cuts(mT_cut,
-                 Cut("mt_{tr}_max_index==0".format(tr=training["mt"]), "exclusive_score")),
-            variable=mt_score_signal))
-    for i, label in enumerate(["ZTT", "ZLL", "W", "TT", "QCD"]):
+    for i, label in enumerate(["HTT", "ZTT", "ZLL", "W", "TT", "QCD"]):
+        score = Variable(
+            "mt_{tr}_max_score".format(tr=training["mt"]),
+             VariableBinning(binning["channels"]["mt"][label.lower()]))
         mt_categories.append(
             Category(
                 label,
                 mt,
                 Cuts(
                     mT_cut,
-                    Cut("mt_{tr}_max_index=={index}".format(tr=training["mt"], index=i+1), "exclusive_score")),
-                variable=mt_score_background))
+                    Cut("mt_{tr}_max_index=={index}".format(tr=training["mt"], index=i), "exclusive_score")),
+                variable=score))
 
     # Nominal histograms
     # yapf: enable
