@@ -84,7 +84,7 @@ def main(args):
         "TTJ"   : Process("TTJ",      TTJEstimationMT(era, directory, mt)),
         "VV"    : Process("VV",       VVEstimation   (era, directory, mt))
         }
-    mt_processes["QCD"] = Process("QCD", QCDEstimation(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV"]], mt_processes["data"]))
+    mt_processes["QCD"] = Process("QCD", QCDEstimationMT(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV"]], mt_processes["data"]))
     et = ET()
     et_processes = {
         "data"  : Process("data_obs", DataEstimation (era, directory, et)),
@@ -100,7 +100,7 @@ def main(args):
         "TTJ"   : Process("TTJ",      TTJEstimationET(era, directory, et)),
         "VV"    : Process("VV",       VVEstimation(   era, directory, et))
         }
-    et_processes["QCD"] = Process("QCD", QCDEstimation(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV"]], et_processes["data"]))
+    et_processes["QCD"] = Process("QCD", QCDEstimationET(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV"]], et_processes["data"]))
 
 
     # Variables
