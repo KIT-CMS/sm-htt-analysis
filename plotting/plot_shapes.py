@@ -75,7 +75,7 @@ config_template = {
     "year": "2016",
     "analysis_modules": ["Ratio"],
     "ratio_result_nicks": ["ratio_Bkg", "ratio_Data"],
-    "y_subplot_lims": [0.0, 2.0],
+    "y_subplot_lims": [0.5, 1.5],
     "y_rel_lims": [0.9, 1.3],
     "y_subplot_label": "#scale[0.8]{Ratio to Bkg.}",
     "subplot_lines": [0.5, 1.0, 1.5]
