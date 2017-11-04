@@ -103,9 +103,9 @@ def main(args):
 
     # Extract shapes
     if "et" in args.channels:
-        db.extract_shapes("et", "smhtt", "Run2016", "et_keras1_max_score")
+        db.extract_shapes("et", "smhtt", "Run2016", "et_keras20_max_score")
     if "mt" in args.channels:
-        db.extract_shapes("mt", "smhtt", "Run2016", "mt_keras13_max_score")
+        db.extract_shapes("mt", "smhtt", "Run2016", "mt_keras20_max_score")
 
     # Replace observation with Asimov dataset
     db.replace_observation_by_asimov_dataset()

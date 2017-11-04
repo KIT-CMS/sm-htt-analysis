@@ -61,7 +61,8 @@ def main(args):
                 DataEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method
-            logger.debug("Get files for estimation method %s.", estimation.name)
+            logger.debug("Get files for estimation method %s.",
+                         estimation.name)
             files = [str(f) for f in estimation.get_files()]
 
             # Go through files and get folders for channel
@@ -98,7 +99,8 @@ def main(args):
                 DataEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method
-            logger.debug("Get files for estimation method %s.", estimation.name)
+            logger.debug("Get files for estimation method %s.",
+                         estimation.name)
             files = [str(f) for f in estimation.get_files()]
 
             # Go through files and get folders for channel

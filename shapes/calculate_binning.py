@@ -4,6 +4,7 @@
 import ROOT
 ROOT.PyConfig.IgnoreCommandLineOptions = True  # disable ROOT internal argument parser
 
+from shape_producer.cutstring import Cut, Cuts
 from shape_producer.era import Run2016
 from shape_producer.channel import ET, MT
 from shape_producer.process import Process
@@ -47,12 +48,6 @@ def parse_arguments():
         type=str,
         help="Output path for binning config.")
     parser.add_argument(
-        "--percentiles",
-        required=True,
-        nargs='+',
-        type=float,
-        help="Percentiles used for finding bin borders.")
-    parser.add_argument(
         "--et-training",
         type=str,
         default=None,
@@ -65,7 +60,7 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def get_properties(dict_, era, channel, directory):
+def get_properties(dict_, era, channel, directory, additional_cuts):
     # Get data estimation method
     estimation = DataEstimation(era, directory, channel)
 
@@ -77,7 +72,8 @@ def get_properties(dict_, era, channel, directory):
         raise Exception
 
     # Extract cut string
-    cut_string = (estimation.get_cuts() + channel.cuts).expand()
+    cut_string = (
+        estimation.get_cuts() + channel.cuts + additional_cuts).expand()
     logger.debug("Data cut string: %s", cut_string)
     dict_["cut_string"] = str(cut_string)
 
@@ -112,7 +108,7 @@ def build_chain(dict_):
     logger.debug("Found %s events after skimming with cut string.",
                  chain_skimmed_numentries)
 
-    return chain
+    return chain_skimmed
 
 
 def get_percentiles(dict_, channel, training, chain, classes, percentiles):
@@ -130,9 +126,7 @@ def get_percentiles(dict_, channel, training, chain, classes, percentiles):
 
     # Get bin borders by percentiles
     for i, c in enumerate(classes):
-        dict_[c] = [
-            float(x) for x in np.percentile(scores[i], args.percentiles)
-        ]
+        dict_[c] = [float(x) for x in np.percentile(scores[i], percentiles[c])]
         logger.debug("Binning for class %s: %s", c, dict_[c])
 
     return dict_
@@ -148,7 +142,6 @@ def main(args):
         "directory": args.directory,
         "datasets": args.datasets,
         "output": args.output,
-        "percentiles": args.percentiles,
         "channels": {}
     }
 
@@ -158,20 +151,36 @@ def main(args):
         channel = ET()
         logger.info("Channel: et")
         dict_ = {}
-        dict_ = get_properties(dict_, era, channel, args.directory)
+        additional_cuts = Cuts(Cut("mt_1<50", "mt"))
+        logger.warning("Use additional cuts for et: %s",
+                       additional_cuts.expand())
+        dict_ = get_properties(dict_, era, channel, args.directory,
+                               additional_cuts)
+        dict_["training"] = args.et_training
 
         # Build chain
         dict_["tree_path"] = "et_nominal/ntuple"
         chain = build_chain(dict_)
 
         # Define classes
-        classes = ["htt", "ztt", "zll", "w", "tt", "qcd"]
+        classes = ["HTT", "ZTT", "ZLL", "W", "TT", "QCD"]
+        percentiles = {
+            "HTT": [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 98, 99, 100],
+            "ZTT": [0, 10, 20, 30, 40, 50, 60, 80, 100],
+            "ZLL": [0, 10, 20, 30, 40, 50, 60, 80, 100],
+            "W": [0, 10, 20, 30, 40, 50, 60, 80, 100],
+            "TT": [0, 10, 20, 30, 40, 50, 60, 80, 100],
+            "QCD": [0, 10, 20, 30, 40, 50, 60, 80, 100]
+        }
+
         dict_["classes"] = classes
-        logger.debug("Classes: %s", classes)
+        dict_["percentiles"] = percentiles
+        for c in classes:
+            logger.debug("Percentiles for class %s: %s", c, percentiles[c])
 
         # Get percentiles
         dict_ = get_percentiles(dict_, "et", args.et_training, chain, classes,
-                                args.percentiles)
+                                percentiles)
 
         # Append dict
         config["channels"]["et"] = dict_
@@ -182,20 +191,36 @@ def main(args):
         channel = MT()
         logger.info("Channel: mt")
         dict_ = {}
-        dict_ = get_properties(dict_, era, channel, args.directory)
+        additional_cuts = Cuts(Cut("mt_1<50", "mt"))
+        logger.warning("Use additional cuts for mt: %s",
+                       additional_cuts.expand())
+        dict_ = get_properties(dict_, era, channel, args.directory,
+                               additional_cuts)
+        dict_["training"] = args.mt_training
 
         # Build chain
         dict_["tree_path"] = "mt_nominal/ntuple"
         chain = build_chain(dict_)
 
         # Define classes
-        classes = ["htt", "ztt", "zll", "w", "tt", "qcd"]
+        classes = ["HTT", "ZTT", "ZLL", "W", "TT", "QCD"]
+        percentiles = {
+            "HTT": [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 98, 99, 100],
+            "ZTT": [0, 10, 20, 30, 40, 50, 60, 80, 100],
+            "ZLL": [0, 10, 20, 30, 40, 50, 60, 80, 100],
+            "W": [0, 10, 20, 30, 40, 50, 60, 80, 100],
+            "TT": [0, 10, 20, 30, 40, 50, 60, 80, 100],
+            "QCD": [0, 10, 20, 30, 40, 50, 60, 80, 100]
+        }
+
         dict_["classes"] = classes
-        logger.debug("Classes: %s", classes)
+        dict_["percentiles"] = percentiles
+        for c in classes:
+            logger.debug("Percentiles for class %s: %s", c, percentiles[c])
 
         # Get percentiles
         dict_ = get_percentiles(dict_, "mt", args.mt_training, chain, classes,
-                                args.percentiles)
+                                percentiles)
 
         # Append dict
         config["channels"]["mt"] = dict_

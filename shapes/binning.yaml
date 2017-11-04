@@ -1,15 +1,83 @@
 channels:
   et:
-    htt: [0.16, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    qcd: [0.16, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0]
-    tt: [0.16, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0]
-    w: [0.16, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0]
-    zll: [0.16, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0]
-    ztt: [0.16, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0]
+    HTT: [0.16666666666666666, 0.2999451160430908, 0.3374791741371155, 0.36523139476776123,
+      0.3949589431285858, 0.4240865707397461, 0.45412009954452515, 0.49057886004447937,
+      0.5426868200302124, 0.6253862977027893, 0.7738684415817257, 0.8391554415225984,
+      1.0]
+    QCD: [0.16666666666666666, 0.2927620470523834, 0.3293537735939026, 0.37369712591171267,
+      0.4184287846088409, 0.4594368040561676, 0.4925766050815582, 0.5749683499336242,
+      1.0]
+    TT: [0.16666666666666666, 0.4274558246135711, 0.5505762219429016, 0.6576357007026672,
+      0.7251883506774903, 0.77956622838974, 0.8200429201126098, 0.893283212184906,
+      1.0]
+    W: [0.16666666666666666, 0.31123216450214386, 0.35385383367538453, 0.3920615851879119,
+      0.42824105024337766, 0.46353471279144287, 0.4967828392982483, 0.5721018433570862,
+      1.0]
+    ZLL: [0.16666666666666666, 0.28342166543006897, 0.30936017632484436, 0.33233675360679626,
+      0.35182976722717285, 0.3712683618068695, 0.3914479613304138, 0.44886514544487,
+      1.0]
+    ZTT: [0.16666666666666666, 0.38125976324081423, 0.45816333293914796, 0.5210675239562989,
+      0.5735081434249878, 0.620258629322052, 0.6627358794212341, 0.7470638275146484,
+      1.0]
+    classes: [HTT, ZTT, ZLL, W, TT, QCD]
+    cut_string: (extraelec_veto<0.5)*(extramuon_veto<0.5)*(dilepton_veto<0.5)*(againstMuonLoose3_2>0.5)*(againstElectronTightMVA6_2>0.5)*(byTightIsolationMVArun2v1DBoldDMwLT_2>0.5)*(iso_1<0.1)*(q_1*q_2<0)*(mt_1<50)
+    files: [/storage/jbod/wunsch/Run2Analysis_alex_classified2/SingleElectron_Run2016H_03Feb2017ver2v1_13TeV_MINIAOD/SingleElectron_Run2016H_03Feb2017ver2v1_13TeV_MINIAOD.root,
+      /storage/jbod/wunsch/Run2Analysis_alex_classified2/SingleElectron_Run2016E_03Feb2017v1_13TeV_MINIAOD/SingleElectron_Run2016E_03Feb2017v1_13TeV_MINIAOD.root,
+      /storage/jbod/wunsch/Run2Analysis_alex_classified2/SingleElectron_Run2016F_03Feb2017v1_13TeV_MINIAOD/SingleElectron_Run2016F_03Feb2017v1_13TeV_MINIAOD.root,
+      /storage/jbod/wunsch/Run2Analysis_alex_classified2/SingleElectron_Run2016H_03Feb2017ver3v1_13TeV_MINIAOD/SingleElectron_Run2016H_03Feb2017ver3v1_13TeV_MINIAOD.root,
+      /storage/jbod/wunsch/Run2Analysis_alex_classified2/SingleElectron_Run2016C_03Feb2017v1_13TeV_MINIAOD/SingleElectron_Run2016C_03Feb2017v1_13TeV_MINIAOD.root,
+      /storage/jbod/wunsch/Run2Analysis_alex_classified2/SingleElectron_Run2016D_03Feb2017v1_13TeV_MINIAOD/SingleElectron_Run2016D_03Feb2017v1_13TeV_MINIAOD.root,
+      /storage/jbod/wunsch/Run2Analysis_alex_classified2/SingleElectron_Run2016G_03Feb2017v1_13TeV_MINIAOD/SingleElectron_Run2016G_03Feb2017v1_13TeV_MINIAOD.root,
+      /storage/jbod/wunsch/Run2Analysis_alex_classified2/SingleElectron_Run2016B_03Feb2017ver2v2_13TeV_MINIAOD/SingleElectron_Run2016B_03Feb2017ver2v2_13TeV_MINIAOD.root]
+    percentiles:
+      HTT: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 98, 99, 100]
+      QCD: [0, 10, 20, 30, 40, 50, 60, 80, 100]
+      TT: [0, 10, 20, 30, 40, 50, 60, 80, 100]
+      W: [0, 10, 20, 30, 40, 50, 60, 80, 100]
+      ZLL: [0, 10, 20, 30, 40, 50, 60, 80, 100]
+      ZTT: [0, 10, 20, 30, 40, 50, 60, 80, 100]
+    training: keras20
+    tree_path: et_nominal/ntuple
   mt:
-    htt: [0.16, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    qcd: [0.16, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0]
-    tt: [0.16, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0]
-    w: [0.16, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0]
-    zll: [0.16, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0]
-    ztt: [0.16, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0]
+    HTT: [0.16666666666666666, 0.33297237753868103, 0.37256528139114375, 0.4088468551635742,
+      0.44340991973876953, 0.47481948137283325, 0.50922771692276, 0.5509073972702025,
+      0.6011003971099854, 0.6653140902519226, 0.7597655868530273, 0.7991820573806769,
+      1.0]
+    QCD: [0.16666666666666666, 0.33265269696712496, 0.38064484000205995, 0.42864038050174713,
+      0.4762211561203003, 0.5212048590183258, 0.5732870340347289, 0.6914142847061158,
+      1.0]
+    TT: [0.16666666666666666, 0.4337180614471436, 0.530585515499115, 0.6299172163009643,
+      0.7188570022583007, 0.7972785830497742, 0.8544072628021241, 0.9327500581741333,
+      1.0]
+    W: [0.16666666666666666, 0.3572283387184143, 0.40106064081192017, 0.442116841673851,
+      0.4804169237613678, 0.5182323455810547, 0.5570862293243408, 0.6431218385696411,
+      1.0]
+    ZLL: [0.16666666666666666, 0.3005630552768707, 0.32637550830841067, 0.3528448462486267,
+      0.3752141237258911, 0.39648856222629547, 0.41821815967559817, 0.46860788464546205,
+      1.0]
+    ZTT: [0.16666666666666666, 0.49120865464210506, 0.5919008374214172, 0.6643376111984254,
+      0.7168089509010315, 0.7568112015724182, 0.7877252101898193, 0.8372101545333863,
+      1.0]
+    classes: [HTT, ZTT, ZLL, W, TT, QCD]
+    cut_string: (extraelec_veto<0.5)*(extramuon_veto<0.5)*(dilepton_veto<0.5)*(againstMuonTight3_2>0.5)*(againstElectronVLooseMVA6_2>0.5)*(byTightIsolationMVArun2v1DBoldDMwLT_2>0.5)*(iso_1<0.15)*(q_1*q_2<0)*(trg_singlemuon==1)*(mt_1<50)
+    files: [/storage/jbod/wunsch/Run2Analysis_alex_classified2/SingleMuon_Run2016C_03Feb2017v1_13TeV_MINIAOD/SingleMuon_Run2016C_03Feb2017v1_13TeV_MINIAOD.root,
+      /storage/jbod/wunsch/Run2Analysis_alex_classified2/SingleMuon_Run2016G_03Feb2017v1_13TeV_MINIAOD/SingleMuon_Run2016G_03Feb2017v1_13TeV_MINIAOD.root,
+      /storage/jbod/wunsch/Run2Analysis_alex_classified2/SingleMuon_Run2016H_03Feb2017ver2v1_13TeV_MINIAOD/SingleMuon_Run2016H_03Feb2017ver2v1_13TeV_MINIAOD.root,
+      /storage/jbod/wunsch/Run2Analysis_alex_classified2/SingleMuon_Run2016D_03Feb2017v1_13TeV_MINIAOD/SingleMuon_Run2016D_03Feb2017v1_13TeV_MINIAOD.root,
+      /storage/jbod/wunsch/Run2Analysis_alex_classified2/SingleMuon_Run2016H_03Feb2017ver3v1_13TeV_MINIAOD/SingleMuon_Run2016H_03Feb2017ver3v1_13TeV_MINIAOD.root,
+      /storage/jbod/wunsch/Run2Analysis_alex_classified2/SingleMuon_Run2016B_03Feb2017ver2v2_13TeV_MINIAOD/SingleMuon_Run2016B_03Feb2017ver2v2_13TeV_MINIAOD.root,
+      /storage/jbod/wunsch/Run2Analysis_alex_classified2/SingleMuon_Run2016E_03Feb2017v1_13TeV_MINIAOD/SingleMuon_Run2016E_03Feb2017v1_13TeV_MINIAOD.root,
+      /storage/jbod/wunsch/Run2Analysis_alex_classified2/SingleMuon_Run2016F_03Feb2017v1_13TeV_MINIAOD/SingleMuon_Run2016F_03Feb2017v1_13TeV_MINIAOD.root]
+    percentiles:
+      HTT: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 98, 99, 100]
+      QCD: [0, 10, 20, 30, 40, 50, 60, 80, 100]
+      TT: [0, 10, 20, 30, 40, 50, 60, 80, 100]
+      W: [0, 10, 20, 30, 40, 50, 60, 80, 100]
+      ZLL: [0, 10, 20, 30, 40, 50, 60, 80, 100]
+      ZTT: [0, 10, 20, 30, 40, 50, 60, 80, 100]
+    training: keras20
+    tree_path: mt_nominal/ntuple
+datasets: /portal/ekpbms3/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/datasets.json
+directory: /storage/jbod/wunsch/Run2Analysis_alex_classified2
+era: Run2016
+output: shapes/binning.yaml

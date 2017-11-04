@@ -8,6 +8,7 @@ import yaml
 import os
 import copy
 
+from shape_producer.cutstring import Cut, Cuts
 from shape_producer.channel import *
 from shape_producer.estimation_methods_2016 import *
 from shape_producer.era import Run2016
@@ -74,6 +75,11 @@ def main(args):
         # Set up `processes` part of config
         output_config["processes"] = {}
 
+        # Additional cuts
+        additional_cuts = Cuts(Cut("mt_1<50", "mt"))
+        logger.warning("Use additional cuts for mt: %s",
+                       additional_cuts.expand())
+
         # MC-driven processes
         # NOTE: Define here the mappig of the process estimations to the training classes
         classes_map = {
@@ -103,7 +109,8 @@ def main(args):
                     str(f).replace(args.base_path + "/", "")
                     for f in estimation.get_files()
                 ],
-                "cut_string": (estimation.get_cuts() + channel.cuts).expand(),
+                "cut_string": (estimation.get_cuts() + channel.cuts +
+                               additional_cuts).expand(),
                 "weight_string":
                 estimation.get_weights().extract(),
                 "class":
@@ -120,7 +127,8 @@ def main(args):
                 str(f).replace(args.base_path + "/", "")
                 for f in estimation.get_files()
             ],
-            "cut_string": (estimation.get_cuts() + channel_ss.cuts).expand(),
+            "cut_string": (estimation.get_cuts() + channel_ss.cuts +
+                           additional_cuts).expand(),
             "weight_string":
             estimation.get_weights().extract(),
             "class":
@@ -135,6 +143,11 @@ def main(args):
 
         # Set up `processes` part of config
         output_config["processes"] = {}
+
+        # Additional cuts
+        additional_cuts = Cuts(Cut("mt_1<50", "mt"))
+        logger.warning("Use additional cuts for et: %s",
+                       additional_cuts.expand())
 
         # MC-driven processes
         # NOTE: Define here the mappig of the process estimations to the training classes
@@ -165,7 +178,8 @@ def main(args):
                     str(f).replace(args.base_path + "/", "")
                     for f in estimation.get_files()
                 ],
-                "cut_string": (estimation.get_cuts() + channel.cuts).expand(),
+                "cut_string": (estimation.get_cuts() + channel.cuts +
+                               additional_cuts).expand(),
                 "weight_string":
                 estimation.get_weights().extract(),
                 "class":
@@ -182,7 +196,8 @@ def main(args):
                 str(f).replace(args.base_path + "/", "")
                 for f in estimation.get_files()
             ],
-            "cut_string": (estimation.get_cuts() + channel_ss.cuts).expand(),
+            "cut_string": (estimation.get_cuts() + channel_ss.cuts +
+                           additional_cuts).expand(),
             "weight_string":
             estimation.get_weights().extract(),
             "class":

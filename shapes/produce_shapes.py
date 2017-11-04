@@ -48,6 +48,16 @@ def parse_arguments():
     parser.add_argument(
         "--binning", required=True, type=str, help="Binning configuration.")
     parser.add_argument(
+        "--et-training",
+        required=True,
+        type=str,
+        help="Training on et channel.")
+    parser.add_argument(
+        "--mt-training",
+        required=True,
+        type=str,
+        help="Training on mt channel.")
+    parser.add_argument(
         "--num-threads",
         default=32,
         type=int,
@@ -107,7 +117,7 @@ def main(args):
 
 
     # Variables and categories
-    training = {"et": "keras1", "mt": "keras13"}
+    training = {"et": args.et_training, "mt": args.mt_training}
     binning = yaml.load(open(args.binning))
 
     mT_cut = Cut("mt_1<50", "mt")
@@ -116,7 +126,7 @@ def main(args):
     for i, label in enumerate(["HTT", "ZTT", "ZLL", "W", "TT", "QCD"]):
         score = Variable(
             "et_{tr}_max_score".format(tr=training["et"]),
-             VariableBinning(binning["channels"]["et"][label.lower()]))
+             VariableBinning(binning["channels"]["et"][label]))
         et_categories.append(
             Category(
                 label,
@@ -130,7 +140,7 @@ def main(args):
     for i, label in enumerate(["HTT", "ZTT", "ZLL", "W", "TT", "QCD"]):
         score = Variable(
             "mt_{tr}_max_score".format(tr=training["mt"]),
-             VariableBinning(binning["channels"]["mt"][label.lower()]))
+             VariableBinning(binning["channels"]["mt"][label]))
         mt_categories.append(
             Category(
                 label,
