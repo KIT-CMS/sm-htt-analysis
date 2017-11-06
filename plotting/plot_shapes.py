@@ -122,6 +122,11 @@ def main(args):
         config["ratio_numerator_nicks"] = [
             " ".join(bkg_processes_names), "data"
         ]
+
+        if "HTT" in folder:
+            config["y_log"] = True
+            config["y_lims"] = [1e0, 1e6]
+
         configs.append(config)
 
     higgsplot.HiggsPlotter(
