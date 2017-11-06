@@ -135,7 +135,7 @@ def main(args):
     # Variables and categories
     training = {"et": args.et_training, "mt": args.mt_training}
     binning = yaml.load(open(args.binning))
-    
+
     tt_score = Variable(
         "m_vis",
         VariableBinning([0.,20.,40.,60.,80.,100.,120.,140.,160.,180.,200.,220.,240.,260.,280.,300.]))
@@ -169,12 +169,14 @@ def main(args):
                     mT_cut,
                     Cut("mt_{tr}_max_index=={index}".format(tr=training["mt"], index=i), "exclusive_score")),
                 variable=score))
+
     tt_categories = [Category("INCLUSIVE",tt,Cuts(),variable=tt_score)]
 
     # Nominal histograms
     # yapf: enable
-    for processes, categories in zip([et_processes, mt_processes, tt_processes],
-                                     [et_categories, mt_categories, tt_categories]):
+    for processes, categories in zip(
+        [et_processes, mt_processes, tt_processes],
+        [et_categories, mt_categories, tt_categories]):
         for process, category in product(processes.values(), categories):
             systematics.add(
                 Systematic(
