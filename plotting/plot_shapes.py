@@ -87,8 +87,8 @@ def main(args):
                            "qcd"]  # enforced by HarryPlotter
     bkg_processes = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ",
                      "QCD"]  # names in ROOT file
-    signal_processes_names = ["htt125"]  # enforced by HarryPlotter
-    signal_processes = ["HTT"]  # name in ROOT file
+    signal_processes_names = ["ggh125", "qqh125"]  # enforced by HarryPlotter
+    signal_processes = ["ggH", "qqH"]  # name in ROOT file
 
     configs = []
     for folder in args.folders:

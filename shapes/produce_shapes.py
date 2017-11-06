@@ -10,7 +10,7 @@ from shape_producer.systematic_variations import Nominal, DifferentPipeline, Squ
 from shape_producer.process import Process
 from shape_producer.estimation_methods_2016 import *
 from shape_producer.era import Run2016
-from shape_producer.channel import ET, MT
+from shape_producer.channel import ET, MT, TT
 
 from itertools import product
 
@@ -114,11 +114,31 @@ def main(args):
         "VV"    : Process("VV",       VVEstimation(   era, directory, et))
         }
     et_processes["QCD"] = Process("QCD", QCDEstimationET(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV"]], et_processes["data"]))
+    tt = TT()
+    tt_processes = {
+        "data"  : Process("data_obs", DataEstimation (era, directory, tt)),
+        "HTT"   : Process("HTT",      HTTEstimation  (era, directory, tt)),
+        "ggH"   : Process("ggH",      ggHEstimation  (era, directory, tt)),
+        "qqH"   : Process("qqH",      qqHEstimation  (era, directory, tt)),
+        "VH"    : Process("VH",       VHEstimation   (era, directory, tt)),
+        "ZTT"   : Process("ZTT",      ZTTEstimation  (era, directory, tt)),
+        "ZL"    : Process("ZL",       ZLEstimationET (era, directory, tt)),
+        "ZJ"    : Process("ZJ",       ZJEstimationET (era, directory, tt)),
+        "W"     : Process("W",        WEstimation    (era, directory, tt)),
+        "TTT"   : Process("TTT",      TTTEstimationET(era, directory, tt)),
+        "TTJ"   : Process("TTJ",      TTJEstimationET(era, directory, tt)),
+        "VV"    : Process("VV",       VVEstimation(   era, directory, tt))
+        }
+    tt_processes["QCD"] = Process("QCD", QCDEstimationTT(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV"]], tt_processes["data"]))
 
 
     # Variables and categories
     training = {"et": args.et_training, "mt": args.mt_training}
     binning = yaml.load(open(args.binning))
+    
+    tt_score = Variable(
+        "m_vis",
+        VariableBinning([0.,20.,40.,60.,80.,100.,120.,140.,160.,180.,200.,220.,240.,260.,280.,300.]))
 
     mT_cut = Cut("mt_1<50", "mt")
 
@@ -149,11 +169,12 @@ def main(args):
                     mT_cut,
                     Cut("mt_{tr}_max_index=={index}".format(tr=training["mt"], index=i), "exclusive_score")),
                 variable=score))
+    tt_categories = [Category("INCLUSIVE",tt,Cuts(),variable=tt_score)]
 
     # Nominal histograms
     # yapf: enable
-    for processes, categories in zip([et_processes, mt_processes],
-                                     [et_categories, mt_categories]):
+    for processes, categories in zip([et_processes, mt_processes, tt_processes],
+                                     [et_categories, mt_categories, tt_categories]):
         for process, category in product(processes.values(), categories):
             systematics.add(
                 Systematic(
@@ -174,7 +195,7 @@ def main(args):
     tau_es_1prong1pizero_variations = create_systematic_variations(
         "CMS_scale_t_1prong1pi0", "tauEsOneProngPiZeros", DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
-        for process_nick in ["HTT", "VH", "ggH", "qqH", "ZTT"]:
+        for process_nick in ["HTT", "VH", "ggH", "qqH", "ZTT", "TTT", "VV"]:
             systematics.add_systematic_variation(
                 variation=variation,
                 process=et_processes[process_nick],
