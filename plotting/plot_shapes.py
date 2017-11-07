@@ -126,6 +126,7 @@ def main(args):
         if "HTT" in folder:
             config["y_log"] = True
             config["y_lims"] = [1e0, 1e6]
+            config["y_subplot_lims"] = [0.5, 2.0],
 
         configs.append(config)
 
