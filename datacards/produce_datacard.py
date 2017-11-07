@@ -84,7 +84,7 @@ def main(args):
                             ["ggH", "qqH", "ZTT", "TTT", "VV"])
     db.add_shape_systematic("CMS_scale_t_1prong1pi0", 1.0, channels,
                             ["ggH", "qqH", "ZTT", "TTT", "VV"])
-    db.add_shape_systematic("CMS_htt_dyShape", 1.0, channels, ["ZTT", "ZL"])
+    db.add_shape_systematic("CMS_htt_dyShape", 1.0, channels, ["ZTT", "ZL", "ZJ"])
     db.add_shape_systematic("CMS_htt_ttbarShape", 1.0, channels, ["TTT", "TTJ"])
     db.add_shape_systematic("CMS_scale_j", 1.0, channels, ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
     db.add_shape_systematic("CMS_htt_scale_met", 1.0, channels, ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
