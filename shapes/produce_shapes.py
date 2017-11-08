@@ -279,6 +279,27 @@ def main(args):
                 channel=mt,
                 era=era)
 
+    # jet to tau fake efficiency
+    jet_to_tau_fake_variations = []
+    jet_to_tau_fake_variations.append(
+        AddWeight("CMS_htt_jetToTauFake", "jetToTauFake_weight",
+                  Weight("(pt_2*1.02)", "jetToTauFake_weight"), "Up"))
+    jet_to_tau_fake_variations.append(
+        AddWeight("CMS_htt_jetToTauFake", "jetToTauFake_weight",
+                  Weight("((pt_2*0.98))", "jetToTauFake_weight"), "Down"))
+    for variation in jet_to_tau_fake_variations:
+        for process_nick in ["ZJ", "TTJ", "W"]:
+            systematics.add_systematic_variation(
+                variation=variation,
+                process=et_processes[process_nick],
+                channel=et,
+                era=era)
+            systematics.add_systematic_variation(
+                variation=variation,
+                process=mt_processes[process_nick],
+                channel=mt,
+                era=era)
+
     # TODO: Example for replacing weights
     """
     # Zll reweighting
