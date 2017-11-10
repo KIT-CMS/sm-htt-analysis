@@ -58,6 +58,11 @@ def parse_arguments():
         type=str,
         help="Training on mt channel.")
     parser.add_argument(
+        "--produce-analysis-shapes",
+        default=1,
+        type=int,
+        help="Produce shapes for analysis")
+    parser.add_argument(
         "--num-threads",
         default=32,
         type=int,
@@ -136,47 +141,68 @@ def main(args):
     training = {"et": args.et_training, "mt": args.mt_training}
     binning = yaml.load(open(args.binning))
 
-    tt_score = Variable(
-        "m_vis",
-        VariableBinning([0.,20.,40.,60.,80.,100.,120.,140.,160.,180.,200.,220.,240.,260.,280.,300.]))
-
     mT_cut = Cut("mt_1<50", "mt")
 
     et_categories = []
-    for i, label in enumerate(["HTT", "ZTT", "ZLL", "W", "TT", "QCD"]):
-        score = Variable(
-            "et_{tr}_max_score".format(tr=training["et"]),
-             VariableBinning(binning["channels"]["et"][label]))
-        et_categories.append(
-            Category(
-                label,
-                et,
-                Cuts(
-                    mT_cut,
-                    Cut("et_{tr}_max_index=={index}".format(tr=training["et"], index=i), "exclusive_score")),
-                variable=score))
+    if args.produce_analysis_shapes:
+        for i, label in enumerate(["HTT", "ZTT", "ZLL", "W", "TT", "QCD"]):
+            score = Variable(
+                "et_{tr}_max_score".format(tr=training["et"]),
+                 VariableBinning(binning["analysis"]["et"][label]))
+            et_categories.append(
+                Category(
+                    label,
+                    et,
+                    Cuts(
+                        mT_cut,
+                        Cut("et_{tr}_max_index=={index}".format(tr=training["et"], index=i), "exclusive_score")),
+                    variable=score))
+    else:
+        for label in binning["gof"]["et"]:
+            score = Variable(label, VariableBinning(binning["gof"]["et"][label]))
+            et_categories.append(
+                Category(
+                    label,
+                    et,
+                    Cuts(mT_cut),
+                    variable=score))
 
     mt_categories = []
-    for i, label in enumerate(["HTT", "ZTT", "ZLL", "W", "TT", "QCD"]):
-        score = Variable(
-            "mt_{tr}_max_score".format(tr=training["mt"]),
-             VariableBinning(binning["channels"]["mt"][label]))
-        mt_categories.append(
-            Category(
-                label,
-                mt,
-                Cuts(
-                    mT_cut,
-                    Cut("mt_{tr}_max_index=={index}".format(tr=training["mt"], index=i), "exclusive_score")),
-                variable=score))
+    if args.produce_analysis_shapes:
+        for i, label in enumerate(["HTT", "ZTT", "ZLL", "W", "TT", "QCD"]):
+            score = Variable(
+                "mt_{tr}_max_score".format(tr=training["mt"]),
+                 VariableBinning(binning["analysis"]["mt"][label]))
+            mt_categories.append(
+                Category(
+                    label,
+                    mt,
+                    Cuts(
+                        mT_cut,
+                        Cut("mt_{tr}_max_index=={index}".format(tr=training["mt"], index=i), "exclusive_score")),
+                    variable=score))
+    else:
+        for label in binning["gof"]["mt"]:
+            score = Variable(label, VariableBinning(binning["gof"]["mt"][label]))
+            mt_categories.append(
+                Category(
+                    label,
+                    mt,
+                    Cuts(mT_cut),
+                    variable=score))
 
-    tt_categories = [Category("INCLUSIVE",tt,Cuts(),variable=tt_score)]
+    tt_categories = []
+    if args.produce_analysis_shapes:
+        score = Variable(
+            "m_vis",
+            VariableBinning([0.,20.,40.,60.,80.,100.,120.,140.,160.,180.,200.,220.,240.,260.,280.,300.]))
+        tt_categories.append(Category("INCLUSIVE", tt, Cuts(), variable=score))
 
     # Nominal histograms
     # yapf: enable
     for processes, categories in zip(
-        [et_processes, mt_processes, tt_processes],
-        [et_categories, mt_categories, tt_categories]):
+        [et_processes, mt_processes,
+         tt_processes], [et_categories, mt_categories, tt_categories]):
         for process, category in product(processes.values(), categories):
             systematics.add(
                 Systematic(

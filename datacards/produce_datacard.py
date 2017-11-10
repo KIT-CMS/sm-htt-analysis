@@ -37,6 +37,16 @@ def parse_arguments():
         nargs="+",
         required=True,
         help="Select channels to be included in the datacard.")
+    parser.add_argument(
+        "--gof",
+        default=None,
+        help=
+        "Produce datacard for goodness of fit test of inclusive distributions."
+    )
+    parser.add_argument(
+        "--use-data-for-observation",
+        action="store_true",
+        help="Use data for the observation and not an Asimov dataset.")
 
     return parser.parse_args()
 
@@ -51,9 +61,12 @@ def main(args):
     backgrounds = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "QCD"]
 
     if "et" in args.channels:
-        et_categories = [
-            "et_HTT", "et_ZTT", "et_ZLL", "et_W", "et_TT", "et_QCD"
-        ]
+        if args.gof == None:
+            et_categories = [
+                "et_HTT", "et_ZTT", "et_ZLL", "et_W", "et_TT", "et_QCD"
+            ]
+        else:
+            et_categories = ["et_{}".format(args.gof)]
         et_category_pairs = db.make_pairs(et_categories)
 
         db.add_observation("125", "smhtt", "Run2016", "et", et_category_pairs)
@@ -66,9 +79,12 @@ def main(args):
         categories += et_categories
 
     if "mt" in args.channels:
-        mt_categories = [
-            "mt_HTT", "mt_ZTT", "mt_ZLL", "mt_W", "mt_TT", "mt_QCD"
-        ]
+        if args.gof == None:
+            mt_categories = [
+                "mt_HTT", "mt_ZTT", "mt_ZLL", "mt_W", "mt_TT", "mt_QCD"
+            ]
+        else:
+            mt_categories = ["mt_{}".format(args.gof)]
         mt_category_pairs = db.make_pairs(mt_categories)
 
         db.add_observation("125", "smhtt", "Run2016", "mt", mt_category_pairs)
@@ -92,28 +108,28 @@ def main(args):
     db.add_shape_systematic("CMS_htt_ttbarShape", 1.0, channels,
                             ["TTT", "TTJ"])
     #db.add_shape_systematic("CMS_scale_j", 1.0, channels, ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
-    db.add_shape_systematic(
-        "CMS_htt_scale_met", 1.0, channels,
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
+    db.add_shape_systematic("CMS_htt_scale_met", 1.0, channels, [
+        "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"
+    ])
     db.add_shape_systematic("CMS_htt_jetToTauFake", 1.0, channels,
                             ["ZJ", "W", "TTJ"])
 
     # Add normalization systematics
-    db.add_normalization_systematic(
-        "lumi_13TeV", 1.026, channels,
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
-    db.add_normalization_systematic(
-        "CMS_eff_m", 1.02, "mt",
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
-    db.add_normalization_systematic(
-        "CMS_eff_e", 1.02, "et",
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
-    db.add_normalization_systematic(
-        "CMS_eff_trigger_mt", 1.02, "mt",
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
-    db.add_normalization_systematic(
-        "CMS_eff_trigger_et", 1.02, "et",
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
+    db.add_normalization_systematic("lumi_13TeV", 1.026, channels, [
+        "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"
+    ])
+    db.add_normalization_systematic("CMS_eff_m", 1.02, "mt", [
+        "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"
+    ])
+    db.add_normalization_systematic("CMS_eff_e", 1.02, "et", [
+        "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"
+    ])
+    db.add_normalization_systematic("CMS_eff_trigger_mt", 1.02, "mt", [
+        "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"
+    ])
+    db.add_normalization_systematic("CMS_eff_trigger_et", 1.02, "et", [
+        "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"
+    ])
     db.add_normalization_systematic("CMS_Extrap_SSOS_mt", 1.20, "mt", "QCD")
     db.add_normalization_systematic("CMS_Extrap_SSOS_et", 1.20, "et", "QCD")
     db.add_normalization_systematic("CMS_htt_wjXsec", 1.04, channels, "W")
@@ -132,12 +148,19 @@ def main(args):
 
     # Extract shapes
     if "et" in args.channels:
-        db.extract_shapes("et", "smhtt", "Run2016", "et_keras21_max_score")
+        if args.gof == None:
+            db.extract_shapes("et", "smhtt", "Run2016", "et_keras21_max_score")
+        else:
+            db.extract_shapes("et", "smhtt", "Run2016", args.gof)
     if "mt" in args.channels:
-        db.extract_shapes("mt", "smhtt", "Run2016", "mt_keras21_max_score")
+        if args.gof == None:
+            db.extract_shapes("mt", "smhtt", "Run2016", "mt_keras21_max_score")
+        else:
+            db.extract_shapes("mt", "smhtt", "Run2016", args.gof)
 
     # Replace observation with Asimov dataset
-    db.replace_observation_by_asimov_dataset(categories)
+    if not args.use_data_for_observation:
+        db.replace_observation_by_asimov_dataset(categories)
 
     # Add bin-by-bin systematics
     db.add_bin_by_bin_systematics(
