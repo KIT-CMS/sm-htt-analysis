@@ -46,6 +46,7 @@ def main(args):
 
     # Register observations, signals and backgrounds
     channels = []
+    categories = []
     signals = ["ggH", "qqH"]
     backgrounds = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "QCD"]
 
@@ -62,6 +63,7 @@ def main(args):
                            et_category_pairs)
 
         channels.append("et")
+        categories += et_categories
 
     if "mt" in args.channels:
         mt_categories = [
@@ -76,6 +78,7 @@ def main(args):
                            mt_category_pairs)
 
         channels.append("mt")
+        categories += mt_categories
 
     # Add shapes systematics
     db.add_shape_systematic("CMS_scale_t_3prong0pi0", 1.0, channels,
@@ -134,7 +137,7 @@ def main(args):
         db.extract_shapes("mt", "smhtt", "Run2016", "mt_keras21_max_score")
 
     # Replace observation with Asimov dataset
-    db.replace_observation_by_asimov_dataset()
+    db.replace_observation_by_asimov_dataset(categories)
 
     # Add bin-by-bin systematics
     db.add_bin_by_bin_systematics(
@@ -144,7 +147,7 @@ def main(args):
         fix_norm=True)
 
     # Perform auto-rebinning
-    #db.auto_rebin(threshold=1.0, mode=0)
+    db.auto_rebin(threshold=1.0, mode=0)
 
     # Write datacard
     #db.print_datacard()
