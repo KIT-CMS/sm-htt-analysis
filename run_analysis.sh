@@ -19,7 +19,7 @@ KAPPA_DATABASE=/portal/ekpbms3/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/d
 ./shapes/produce_shapes.sh $ARTUS_OUTPUTS $KAPPA_DATABASE
 
 # Apply blinding strategy
-./shapes/apply_blinding.sh
+#./shapes/apply_blinding.sh
 
 # Make control plots of produced shapes
 ./plotting/plot_control.sh
