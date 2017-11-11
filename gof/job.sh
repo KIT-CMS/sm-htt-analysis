@@ -5,10 +5,10 @@ echo "### Begin of job"
 SHAPES=/storage/jbod/wunsch/jobs_gof/shapes.root
 echo "Shapes:" $SHAPES
 
-CHANNEL=$2
+CHANNEL=$1
 echo "Channel:" $CHANNEL
 
-VARIABLE=$3
+VARIABLE=$2
 echo "Variable:" $VARIABLE
 
 OUTPUT_DIR=/storage/jbod/wunsch/jobs_gof/${CHANNEL}_${VARIABLE}

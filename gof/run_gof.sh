@@ -20,5 +20,8 @@ cp $SHAPES shapes.root
 # Create datacard
 ./gof/produce_datacard.sh $CHANNEL $VARIABLE
 
+# Run goodness of fit test
+./gof/gof.sh
+
 # Plot prefit and postfit shapes
 ./gof/plot_shapes.sh $CHANNEL $VARIABLE
