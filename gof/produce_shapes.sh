@@ -13,13 +13,20 @@ done
 # Clean-up workspace
 ./utils/clean.sh
 
-# Create shapes of systematics
+# Setup
 ARTUS_OUTPUTS=/storage/jbod/wunsch/Run2Analysis_alex_classified2
 KAPPA_DATABASE=/portal/ekpbms3/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/datasets.json
 BINNING=gof/binning.yaml
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
+
+# Calculate binning from data distributions
+python gof/calculate_binning.py \
+    --directory $ARTUS_OUTPUTS \
+    --datasets $KAPPA_DATABASE \
+    --output $BINNING \
+    --variables gof/variables_test.yaml
 
 # Produce shapes
 python shapes/produce_shapes.py \

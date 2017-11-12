@@ -161,7 +161,7 @@ def main(args):
         for label in binning["gof"]["et"]:
             score = Variable(
                     label,
-                    VariableBinning(binning["gof"]["et"][label]["binning"]),
+                    VariableBinning(binning["gof"]["et"][label]["bins"]),
                     expression=binning["gof"]["et"][label]["expression"])
             et_categories.append(
                 Category(
@@ -188,7 +188,7 @@ def main(args):
         for label in binning["gof"]["mt"]:
             score = Variable(
                     label,
-                    VariableBinning(binning["gof"]["mt"][label]["binning"]),
+                    VariableBinning(binning["gof"]["mt"][label]["bins"]),
                     expression=binning["gof"]["mt"][label]["expression"])
             mt_categories.append(
                 Category(
