@@ -58,6 +58,11 @@ def parse_arguments():
         type=str,
         help="Training on mt channel.")
     parser.add_argument(
+        "--tt-training",
+        required=True,
+        type=str,
+        help="Training on tt channel.")
+    parser.add_argument(
         "--produce-gof-shapes",
         default=False,
         action="store_true",
@@ -144,7 +149,7 @@ def main(args):
 
 
     # Variables and categories
-    training = {"et": args.et_training, "mt": args.mt_training}
+    training = {"et": args.et_training, "mt": args.mt_training, "tt": args.tt_training}
     binning = yaml.load(open(args.binning))
 
     mT_cut = Cut("mt_1<50", "mt")
@@ -210,10 +215,30 @@ def main(args):
     tt_categories = []
     # Analysis shapes
     if not args.produce_gof_shapes:
-        score = Variable(
-            "m_vis",
-            VariableBinning([0.,20.,40.,60.,80.,100.,120.,140.,160.,180.,200.,220.,240.,260.,280.,300.]))
-        tt_categories.append(Category("INCLUSIVE", tt, Cuts(), variable=score))
+        for i, label in enumerate(["HTT", "ZTT", "ZLL", "W", "TT", "QCD"]):
+            score = Variable(
+                "tt_{tr}_max_score".format(tr=training["tt"]),
+                 VariableBinning(binning["analysis"]["tt"][label]))
+            tt_categories.append(
+                Category(
+                    label,
+                    tt,
+                    Cuts(
+                        Cut("tt_{tr}_max_index=={index}".format(tr=training["tt"], index=i), "exclusive_score")),
+                    variable=score))
+    # Goodness of fit shapes
+    else:
+        if "tt" in args.gof_channel:
+            score = Variable(
+                    args.gof_variable,
+                    VariableBinning(binning["gof"]["tt"][args.gof_variable]["bins"]),
+                    expression=binning["gof"]["tt"][args.gof_variable]["expression"])
+            tt_categories.append(
+                Category(
+                    args.gof_variable,
+                    tt,
+                    Cuts(),
+                    variable=score))
 
     # Nominal histograms
     # yapf: enable

@@ -18,7 +18,7 @@ done
 
 # Setup
 ARTUS_OUTPUTS=/storage/jbod/wunsch/Run2Analysis_alex_classified2
-KAPPA_DATABASE=/portal/ekpbms3/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/datasets.json
+KAPPA_DATABASE=/portal/ekpbms1/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/datasets.json
 BINNING=gof/binning.yaml
 
 source utils/setup_cvmfs_sft.sh
@@ -41,6 +41,7 @@ python shapes/produce_shapes.py \
     --binning $BINNING \
     --et-training dummy \
     --mt-training dummy \
+    --tt-training dummy \
     --gof-channel $CHANNEL \
     --gof-variable $VARIABLE \
     --produce-gof-shapes # disable analysis shapes and enable gof shapes

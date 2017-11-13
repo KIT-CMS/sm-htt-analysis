@@ -168,7 +168,7 @@ def main(args):
     variables = yaml.load(open(args.variables))["variables"]
 
     # Define bins and range of binning for variables in enabled channels
-    channels = ["et", "mt"]
+    channels = ["et", "mt", "tt"]
     num_borders = 9
     min_percentile = 1.0
     max_percentile = 99.0
