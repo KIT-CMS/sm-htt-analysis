@@ -2,9 +2,6 @@
 
 echo "### Begin of job"
 
-SHAPES=/storage/jbod/wunsch/jobs_gof/shapes.root
-echo "Shapes:" $SHAPES
-
 CHANNEL=$1
 echo "Channel:" $CHANNEL
 
@@ -26,7 +23,8 @@ cp -r /portal/ekpbms3/home/wunsch/workspace/sm-htt-analysis src
 cd src
 
 ./utils/clean.sh
-./gof/run_gof.sh $SHAPES $CHANNEL $VARIABLE
+./gof/produce_shapes.sh $CHANNEL $VARIABLE
+./gof/run_gof.sh $CHANNEL $VARIABLE
 
 mkdir -p $OUTPUT_DIR
 cp -r plots/ gof.* $OUTPUT_DIR
