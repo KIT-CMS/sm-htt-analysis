@@ -21,12 +21,15 @@ BINNING=gof/binning.yaml
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
 
-# Calculate binning from data distributions
-python gof/calculate_binning.py \
-    --directory $ARTUS_OUTPUTS \
-    --datasets $KAPPA_DATABASE \
-    --output $BINNING \
-    --variables gof/variables_test.yaml
+# Calculate binning from data distributions if file is not existent
+if [ ! -f "$BINNING" ]
+then
+    python gof/calculate_binning.py \
+        --directory $ARTUS_OUTPUTS \
+        --datasets $KAPPA_DATABASE \
+        --output $BINNING \
+        --variables gof/variables.yaml
+fi
 
 # Produce shapes
 python shapes/produce_shapes.py \
