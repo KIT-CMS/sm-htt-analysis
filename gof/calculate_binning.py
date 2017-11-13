@@ -6,7 +6,7 @@ ROOT.PyConfig.IgnoreCommandLineOptions = True  # disable ROOT internal argument 
 
 from shape_producer.cutstring import Cut, Cuts
 from shape_producer.era import Run2016
-from shape_producer.channel import ET, MT
+from shape_producer.channel import ET, MT, TT
 from shape_producer.process import Process
 from shape_producer.estimation_methods_2016 import DataEstimation
 
@@ -196,7 +196,7 @@ def main(args):
                                  max_percentile, num_borders)
 
         # Add binning for unrolled 2d distributions
-        binning = add_2d_unrolled_binning(variables, binning)
+        #binning = add_2d_unrolled_binning(variables, binning)
 
         # Append binning to config
         config["gof"]["et"] = binning
@@ -222,10 +222,36 @@ def main(args):
                                  max_percentile, num_borders)
 
         # Add binning for unrolled 2d distributions
-        binning = add_2d_unrolled_binning(variables, binning)
+        #binning = add_2d_unrolled_binning(variables, binning)
 
         # Append binning to config
         config["gof"]["mt"] = binning
+
+    # Channel: TT
+    if "tt" in channels:
+        # Get properties
+        channel = TT()
+        logger.info("Channel: tt")
+        dict_ = {}
+        additional_cuts = Cuts()
+        logger.warning("Use additional cuts for tt: %s",
+                       additional_cuts.expand())
+        dict_ = get_properties(dict_, era, channel, args.directory,
+                               additional_cuts)
+
+        # Build chain
+        dict_["tree_path"] = "tt_nominal/ntuple"
+        chain = build_chain(dict_)
+
+        # Get percentiles
+        binning = get_1d_binning("tt", chain, variables, min_percentile,
+                                 max_percentile, num_borders)
+
+        # Add binning for unrolled 2d distributions
+        #binning = add_2d_unrolled_binning(variables, binning)
+
+        # Append binning to config
+        config["gof"]["tt"] = binning
 
     # Write config
     logger.info("Write binning config to %s.", args.output)
