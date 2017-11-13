@@ -17,7 +17,7 @@ def parse_arguments():
 
 
 def main(args):
-    jobs = JDLCreator("condocker")
+    jobs = JDLCreator("ekpsupermachines")
 
     jobs.executable = "gof/job.sh"
     jobs.wall_time = 1 * 60 * 60
@@ -35,7 +35,7 @@ def main(args):
 
     # The job requires lots of CPU resources
     # NOTE: This selects the sg machines.
-    jobs.requirements = '(Target.ProvidesCPU == True) && (Target.ProvidesEKPResources == True) && (Target.Cloudsite =?= "ekpsupermachines")'
+    jobs.requirements = '(Target.ProvidesCPU == True) && (Target.ProvidesEKPResources == True)'
     jobs.job_folder = args.output
     jobs.WriteJDL()
 
