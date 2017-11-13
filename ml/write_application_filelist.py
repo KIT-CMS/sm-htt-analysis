@@ -120,6 +120,45 @@ def main(args):
 
     ############################################################################
 
+    # Channel: et
+    if args.channel == "tt":
+        channel = TT()
+        logger.critical("Using et estimation methods for tt channel. Fixme!")
+        for estimation in [
+                ggHEstimation(era, args.directory, channel),
+                qqHEstimation(era, args.directory, channel),
+                VHEstimation(era, args.directory, channel),
+                ZTTEstimation(era, args.directory, channel),
+                ZLEstimationET(era, args.directory, channel),
+                ZJEstimationET(era, args.directory, channel),
+                TTTEstimationET(era, args.directory, channel),
+                TTJEstimationET(era, args.directory, channel),
+                WEstimation(era, args.directory, channel),
+                VVEstimation(era, args.directory, channel),
+                DataEstimation(era, args.directory, channel)
+        ]:
+            # Get files for estimation method
+            logger.debug("Get files for estimation method %s.",
+                         estimation.name)
+            files = [str(f) for f in estimation.get_files()]
+
+            # Go through files and get folders for channel
+            for f in files:
+                if not os.path.exists(f):
+                    logger.fatal("File does not exist: %s", f)
+                    raise Exception
+
+                folders = []
+                f_ = ROOT.TFile(f)
+                for k in f_.GetListOfKeys():
+                    if "{}_".format(args.channel) in k.GetName():
+                        folders.append(k.GetName())
+                f_.Close()
+
+                filelist[f] = folders
+
+    ############################################################################
+
     # Write output filelist
     logger.info("Write filelist to file: {}".format(args.output))
     yaml.dump(filelist, open(args.output, 'w'), default_flow_style=False)
