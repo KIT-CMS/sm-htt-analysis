@@ -37,10 +37,10 @@ def parse_arguments():
 
 def plot_1d(variables, results, filename):
     labels = [v for v in variables if v in results]
-    plt.figure(figsize=(len(labels) * 1.0, 5.0))
+    plt.figure(figsize=(len(labels) * 0.5, 5.0))
     y = [results[v] for v in labels]
     x = range(len(y))
-    plt.plot(x, y, '+', mew=5, ms=20)
+    plt.plot(x, y, '+', mew=4, ms=16)
     plt.ylim((-0.05, 1.05))
     plt.xlim((-0.5, len(x) - 0.5))
     plt.xticks(x, labels, rotation='vertical')
