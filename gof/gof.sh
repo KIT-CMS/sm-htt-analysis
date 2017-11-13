@@ -5,7 +5,7 @@ source utils/setup_cmssw.sh
 DATACARD=datacard.txt
 SEED=1234
 MASS=125
-NUM_TOYS=100
+NUM_TOYS=300
 
 # Get test statistic value
 combine -M GoodnessOfFit --algo=saturated -m $MASS -d $DATACARD
