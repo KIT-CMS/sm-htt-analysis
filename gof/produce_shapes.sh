@@ -1,5 +1,8 @@
 #!/bin/bash
 
+CHANNEL=$1
+VARIABLE=$2
+
 # Error handling to ensure that script is executed from top-level directory of
 # this repository
 for DIRECTORY in shapes datacards combine plotting utils gof
@@ -38,7 +41,9 @@ python shapes/produce_shapes.py \
     --binning $BINNING \
     --et-training dummy \
     --mt-training dummy \
-    --produce-analysis-shapes 0 # disable analysis shapes and enable gof shapes
+    --gof-channel $CHANNEL \
+    --gof-variable $VARIABLE \
+    --produce-gof-shapes # disable analysis shapes and enable gof shapes
 
 # Apply blinding strategy
 ./shapes/apply_blinding.sh

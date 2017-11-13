@@ -1,8 +1,7 @@
 #!/bin/bash
 
-SHAPES=$1
-CHANNEL=$2
-VARIABLE=$3
+CHANNEL=$1
+VARIABLE=$2
 
 # Error handling to ensure that script is executed from top-level directory of
 # this repository
@@ -13,9 +12,6 @@ do
         exit 1
     fi
 done
-
-# Copy produced shapes to workspace
-cp $SHAPES shapes.root
 
 # Create datacard
 ./gof/produce_datacard.sh $CHANNEL $VARIABLE
