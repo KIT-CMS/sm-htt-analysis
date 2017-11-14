@@ -5,7 +5,7 @@ KAPPA_DATABASE=$2
 BINNING=shapes/binning.yaml
 ET_TRAINING=keras21
 MT_TRAINING=keras21
-TT_TRAINING=keras1
+TT_TRAINING=keras2
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
