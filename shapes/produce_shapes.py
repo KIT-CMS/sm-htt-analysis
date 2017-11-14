@@ -48,21 +48,6 @@ def parse_arguments():
     parser.add_argument(
         "--binning", required=True, type=str, help="Binning configuration.")
     parser.add_argument(
-        "--et-training",
-        required=True,
-        type=str,
-        help="Training on et channel.")
-    parser.add_argument(
-        "--mt-training",
-        required=True,
-        type=str,
-        help="Training on mt channel.")
-    parser.add_argument(
-        "--tt-training",
-        required=True,
-        type=str,
-        help="Training on tt channel.")
-    parser.add_argument(
         "--produce-gof-shapes",
         default=False,
         action="store_true",
@@ -149,7 +134,7 @@ def main(args):
 
 
     # Variables and categories
-    training = {"et": args.et_training, "mt": args.mt_training, "tt": args.tt_training}
+    training = {"et": "keras21", "mt": "keras21", "tt": "keras4"}
     binning = yaml.load(open(args.binning))
 
     mT_cut = Cut("mt_1<50", "mt")

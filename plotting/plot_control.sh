@@ -11,5 +11,5 @@ if [[ " $@ " =~ " mt " ]]; then
 fi
 
 if [[ " $@ " =~ " tt " ]]; then
-    ./plotting/plot_control.py -v tt_keras3_max_score -c tt_ZTT tt_ZLL tt_W tt_TT tt_QCD --scale-signal 50 --channel tt
+    ./plotting/plot_control.py -v tt_keras4_max_score -c tt_ZTT tt_ZLL tt_W tt_TT tt_QCD --scale-signal 50 --channel tt
 fi

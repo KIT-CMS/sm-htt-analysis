@@ -3,9 +3,6 @@
 ARTUS_OUTPUTS=$1
 KAPPA_DATABASE=$2
 BINNING=shapes/binning.yaml
-ET_TRAINING=keras21
-MT_TRAINING=keras21
-TT_TRAINING=keras3
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
@@ -18,7 +15,4 @@ source utils/setup_python.sh
 python shapes/produce_shapes.py \
     --directory $ARTUS_OUTPUTS \
     --datasets $KAPPA_DATABASE \
-    --binning $BINNING \
-    --et-training $ET_TRAINING \
-    --mt-training $MT_TRAINING \
-    --tt-training $TT_TRAINING
+    --binning $BINNING

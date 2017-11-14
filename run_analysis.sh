@@ -35,4 +35,4 @@ CHANNELS="et mt tt"
 
 # Make prefit and postfit shapes
 ./combine/prefit_postfit_shapes.sh
-./plotting/plot_shapes.sh
+./plotting/plot_shapes.sh $CHANNELS

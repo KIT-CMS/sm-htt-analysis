@@ -39,9 +39,6 @@ python shapes/produce_shapes.py \
     --directory $ARTUS_OUTPUTS \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
-    --et-training dummy \
-    --mt-training dummy \
-    --tt-training dummy \
     --gof-channel $CHANNEL \
     --gof-variable $VARIABLE \
     --produce-gof-shapes # disable analysis shapes and enable gof shapes
