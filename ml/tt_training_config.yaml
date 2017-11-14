@@ -19,8 +19,8 @@ classes:
 class_weights:
     htt: 50.0
     ztt: 1.0
-    zll: 2.0
-    w: 1.0
+    zll: 5.0
+    w: 5.0
     tt: 1.0
     qcd: 1.0
 
