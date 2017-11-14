@@ -96,6 +96,24 @@ def main(args):
         channels.append("mt")
         categories += mt_categories
 
+    if "tt" in args.channels:
+        if args.gof == None:
+            tt_categories = [
+                "tt_HTT", "tt_ZTT", "tt_ZLL", "tt_W", "tt_TT", "tt_QCD"
+            ]
+        else:
+            tt_categories = ["tt_{}".format(args.gof)]
+        tt_category_pairs = db.make_pairs(tt_categories)
+
+        db.add_observation("125", "smhtt", "Run2016", "tt", tt_category_pairs)
+        db.add_signals("125", "smhtt", "Run2016", "tt", signals,
+                       tt_category_pairs)
+        db.add_backgrounds("125", "smhtt", "Run2016", "tt", backgrounds,
+                           tt_category_pairs)
+
+        channels.append("tt")
+        categories += tt_categories
+
     # Add shapes systematics
     db.add_shape_systematic("CMS_scale_t_3prong0pi0", 1.0, channels,
                             ["ggH", "qqH", "ZTT", "TTT", "VV"])
@@ -108,28 +126,28 @@ def main(args):
     db.add_shape_systematic("CMS_htt_ttbarShape", 1.0, channels,
                             ["TTT", "TTJ"])
     #db.add_shape_systematic("CMS_scale_j", 1.0, channels, ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
-    db.add_shape_systematic("CMS_htt_scale_met", 1.0, channels, [
-        "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"
-    ])
+    db.add_shape_systematic(
+        "CMS_htt_scale_met", 1.0, channels,
+        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
     db.add_shape_systematic("CMS_htt_jetToTauFake", 1.0, channels,
                             ["ZJ", "W", "TTJ"])
 
     # Add normalization systematics
-    db.add_normalization_systematic("lumi_13TeV", 1.026, channels, [
-        "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"
-    ])
-    db.add_normalization_systematic("CMS_eff_m", 1.02, "mt", [
-        "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"
-    ])
-    db.add_normalization_systematic("CMS_eff_e", 1.02, "et", [
-        "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"
-    ])
-    db.add_normalization_systematic("CMS_eff_trigger_mt", 1.02, "mt", [
-        "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"
-    ])
-    db.add_normalization_systematic("CMS_eff_trigger_et", 1.02, "et", [
-        "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"
-    ])
+    db.add_normalization_systematic(
+        "lumi_13TeV", 1.026, channels,
+        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
+    db.add_normalization_systematic(
+        "CMS_eff_m", 1.02, "mt",
+        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
+    db.add_normalization_systematic(
+        "CMS_eff_e", 1.02, "et",
+        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
+    db.add_normalization_systematic(
+        "CMS_eff_trigger_mt", 1.02, "mt",
+        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
+    db.add_normalization_systematic(
+        "CMS_eff_trigger_et", 1.02, "et",
+        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
     db.add_normalization_systematic("CMS_Extrap_SSOS_mt", 1.20, "mt", "QCD")
     db.add_normalization_systematic("CMS_Extrap_SSOS_et", 1.20, "et", "QCD")
     db.add_normalization_systematic("CMS_htt_wjXsec", 1.04, channels, "W")
@@ -152,11 +170,18 @@ def main(args):
             db.extract_shapes("et", "smhtt", "Run2016", "et_keras21_max_score")
         else:
             db.extract_shapes("et", "smhtt", "Run2016", args.gof)
+
     if "mt" in args.channels:
         if args.gof == None:
             db.extract_shapes("mt", "smhtt", "Run2016", "mt_keras21_max_score")
         else:
             db.extract_shapes("mt", "smhtt", "Run2016", args.gof)
+
+    if "tt" in args.channels:
+        if args.gof == None:
+            db.extract_shapes("tt", "smhtt", "Run2016", "tt_keras1_max_score")
+        else:
+            db.extract_shapes("tt", "smhtt", "Run2016", args.gof)
 
     # Replace observation with Asimov dataset
     if not args.use_data_for_observation:

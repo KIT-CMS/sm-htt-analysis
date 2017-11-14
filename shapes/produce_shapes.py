@@ -276,6 +276,11 @@ def main(args):
                 process=mt_processes[process_nick],
                 channel=mt,
                 era=era)
+            systematics.add_systematic_variation(
+                variation=variation,
+                process=tt_processes[process_nick],
+                channel=tt,
+                era=era)
 
     # Jet energy scale
     jet_es_variations = create_systematic_variations("CMS_scale_j", "jecUnc",
@@ -294,6 +299,11 @@ def main(args):
                 variation=variation,
                 process=mt_processes[process_nick],
                 channel=mt,
+                era=era)
+            systematics.add_systematic_variation(
+                variation=variation,
+                process=tt_processes[process_nick],
+                channel=tt,
                 era=era)
 
     # MET energy scale
@@ -314,6 +324,11 @@ def main(args):
                 process=mt_processes[process_nick],
                 channel=mt,
                 era=era)
+            systematics.add_systematic_variation(
+                variation=variation,
+                process=tt_processes[process_nick],
+                channel=tt,
+                era=era)
 
     # Z pt reweighting
     zpt_variations = create_systematic_variations(
@@ -330,6 +345,11 @@ def main(args):
                 process=mt_processes[process_nick],
                 channel=mt,
                 era=era)
+            systematics.add_systematic_variation(
+                variation=variation,
+                process=tt_processes[process_nick],
+                channel=tt,
+                era=era)
 
     # top pt reweighting
     top_pt_variations = create_systematic_variations(
@@ -345,6 +365,11 @@ def main(args):
                 variation=variation,
                 process=mt_processes[process_nick],
                 channel=mt,
+                era=era)
+            systematics.add_systematic_variation(
+                variation=variation,
+                process=tt_processes[process_nick],
+                channel=tt,
                 era=era)
 
     # jet to tau fake efficiency
@@ -366,6 +391,11 @@ def main(args):
                 variation=variation,
                 process=mt_processes[process_nick],
                 channel=mt,
+                era=era)
+            systematics.add_systematic_variation(
+                variation=variation,
+                process=tt_processes[process_nick],
+                channel=tt,
                 era=era)
 
     # TODO: Example for replacing weights
