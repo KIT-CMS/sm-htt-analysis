@@ -233,7 +233,7 @@ def main(args):
         channel = TT()
         logger.info("Channel: tt")
         dict_ = {}
-        additional_cuts = Cuts()
+        additional_cuts = Cuts(Cut("pt_tt>50", "pt_tt"))
         logger.warning("Use additional cuts for tt: %s",
                        additional_cuts.expand())
         dict_ = get_properties(dict_, era, channel, args.directory,

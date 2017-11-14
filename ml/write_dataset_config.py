@@ -214,7 +214,7 @@ def main(args):
         output_config["processes"] = {}
 
         # Additional cuts
-        additional_cuts = Cuts()
+        additional_cuts = Cuts(Cut("pt_tt>50", "pt_tt"))
         logger.warning("Use additional cuts for tt: %s",
                        additional_cuts.expand())
 

@@ -153,6 +153,7 @@ def main(args):
     binning = yaml.load(open(args.binning))
 
     mT_cut = Cut("mt_1<50", "mt")
+    pt_tt_cut = Cut("pt_tt>50", "pt_tt")
 
     et_categories = []
     # Analysis shapes
@@ -224,6 +225,7 @@ def main(args):
                     label,
                     tt,
                     Cuts(
+                        pt_tt_cut,
                         Cut("tt_{tr}_max_index=={index}".format(tr=training["tt"], index=i), "exclusive_score")),
                     variable=score))
     # Goodness of fit shapes
@@ -237,7 +239,7 @@ def main(args):
                 Category(
                     args.gof_variable,
                     tt,
-                    Cuts(),
+                    Cuts(pt_tt_cut),
                     variable=score))
 
     # Nominal histograms

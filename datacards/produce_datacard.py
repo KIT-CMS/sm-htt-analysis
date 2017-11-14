@@ -179,7 +179,7 @@ def main(args):
 
     if "tt" in args.channels:
         if args.gof == None:
-            db.extract_shapes("tt", "smhtt", "Run2016", "tt_keras2_max_score")
+            db.extract_shapes("tt", "smhtt", "Run2016", "tt_keras3_max_score")
         else:
             db.extract_shapes("tt", "smhtt", "Run2016", args.gof)
 
