@@ -10,8 +10,6 @@ output_path: ml/tt
 classes:
     - htt
     - ztt
-    - zll
-    - w
     - tt
     - qcd
 
@@ -19,9 +17,7 @@ classes:
 class_weights:
     htt: 50.0
     ztt: 1.0
-    zll: 2.0
-    w: 2.0
-    tt: 1.0
+    tt: 10.0
     qcd: 1.0
 
 # Define global scale factor, which is multiplied to all event weights
@@ -34,7 +30,6 @@ event_weights: training_weight
 variables:
     #- m_sv
     - mjj
-    #- H_pt
     - m_vis
     - mt_1
     - mt_2
@@ -42,9 +37,6 @@ variables:
     - pt_tt
     - dijetpt
     - met
-    - dijetphi
-    - jdeta
-    #- H_mass
     - pt_1
     - pt_2
     - eta_2
@@ -53,12 +45,6 @@ variables:
     - jphi_2
     - jm_1
     - jm_2
-    - bpt_1
-    - bpt_2
-    - beta_1
-    - beta_2
-    - bphi_1
-    - bphi_2
     - njets
     - nbtag
 

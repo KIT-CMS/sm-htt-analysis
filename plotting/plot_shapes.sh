@@ -29,11 +29,11 @@ fi
 if [[ " $@ " =~ " tt " ]]; then
     ./plotting/plot_shapes.py \
         -i datacard_shapes_prefit.root \
-        -f tt_ZTT_prefit tt_ZLL_prefit tt_QCD_prefit tt_W_prefit tt_TT_prefit tt_HTT_prefit \
+        -f tt_ZTT_prefit tt_QCD_prefit tt_TT_prefit tt_HTT_prefit \
         --title "#tau_{h}#tau_{h}"
 
     ./plotting/plot_shapes.py \
         -i datacard_shapes_postfit_sb.root \
-        -f tt_ZTT_postfit tt_ZLL_postfit tt_QCD_postfit tt_W_postfit tt_TT_postfit tt_HTT_postfit \
+        -f tt_ZTT_postfit tt_QCD_postfit tt_TT_postfit tt_HTT_postfit \
         --title "#tau_{h}#tau_{h}"
 fi

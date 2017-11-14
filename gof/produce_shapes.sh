@@ -40,8 +40,7 @@ python shapes/produce_shapes.py \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
     --gof-channel $CHANNEL \
-    --gof-variable $VARIABLE \
-    --produce-gof-shapes # disable analysis shapes and enable gof shapes
+    --gof-variable $VARIABLE
 
 # Apply blinding strategy
 ./shapes/apply_blinding.sh

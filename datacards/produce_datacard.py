@@ -98,9 +98,7 @@ def main(args):
 
     if "tt" in args.channels:
         if args.gof == None:
-            tt_categories = [
-                "tt_HTT", "tt_ZTT", "tt_ZLL", "tt_W", "tt_TT", "tt_QCD"
-            ]
+            tt_categories = ["tt_HTT", "tt_ZTT", "tt_TT", "tt_QCD"]
         else:
             tt_categories = ["tt_{}".format(args.gof)]
         tt_category_pairs = db.make_pairs(tt_categories)
@@ -165,23 +163,14 @@ def main(args):
     db.add_normalization_systematic("pdf_Higgs_qqH", 1.021, channels, "qqH")
 
     # Extract shapes
-    if "et" in args.channels:
+    training = {"et": "keras33", "mt": "keras33", "tt": "keras33"}
+    for channel in args.channels:
         if args.gof == None:
-            db.extract_shapes("et", "smhtt", "Run2016", "et_keras21_max_score")
+            db.extract_shapes(channel, "smhtt",
+                              "Run2016", "{}_{}_max_score".format(
+                                  channel, training[channel]))
         else:
-            db.extract_shapes("et", "smhtt", "Run2016", args.gof)
-
-    if "mt" in args.channels:
-        if args.gof == None:
-            db.extract_shapes("mt", "smhtt", "Run2016", "mt_keras21_max_score")
-        else:
-            db.extract_shapes("mt", "smhtt", "Run2016", args.gof)
-
-    if "tt" in args.channels:
-        if args.gof == None:
-            db.extract_shapes("tt", "smhtt", "Run2016", "tt_keras4_max_score")
-        else:
-            db.extract_shapes("tt", "smhtt", "Run2016", args.gof)
+            db.extract_shapes(channel, "smhtt", "Run2016", args.gof)
 
     # Replace observation with Asimov dataset
     if not args.use_data_for_observation:

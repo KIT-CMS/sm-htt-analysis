@@ -48,12 +48,16 @@ def parse_arguments():
     parser.add_argument(
         "--binning", required=True, type=str, help="Binning configuration.")
     parser.add_argument(
-        "--produce-gof-shapes",
-        default=False,
-        action="store_true",
-        help="Produce shapes for goodness of fit tests.")
+        "--channels",
+        default=[],
+        nargs='+',
+        type=str,
+        help="Channels to be considered.")
     parser.add_argument(
-        "--gof-channel", type=str, help="Channel for goodness of fit shapes.")
+        "--gof-channel",
+        default=None,
+        type=str,
+        help="Channel for goodness of fit shapes.")
     parser.add_argument(
         "--gof-variable",
         type=str,
@@ -134,7 +138,7 @@ def main(args):
 
 
     # Variables and categories
-    training = {"et": "keras21", "mt": "keras21", "tt": "keras4"}
+    training = {"et": "keras33", "mt": "keras33", "tt": "keras33"}
     binning = yaml.load(open(args.binning))
 
     mT_cut = Cut("mt_1<50", "mt")
@@ -142,7 +146,7 @@ def main(args):
 
     et_categories = []
     # Analysis shapes
-    if not args.produce_gof_shapes:
+    if "et" in args.channels:
         for i, label in enumerate(["HTT", "ZTT", "ZLL", "W", "TT", "QCD"]):
             score = Variable(
                 "et_{tr}_max_score".format(tr=training["et"]),
@@ -156,22 +160,21 @@ def main(args):
                         Cut("et_{tr}_max_index=={index}".format(tr=training["et"], index=i), "exclusive_score")),
                     variable=score))
     # Goodness of fit shapes
-    else:
-        if "et" in args.gof_channel:
-            score = Variable(
-                    args.gof_variable,
-                    VariableBinning(binning["gof"]["et"][args.gof_variable]["bins"]),
-                    expression=binning["gof"]["et"][args.gof_variable]["expression"])
-            et_categories.append(
-                Category(
-                    args.gof_variable,
-                    et,
-                    Cuts(mT_cut),
-                    variable=score))
+    if "et" == args.gof_channel:
+        score = Variable(
+                args.gof_variable,
+                VariableBinning(binning["gof"]["et"][args.gof_variable]["bins"]),
+                expression=binning["gof"]["et"][args.gof_variable]["expression"])
+        et_categories.append(
+            Category(
+                args.gof_variable,
+                et,
+                Cuts(mT_cut),
+                variable=score))
 
     mt_categories = []
     # Analysis shapes
-    if not args.produce_gof_shapes:
+    if "mt" in args.channels:
         for i, label in enumerate(["HTT", "ZTT", "ZLL", "W", "TT", "QCD"]):
             score = Variable(
                 "mt_{tr}_max_score".format(tr=training["mt"]),
@@ -185,23 +188,22 @@ def main(args):
                         Cut("mt_{tr}_max_index=={index}".format(tr=training["mt"], index=i), "exclusive_score")),
                     variable=score))
     # Goodness of fit shapes
-    else:
-        if "mt" in args.gof_channel:
-            score = Variable(
-                    args.gof_variable,
-                    VariableBinning(binning["gof"]["mt"][args.gof_variable]["bins"]),
-                    expression=binning["gof"]["mt"][args.gof_variable]["expression"])
-            mt_categories.append(
-                Category(
-                    args.gof_variable,
-                    mt,
-                    Cuts(mT_cut),
-                    variable=score))
+    if args.gof_channel == "mt":
+        score = Variable(
+                args.gof_variable,
+                VariableBinning(binning["gof"]["mt"][args.gof_variable]["bins"]),
+                expression=binning["gof"]["mt"][args.gof_variable]["expression"])
+        mt_categories.append(
+            Category(
+                args.gof_variable,
+                mt,
+                Cuts(mT_cut),
+                variable=score))
 
     tt_categories = []
     # Analysis shapes
-    if not args.produce_gof_shapes:
-        for i, label in enumerate(["HTT", "ZTT", "ZLL", "W", "TT", "QCD"]):
+    if "tt" in args.channels:
+        for i, label in enumerate(["HTT", "ZTT", "TT", "QCD"]):
             score = Variable(
                 "tt_{tr}_max_score".format(tr=training["tt"]),
                  VariableBinning(binning["analysis"]["tt"][label]))
@@ -214,25 +216,42 @@ def main(args):
                         Cut("tt_{tr}_max_index=={index}".format(tr=training["tt"], index=i), "exclusive_score")),
                     variable=score))
     # Goodness of fit shapes
-    else:
-        if "tt" in args.gof_channel:
-            score = Variable(
-                    args.gof_variable,
-                    VariableBinning(binning["gof"]["tt"][args.gof_variable]["bins"]),
-                    expression=binning["gof"]["tt"][args.gof_variable]["expression"])
-            tt_categories.append(
-                Category(
-                    args.gof_variable,
-                    tt,
-                    Cuts(pt_tt_cut),
-                    variable=score))
+    if args.gof_channel == "tt":
+        score = Variable(
+                args.gof_variable,
+                VariableBinning(binning["gof"]["tt"][args.gof_variable]["bins"]),
+                expression=binning["gof"]["tt"][args.gof_variable]["expression"])
+        tt_categories.append(
+            Category(
+                args.gof_variable,
+                tt,
+                Cuts(pt_tt_cut),
+                variable=score))
 
     # Nominal histograms
     # yapf: enable
-    for processes, categories in zip(
-        [et_processes, mt_processes, tt_processes],
-        [et_categories, mt_categories, tt_categories]):
-        for process, category in product(processes.values(), categories):
+    if "et" in [args.gof_channel] + args.channels:
+        for process, category in product(et_processes.values(), et_categories):
+            systematics.add(
+                Systematic(
+                    category=category,
+                    process=process,
+                    analysis="smhtt",
+                    era=era,
+                    variation=Nominal(),
+                    mass="125"))
+    if "mt" in [args.gof_channel] + args.channels:
+        for process, category in product(mt_processes.values(), mt_categories):
+            systematics.add(
+                Systematic(
+                    category=category,
+                    process=process,
+                    analysis="smhtt",
+                    era=era,
+                    variation=Nominal(),
+                    mass="125"))
+    if "tt" in [args.gof_channel] + args.channels:
+        for process, category in product(tt_processes.values(), tt_categories):
             systematics.add(
                 Systematic(
                     category=category,
@@ -253,21 +272,24 @@ def main(args):
         "CMS_scale_t_1prong1pi0", "tauEsOneProngPiZeros", DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
         for process_nick in ["HTT", "VH", "ggH", "qqH", "ZTT", "TTT", "VV"]:
-            systematics.add_systematic_variation(
-                variation=variation,
-                process=et_processes[process_nick],
-                channel=et,
-                era=era)
-            systematics.add_systematic_variation(
-                variation=variation,
-                process=mt_processes[process_nick],
-                channel=mt,
-                era=era)
-            systematics.add_systematic_variation(
-                variation=variation,
-                process=tt_processes[process_nick],
-                channel=tt,
-                era=era)
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+            if "tt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
 
     # Jet energy scale
     jet_es_variations = create_systematic_variations("CMS_scale_j", "jecUnc",
@@ -277,21 +299,24 @@ def main(args):
                 "HTT", "VH", "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT",
                 "TTJ", "VV"
         ]:
-            systematics.add_systematic_variation(
-                variation=variation,
-                process=et_processes[process_nick],
-                channel=et,
-                era=era)
-            systematics.add_systematic_variation(
-                variation=variation,
-                process=mt_processes[process_nick],
-                channel=mt,
-                era=era)
-            systematics.add_systematic_variation(
-                variation=variation,
-                process=tt_processes[process_nick],
-                channel=tt,
-                era=era)
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+            if "tt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
 
     # MET energy scale
     met_es_variations = create_systematic_variations(
@@ -301,63 +326,72 @@ def main(args):
                 "HTT", "VH", "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT",
                 "TTJ", "VV"
         ]:
-            systematics.add_systematic_variation(
-                variation=variation,
-                process=et_processes[process_nick],
-                channel=et,
-                era=era)
-            systematics.add_systematic_variation(
-                variation=variation,
-                process=mt_processes[process_nick],
-                channel=mt,
-                era=era)
-            systematics.add_systematic_variation(
-                variation=variation,
-                process=tt_processes[process_nick],
-                channel=tt,
-                era=era)
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+            if "tt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
 
     # Z pt reweighting
     zpt_variations = create_systematic_variations(
         "CMS_htt_dyShape", "zPtReweightWeight", SquareAndRemoveWeight)
     for variation in zpt_variations:
         for process_nick in ["ZTT", "ZL", "ZJ"]:
-            systematics.add_systematic_variation(
-                variation=variation,
-                process=et_processes[process_nick],
-                channel=et,
-                era=era)
-            systematics.add_systematic_variation(
-                variation=variation,
-                process=mt_processes[process_nick],
-                channel=mt,
-                era=era)
-            systematics.add_systematic_variation(
-                variation=variation,
-                process=tt_processes[process_nick],
-                channel=tt,
-                era=era)
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+            if "tt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
 
     # top pt reweighting
     top_pt_variations = create_systematic_variations(
         "CMS_htt_ttbarShape", "topPtReweightWeight", SquareAndRemoveWeight)
     for variation in top_pt_variations:
         for process_nick in ["TTT", "TTJ"]:
-            systematics.add_systematic_variation(
-                variation=variation,
-                process=et_processes[process_nick],
-                channel=et,
-                era=era)
-            systematics.add_systematic_variation(
-                variation=variation,
-                process=mt_processes[process_nick],
-                channel=mt,
-                era=era)
-            systematics.add_systematic_variation(
-                variation=variation,
-                process=tt_processes[process_nick],
-                channel=tt,
-                era=era)
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+            if "tt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
 
     # jet to tau fake efficiency
     jet_to_tau_fake_variations = []
@@ -369,21 +403,24 @@ def main(args):
                   Weight("((pt_2*0.98))", "jetToTauFake_weight"), "Down"))
     for variation in jet_to_tau_fake_variations:
         for process_nick in ["ZJ", "TTJ", "W"]:
-            systematics.add_systematic_variation(
-                variation=variation,
-                process=et_processes[process_nick],
-                channel=et,
-                era=era)
-            systematics.add_systematic_variation(
-                variation=variation,
-                process=mt_processes[process_nick],
-                channel=mt,
-                era=era)
-            systematics.add_systematic_variation(
-                variation=variation,
-                process=tt_processes[process_nick],
-                channel=tt,
-                era=era)
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+            if "tt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
 
     # TODO: Example for replacing weights
     """

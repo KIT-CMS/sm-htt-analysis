@@ -16,13 +16,13 @@ done
 # Create shapes of systematics
 ARTUS_OUTPUTS=/storage/jbod/wunsch/Run2Analysis_alex_classified2
 KAPPA_DATABASE=/portal/ekpbms3/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/datasets.json
-./shapes/produce_shapes.sh $ARTUS_OUTPUTS $KAPPA_DATABASE
+CHANNELS=$@
+./shapes/produce_shapes.sh $ARTUS_OUTPUTS $KAPPA_DATABASE $CHANNELS
 
 # Apply blinding strategy
 #./shapes/apply_blinding.sh
 
 # Make control plots of produced shapes
-CHANNELS="et mt tt"
 ./plotting/plot_control.sh $CHANNELS
 
 # Write datacard
