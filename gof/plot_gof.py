@@ -29,7 +29,7 @@ def parse_arguments():
         "path", help="Path to directory with goodness of fit results")
     parser.add_argument(
         "--channels",
-        default=["et", "mt"],
+        default=["et", "mt", "tt"],
         nargs='+',
         help="Select channels to be plotted")
     return parser.parse_args()
