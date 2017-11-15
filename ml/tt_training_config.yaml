@@ -51,9 +51,13 @@ variables:
 # Split of dataset in training and validation (in TMVA called training and testing)
 train_test_split: 0.75
 
+# Define preprocessing
+preprocessing: standard_scaler
+
 # Define the model parameter
 model:
     name: smhtt
     batch_size: 10000
     epochs: 10000
     early_stopping: 5
+    save_best_only: true
