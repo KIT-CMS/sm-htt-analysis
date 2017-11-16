@@ -89,34 +89,34 @@ def main(args):
     directory = args.directory
     mt = MT()
     mt_processes = {
-        "data"  : Process("data_obs", DataEstimation (era, directory, mt)),
-        "HTT"   : Process("HTT",      HTTEstimation  (era, directory, mt)),
-        "ggH"   : Process("ggH",      ggHEstimation  (era, directory, mt)),
-        "qqH"   : Process("qqH",      qqHEstimation  (era, directory, mt)),
-        "VH"    : Process("VH",       VHEstimation   (era, directory, mt)),
-        "ZTT"   : Process("ZTT",      ZTTEstimation  (era, directory, mt)),
-        "ZL"    : Process("ZL",       ZLEstimationMT (era, directory, mt)),
-        "ZJ"    : Process("ZJ",       ZJEstimationMT (era, directory, mt)),
-        "W"     : Process("W",        WEstimation    (era, directory, mt)),
-        "TTT"   : Process("TTT",      TTTEstimationMT(era, directory, mt)),
-        "TTJ"   : Process("TTJ",      TTJEstimationMT(era, directory, mt)),
-        "VV"    : Process("VV",       VVEstimation   (era, directory, mt))
+        "data"  : Process("data_obs", DataEstimation  (era, directory, mt)),
+        "HTT"   : Process("HTT",      HTTEstimation   (era, directory, mt)),
+        "ggH"   : Process("ggH",      ggHEstimation   (era, directory, mt)),
+        "qqH"   : Process("qqH",      qqHEstimation   (era, directory, mt)),
+        "VH"    : Process("VH",       VHEstimation    (era, directory, mt)),
+        "ZTT"   : Process("ZTT",      ZTTEstimation   (era, directory, mt)),
+        "ZL"    : Process("ZL",       ZLEstimationMTSM(era, directory, mt)),
+        "ZJ"    : Process("ZJ",       ZJEstimationMT  (era, directory, mt)),
+        "W"     : Process("W",        WEstimation     (era, directory, mt)),
+        "TTT"   : Process("TTT",      TTTEstimationMT (era, directory, mt)),
+        "TTJ"   : Process("TTJ",      TTJEstimationMT (era, directory, mt)),
+        "VV"    : Process("VV",       VVEstimation    (era, directory, mt))
         }
     mt_processes["QCD"] = Process("QCD", QCDEstimationMT(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV"]], mt_processes["data"]))
     et = ET()
     et_processes = {
-        "data"  : Process("data_obs", DataEstimation (era, directory, et)),
-        "HTT"   : Process("HTT",      HTTEstimation  (era, directory, et)),
-        "ggH"   : Process("ggH",      ggHEstimation  (era, directory, et)),
-        "qqH"   : Process("qqH",      qqHEstimation  (era, directory, et)),
-        "VH"    : Process("VH",       VHEstimation   (era, directory, et)),
-        "ZTT"   : Process("ZTT",      ZTTEstimation  (era, directory, et)),
-        "ZL"    : Process("ZL",       ZLEstimationET (era, directory, et)),
-        "ZJ"    : Process("ZJ",       ZJEstimationET (era, directory, et)),
-        "W"     : Process("W",        WEstimation    (era, directory, et)),
-        "TTT"   : Process("TTT",      TTTEstimationET(era, directory, et)),
-        "TTJ"   : Process("TTJ",      TTJEstimationET(era, directory, et)),
-        "VV"    : Process("VV",       VVEstimation(   era, directory, et))
+        "data"  : Process("data_obs", DataEstimation  (era, directory, et)),
+        "HTT"   : Process("HTT",      HTTEstimation   (era, directory, et)),
+        "ggH"   : Process("ggH",      ggHEstimation   (era, directory, et)),
+        "qqH"   : Process("qqH",      qqHEstimation   (era, directory, et)),
+        "VH"    : Process("VH",       VHEstimation    (era, directory, et)),
+        "ZTT"   : Process("ZTT",      ZTTEstimation   (era, directory, et)),
+        "ZL"    : Process("ZL",       ZLEstimationETSM(era, directory, et)),
+        "ZJ"    : Process("ZJ",       ZJEstimationET  (era, directory, et)),
+        "W"     : Process("W",        WEstimation     (era, directory, et)),
+        "TTT"   : Process("TTT",      TTTEstimationET (era, directory, et)),
+        "TTJ"   : Process("TTJ",      TTJEstimationET (era, directory, et)),
+        "VV"    : Process("VV",       VVEstimation(    era, directory, et))
         }
     et_processes["QCD"] = Process("QCD", QCDEstimationET(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV"]], et_processes["data"]))
     tt = TT()
@@ -127,11 +127,11 @@ def main(args):
         "qqH"   : Process("qqH",      qqHEstimation  (era, directory, tt)),
         "VH"    : Process("VH",       VHEstimation   (era, directory, tt)),
         "ZTT"   : Process("ZTT",      ZTTEstimation  (era, directory, tt)),
-        "ZL"    : Process("ZL",       ZLEstimationET (era, directory, tt)),
-        "ZJ"    : Process("ZJ",       ZJEstimationET (era, directory, tt)),
+        "ZL"    : Process("ZL",       ZLEstimationTT (era, directory, tt)),
+        "ZJ"    : Process("ZJ",       ZJEstimationTT (era, directory, tt)),
         "W"     : Process("W",        WEstimation    (era, directory, tt)),
-        "TTT"   : Process("TTT",      TTTEstimationET(era, directory, tt)),
-        "TTJ"   : Process("TTJ",      TTJEstimationET(era, directory, tt)),
+        "TTT"   : Process("TTT",      TTTEstimationTT(era, directory, tt)),
+        "TTJ"   : Process("TTJ",      TTJEstimationTT(era, directory, tt)),
         "VV"    : Process("VV",       VVEstimation(   era, directory, tt))
         }
     tt_processes["QCD"] = Process("QCD", QCDEstimationTT(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV"]], tt_processes["data"]))
@@ -422,27 +422,73 @@ def main(args):
                     channel=tt,
                     era=era)
 
-    # TODO: Example for replacing weights
-    """
     # Zll reweighting
-    zll_weight_variations = []
-    zll_weight_variations.append(
+    zll_et_weight_variations = []
+    zll_et_weight_variations.append(
         ReplaceWeight(
-            "CMS_some_zll_systematic", "decay_mode_reweight",
+            "CMS_htt_eToTauFake_OneProng", "decay_mode_reweight",
             Weight(
-                "(((decayMode_2 == 0)*1.0) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.0) + ((decayMode_2 == 10)*1.03))",
+                "(((decayMode_2 == 0)*0.98*1.12) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.2) + ((decayMode_2 == 10)*1.0))",
                 "decay_mode_reweight"), "Up"))
-    zll_weight_variations.append(
+    zll_et_weight_variations.append(
         ReplaceWeight(
-            "CMS_some_zll_systematic", "decay_mode_reweight",
+            "CMS_htt_eToTauFake_OneProng", "decay_mode_reweight",
             Weight(
-                "(((decayMode_2 == 0)*1.0) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.0) + ((decayMode_2 == 10)*0.97))",
+                "(((decayMode_2 == 0)*0.98*0.88) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.2) + ((decayMode_2 == 10)*1.0))",
                 "decay_mode_reweight"), "Down"))
-    for variation in zll_weight_variations:
-        for process in [zll]:
-            systematics.add_systematic_variation(
-                variation=variation, process=process, channel=mt, era=era)
-    """
+    zll_et_weight_variations.append(
+        ReplaceWeight(
+            "CMS_htt_eToTauFake_OneProngPiZeros", "decay_mode_reweight",
+            Weight(
+                "(((decayMode_2 == 0)*0.98) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.2*1.12) + ((decayMode_2 == 10)*1.0))",
+                "decay_mode_reweight"), "Up"))
+    zll_et_weight_variations.append(
+        ReplaceWeight(
+            "CMS_htt_eToTauFake_OneProngPiZeros", "decay_mode_reweight",
+            Weight(
+                "(((decayMode_2 == 0)*0.98) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.2*0.88) + ((decayMode_2 == 10)*1.0))",
+                "decay_mode_reweight"), "Down"))
+    for variation in zll_et_weight_variations:
+        for process_nick in ["ZL"]:
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+    zll_mt_weight_variations = []
+    zll_mt_weight_variations.append(
+        ReplaceWeight(
+            "CMS_htt_mToTauFake_OneProng", "decay_mode_reweight",
+            Weight(
+                "(((decayMode_2 == 0)*0.75*1.25) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.0) + ((decayMode_2 == 10)*1.0))",
+                "decay_mode_reweight"), "Up"))
+    zll_mt_weight_variations.append(
+        ReplaceWeight(
+            "CMS_htt_mToTauFake_OneProng", "decay_mode_reweight",
+            Weight(
+                "(((decayMode_2 == 0)*0.75*0.75) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.0) + ((decayMode_2 == 10)*1.0))",
+                "decay_mode_reweight"), "Down"))
+    zll_mt_weight_variations.append(
+        ReplaceWeight(
+            "CMS_htt_mToTauFake_OneProngPiZeros", "decay_mode_reweight",
+            Weight(
+                "(((decayMode_2 == 0)*0.75) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.25) + ((decayMode_2 == 10)*1.0))",
+                "decay_mode_reweight"), "Up"))
+    zll_mt_weight_variations.append(
+        ReplaceWeight(
+            "CMS_htt_mToTauFake_OneProngPiZeros", "decay_mode_reweight",
+            Weight(
+                "(((decayMode_2 == 0)*0.75) + ((decayMode_2 == 1 || decayMode_2 == 2)*0.75) + ((decayMode_2 == 10)*1.0))",
+                "decay_mode_reweight"), "Down"))
+    for variation in zll_mt_weight_variations:
+        for process_nick in ["ZL"]:
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
 
     # Produce histograms
     systematics.produce()
