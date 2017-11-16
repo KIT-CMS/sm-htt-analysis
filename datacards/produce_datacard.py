@@ -129,6 +129,12 @@ def main(args):
         ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
     db.add_shape_systematic("CMS_htt_jetToTauFake", 1.0, channels,
                             ["ZJ", "W", "TTJ"])
+    db.add_shape_systematic("CMS_htt_eToTauFake_OneProng", 1.0, "et", ["ZL"])
+    db.add_shape_systematic("CMS_htt_eToTauFake_OneProngPiZeros", 1.0, "et",
+                            ["ZL"])
+    db.add_shape_systematic("CMS_htt_mToTauFake_OneProng", 1.0, "mt", ["ZL"])
+    db.add_shape_systematic("CMS_htt_mToTauFake_OneProngPiZeros", 1.0, "mt",
+                            ["ZL"])
 
     # Add normalization systematics
     db.add_normalization_systematic(
