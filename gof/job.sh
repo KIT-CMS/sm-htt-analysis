@@ -8,10 +8,10 @@ echo "Channel:" $CHANNEL
 VARIABLE=$2
 echo "Variable:" $VARIABLE
 
-OUTPUT_DIR=/storage/jbod/wunsch/jobs_gof/${CHANNEL}_${VARIABLE}
+OUTPUT_DIR=/storage/c/wunsch/jobs_gof/${CHANNEL}_${VARIABLE}
 echo "Output directory:" $OUTPUT_DIR
 
-BASE_PATH=/portal/ekpbms1/home/wunsch/sm-htt-analysis
+BASE_PATH=/portal/ekpbms1/home/wunsch/sm-htt-analysis-gof
 echo "Base repository path:" $BASE_PATH
 
 echo "Hostname:" `hostname`
