@@ -2,12 +2,15 @@
 
 CHANNEL=$1
 
+ARTUS_OUTPUTS=/storage/c/wunsch/Artus_2017-11-14/classified
+KAPPA_DATABASE=/portal/ekpbms1/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/datasets.json
+
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
 
 python ml/write_application_filelist.py \
-    --directory /storage/jbod/wunsch/Run2Analysis_alex_classified2 \
-    --database /portal/ekpbms1/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/datasets.json \
+    --directory $ARTUS_OUTPUTS \
+    --database $KAPPA_DATABASE \
     --channel ${CHANNEL} \
     --output ml/${CHANNEL}/application_filelist.yaml
 

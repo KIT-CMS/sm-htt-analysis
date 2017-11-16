@@ -2,6 +2,9 @@
 
 CHANNEL=$1
 
+ARTUS_OUTPUTS=/storage/c/wunsch/Artus_2017-11-14/merged
+KAPPA_DATABASE=/portal/ekpbms1/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/datasets.json
+
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
 
@@ -9,8 +12,8 @@ mkdir -p ml/${CHANNEL}
 
 python ml/write_dataset_config.py \
     --channel ${CHANNEL} \
-    --base-path /storage/jbod/wunsch/Run2Analysis_alex \
-    --database /portal/ekpbms3/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/datasets.json \
+    --base-path $ARTUS_OUTPUTS \
+    --database $KAPPA_DATABASE \
     --output-path $PWD/ml/${CHANNEL} \
     --output-filename ${CHANNEL}_training_dataset.root \
     --tree-path ${CHANNEL}_nominal/ntuple \

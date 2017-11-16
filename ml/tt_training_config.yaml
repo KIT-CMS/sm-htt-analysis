@@ -35,18 +35,23 @@ variables:
     - mt_2
     - ptvis
     - pt_tt
-    - dijetpt
     - met
     - pt_1
     - pt_2
     - eta_2
+    - njets
     - jpt_1
     - jpt_2
-    - jphi_2
     - jm_1
     - jm_2
-    - njets
+    - jdeta
+    - dijetphi
+    - dijetpt
     - nbtag
+    - bpt_1
+    - bpt_2
+    - beta_1
+    - beta_2
 
 # Split of dataset in training and validation (in TMVA called training and testing)
 train_test_split: 0.75

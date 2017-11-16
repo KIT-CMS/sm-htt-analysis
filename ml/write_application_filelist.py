@@ -52,7 +52,7 @@ def main(args):
                 qqHEstimation(era, args.directory, channel),
                 VHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
-                ZLEstimationMT(era, args.directory, channel),
+                ZLEstimationMTSM(era, args.directory, channel),
                 ZJEstimationMT(era, args.directory, channel),
                 TTTEstimationMT(era, args.directory, channel),
                 TTJEstimationMT(era, args.directory, channel),
@@ -90,7 +90,7 @@ def main(args):
                 qqHEstimation(era, args.directory, channel),
                 VHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
-                ZLEstimationET(era, args.directory, channel),
+                ZLEstimationETSM(era, args.directory, channel),
                 ZJEstimationET(era, args.directory, channel),
                 TTTEstimationET(era, args.directory, channel),
                 TTJEstimationET(era, args.directory, channel),
@@ -123,16 +123,15 @@ def main(args):
     # Channel: et
     if args.channel == "tt":
         channel = TT()
-        logger.critical("Using et estimation methods for tt channel. Fixme!")
         for estimation in [
                 ggHEstimation(era, args.directory, channel),
                 qqHEstimation(era, args.directory, channel),
                 VHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
-                ZLEstimationET(era, args.directory, channel),
-                ZJEstimationET(era, args.directory, channel),
-                TTTEstimationET(era, args.directory, channel),
-                TTJEstimationET(era, args.directory, channel),
+                ZLEstimationTT(era, args.directory, channel),
+                ZJEstimationTT(era, args.directory, channel),
+                TTTEstimationTT(era, args.directory, channel),
+                TTJEstimationTT(era, args.directory, channel),
                 WEstimation(era, args.directory, channel),
                 VVEstimation(era, args.directory, channel),
                 DataEstimation(era, args.directory, channel)

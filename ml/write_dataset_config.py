@@ -98,7 +98,7 @@ def main(args):
                 qqHEstimation(era, args.base_path, channel),
                 VHEstimation(era, args.base_path, channel),
                 ZTTEstimation(era, args.base_path, channel),
-                ZLEstimationMT(era, args.base_path, channel),
+                ZLEstimationMTSM(era, args.base_path, channel),
                 ZJEstimationMT(era, args.base_path, channel),
                 TTTEstimationMT(era, args.base_path, channel),
                 TTJEstimationMT(era, args.base_path, channel),
@@ -167,7 +167,7 @@ def main(args):
                 qqHEstimation(era, args.base_path, channel),
                 VHEstimation(era, args.base_path, channel),
                 ZTTEstimation(era, args.base_path, channel),
-                ZLEstimationET(era, args.base_path, channel),
+                ZLEstimationETSM(era, args.base_path, channel),
                 ZJEstimationET(era, args.base_path, channel),
                 TTTEstimationET(era, args.base_path, channel),
                 TTJEstimationET(era, args.base_path, channel),
@@ -231,16 +231,15 @@ def main(args):
             "TTJ": "tt",
             "W": "w"
         }
-        logger.critical("Using et estimation methods for tt. Fixme!")
         for estimation in [
                 ggHEstimation(era, args.base_path, channel),
                 qqHEstimation(era, args.base_path, channel),
                 VHEstimation(era, args.base_path, channel),
                 ZTTEstimation(era, args.base_path, channel),
-                ZLEstimationET(era, args.base_path, channel),
-                ZJEstimationET(era, args.base_path, channel),
-                TTTEstimationET(era, args.base_path, channel),
-                TTJEstimationET(era, args.base_path, channel),
+                ZLEstimationTT(era, args.base_path, channel),
+                ZJEstimationTT(era, args.base_path, channel),
+                TTTEstimationTT(era, args.base_path, channel),
+                TTJEstimationTT(era, args.base_path, channel),
                 WEstimation(era, args.base_path, channel)
         ]:
             output_config["processes"][estimation.name] = {
