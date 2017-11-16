@@ -196,7 +196,7 @@ def main(args):
                                  max_percentile, num_borders)
 
         # Add binning for unrolled 2d distributions
-        #binning = add_2d_unrolled_binning(variables, binning)
+        binning = add_2d_unrolled_binning(variables, binning)
 
         # Append binning to config
         config["gof"]["et"] = binning
@@ -222,7 +222,7 @@ def main(args):
                                  max_percentile, num_borders)
 
         # Add binning for unrolled 2d distributions
-        #binning = add_2d_unrolled_binning(variables, binning)
+        binning = add_2d_unrolled_binning(variables, binning)
 
         # Append binning to config
         config["gof"]["mt"] = binning
@@ -248,7 +248,7 @@ def main(args):
                                  max_percentile, num_borders)
 
         # Add binning for unrolled 2d distributions
-        #binning = add_2d_unrolled_binning(variables, binning)
+        binning = add_2d_unrolled_binning(variables, binning)
 
         # Append binning to config
         config["gof"]["tt"] = binning
