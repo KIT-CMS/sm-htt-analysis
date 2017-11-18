@@ -37,11 +37,11 @@ variables:
   - pt_tt
   - mjj
   - jdeta
-  - H_pt
-  - H_mass
-  - pzetavis
-  - pzetamiss
-  - pZetaMissVis
+# - H_pt
+# - H_mass
+# - pzetavis
+# - pzetamiss
+# - pZetaMissVis
   - m_vis
   - dijetphi
   - dijetpt
@@ -50,7 +50,7 @@ variables:
   - metcov00
   - metcov11
   - metphi
-  - diLepMass
+# - diLepMass
   - d0_1
   - d0_2
   - dZ_1
