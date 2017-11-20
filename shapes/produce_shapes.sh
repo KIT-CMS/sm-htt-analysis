@@ -1,12 +1,11 @@
 #!/bin/bash
 
-ARTUS_OUTPUTS=$1
-KAPPA_DATABASE=$2
 BINNING=shapes/binning.yaml
-CHANNELS=${@:3}
+CHANNELS=$@
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
+source utils/setup_samples.sh
 
 # Calculate binning from data distributions
 # NOTE: Binning is now committed in repository.

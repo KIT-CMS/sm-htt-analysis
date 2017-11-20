@@ -17,12 +17,10 @@ done
 ./utils/clean.sh
 
 # Setup
-ARTUS_OUTPUTS=/storage/c/wunsch/Artus_2017-11-17/merged
-KAPPA_DATABASE=/portal/ekpbms1/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/datasets.json
-BINNING=gof/binning.yaml
-
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
+source utils/setup_samples.sh
+BINNING=gof/binning.yaml
 
 # Calculate binning from data distributions if file is not existent
 if [ ! -f "$BINNING" ]
