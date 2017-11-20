@@ -169,7 +169,7 @@ def main(args):
     db.add_normalization_systematic("pdf_Higgs_qqH", 1.021, channels, "qqH")
 
     # Extract shapes
-    training = {"et": "keras65", "mt": "keras65", "tt": "keras65"}
+    training = {"et": "keras67", "mt": "keras67", "tt": "keras67"}
     for channel in args.channels:
         if args.gof == None:
             db.extract_shapes(channel, "smhtt",

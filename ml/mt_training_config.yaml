@@ -21,7 +21,7 @@ class_weights:
     ztt: 1.0
     zll: 1.0
     w: 1.0
-    tt: 10.0
+    tt: 1.0
     qcd: 1.0
 
 # Define global scale factor, which is multiplied to all event weights
@@ -70,5 +70,5 @@ model:
     name: smhtt
     batch_size: 10000
     epochs: 10000
-    early_stopping: 5
+    early_stopping: 10
     save_best_only: true
