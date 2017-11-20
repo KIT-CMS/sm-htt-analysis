@@ -32,12 +32,12 @@ event_weights: training_weight
 
 # Define list of variables to be used for training
 variables:
-    #- m_sv
+#   - m_sv
     - pt_1
     - pt_2
     - eta_2
-    - jpt_1
     - jpt_2
+    - jphi_2
     - jm_1
     - jm_2
     - bpt_1
@@ -50,12 +50,12 @@ variables:
     - bcsv_2
     - njets
     - nbtag
+    - mt_1
     - mt_2
     - ptvis
     - pt_tt
     - mjj
     - m_vis
-    - dijetphi
     - dijetpt
     - met
 

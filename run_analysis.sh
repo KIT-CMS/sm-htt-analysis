@@ -14,7 +14,7 @@ done
 ./utils/clean.sh
 
 # Create shapes of systematics
-ARTUS_OUTPUTS=/storage/c/wunsch/Artus_2017-11-14/classified
+ARTUS_OUTPUTS=/storage/c/wunsch/Artus_2017-11-17/classified
 KAPPA_DATABASE=/portal/ekpbms1/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/datasets.json
 CHANNELS=$@
 ./shapes/produce_shapes.sh $ARTUS_OUTPUTS $KAPPA_DATABASE $CHANNELS
@@ -31,7 +31,7 @@ CHANNELS=$@
 # Run statistical inference
 ./combine/significance.sh | tee significance.log
 ./combine/signal_strength.sh | tee signal_strength.log
-./combine/nuisance_impacts.sh
+#./combine/nuisance_impacts.sh
 
 # Make prefit and postfit shapes
 ./combine/prefit_postfit_shapes.sh

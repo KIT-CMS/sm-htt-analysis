@@ -28,21 +28,21 @@ event_weights: training_weight
 
 # Define list of variables to be used for training
 variables:
-    #- m_sv
+#   - m_sv
     - pt_1
     - pt_2
     - eta_1
     - phi_1
     - phi_2
+    - jpt_1
     - jeta_1
     - jphi_1
     - jphi_2
     - jcsv_1
     - jcsv_2
     - jm_1
-    - jm_2
+    - jmva_1
     - bpt_1
-    - bpt_2
     - beta_1
     - beta_2
     - bphi_1
@@ -52,7 +52,6 @@ variables:
     - njets
     - nbtag
     - mt_1
-    - mt_2
     - ptvis
     - pt_tt
     - mjj
@@ -61,6 +60,7 @@ variables:
     - dijetphi
     - dijetpt
     - met
+    - d0_1
 
 # Split of dataset in training and validation (in TMVA called training and testing)
 train_test_split: 0.75

@@ -2,7 +2,7 @@
 
 CHANNEL=$1
 
-ARTUS_OUTPUTS=/storage/c/wunsch/Artus_2017-11-14/merged
+ARTUS_OUTPUTS=/storage/c/wunsch/Artus_2017-11-17/merged
 KAPPA_DATABASE=/portal/ekpbms1/home/wunsch/CMSSW_7_4_7/src/Kappa/Skimming/data/datasets.json
 
 source utils/setup_cvmfs_sft.sh
