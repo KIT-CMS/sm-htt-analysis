@@ -138,7 +138,7 @@ def main(args):
 
 
     # Variables and categories
-    training = {"et": "keras67", "mt": "keras67", "tt": "keras67"}
+    training = {"et": "keras67_1", "mt": "keras67_1", "tt": "keras67_1"}
     binning = yaml.load(open(args.binning))
 
     mT_cut = Cut("mt_1<50", "mt")
