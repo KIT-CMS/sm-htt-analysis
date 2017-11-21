@@ -38,7 +38,8 @@ python shapes/produce_shapes.py \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
     --gof-channel $CHANNEL \
-    --gof-variable $VARIABLE
+    --gof-variable $VARIABLE \
+    --num-threads 1
 
 # Apply blinding strategy
 ./shapes/apply_blinding.sh
