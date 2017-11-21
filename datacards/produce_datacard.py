@@ -63,7 +63,7 @@ def main(args):
     if "et" in args.channels:
         if args.gof == None:
             et_categories = [
-                "et_HTT", "et_ZTT", "et_ZLL", "et_W", "et_TT", "et_QCD"
+                "et_ggH", "et_qqH", "et_ZTT", "et_ZLL", "et_W", "et_TT", "et_QCD"
             ]
         else:
             et_categories = ["et_{}".format(args.gof)]
@@ -81,7 +81,7 @@ def main(args):
     if "mt" in args.channels:
         if args.gof == None:
             mt_categories = [
-                "mt_HTT", "mt_ZTT", "mt_ZLL", "mt_W", "mt_TT", "mt_QCD"
+                "mt_ggH", "mt_qqH", "mt_ZTT", "mt_ZLL", "mt_W", "mt_TT", "mt_QCD"
             ]
         else:
             mt_categories = ["mt_{}".format(args.gof)]
@@ -98,7 +98,7 @@ def main(args):
 
     if "tt" in args.channels:
         if args.gof == None:
-            tt_categories = ["tt_HTT", "tt_ZTT", "tt_TT", "tt_QCD"]
+            tt_categories = ["tt_ggH", "tt_qqH", "tt_ZTT", "tt_TT", "tt_QCD"]
         else:
             tt_categories = ["tt_{}".format(args.gof)]
         tt_category_pairs = db.make_pairs(tt_categories)
@@ -172,7 +172,7 @@ def main(args):
     db.add_normalization_systematic("pdf_Higgs_qqH", 1.021, channels, "qqH")
 
     # Extract shapes
-    training = {"et": "keras67_1", "mt": "keras67_1", "tt": "keras67_1"}
+    training = {"et": "split4", "mt": "split4", "tt": "split4"}
     for channel in args.channels:
         if args.gof == None:
             db.extract_shapes(channel, "smhtt",

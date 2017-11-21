@@ -138,7 +138,7 @@ def main(args):
 
 
     # Variables and categories
-    training = {"et": "keras67_1", "mt": "keras67_1", "tt": "keras67_1"}
+    training = {"et": "split4", "mt": "split4", "tt": "split4"}
     binning = yaml.load(open(args.binning))
 
     mT_cut = Cut("mt_1<50", "mt")
@@ -147,7 +147,7 @@ def main(args):
     et_categories = []
     # Analysis shapes
     if "et" in args.channels:
-        for i, label in enumerate(["HTT", "ZTT", "ZLL", "W", "TT", "QCD"]):
+        for i, label in enumerate(["ggH", "qqH", "ZTT", "ZLL", "W", "TT", "QCD"]):
             score = Variable(
                 "et_{tr}_max_score".format(tr=training["et"]),
                  VariableBinning(binning["analysis"]["et"][label]))
@@ -175,7 +175,7 @@ def main(args):
     mt_categories = []
     # Analysis shapes
     if "mt" in args.channels:
-        for i, label in enumerate(["HTT", "ZTT", "ZLL", "W", "TT", "QCD"]):
+        for i, label in enumerate(["ggH", "qqH", "ZTT", "ZLL", "W", "TT", "QCD"]):
             score = Variable(
                 "mt_{tr}_max_score".format(tr=training["mt"]),
                  VariableBinning(binning["analysis"]["mt"][label]))
@@ -203,7 +203,7 @@ def main(args):
     tt_categories = []
     # Analysis shapes
     if "tt" in args.channels:
-        for i, label in enumerate(["HTT", "ZTT", "TT", "QCD"]):
+        for i, label in enumerate(["ggH", "qqH", "ZTT", "TT", "QCD"]):
             score = Variable(
                 "tt_{tr}_max_score".format(tr=training["tt"]),
                  VariableBinning(binning["analysis"]["tt"][label]))

@@ -8,16 +8,18 @@ output_path: ml/tt
 
 # Define classes based on tree names in dataset file
 classes:
-    - htt
+    - ggh
+    - qqh
     - ztt
     - tt
     - qcd
 
 # Set class weights
 class_weights:
-    htt: 50.0
+    ggh: 20.0
+    qqh: 100.0
     ztt: 1.0
-    tt: 1.0
+    tt: 2.0
     qcd: 2.0
 
 # Define global scale factor, which is multiplied to all event weights
@@ -73,5 +75,5 @@ model:
     name: smhtt
     batch_size: 10000
     epochs: 10000
-    early_stopping: 10
+    early_stopping: 5
     save_best_only: true

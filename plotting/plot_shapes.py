@@ -123,7 +123,7 @@ def main(args):
             " ".join(bkg_processes_names), "data"
         ]
 
-        if "HTT" in folder:
+        if "ggH" in folder or "qqH" in folder or "HTT" in folder:
             config["y_log"] = True
             config["y_lims"] = [1e0, 1e6]
             config["y_subplot_lims"] = [0.5, 2.0],

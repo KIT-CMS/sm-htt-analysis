@@ -83,9 +83,8 @@ def main(args):
         # MC-driven processes
         # NOTE: Define here the mappig of the process estimations to the training classes
         classes_map = {
-            "ggH": "htt",
-            "qqH": "htt",
-            "VH": "htt",
+            "ggH": "ggh",
+            "qqH": "qqh",
             "ZTT": "ztt",
             "ZL": "zll",
             "ZJ": "zll",
@@ -96,7 +95,6 @@ def main(args):
         for estimation in [
                 ggHEstimation(era, args.base_path, channel),
                 qqHEstimation(era, args.base_path, channel),
-                VHEstimation(era, args.base_path, channel),
                 ZTTEstimation(era, args.base_path, channel),
                 ZLEstimationMTSM(era, args.base_path, channel),
                 ZJEstimationMT(era, args.base_path, channel),
@@ -152,9 +150,8 @@ def main(args):
         # MC-driven processes
         # NOTE: Define here the mappig of the process estimations to the training classes
         classes_map = {
-            "ggH": "htt",
-            "qqH": "htt",
-            "VH": "htt",
+            "ggH": "ggh",
+            "qqH": "qqh",
             "ZTT": "ztt",
             "ZL": "zll",
             "ZJ": "zll",
@@ -165,7 +162,6 @@ def main(args):
         for estimation in [
                 ggHEstimation(era, args.base_path, channel),
                 qqHEstimation(era, args.base_path, channel),
-                VHEstimation(era, args.base_path, channel),
                 ZTTEstimation(era, args.base_path, channel),
                 ZLEstimationETSM(era, args.base_path, channel),
                 ZJEstimationET(era, args.base_path, channel),
@@ -221,9 +217,8 @@ def main(args):
         # MC-driven processes
         # NOTE: Define here the mappig of the process estimations to the training classes
         classes_map = {
-            "ggH": "htt",
-            "qqH": "htt",
-            "VH": "htt",
+            "ggH": "ggh",
+            "qqH": "qqh",
             "ZTT": "ztt",
             "ZL": "zll",
             "ZJ": "zll",
@@ -234,7 +229,6 @@ def main(args):
         for estimation in [
                 ggHEstimation(era, args.base_path, channel),
                 qqHEstimation(era, args.base_path, channel),
-                VHEstimation(era, args.base_path, channel),
                 ZTTEstimation(era, args.base_path, channel),
                 ZLEstimationTT(era, args.base_path, channel),
                 ZJEstimationTT(era, args.base_path, channel),
