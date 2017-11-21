@@ -319,9 +319,11 @@ def main(args):
                     era=era)
 
     # MET energy scale
-    met_es_variations = create_systematic_variations(
-        "CMS_htt_scale_met", "metUnclusteredEn", DifferentPipeline)
-    for variation in met_es_variations:
+    met_unclustered_variations = create_systematic_variations(
+        "CMS_scale_met_unclustered", "metUnclusteredEn", DifferentPipeline)
+    met_clustered_variations = create_systematic_variations(
+        "CMS_scale_met_clustered", "metJetEn", DifferentPipeline)
+    for variation in met_unclustered_variations + met_clustered_variations:
         for process_nick in [
                 "HTT", "VH", "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT",
                 "TTJ", "VV"
