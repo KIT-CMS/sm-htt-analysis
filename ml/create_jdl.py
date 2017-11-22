@@ -10,11 +10,7 @@ def parse_arguments():
     parser.add_argument("output", type=str, help="Output path")
     parser.add_argument("--channel", required=True, type=str, help="Channel")
     parser.add_argument(
-        "--modifiers",
-        required=True,
-        type=str,
-        nargs="+",
-        help="Modifier values")
+        "--modifiers", required=True, type=str, nargs="+", help="Modifier values")
     return parser.parse_args()
 
 
@@ -26,6 +22,7 @@ def main(args):
     jobs.memory = 2048
     jobs.accounting_group = "cms.higgs"
     jobs.image = "stwunsch/slc6-condocker:smhtt"
+    jobs.cpus = 12
 
     # Build list of arguments
     arguments = []
