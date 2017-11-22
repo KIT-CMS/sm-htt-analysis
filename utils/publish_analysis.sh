@@ -17,3 +17,11 @@ cp utils/index.php ${OUTPUT_PATH}/et
 mkdir -p ${OUTPUT_PATH}/tt
 cp ml/tt/*.png ${OUTPUT_PATH}/tt
 cp utils/index.php ${OUTPUT_PATH}/tt
+
+mkdir -p ${OUTPUT_PATH}/log
+cp *.log ${OUTPUT_PATH}/log
+cp utils/index.php ${OUTPUT_PATH}/log
+
+mkdir -p ${OUTPUT_PATH}/datacard
+cp *.txt ${OUTPUT_PATH}/datacard
+cp utils/index.php ${OUTPUT_PATH}/datacard
