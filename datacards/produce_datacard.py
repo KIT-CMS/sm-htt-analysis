@@ -63,7 +63,8 @@ def main(args):
     if "et" in args.channels:
         if args.gof == None:
             et_categories = [
-                "et_ggH", "et_qqH", "et_ZTT", "et_ZLL", "et_W", "et_TT", "et_QCD"
+                "et_ggH", "et_qqH", "et_ZTT", "et_ZLL", "et_W", "et_TT",
+                "et_QCD"
             ]
         else:
             et_categories = ["et_{}".format(args.gof)]
@@ -81,7 +82,8 @@ def main(args):
     if "mt" in args.channels:
         if args.gof == None:
             mt_categories = [
-                "mt_ggH", "mt_qqH", "mt_ZTT", "mt_ZLL", "mt_W", "mt_TT", "mt_QCD"
+                "mt_ggH", "mt_qqH", "mt_ZTT", "mt_ZLL", "mt_W", "mt_TT",
+                "mt_QCD"
             ]
         else:
             mt_categories = ["mt_{}".format(args.gof)]
@@ -123,7 +125,9 @@ def main(args):
                             ["ZTT", "ZL", "ZJ"])
     db.add_shape_systematic("CMS_htt_ttbarShape", 1.0, channels,
                             ["TTT", "TTJ"])
-    db.add_shape_systematic("CMS_scale_j", 1.0, channels, ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
+    db.add_shape_systematic(
+        "CMS_scale_j", 1.0, channels,
+        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
     db.add_shape_systematic(
         "CMS_scale_met_unclustered", 1.0, channels,
         ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
@@ -163,7 +167,8 @@ def main(args):
                                     ["ZTT", "ZL", "ZJ"])
     db.add_normalization_systematic("CMS_htt_ttXsec", 1.06, channels,
                                     ["TTT", "TTJ"])
-    db.add_normalization_systematic("CMS_htt_jetFakeTau", 1.2, channels, ["ZJ","TTJ"])
+    db.add_normalization_systematic("CMS_htt_jetFakeTau", 1.2, channels,
+                                    ["ZJ", "TTJ"])
     db.add_normalization_systematic("CMS_htt_mFakeTau", 1.25, "mt", "ZL")
     db.add_normalization_systematic("CMS_htt_eFakeTau", 1.12, "et", "ZL")
     db.add_normalization_systematic("CMS_scale_ggH", 1.039, channels, "ggH")
@@ -172,12 +177,10 @@ def main(args):
     db.add_normalization_systematic("pdf_Higgs_qqH", 1.021, channels, "qqH")
 
     # Extract shapes
-    training = {"et": "auto1", "mt": "auto1", "tt": "auto1"}
     for channel in args.channels:
         if args.gof == None:
-            db.extract_shapes(channel, "smhtt",
-                              "Run2016", "{}_{}_max_score".format(
-                                  channel, training[channel]))
+            db.extract_shapes(channel, "smhtt", "Run2016",
+                              "{}_max_score".format(channel))
         else:
             db.extract_shapes(channel, "smhtt", "Run2016", args.gof)
 
@@ -193,7 +196,7 @@ def main(args):
         fix_norm=True)
 
     # Perform auto-rebinning
-    #db.auto_rebin(threshold=1.0, mode=0)
+    db.auto_rebin(threshold=1.0, mode=0)
 
     # Write datacard
     #db.print_datacard()

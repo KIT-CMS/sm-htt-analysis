@@ -162,7 +162,6 @@ def main(args):
 
 
     # Variables and categories
-    training = {"et": "auto1", "mt": "auto1", "tt": "auto1"}
     binning = yaml.load(open(args.binning))
 
     mT_cut = Cut("mt_1<50", "mt")
@@ -173,7 +172,7 @@ def main(args):
     if "et" in args.channels:
         for i, label in enumerate(["ggH", "qqH", "ZTT", "ZLL", "W", "TT", "QCD"]):
             score = Variable(
-                "et_{tr}_max_score".format(tr=training["et"]),
+                "et_max_score",
                  VariableBinning(binning["analysis"]["et"][label]))
             et_categories.append(
                 Category(
@@ -181,7 +180,7 @@ def main(args):
                     et,
                     Cuts(
                         mT_cut,
-                        Cut("et_{tr}_max_index=={index}".format(tr=training["et"], index=i), "exclusive_score")),
+                        Cut("et_max_index=={index}".format(index=i), "exclusive_score")),
                     variable=score))
     # Goodness of fit shapes
     if "et" == args.gof_channel:
@@ -201,7 +200,7 @@ def main(args):
     if "mt" in args.channels:
         for i, label in enumerate(["ggH", "qqH", "ZTT", "ZLL", "W", "TT", "QCD"]):
             score = Variable(
-                "mt_{tr}_max_score".format(tr=training["mt"]),
+                "mt_max_score",
                  VariableBinning(binning["analysis"]["mt"][label]))
             mt_categories.append(
                 Category(
@@ -209,7 +208,7 @@ def main(args):
                     mt,
                     Cuts(
                         mT_cut,
-                        Cut("mt_{tr}_max_index=={index}".format(tr=training["mt"], index=i), "exclusive_score")),
+                        Cut("mt_max_index=={index}".format(index=i), "exclusive_score")),
                     variable=score))
     # Goodness of fit shapes
     if args.gof_channel == "mt":
@@ -229,7 +228,7 @@ def main(args):
     if "tt" in args.channels:
         for i, label in enumerate(["ggH", "qqH", "ZTT", "TT", "QCD"]):
             score = Variable(
-                "tt_{tr}_max_score".format(tr=training["tt"]),
+                "tt_max_score",
                  VariableBinning(binning["analysis"]["tt"][label]))
             tt_categories.append(
                 Category(
@@ -237,7 +236,7 @@ def main(args):
                     tt,
                     Cuts(
                         pt_tt_cut,
-                        Cut("tt_{tr}_max_index=={index}".format(tr=training["tt"], index=i), "exclusive_score")),
+                        Cut("tt_max_index=={index}".format(index=i), "exclusive_score")),
                     variable=score))
     # Goodness of fit shapes
     if args.gof_channel == "tt":

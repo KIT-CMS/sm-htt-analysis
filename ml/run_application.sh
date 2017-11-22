@@ -21,4 +21,4 @@ python ml/run_application.py \
     --training-config ml/${CHANNEL}_training_config.yaml \
     --application-config ml/${CHANNEL}_keras_application_config.yaml \
     --filelist ml/${CHANNEL}/application_filelist.yaml \
-    --num-processes 24
+    --num-processes 12
