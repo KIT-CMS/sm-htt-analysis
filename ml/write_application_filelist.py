@@ -120,7 +120,7 @@ def main(args):
 
     ############################################################################
 
-    # Channel: et
+    # Channel: tt
     if args.channel == "tt":
         channel = TT()
         for estimation in [

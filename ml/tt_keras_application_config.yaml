@@ -11,5 +11,8 @@ preprocessing:
     - ml/tt/fold1_keras_preprocessing_smhtt.pickle
     - ml/tt/fold0_keras_preprocessing_smhtt.pickle
 
-# Prefix of new branches with method's responses
-branch_prefix: "tt_auto1_"
+# Branch prefix
+branch_prefix: tt_
+
+# Output directory
+output_directory: /storage/c/wunsch/Artus_2017-11-17/tt_keras

@@ -8,10 +8,11 @@ FOLDERS=${@:5}
 
 for FOLDER in $FOLDERS
 do
-python htt-ml/application/keras_application.py \
+python htt-ml/application/keras_application_friend.py \
     $DATASET_CONFIG \
     $TRAINING_CONFIG \
     $ANALYSIS_CONFIG \
     $FILE \
     $FOLDER/ntuple
+exit
 done
