@@ -14,5 +14,4 @@ python htt-ml/application/keras_application_friend.py \
     $ANALYSIS_CONFIG \
     $FILE \
     $FOLDER/ntuple
-exit
 done
