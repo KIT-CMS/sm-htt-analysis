@@ -23,6 +23,7 @@ echo "Where am I?" `pwd`
 
 echo "### Start working"
 
+# Copy source files
 cp -r $BASE_PATH src
 cd src
 
@@ -41,7 +42,6 @@ sed -i "s%${CHANNEL}_keras%${OUTPUT_DIR}%g" ml/${CHANNEL}_keras_application_conf
 
 # Combine
 sed -i "s%${CHANNEL}_keras%${OUTPUT_DIR}%g" utils/setup_samples.sh
-sed -i "s%default=32%default=12%g" shapes/produce_shapes.py
 ./run_analysis $CHANNEL
 
 # Publish results

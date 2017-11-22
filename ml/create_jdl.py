@@ -22,7 +22,6 @@ def main(args):
     jobs.memory = 2048
     jobs.accounting_group = "cms.higgs"
     jobs.image = "stwunsch/slc6-condocker:smhtt"
-    jobs.cpus = 12
 
     # Build list of arguments
     arguments = []
