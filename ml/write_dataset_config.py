@@ -252,14 +252,19 @@ def main(args):
         # Same sign selection for data-driven QCD
         estimation = DataEstimation(era, args.base_path, channel)
         estimation.name = "QCD"
-        channel_ss = copy.deepcopy(channel)
-        channel_ss.cuts.get("os").invert()
+        channel_iso = copy.deepcopy(channel)
+        channel_iso.cuts.remove("tau_2_iso")
+        channel_iso.cuts.add(
+            Cut("byTightIsolationMVArun2v1DBoldDMwLT_2<0.5", "tau_2_iso"))
+        channel_iso.cuts.add(
+            Cut("byLooseIsolationMVArun2v1DBoldDMwLT_2>0.5",
+                "tau_2_iso_loose"))
         output_config["processes"][estimation.name] = {
             "files": [
                 str(f).replace(args.base_path + "/", "")
                 for f in estimation.get_files()
             ],
-            "cut_string": (estimation.get_cuts() + channel_ss.cuts +
+            "cut_string": (estimation.get_cuts() + channel_iso.cuts +
                            additional_cuts).expand(),
             "weight_string":
             estimation.get_weights().extract(),
