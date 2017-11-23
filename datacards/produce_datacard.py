@@ -167,8 +167,6 @@ def main(args):
                                     ["ZTT", "ZL", "ZJ"])
     db.add_normalization_systematic("CMS_htt_ttXsec", 1.06, channels,
                                     ["TTT", "TTJ"])
-    db.add_normalization_systematic("CMS_htt_jetFakeTau", 1.2, channels,
-                                    ["ZJ", "TTJ"])
     db.add_normalization_systematic("CMS_htt_mFakeTau", 1.25, "mt", "ZL")
     db.add_normalization_systematic("CMS_htt_eFakeTau", 1.12, "et", "ZL")
     db.add_normalization_systematic("CMS_scale_ggH", 1.039, channels, "ggH")
