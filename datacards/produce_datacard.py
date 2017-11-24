@@ -153,6 +153,16 @@ def main(args):
     db.add_normalization_systematic(
         "CMS_eff_e", 1.02, "et",
         ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
+    db.add_normalization_systematic("CMS_eff_t_corr", 1.08, "tt",
+                                    ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV"])
+    db.add_normalization_systematic("CMS_eff_t_corr", 1.04, ["et", "mt"],
+                                    ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV"])
+    db.add_normalization_systematic("CMS_eff_t_et", 1.03, "et",
+                                    ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV"])
+    db.add_normalization_systematic("CMS_eff_t_mt", 1.03, "mt",
+                                    ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV"])
+    db.add_normalization_systematic("CMS_eff_t_tt", 1.06, "tt",
+                                    ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV"])
     db.add_normalization_systematic(
         "CMS_eff_trigger_mt", 1.02, "mt",
         ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
