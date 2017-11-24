@@ -6,7 +6,7 @@ ROOT.PyConfig.IgnoreCommandLineOptions = True  # disable ROOT internal argument 
 
 from shape_producer.cutstring import Cut, Cuts
 from shape_producer.era import Run2016
-from shape_producer.channel import ET, MT, TT
+from shape_producer.channel import ETSM, MTSM, TTSM
 from shape_producer.process import Process
 from shape_producer.estimation_methods_2016 import DataEstimation
 
@@ -178,7 +178,7 @@ def main(args):
     # Channel: ET
     if "et" in channels:
         # Get properties
-        channel = ET()
+        channel = ETSM()
         logger.info("Channel: et")
         dict_ = {}
         additional_cuts = Cuts(Cut("mt_1<50", "mt"))
@@ -204,7 +204,7 @@ def main(args):
     # Channel: MT
     if "mt" in channels:
         # Get properties
-        channel = MT()
+        channel = MTSM()
         logger.info("Channel: mt")
         dict_ = {}
         additional_cuts = Cuts(Cut("mt_1<50", "mt"))
@@ -230,7 +230,7 @@ def main(args):
     # Channel: TT
     if "tt" in channels:
         # Get properties
-        channel = TT()
+        channel = TTSM()
         logger.info("Channel: tt")
         dict_ = {}
         additional_cuts = Cuts(Cut("pt_tt>50", "pt_tt"))

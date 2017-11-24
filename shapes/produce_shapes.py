@@ -10,7 +10,7 @@ from shape_producer.systematic_variations import Nominal, DifferentPipeline, Squ
 from shape_producer.process import Process
 from shape_producer.estimation_methods_2016 import *
 from shape_producer.era import Run2016
-from shape_producer.channel import ET, MT, TT
+from shape_producer.channel import ETSM, MTSM, TTSM
 
 from itertools import product
 
@@ -111,7 +111,7 @@ def main(args):
     et_friend_directory = args.et_friend_directory
     mt_friend_directory = args.mt_friend_directory
     tt_friend_directory = args.tt_friend_directory
-    mt = MT()
+    mt = MTSM()
     mt_processes = {
         "data"  : Process("data_obs", DataEstimation  (era, directory, mt, friend_directory=mt_friend_directory)),
         "HTT"   : Process("HTT",      HTTEstimation   (era, directory, mt, friend_directory=mt_friend_directory)),
@@ -127,7 +127,7 @@ def main(args):
         "VV"    : Process("VV",       VVEstimation    (era, directory, mt, friend_directory=mt_friend_directory))
         }
     mt_processes["QCD"] = Process("QCD", QCDEstimationMT(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV"]], mt_processes["data"]))
-    et = ET()
+    et = ETSM()
     et_processes = {
         "data"  : Process("data_obs", DataEstimation  (era, directory, et, friend_directory=et_friend_directory)),
         "HTT"   : Process("HTT",      HTTEstimation   (era, directory, et, friend_directory=et_friend_directory)),
@@ -143,7 +143,7 @@ def main(args):
         "VV"    : Process("VV",       VVEstimation(    era, directory, et, friend_directory=et_friend_directory))
         }
     et_processes["QCD"] = Process("QCD", QCDEstimationET(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV"]], et_processes["data"]))
-    tt = TT()
+    tt = TTSM()
     tt_processes = {
         "data"  : Process("data_obs", DataEstimation (era, directory, tt, friend_directory=tt_friend_directory)),
         "HTT"   : Process("HTT",      HTTEstimation  (era, directory, tt, friend_directory=tt_friend_directory)),
@@ -521,5 +521,5 @@ def main(args):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    setup_logging("produce_shapes.log", logging.DEBUG)
+    setup_logging("produce_shapes.log", logging.INFO)
     main(args)

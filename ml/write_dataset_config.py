@@ -70,7 +70,7 @@ def main(args):
 
     # Channel: mt
     if args.channel == "mt":
-        channel = MT()
+        channel = MTSM()
 
         # Set up `processes` part of config
         output_config["processes"] = {}
@@ -137,7 +137,7 @@ def main(args):
 
     # Channel: et
     if args.channel == "et":
-        channel = ET()
+        channel = ETSM()
 
         # Set up `processes` part of config
         output_config["processes"] = {}
@@ -204,7 +204,7 @@ def main(args):
 
     # Channel: tt
     if args.channel == "tt":
-        channel = TT()
+        channel = TTSM()
 
         # Set up `processes` part of config
         output_config["processes"] = {}
