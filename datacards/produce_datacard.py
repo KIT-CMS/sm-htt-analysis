@@ -171,6 +171,7 @@ def main(args):
         ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
     db.add_normalization_systematic("CMS_Extrap_SSOS_mt", 1.20, "mt", "QCD")
     db.add_normalization_systematic("CMS_Extrap_SSOS_et", 1.20, "et", "QCD")
+    db.add_normalization_systematic("CMS_Extrap_SSOS_tt", 1.20, "tt", "QCD")
     db.add_normalization_systematic("CMS_htt_wjXsec", 1.04, channels, "W")
     db.add_normalization_systematic("CMS_htt_vvXsec", 1.05, channels, "VV")
     db.add_normalization_systematic("CMS_htt_zjXsec", 1.04, channels,
