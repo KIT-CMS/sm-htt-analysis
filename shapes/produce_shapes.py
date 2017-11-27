@@ -515,6 +515,35 @@ def main(args):
                     channel=mt,
                     era=era)
 
+    # b tagging
+    btag_eff_variations = create_systematic_variations(
+        "CMS_htt_eff_b", "btagEff", DifferentPipeline)
+    mistag_eff_variations = create_systematic_variations(
+        "CMS_htt_mistag_b", "btagMistag", DifferentPipeline)
+    for variation in btag_eff_variations + mistag_eff_variations:
+        for process_nick in [
+                "HTT", "VH", "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT",
+                "TTJ", "VV"
+        ]:
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+            if "tt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
+
     # Produce histograms
     systematics.produce()
 
