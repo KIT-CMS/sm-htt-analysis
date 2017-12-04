@@ -29,6 +29,7 @@ CHANNELS=$@
 # Run statistical inference
 ./combine/significance.sh | tee significance.log
 ./combine/signal_strength.sh | tee signal_strength.log
+./combine/diff_nuisances.sh
 #./combine/nuisance_impacts.sh
 
 # Make prefit and postfit shapes
