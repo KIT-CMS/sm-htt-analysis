@@ -90,7 +90,9 @@ def main(args):
             "ZJ": "zll",
             "TTT": "tt",
             "TTJ": "tt",
-            "W": "w"
+            "W": "w",
+            "VV": "misc",
+            "EWK": "misc"
         }
         for estimation in [
                 ggHEstimation(era, args.base_path, channel),
@@ -100,7 +102,8 @@ def main(args):
                 ZJEstimationMT(era, args.base_path, channel),
                 TTTEstimationMT(era, args.base_path, channel),
                 TTJEstimationMT(era, args.base_path, channel),
-                WEstimation(era, args.base_path, channel)
+                WEstimation(era, args.base_path, channel),
+                VVEstimation(era, args.base_path, channel)
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
@@ -130,7 +133,7 @@ def main(args):
             "weight_string":
             estimation.get_weights().extract(),
             "class":
-            "qcd"
+            "ss"
         }
 
     ############################################################################
@@ -157,7 +160,9 @@ def main(args):
             "ZJ": "zll",
             "TTT": "tt",
             "TTJ": "tt",
-            "W": "w"
+            "W": "w",
+            "VV": "misc",
+            "EWK": "misc"
         }
         for estimation in [
                 ggHEstimation(era, args.base_path, channel),
@@ -167,7 +172,8 @@ def main(args):
                 ZJEstimationET(era, args.base_path, channel),
                 TTTEstimationET(era, args.base_path, channel),
                 TTJEstimationET(era, args.base_path, channel),
-                WEstimation(era, args.base_path, channel)
+                WEstimation(era, args.base_path, channel),
+                VVEstimation(era, args.base_path, channel)
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
@@ -197,7 +203,7 @@ def main(args):
             "weight_string":
             estimation.get_weights().extract(),
             "class":
-            "qcd"
+            "ss"
         }
 
     ############################################################################
@@ -224,7 +230,9 @@ def main(args):
             "ZJ": "zll",
             "TTT": "tt",
             "TTJ": "tt",
-            "W": "w"
+            "W": "w",
+            "VV": "misc",
+            "EWK": "misc"
         }
         for estimation in [
                 ggHEstimation(era, args.base_path, channel),
@@ -234,7 +242,9 @@ def main(args):
                 ZJEstimationTT(era, args.base_path, channel),
                 TTTEstimationTT(era, args.base_path, channel),
                 TTJEstimationTT(era, args.base_path, channel),
-                WEstimation(era, args.base_path, channel)
+                WEstimation(era, args.base_path, channel),
+                VVEstimation(era, args.base_path, channel),
+                EWKEstimation(era, args.base_path, channel),
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
@@ -269,7 +279,7 @@ def main(args):
             "weight_string":
             estimation.get_weights().extract(),
             "class":
-            "qcd"
+            "noniso"
         }
 
     ############################################################################
