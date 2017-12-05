@@ -84,9 +84,9 @@ config_template = {
 
 def main(args):
     bkg_processes_names = ["ztt", "zl", "zj", "wj", "ttt", "ttj",
-                           "qcd", "vv"]  # enforced by HarryPlotter
+                           "qcd", "vv", "ewk"]  # enforced by HarryPlotter
     bkg_processes = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ",
-                     "QCD", "VV"]  # names in ROOT file
+                     "QCD", "VV", "EWK"]  # names in ROOT file
     signal_processes_names = ["ggh125", "qqh125"]  # enforced by HarryPlotter
     signal_processes = ["ggH", "qqH"]  # name in ROOT file
 
