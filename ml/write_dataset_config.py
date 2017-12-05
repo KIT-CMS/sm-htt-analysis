@@ -103,7 +103,8 @@ def main(args):
                 TTTEstimationMT(era, args.base_path, channel),
                 TTJEstimationMT(era, args.base_path, channel),
                 WEstimation(era, args.base_path, channel),
-                VVEstimation(era, args.base_path, channel)
+                VVEstimation(era, args.base_path, channel),
+                EWKEstimation(era, args.base_path, channel)
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
@@ -173,7 +174,8 @@ def main(args):
                 TTTEstimationET(era, args.base_path, channel),
                 TTJEstimationET(era, args.base_path, channel),
                 WEstimation(era, args.base_path, channel),
-                VVEstimation(era, args.base_path, channel)
+                VVEstimation(era, args.base_path, channel),
+                EWKEstimation(era, args.base_path, channel)
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
@@ -244,7 +246,7 @@ def main(args):
                 TTJEstimationTT(era, args.base_path, channel),
                 WEstimation(era, args.base_path, channel),
                 VVEstimation(era, args.base_path, channel),
-                EWKEstimation(era, args.base_path, channel),
+                EWKEstimation(era, args.base_path, channel)
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
