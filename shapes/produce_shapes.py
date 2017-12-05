@@ -124,9 +124,10 @@ def main(args):
         "W"     : Process("W",        WEstimation     (era, directory, mt, friend_directory=mt_friend_directory)),
         "TTT"   : Process("TTT",      TTTEstimationMT (era, directory, mt, friend_directory=mt_friend_directory)),
         "TTJ"   : Process("TTJ",      TTJEstimationMT (era, directory, mt, friend_directory=mt_friend_directory)),
-        "VV"    : Process("VV",       VVEstimation    (era, directory, mt, friend_directory=mt_friend_directory))
+        "VV"    : Process("VV",       VVEstimation    (era, directory, mt, friend_directory=mt_friend_directory)),
+        "EWK"   : Process("EWK",      EWKEstimation   (era, directory, mt, friend_directory=mt_friend_directory))
         }
-    mt_processes["QCD"] = Process("QCD", QCDEstimationMT(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV"]], mt_processes["data"]))
+    mt_processes["QCD"] = Process("QCD", QCDEstimationMT(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWK"]], mt_processes["data"]))
     et = ETSM()
     et_processes = {
         "data"  : Process("data_obs", DataEstimation  (era, directory, et, friend_directory=et_friend_directory)),
@@ -140,9 +141,10 @@ def main(args):
         "W"     : Process("W",        WEstimation     (era, directory, et, friend_directory=et_friend_directory)),
         "TTT"   : Process("TTT",      TTTEstimationET (era, directory, et, friend_directory=et_friend_directory)),
         "TTJ"   : Process("TTJ",      TTJEstimationET (era, directory, et, friend_directory=et_friend_directory)),
-        "VV"    : Process("VV",       VVEstimation(    era, directory, et, friend_directory=et_friend_directory))
+        "VV"    : Process("VV",       VVEstimation    (era, directory, et, friend_directory=et_friend_directory)),
+        "EWK"   : Process("EWK",      EWKEstimation   (era, directory, et, friend_directory=et_friend_directory))
         }
-    et_processes["QCD"] = Process("QCD", QCDEstimationET(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV"]], et_processes["data"]))
+    et_processes["QCD"] = Process("QCD", QCDEstimationET(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWK"]], et_processes["data"]))
     tt = TTSM()
     tt_processes = {
         "data"  : Process("data_obs", DataEstimation (era, directory, tt, friend_directory=tt_friend_directory)),
@@ -156,9 +158,10 @@ def main(args):
         "W"     : Process("W",        WEstimation    (era, directory, tt, friend_directory=tt_friend_directory)),
         "TTT"   : Process("TTT",      TTTEstimationTT(era, directory, tt, friend_directory=tt_friend_directory)),
         "TTJ"   : Process("TTJ",      TTJEstimationTT(era, directory, tt, friend_directory=tt_friend_directory)),
-        "VV"    : Process("VV",       VVEstimation(   era, directory, tt, friend_directory=tt_friend_directory))
+        "VV"    : Process("VV",       VVEstimation   (era, directory, tt, friend_directory=tt_friend_directory)),
+        "EWK"   : Process("EWK",      EWKEstimation  (era, directory, tt, friend_directory=tt_friend_directory)),
         }
-    tt_processes["QCD"] = Process("QCD", QCDEstimationTT(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV"]], tt_processes["data"]))
+    tt_processes["QCD"] = Process("QCD", QCDEstimationTT(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWK"]], tt_processes["data"]))
 
 
     # Variables and categories
@@ -167,7 +170,7 @@ def main(args):
     et_categories = []
     # Analysis shapes
     if "et" in args.channels:
-        for i, label in enumerate(["ggH", "qqH", "ZTT", "ZLL", "W", "TT", "QCD"]):
+        for i, label in enumerate(["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]):
             score = Variable(
                 "et_max_score",
                  VariableBinning(binning["analysis"]["et"][label]))
@@ -194,7 +197,7 @@ def main(args):
     mt_categories = []
     # Analysis shapes
     if "mt" in args.channels:
-        for i, label in enumerate(["ggH", "qqH", "ZTT", "ZLL", "W", "TT", "QCD"]):
+        for i, label in enumerate(["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]):
             score = Variable(
                 "mt_max_score",
                  VariableBinning(binning["analysis"]["mt"][label]))
@@ -221,7 +224,7 @@ def main(args):
     tt_categories = []
     # Analysis shapes
     if "tt" in args.channels:
-        for i, label in enumerate(["ggH", "qqH", "ZTT", "TT", "QCD"]):
+        for i, label in enumerate(["ggh", "qqh", "ztt", "tt", "noniso", "misc"]):
             score = Variable(
                 "tt_max_score",
                  VariableBinning(binning["analysis"]["tt"][label]))
@@ -288,7 +291,7 @@ def main(args):
     tau_es_1prong1pizero_variations = create_systematic_variations(
         "CMS_scale_t_1prong1pi0", "tauEsOneProngPiZeros", DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
-        for process_nick in ["HTT", "VH", "ggH", "qqH", "ZTT", "TTT", "VV"]:
+        for process_nick in ["HTT", "VH", "ggH", "qqH", "ZTT", "TTT", "VV", "EWK"]:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
@@ -314,7 +317,7 @@ def main(args):
     for variation in jet_es_variations:
         for process_nick in [
                 "HTT", "VH", "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT",
-                "TTJ", "VV"
+                "TTJ", "VV", "EWK"
         ]:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -343,7 +346,7 @@ def main(args):
     for variation in met_unclustered_variations + met_clustered_variations:
         for process_nick in [
                 "HTT", "VH", "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT",
-                "TTJ", "VV"
+                "TTJ", "VV", "EWK"
         ]:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -517,7 +520,7 @@ def main(args):
     for variation in btag_eff_variations + mistag_eff_variations:
         for process_nick in [
                 "HTT", "VH", "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT",
-                "TTJ", "VV"
+                "TTJ", "VV", "EWK"
         ]:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
