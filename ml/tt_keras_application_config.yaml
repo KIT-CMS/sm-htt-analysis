@@ -4,15 +4,15 @@
 # NOTE: To be indepedent, the classifier trained on fold 1 needs to be
 # booked first and vice versa.
 classifiers:
-    - ml/tt/fold1_keras_model_smhtt.h5
-    - ml/tt/fold0_keras_model_smhtt.h5
+    - ml/tt/fold1_keras_model.h5
+    - ml/tt/fold0_keras_model.h5
 
 preprocessing:
-    - ml/tt/fold1_keras_preprocessing_smhtt.pickle
-    - ml/tt/fold0_keras_preprocessing_smhtt.pickle
+    - ml/tt/fold1_keras_preprocessing.pickle
+    - ml/tt/fold0_keras_preprocessing.pickle
 
 # Branch prefix
 branch_prefix: tt_
 
 # Output directory
-output_directory: /storage/c/wunsch/Artus_2017-11-17/tt_keras
+output_directory: /storage/c/wunsch/Artus_2017-12-02/tt_keras
