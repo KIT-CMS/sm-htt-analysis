@@ -58,6 +58,7 @@ def main(args):
                 TTJEstimationMT(era, args.directory, channel),
                 WEstimation(era, args.directory, channel),
                 VVEstimation(era, args.directory, channel),
+                EWKEstimation(era, args.directory, channel),
                 DataEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method
@@ -96,6 +97,7 @@ def main(args):
                 TTJEstimationET(era, args.directory, channel),
                 WEstimation(era, args.directory, channel),
                 VVEstimation(era, args.directory, channel),
+                EWKEstimation(era, args.directory, channel),
                 DataEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method
@@ -134,6 +136,7 @@ def main(args):
                 TTJEstimationTT(era, args.directory, channel),
                 WEstimation(era, args.directory, channel),
                 VVEstimation(era, args.directory, channel),
+                EWKEstimation(era, args.directory, channel),
                 DataEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method
