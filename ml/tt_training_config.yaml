@@ -12,15 +12,17 @@ classes:
     - qqh
     - ztt
     - tt
-    - qcd
+    - noniso
+    - misc
 
 # Set class weights
 class_weights:
-    ggh: 125.94
-    qqh: 472.95
-    ztt: 3.27
-    tt: 19.53
-    qcd: 1.54
+    ggh: 137.2
+    qqh: 478.8
+    ztt: 3.2
+    tt: 23.8
+    noniso: 1.6
+    misc: 34.5
 
 # Define global scale factor, which is multiplied to all event weights
 global_weight_scale: 1.0
@@ -65,7 +67,7 @@ variables:
     - d0_1
 
 # Split of dataset in training and validation (in TMVA called training and testing)
-train_test_split: 0.50
+train_test_split: 0.75
 
 # Define preprocessing
 preprocessing: standard_scaler
@@ -73,7 +75,7 @@ preprocessing: standard_scaler
 # Define the model parameter
 model:
     name: smhtt
-    batch_size: -1
+    batch_size: 10000
     epochs: 10000
-    early_stopping: 0
-#   save_best_only: true
+    early_stopping: 5
+    save_best_only: true
