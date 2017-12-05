@@ -25,3 +25,7 @@ cp utils/index.php ${OUTPUT_PATH}/log
 mkdir -p ${OUTPUT_PATH}/datacard
 cp *.txt ${OUTPUT_PATH}/datacard
 cp utils/index.php ${OUTPUT_PATH}/datacard
+
+mkdir -p ${OUTPUT_PATH}/pulls
+cp *.html ${OUTPUT_PATH}/pulls
+cp utils/index.php ${OUTPUT_PATH}/pulls
