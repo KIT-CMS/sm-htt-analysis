@@ -131,9 +131,6 @@ def main(args):
     db.add_shape_systematic(
         "CMS_scale_met_unclustered", 1.0, channels,
         ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
-    db.add_shape_systematic(
-        "CMS_scale_met_clustered", 1.0, channels,
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV"])
     db.add_shape_systematic("CMS_htt_jetToTauFake", 1.0, channels,
                             ["ZJ", "W", "TTJ"])
     db.add_shape_systematic("CMS_htt_eToTauFake_OneProng", 1.0, "et", ["ZL"])
