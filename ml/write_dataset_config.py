@@ -76,7 +76,7 @@ def main(args):
         output_config["processes"] = {}
 
         # Additional cuts
-        additional_cuts = Cuts(Cut("mt_1<50", "mt"))
+        additional_cuts = Cuts()
         logger.warning("Use additional cuts for mt: %s",
                        additional_cuts.expand())
 
@@ -143,7 +143,7 @@ def main(args):
         output_config["processes"] = {}
 
         # Additional cuts
-        additional_cuts = Cuts(Cut("mt_1<50", "mt"))
+        additional_cuts = Cuts()
         logger.warning("Use additional cuts for et: %s",
                        additional_cuts.expand())
 
@@ -210,7 +210,7 @@ def main(args):
         output_config["processes"] = {}
 
         # Additional cuts
-        additional_cuts = Cuts(Cut("pt_tt>50", "pt_tt"))
+        additional_cuts = Cuts()
         logger.warning("Use additional cuts for tt: %s",
                        additional_cuts.expand())
 

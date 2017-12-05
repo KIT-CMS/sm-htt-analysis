@@ -181,7 +181,7 @@ def main(args):
         channel = ETSM()
         logger.info("Channel: et")
         dict_ = {}
-        additional_cuts = Cuts(Cut("mt_1<50", "mt"))
+        additional_cuts = Cuts()
         logger.warning("Use additional cuts for et: %s",
                        additional_cuts.expand())
         dict_ = get_properties(dict_, era, channel, args.directory,
@@ -207,7 +207,7 @@ def main(args):
         channel = MTSM()
         logger.info("Channel: mt")
         dict_ = {}
-        additional_cuts = Cuts(Cut("mt_1<50", "mt"))
+        additional_cuts = Cuts()
         logger.warning("Use additional cuts for mt: %s",
                        additional_cuts.expand())
         dict_ = get_properties(dict_, era, channel, args.directory,
@@ -233,7 +233,7 @@ def main(args):
         channel = TTSM()
         logger.info("Channel: tt")
         dict_ = {}
-        additional_cuts = Cuts(Cut("pt_tt>50", "pt_tt"))
+        additional_cuts = Cuts()
         logger.warning("Use additional cuts for tt: %s",
                        additional_cuts.expand())
         dict_ = get_properties(dict_, era, channel, args.directory,
