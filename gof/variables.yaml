@@ -30,7 +30,7 @@ variables:
   - njets
   - npv
   - nbtag
-# - m_sv
+  - m_sv
   - mt_1
   - mt_2
   - ptvis
