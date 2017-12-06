@@ -228,11 +228,11 @@ def main(args):
             "ggH": "ggh",
             "qqH": "qqh",
             "ZTT": "ztt",
-            "ZL": "zll",
-            "ZJ": "zll",
-            "TTT": "tt",
-            "TTJ": "tt",
-            "W": "w",
+            "ZL": "misc",
+            "ZJ": "misc",
+            "TTT": "misc",
+            "TTJ": "misc",
+            "W": "misc",
             "VV": "misc",
             "EWK": "misc"
         }
