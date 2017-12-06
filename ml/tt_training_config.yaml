@@ -11,18 +11,16 @@ classes:
     - ggh
     - qqh
     - ztt
-    - tt
     - noniso
     - misc
 
 # Set class weights
 class_weights:
-    ggh: 135.7
-    qqh: 473.5
-    ztt: 3.2
-    tt: 23.5
-    noniso: 1.6
-    misc: 54.9
+    ggh: 144.8
+    qqh: 505.3
+    ztt: 3.4
+    noniso: 1.7
+    misc: 8.3
 
 # Define global scale factor, which is multiplied to all event weights
 global_weight_scale: 1.0
@@ -74,7 +72,7 @@ preprocessing: standard_scaler
 
 # Define the model parameter
 model:
-    name: smhtt
+    name: smhtt_simple
     batch_size: 10000
     epochs: 10000
     early_stopping: 5

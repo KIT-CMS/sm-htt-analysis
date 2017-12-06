@@ -11,5 +11,5 @@ if [[ " $@ " =~ " mt " ]]; then
 fi
 
 if [[ " $@ " =~ " tt " ]]; then
-    ./plotting/plot_control.py -v tt_max_score -c tt_ztt tt_tt tt_noniso tt_misc --scale-signal 50 --channel tt
+    ./plotting/plot_control.py -v tt_max_score -c tt_ztt tt_noniso tt_misc --scale-signal 50 --channel tt
 fi

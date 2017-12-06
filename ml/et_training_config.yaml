@@ -69,7 +69,7 @@ preprocessing: standard_scaler
 
 # Define the model parameter
 model:
-    name: smhtt
+    name: smhtt_legacy
     batch_size: 10000
     epochs: 10000
     early_stopping: 5

@@ -224,7 +224,7 @@ def main(args):
     tt_categories = []
     # Analysis shapes
     if "tt" in args.channels:
-        for i, label in enumerate(["ggh", "qqh", "ztt", "tt", "noniso", "misc"]):
+        for i, label in enumerate(["ggh", "qqh", "ztt", "noniso", "misc"]):
             score = Variable(
                 "tt_max_score",
                  VariableBinning(binning["analysis"]["tt"][label]))

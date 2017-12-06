@@ -100,7 +100,7 @@ def main(args):
 
     if "tt" in args.channels:
         if args.gof == None:
-            tt_categories = ["tt_ggh", "tt_qqh", "tt_ztt", "tt_tt", "tt_noniso", "tt_misc"]
+            tt_categories = ["tt_ggh", "tt_qqh", "tt_ztt", "tt_noniso", "tt_misc"]
         else:
             tt_categories = ["tt_{}".format(args.gof)]
         tt_category_pairs = db.make_pairs(tt_categories)
