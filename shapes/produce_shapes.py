@@ -80,6 +80,11 @@ def parse_arguments():
         type=str,
         help="Channel for goodness of fit shapes.")
     parser.add_argument(
+        "--QCD-extrap-fit",
+        default=False,
+        action='store_true',
+        help="Create shapes for QCD extrapolation factor determination.")
+    parser.add_argument(
         "--gof-variable",
         type=str,
         help="Variable for goodness of fit shapes.")
@@ -112,6 +117,9 @@ def main(args):
     mt_friend_directory = args.mt_friend_directory
     tt_friend_directory = args.tt_friend_directory
     mt = MTSM()
+    if args.QCD_extrap_fit:
+        mt.cuts.remove("muon_iso")
+        mt.cuts.add(Cut("(iso_1<0.5)*(iso_1>=0.15)", "muon_iso_loose"))
     mt_processes = {
         "data"  : Process("data_obs", DataEstimation  (era, directory, mt, friend_directory=mt_friend_directory)),
         "HTT"   : Process("HTT",      HTTEstimation   (era, directory, mt, friend_directory=mt_friend_directory)),
@@ -127,8 +135,11 @@ def main(args):
         "VV"    : Process("VV",       VVEstimation    (era, directory, mt, friend_directory=mt_friend_directory)),
         "EWK"   : Process("EWK",      EWKEstimation   (era, directory, mt, friend_directory=mt_friend_directory))
         }
-    mt_processes["QCD"] = Process("QCD", QCDEstimationMT(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWK"]], mt_processes["data"]))
+    mt_processes["QCD"] = Process("QCD", QCDEstimationMT(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWK"]], mt_processes["data"], extrapolation_factor=1.17))
     et = ETSM()
+    if args.QCD_extrap_fit:
+        et.cuts.remove("ele_iso")
+        et.cuts.add(Cut("(iso_1<0.5)*(iso_1>=0.1)", "ele_iso_loose"))
     et_processes = {
         "data"  : Process("data_obs", DataEstimation  (era, directory, et, friend_directory=et_friend_directory)),
         "HTT"   : Process("HTT",      HTTEstimation   (era, directory, et, friend_directory=et_friend_directory)),
@@ -144,8 +155,10 @@ def main(args):
         "VV"    : Process("VV",       VVEstimation    (era, directory, et, friend_directory=et_friend_directory)),
         "EWK"   : Process("EWK",      EWKEstimation   (era, directory, et, friend_directory=et_friend_directory))
         }
-    et_processes["QCD"] = Process("QCD", QCDEstimationET(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWK"]], et_processes["data"]))
+    et_processes["QCD"] = Process("QCD", QCDEstimationET(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWK"]], et_processes["data"], extrapolation_factor=1.16))
     tt = TTSM()
+    if args.QCD_extrap_fit:
+        tt.cuts.get("os").invert()
     tt_processes = {
         "data"  : Process("data_obs", DataEstimation (era, directory, tt, friend_directory=tt_friend_directory)),
         "HTT"   : Process("HTT",      HTTEstimation  (era, directory, tt, friend_directory=tt_friend_directory)),

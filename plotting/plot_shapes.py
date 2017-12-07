@@ -41,6 +41,11 @@ def parse_arguments():
         type=int,
         default=10,
         help="Number of processes used for plotting")
+    parser.add_argument(
+        "--QCD-extrap-fit",
+        default=False,
+        action='store_true',
+        help="Create plots for QCD extrapolation factor determination.")
 
     return parser.parse_args()
 
@@ -89,7 +94,14 @@ def main(args):
                      "QCD", "VV", "EWK"]  # names in ROOT file
     signal_processes_names = ["ggh125", "qqh125"]  # enforced by HarryPlotter
     signal_processes = ["ggH", "qqH"]  # name in ROOT file
+    if args.QCD_extrap_fit:
+        #bkg_processes_names = ["ztt", "zl", "zj", "wj", "ttt", "ttj", "vv", "ewk"]
+        #bkg_processes = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"]
+        signal_processes_names = ["htt"]
+        signal_processes = ["QCD"]
 
+    print signal_processes_names
+    print bkg_processes_names
     configs = []
     for folder in args.folders:
         config = deepcopy(config_template)
@@ -97,6 +109,7 @@ def main(args):
         config["markers"] = ["HIST"] * len(bkg_processes_names) + [
             "LINE"
         ] * len(signal_processes_names) + ["E"] + config["markers"]
+	print config["markers"]
         config["legend_markers"] = ["F"] * len(bkg_processes_names) + [
             "L"
         ] * len(signal_processes_names) + ["ELP"] + config["legend_markers"]
@@ -108,6 +121,7 @@ def main(args):
         ] + config["colors"]
         config[
             "nicks"] = bkg_processes_names + signal_processes_names + ["data"]
+	print config["nicks"]
         config["folders"] = [folder]
         config[
             "x_expressions"] = bkg_processes + signal_processes + ["data_obs"]
@@ -123,7 +137,7 @@ def main(args):
             " ".join(bkg_processes_names), "data"
         ]
 
-        if "ggh" in folder or "qqh" in folder or "htt" in folder:
+        if "ggH" in folder or "qqH" in folder or "HTT" in folder:
             config["y_log"] = True
             config["y_lims"] = [1e0, 1e6]
             config["y_subplot_lims"] = [0.5, 2.0],

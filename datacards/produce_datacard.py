@@ -44,6 +44,11 @@ def parse_arguments():
         "Produce datacard for goodness of fit test of inclusive distributions."
     )
     parser.add_argument(
+        "--QCD-extrap-fit",
+        default=False,
+        action='store_true',
+        help="Create datacard for QCD extrapolation factor determination.")
+    parser.add_argument(
         "--use-data-for-observation",
         action="store_true",
         help="Use data for the observation and not an Asimov dataset.")
@@ -59,15 +64,22 @@ def main(args):
     categories = []
     signals = ["ggH", "qqH"]
     backgrounds = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK", "QCD"]
+    if args.QCD_extrap_fit:
+        signals = ["QCD"]
+        backgrounds = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"]
 
     if "et" in args.channels:
-        if args.gof == None:
+        if args.gof != None:
+            et_categories = ["et_{}".format(args.gof)]
+        elif args.QCD_extrap_fit:
+            et_categories = [
+                "et_ztt", "et_zll", "et_w", "et_tt", "et_ss", "et_misc"
+            ]
+        else:
             et_categories = [
                 "et_ggh", "et_qqh", "et_ztt", "et_zll", "et_w", "et_tt",
                 "et_ss", "et_misc"
             ]
-        else:
-            et_categories = ["et_{}".format(args.gof)]
         et_category_pairs = db.make_pairs(et_categories)
 
         db.add_observation("125", "smhtt", "Run2016", "et", et_category_pairs)
@@ -80,13 +92,17 @@ def main(args):
         categories += et_categories
 
     if "mt" in args.channels:
-        if args.gof == None:
+        if args.gof != None:
+            mt_categories = ["mt_{}".format(args.gof)]
+        elif args.QCD_extrap_fit:
+            mt_categories = [
+                "mt_ztt", "mt_zll", "mt_w", "mt_tt", "mt_ss", "mt_misc"
+            ]
+        else:
             mt_categories = [
                 "mt_ggh", "mt_qqh", "mt_ztt", "mt_zll", "mt_w", "mt_tt",
                 "mt_ss", "mt_misc"
             ]
-        else:
-            mt_categories = ["mt_{}".format(args.gof)]
         mt_category_pairs = db.make_pairs(mt_categories)
 
         db.add_observation("125", "smhtt", "Run2016", "mt", mt_category_pairs)
@@ -99,10 +115,12 @@ def main(args):
         categories += mt_categories
 
     if "tt" in args.channels:
-        if args.gof == None:
-            tt_categories = ["tt_ggh", "tt_qqh", "tt_ztt", "tt_noniso", "tt_misc"]
-        else:
+        if args.gof != None:
             tt_categories = ["tt_{}".format(args.gof)]
+        elif args.QCD_extrap_fit:
+            tt_categories = ["tt_noniso", "tt_misc"]
+        else:
+            tt_categories = ["tt_ggh", "tt_qqh", "tt_ztt", "tt_noniso", "tt_misc"]
         tt_category_pairs = db.make_pairs(tt_categories)
 
         db.add_observation("125", "smhtt", "Run2016", "tt", tt_category_pairs)
@@ -172,9 +190,10 @@ def main(args):
     db.add_normalization_systematic(
         "CMS_eff_trigger_et", 1.02, "et",
         ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
-    db.add_normalization_systematic("CMS_Extrap_SSOS_mt", 1.20, "mt", "QCD")
-    db.add_normalization_systematic("CMS_Extrap_SSOS_et", 1.20, "et", "QCD")
-    db.add_normalization_systematic("CMS_Extrap_ABCD_tt", 1.20, "tt", "QCD")
+    if not args.QCD_extrap_fit:
+        db.add_normalization_systematic("CMS_Extrap_SSOS_mt", 1.03, "mt", "QCD")
+        db.add_normalization_systematic("CMS_Extrap_SSOS_et", 1.05, "et", "QCD")
+        db.add_normalization_systematic("CMS_Extrap_ABCD_tt", 1.03, "tt", "QCD")
     db.add_normalization_systematic("CMS_htt_wjXsec", 1.04, channels, "W")
     db.add_normalization_systematic("CMS_htt_vvXsec", 1.06, channels, "VV")
     db.add_normalization_systematic("CMS_htt_zjXsec", 1.04, channels,
