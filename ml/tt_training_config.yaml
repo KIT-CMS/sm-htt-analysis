@@ -72,8 +72,8 @@ preprocessing: standard_scaler
 
 # Define the model parameter
 model:
-    name: smhtt_simple
-    batch_size: 10000
+    name: smhtt_tt
+    batch_size: 1000
     epochs: 10000
-    early_stopping: 5
+    early_stopping: 50
     save_best_only: true
