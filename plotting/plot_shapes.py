@@ -140,7 +140,7 @@ def main(args):
         if "ggh" in folder or "qqh" in folder or "htt" in folder:
             config["y_log"] = True
             config["y_lims"] = [1e0, 1e6]
-            config["y_subplot_lims"] = [0.5, 2.0],
+            config["y_subplot_lims"] = [0.5, 2.5],
 
         configs.append(config)
 
