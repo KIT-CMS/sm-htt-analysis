@@ -49,6 +49,11 @@ def parse_arguments():
         action='store_true',
         help="Create datacard for QCD extrapolation factor determination.")
     parser.add_argument(
+        "--HIG16043",
+        action="store_true",
+        default=False,
+        help="Create datacard for HIG16043 reference analysis.")
+    parser.add_argument(
         "--use-data-for-observation",
         action="store_true",
         help="Use data for the observation and not an Asimov dataset.")
@@ -75,6 +80,8 @@ def main(args):
             et_categories = [
                 "et_ztt", "et_zll", "et_w", "et_tt", "et_ss", "et_misc"
             ]
+        elif args.HIG16043:
+            et_categories = ["et_0jet", "et_vbf", "et_boosted"]
         else:
             et_categories = [
                 "et_ggh", "et_qqh", "et_ztt", "et_zll", "et_w", "et_tt",
@@ -98,6 +105,8 @@ def main(args):
             mt_categories = [
                 "mt_ztt", "mt_zll", "mt_w", "mt_tt", "mt_ss", "mt_misc"
             ]
+        elif args.HIG16043:
+            mt_categories = ["mt_0jet", "mt_vbf", "mt_boosted"]
         else:
             mt_categories = [
                 "mt_ggh", "mt_qqh", "mt_ztt", "mt_zll", "mt_w", "mt_tt",
@@ -119,8 +128,12 @@ def main(args):
             tt_categories = ["tt_{}".format(args.gof)]
         elif args.QCD_extrap_fit:
             tt_categories = ["tt_noniso", "tt_misc"]
+        elif args.HIG16043:
+            tt_categories = ["tt_0jet", "tt_vbf", "tt_boosted"]
         else:
-            tt_categories = ["tt_ggh", "tt_qqh", "tt_ztt", "tt_noniso", "tt_misc"]
+            tt_categories = [
+                "tt_ggh", "tt_qqh", "tt_ztt", "tt_noniso", "tt_misc"
+            ]
         tt_category_pairs = db.make_pairs(tt_categories)
 
         db.add_observation("125", "smhtt", "Run2016", "tt", tt_category_pairs)
@@ -174,16 +187,21 @@ def main(args):
     db.add_normalization_systematic(
         "CMS_eff_e", 1.02, "et",
         ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
-    db.add_normalization_systematic("CMS_eff_t_corr", 1.08, "tt",
-                                    ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWK"])
-    db.add_normalization_systematic("CMS_eff_t_corr", 1.04, ["et", "mt"],
-                                    ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWK"])
-    db.add_normalization_systematic("CMS_eff_t_et", 1.03, "et",
-                                    ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWK"])
-    db.add_normalization_systematic("CMS_eff_t_mt", 1.03, "mt",
-                                    ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWK"])
-    db.add_normalization_systematic("CMS_eff_t_tt", 1.06, "tt",
-                                    ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWK"])
+    db.add_normalization_systematic(
+        "CMS_eff_t_corr", 1.08, "tt",
+        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWK"])
+    db.add_normalization_systematic(
+        "CMS_eff_t_corr", 1.04, ["et", "mt"],
+        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWK"])
+    db.add_normalization_systematic(
+        "CMS_eff_t_et", 1.03, "et",
+        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWK"])
+    db.add_normalization_systematic(
+        "CMS_eff_t_mt", 1.03, "mt",
+        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWK"])
+    db.add_normalization_systematic(
+        "CMS_eff_t_tt", 1.06, "tt",
+        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWK"])
     db.add_normalization_systematic(
         "CMS_eff_trigger_mt", 1.02, "mt",
         ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
@@ -191,9 +209,12 @@ def main(args):
         "CMS_eff_trigger_et", 1.02, "et",
         ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
     if not args.QCD_extrap_fit:
-        db.add_normalization_systematic("CMS_Extrap_SSOS_mt", 1.03, "mt", "QCD")
-        db.add_normalization_systematic("CMS_Extrap_SSOS_et", 1.05, "et", "QCD")
-        db.add_normalization_systematic("CMS_Extrap_ABCD_tt", 1.03, "tt", "QCD")
+        db.add_normalization_systematic("CMS_Extrap_SSOS_mt", 1.03, "mt",
+                                        "QCD")
+        db.add_normalization_systematic("CMS_Extrap_SSOS_et", 1.05, "et",
+                                        "QCD")
+        db.add_normalization_systematic("CMS_Extrap_ABCD_tt", 1.03, "tt",
+                                        "QCD")
     db.add_normalization_systematic("CMS_htt_wjXsec", 1.04, channels, "W")
     db.add_normalization_systematic("CMS_htt_vvXsec", 1.06, channels, "VV")
     db.add_normalization_systematic("CMS_htt_zjXsec", 1.04, channels,
@@ -209,11 +230,19 @@ def main(args):
 
     # Extract shapes
     for channel in args.channels:
-        if args.gof == None:
+        if args.gof != None:
+            db.extract_shapes(channel, "smhtt", "Run2016", args.gof)
+        elif args.HIG16043:
+            if channel in ["et", "mt"]:
+                db.extract_shapes(channel, "smhtt", "Run2016", "m_vis",
+                                  channel + "_0jet")
+                db.extract_shapes(channel, "smhtt", "Run2016", "m_sv",
+                                  [channel + "_vbf", channel + "_boosted"])
+            else:
+                db.extract_shapes(channel, "smhtt", "Run2016", "m_sv")
+        else:
             db.extract_shapes(channel, "smhtt", "Run2016",
                               "{}_max_score".format(channel))
-        else:
-            db.extract_shapes(channel, "smhtt", "Run2016", args.gof)
 
     # Replace observation with Asimov dataset
     if not args.use_data_for_observation:
@@ -227,7 +256,7 @@ def main(args):
         fix_norm=True)
 
     # Perform auto-rebinning
-    db.auto_rebin(threshold=1.0, mode=0)
+    #db.auto_rebin(threshold=1.0, mode=0)
 
     # Write datacard
     #db.print_datacard()

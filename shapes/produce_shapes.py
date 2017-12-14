@@ -89,6 +89,11 @@ def parse_arguments():
         type=str,
         help="Variable for goodness of fit shapes.")
     parser.add_argument(
+        "--HIG16043",
+        action="store_true",
+        default=False,
+        help="Create shapes of HIG16043 reference analysis.")
+    parser.add_argument(
         "--num-threads",
         default=32,
         type=int,
@@ -176,13 +181,26 @@ def main(args):
         }
     tt_processes["QCD"] = Process("QCD", QCDEstimationTT(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWK"]], tt_processes["data"]))
 
-
     # Variables and categories
     binning = yaml.load(open(args.binning))
 
     et_categories = []
+    # HIG16043 shapes
+    if "et" in args.channels and args.HIG16043:
+        for category in ["0jet", "vbf", "boosted"]:
+            variable = Variable(
+                    binning["HIG16043"]["et"][category]["variable"],
+                    VariableBinning(binning["HIG16043"]["et"][category]["binning"]),
+                    expression=binning["HIG16043"]["et"][category]["expression"])
+            et_categories.append(
+                Category(
+                    category,
+                    et,
+                    Cuts(
+                        Cut(binning["HIG16043"]["et"][category]["cut"], "et_cut_{}".format(category))),
+                    variable=variable))
     # Analysis shapes
-    if "et" in args.channels:
+    elif "et" in args.channels:
         for i, label in enumerate(["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]):
             score = Variable(
                 "et_max_score",
@@ -195,7 +213,7 @@ def main(args):
                         Cut("et_max_index=={index}".format(index=i), "exclusive_score")),
                     variable=score))
     # Goodness of fit shapes
-    if "et" == args.gof_channel:
+    elif "et" == args.gof_channel:
         score = Variable(
                 args.gof_variable,
                 VariableBinning(binning["gof"]["et"][args.gof_variable]["bins"]),
@@ -208,8 +226,22 @@ def main(args):
                 variable=score))
 
     mt_categories = []
+    # HIG16043 shapes
+    if "mt" in args.channels and args.HIG16043:
+        for category in ["0jet", "vbf", "boosted"]:
+            variable = Variable(
+                    binning["HIG16043"]["mt"][category]["variable"],
+                    VariableBinning(binning["HIG16043"]["mt"][category]["binning"]),
+                    expression=binning["HIG16043"]["mt"][category]["expression"])
+            mt_categories.append(
+                Category(
+                    category,
+                    mt,
+                    Cuts(
+                        Cut(binning["HIG16043"]["mt"][category]["cut"], "mt_cut_{}".format(category))),
+                    variable=variable))
     # Analysis shapes
-    if "mt" in args.channels:
+    elif "mt" in args.channels:
         for i, label in enumerate(["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]):
             score = Variable(
                 "mt_max_score",
@@ -222,7 +254,7 @@ def main(args):
                         Cut("mt_max_index=={index}".format(index=i), "exclusive_score")),
                     variable=score))
     # Goodness of fit shapes
-    if args.gof_channel == "mt":
+    elif args.gof_channel == "mt":
         score = Variable(
                 args.gof_variable,
                 VariableBinning(binning["gof"]["mt"][args.gof_variable]["bins"]),
@@ -235,8 +267,22 @@ def main(args):
                 variable=score))
 
     tt_categories = []
+    # HIG16043 shapes
+    if "tt" in args.channels and args.HIG16043:
+        for category in ["0jet", "vbf", "boosted"]:
+            variable = Variable(
+                    binning["HIG16043"]["tt"][category]["variable"],
+                    VariableBinning(binning["HIG16043"]["tt"][category]["binning"]),
+                    expression=binning["HIG16043"]["tt"][category]["expression"])
+            tt_categories.append(
+                Category(
+                    category,
+                    tt,
+                    Cuts(
+                        Cut(binning["HIG16043"]["tt"][category]["cut"], "tt_cut_{}".format(category))),
+                    variable=variable))
     # Analysis shapes
-    if "tt" in args.channels:
+    elif "tt" in args.channels:
         for i, label in enumerate(["ggh", "qqh", "ztt", "noniso", "misc"]):
             score = Variable(
                 "tt_max_score",
@@ -249,7 +295,7 @@ def main(args):
                         Cut("tt_max_index=={index}".format(index=i), "exclusive_score")),
                     variable=score))
     # Goodness of fit shapes
-    if args.gof_channel == "tt":
+    elif args.gof_channel == "tt":
         score = Variable(
                 args.gof_variable,
                 VariableBinning(binning["gof"]["tt"][args.gof_variable]["bins"]),
@@ -304,7 +350,9 @@ def main(args):
     tau_es_1prong1pizero_variations = create_systematic_variations(
         "CMS_scale_t_1prong1pi0", "tauEsOneProngPiZeros", DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
-        for process_nick in ["HTT", "VH", "ggH", "qqH", "ZTT", "TTT", "VV", "EWK"]:
+        for process_nick in [
+                "HTT", "VH", "ggH", "qqH", "ZTT", "TTT", "VV", "EWK"
+        ]:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,

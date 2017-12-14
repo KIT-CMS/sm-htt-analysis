@@ -88,10 +88,11 @@ config_template = {
 
 
 def main(args):
-    bkg_processes_names = ["ztt", "zl", "zj", "wj", "ttt", "ttj",
-                           "qcd", "vv", "ewk"]  # enforced by HarryPlotter
-    bkg_processes = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ",
-                     "QCD", "VV", "EWK"]  # names in ROOT file
+    bkg_processes_names = [
+        "ztt", "zl", "zj", "wj", "ttt", "ttj", "qcd", "vv", "ewk"
+    ]  # enforced by HarryPlotter
+    bkg_processes = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "QCD", "VV",
+                     "EWK"]  # names in ROOT file
     signal_processes_names = ["ggh125", "qqh125"]  # enforced by HarryPlotter
     signal_processes = ["ggH", "qqH"]  # name in ROOT file
     if args.QCD_extrap_fit:
@@ -100,8 +101,6 @@ def main(args):
         signal_processes_names = ["htt"]
         signal_processes = ["QCD"]
 
-    print signal_processes_names
-    print bkg_processes_names
     configs = []
     for folder in args.folders:
         config = deepcopy(config_template)
@@ -109,7 +108,6 @@ def main(args):
         config["markers"] = ["HIST"] * len(bkg_processes_names) + [
             "LINE"
         ] * len(signal_processes_names) + ["E"] + config["markers"]
-	print config["markers"]
         config["legend_markers"] = ["F"] * len(bkg_processes_names) + [
             "L"
         ] * len(signal_processes_names) + ["ELP"] + config["legend_markers"]
@@ -121,7 +119,6 @@ def main(args):
         ] + config["colors"]
         config[
             "nicks"] = bkg_processes_names + signal_processes_names + ["data"]
-	print config["nicks"]
         config["folders"] = [folder]
         config[
             "x_expressions"] = bkg_processes + signal_processes + ["data_obs"]
@@ -137,10 +134,14 @@ def main(args):
             " ".join(bkg_processes_names), "data"
         ]
 
-        if "ggh" in folder or "qqh" in folder or "htt" in folder:
-            config["y_log"] = True
-            config["y_lims"] = [1e0, 1e6]
-            config["y_subplot_lims"] = [0.5, 2.5],
+        hig16043 = ["vbf", "boosted", "0jet"]
+        for tag in ["ggh", "qqh", "htt"] + hig16043:
+            if tag in folder:
+                config["y_log"] = True
+                config["y_lims"] = [1e0, 1e6]
+                config["y_subplot_lims"] = [0.5, 2.5],
+            if tag in hig16043:
+                config["x_label"] = ""
 
         configs.append(config)
 
