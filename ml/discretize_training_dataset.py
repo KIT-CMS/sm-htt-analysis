@@ -33,6 +33,7 @@ def parse_arguments():
     parser.add_argument(
         "--modify-num-bins",
         default=0,
+        type=int,
         help=
         "Modify the number of bins used for discretization. The min and max of the range is still taken from the goodness of fit binning."
     )
