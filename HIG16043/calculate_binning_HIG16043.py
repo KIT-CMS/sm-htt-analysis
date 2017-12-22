@@ -65,7 +65,7 @@ def main(args):
     cat["variable"] = "m_sv"
     cat["expression"] = None
     cat["cut"] = "njets==0"
-    cat["binning"] = [0] + range(50, 305, 5)
+    cat["binning"] = [0] + range(50, 310, 10)
 
     tt["0jet"] = deepcopy(cat)
 
@@ -85,8 +85,8 @@ def main(args):
     cat["binning"] = binning
 
     expression_bins = [
-        "(300>mjj)&&(mjj<700)", "(700>mjj)&&(mjj<1100)",
-        "(1100>mjj)&&(mjj<1500)", "(1500>mjj)"
+        "(300>mjj)*(mjj<700)", "(700>mjj)*(mjj<1100)",
+        "(1100>mjj)*(mjj<1500)", "(1500<mjj)"
     ]
     expression = ""
     for i, e in enumerate(expression_bins):
@@ -114,8 +114,8 @@ def main(args):
     cat["binning"] = binning
 
     expression_bins = [
-        "(0>mjj)&&(mjj<300)", "(300>mjj)&&(mjj<500)", "(500>mjj)&&(mjj<800)",
-        "(800>mjj)"
+        "(mjj>0)*(mjj<300)", "(mjj>300)*(mjj<500)", "(mjj>500)*(mjj<800)",
+        "(mjj>800)"
     ]
     expression = ""
     for i, e in enumerate(expression_bins):
@@ -146,7 +146,7 @@ def main(args):
     cat["binning"] = binning
 
     expression_bins = [
-        "({}>pt_tt)&&(pt_tt<{})".format(a, b)
+        "(pt_tt>{})*(pt_tt<{})".format(a, b)
         for a, b in [[0, 100], [100, 150], [150, 200], [200, 250], [250, 300]]
     ] + ["pt_tt>300"]
     expression = ""
@@ -166,7 +166,7 @@ def main(args):
     # Channel: tt
 
     cat["variable"] = "m_sv"
-    cat["cut"] = "(m_sv<250)&&(pt_tt>0)"
+    cat["cut"] = "(m_sv<250)*(pt_tt>0)"
 
     binning_steps = [40] + range(60, 140, 10) + [150, 200, 250]
     binning = [0]
@@ -175,7 +175,7 @@ def main(args):
     cat["binning"] = binning
 
     expression_bins = [
-        "({}>pt_tt)&&(pt_tt<{})".format(a, b)
+        "(pt_tt>{})*(pt_tt<{})".format(a, b)
         for a, b in [[0, 100], [100, 170], [170, 300]]
     ] + ["pt_tt>300"]
     expression = ""
