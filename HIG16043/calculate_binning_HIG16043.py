@@ -65,7 +65,7 @@ def main(args):
     cat["variable"] = "m_sv"
     cat["expression"] = None
     cat["cut"] = "njets==0"
-    cat["binning"] = [0] + range(50, 305, 5)
+    cat["binning"] = [0] + range(50, 310, 10)
 
     tt["0jet"] = deepcopy(cat)
 
