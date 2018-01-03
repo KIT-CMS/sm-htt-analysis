@@ -7,3 +7,6 @@
 [submodule "htt-ml"]
 	path = htt-ml
 	url = ssh://git@github.com/KIT-CMS/htt-ml
+[submodule "Dumbledraw"]
+	path = Dumbledraw
+	url = git@github.com:KIT-CMS/Dumbledraw.git
