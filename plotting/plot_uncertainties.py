@@ -107,7 +107,8 @@ def main(args):
     legend_bkg_processes.reverse()
 
     rootfile_unc = rootfile_parser.Rootfile_parser(args.input)
-    rootfile_prefit = rootfile_parser.Rootfile_parser(args.input.replace(".root", "_prefit.root"))
+    rootfile_prefit = rootfile_parser.Rootfile_parser(
+        args.input.replace(".root", "_prefit.root"))
     #for process in bkg_processes:
     #    if rootfile.get('mt', 'ztt', process, 'CMS_htt_dyShapeUp') != None:
     #        print process
@@ -118,7 +119,8 @@ def main(args):
             plot = dd.Plot([[0.4, 0.38]], "ModTDR", r=0.04, l=0.14)
             for process in bkg_processes:
                 plot.add_hist(
-                    rootfile_prefit.get(channel, category, process), process, "bkg")
+                    rootfile_prefit.get(channel, category, process), process,
+                    "bkg")
                 plot.setGraphStyle(
                     process, "hist", fillcolor=styles.color_dict[process])
             plot.add_hist(
@@ -132,21 +134,35 @@ def main(args):
             plot.add_hist(
                 rootfile_prefit.get(channel, category, "data_obs"), "data_obs")
             plot.add_hist(
-                rootfile_prefit.get(channel, category, "TotalBkg"), "total_bkg")
+                rootfile_prefit.get(channel, category, "TotalBkg"),
+                "total_bkg")
             for index, uncertainty in enumerate(args.uncertainties):
                 for shift in ["Up", "Down"]:
                     for process in bkg_processes + ["ggH125", "qqH125"]:
-                        hist = rootfile_unc.get(channel, category, process, uncertainty+shift)
+                        hist = rootfile_unc.get(channel, category, process,
+                                                uncertainty + shift)
                         if hist != None:
-                            plot.subplot(0).add_hist(hist, process+uncertainty+shift, uncertainty+shift)
+                            plot.subplot(0).add_hist(
+                                hist, process + uncertainty + shift,
+                                uncertainty + shift)
                         else:
-                            plot.subplot(0).add_hist(rootfile_unc.get(channel, category, process), process+uncertainty+shift, uncertainty+shift)
+                            plot.subplot(0).add_hist(
+                                rootfile_unc.get(channel, category, process),
+                                process + uncertainty + shift,
+                                uncertainty + shift)
                     sighist = plot.subplot(0).get_hist("signal")
                     sighist.Scale(-1)
-                    plot.subplot(0).add_hist(sighist, "signal"+uncertainty+shift, uncertainty+shift)
-                    plot.add_hist(plot.subplot(0).get_hist(uncertainty+shift), "total_"+uncertainty+shift, "uncertainties")
+                    plot.subplot(0).add_hist(sighist,
+                                             "signal" + uncertainty + shift,
+                                             uncertainty + shift)
+                    plot.add_hist(
+                        plot.subplot(0).get_hist(uncertainty + shift),
+                        "total_" + uncertainty + shift, "uncertainties")
                     plot.setGraphStyle(
-                        "total_"+uncertainty+shift, "hist", linecolor=4+index, linewidth=3)
+                        "total_" + uncertainty + shift,
+                        "hist",
+                        linecolor=4 + index,
+                        linewidth=3)
 
             plot.subplot(0).setGraphStyle(
                 "ggH", "hist", linecolor=styles.color_dict["ggH"], linewidth=3)
@@ -191,8 +207,7 @@ def main(args):
             plot.create_stack(bkg_processes, "stack")
 
             plot.subplot(0).setYlims(
-                0,
-                1.7 * plot.subplot(0).get_hist("total_bkg").GetMaximum())
+                0, 1.7 * plot.subplot(0).get_hist("total_bkg").GetMaximum())
             plot.subplot(1).setYlims(0.85, 1.35)
             if channel == "tt" and category == "qqh":
                 plot.subplot(1).setYlims(0.75, 2.15)
@@ -210,13 +225,16 @@ def main(args):
             #plot.subplot(1).setNYdivisions(3, 5)
 
             # draw subplots. Argument contains names of objects to be drawn in corresponding order.
-            plot.subplot(0).Draw(["stack", "total_bkg", "uncertainties", "ggH", "ggH_top", "qqH", "qqH_top", "data_obs"])
+            plot.subplot(0).Draw([
+                "stack", "total_bkg", "uncertainties", "ggH", "ggH_top", "qqH",
+                "qqH_top", "data_obs"
+            ])
             plot.subplot(1).Draw([
-                "total_bkg", "uncertainties", "bkg_ggH", "bkg_ggH_top", "bkg_qqH",
-                "bkg_qqH_top", "data_obs"
+                "total_bkg", "uncertainties", "bkg_ggH", "bkg_ggH_top",
+                "bkg_qqH", "bkg_qqH_top", "data_obs"
             ])
 
-           # create legends
+            # create legends
             suffix = ["", "_top"]
             for i in range(2):
                 plot.add_legend(width=0.48, height=0.15)
@@ -229,7 +247,9 @@ def main(args):
                 plot.legend(i).add_entry(0, "qqH%s" % suffix[i], "qqH", 'l')
                 plot.legend(i).add_entry(0, "data_obs", "Data", 'PE')
                 for uncertainty in args.uncertainties:
-                    plot.legend(i).add_entry(1, "total_"+uncertainty+"Up", uncertainty.replace("CMS_htt_", ""), 'l')
+                    plot.legend(i).add_entry(1, "total_" + uncertainty + "Up",
+                                             uncertainty.replace(
+                                                 "CMS_htt_", ""), 'l')
                 plot.legend(i).setNColumns(3)
             plot.legend(0).Draw()
             plot.legend(1).setAlpha(0.0)
@@ -245,7 +265,10 @@ def main(args):
                                              "qqH+bkg.", 'l')
                 plot.legend(i + 2).add_entry(0, "total_bkg", "Bkg. unc.", 'f')
                 for uncertainty in args.uncertainties:
-                    plot.legend(i + 2).add_entry(1, "total_"+uncertainty+"Up", uncertainty.replace("CMS_htt_", ""), 'l')
+                    plot.legend(i + 2).add_entry(1,
+                                                 "total_" + uncertainty + "Up",
+                                                 uncertainty.replace(
+                                                     "CMS_htt_", ""), 'l')
                 plot.legend(i + 2).setNColumns(4)
             plot.legend(2).Draw()
             plot.legend(3).setAlpha(0.0)
@@ -259,10 +282,11 @@ def main(args):
 
             # save plot
             plot.save("plots/unc_%s_%s.%s" % (channel, category, 'png'
-                                             if args.png else 'pdf'))
+                                              if args.png else 'pdf'))
             plots.append(
                 plot
             )  # work around to have clean up seg faults only at the end of the script
+
 
 if __name__ == "__main__":
     args = parse_arguments()
