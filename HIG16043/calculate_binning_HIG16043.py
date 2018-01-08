@@ -78,15 +78,15 @@ def main(args):
     cat["variable"] = "m_sv"
     cat["cut"] = "(m_sv<400)&&(mjj>300)"
 
-    binning_steps = range(95, 160, 5) + [400]
+    binning_steps = range(95, 160, 20) + [400]
     binning = [0]
     for i in range(4):
         binning += [b + i * binning_steps[-1] for b in binning_steps]
     cat["binning"] = binning
 
     expression_bins = [
-        "(300>mjj)*(mjj<700)", "(700>mjj)*(mjj<1100)",
-        "(1100>mjj)*(mjj<1500)", "(1500<mjj)"
+        "(mjj>300)*(mjj<700)", "(700>mjj)*(mjj<1100)",
+        "(mjj>1100)*(mjj<1500)", "(mjj>1500)"
     ]
     expression = ""
     for i, e in enumerate(expression_bins):
