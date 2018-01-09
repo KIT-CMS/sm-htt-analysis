@@ -85,7 +85,7 @@ def main(args):
     cat["binning"] = binning
 
     expression_bins = [
-        "(mjj>300)*(mjj<700)", "(700>mjj)*(mjj<1100)",
+        "(mjj>300)*(mjj<700)", "(mjj>700)*(mjj<1100)",
         "(mjj>1100)*(mjj<1500)", "(mjj>1500)"
     ]
     expression = ""
