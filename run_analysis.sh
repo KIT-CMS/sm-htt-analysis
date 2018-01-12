@@ -21,7 +21,7 @@ CHANNELS=$@
 #./shapes/apply_blinding.sh
 
 # Make control plots of produced shapes
-./plotting/plot_control.sh $CHANNELS
+#./plotting/plot_control.sh $CHANNELS
 
 # Write datacard
 ./datacards/produce_datacard.sh $CHANNELS

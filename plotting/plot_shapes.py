@@ -238,9 +238,9 @@ def main(args):
                                                       category_dict[category]))
 
             # save plot
-            prefix = "prefit" if "prefit" in args.input else "postfit" if "postfit" in args.input else "undefined"
-            plot.save("plots/%s_%s_%s.%s" % (prefix, channel, category, 'png'
-                                             if args.png else 'pdf'))
+            postfix = "prefit" if "prefit" in args.input else "postfit" if "postfit" in args.input else "undefined"
+            plot.save("plots/%s_%s_%s.%s" % (channel, category, postfix, "png"
+                                             if args.png else "pdf"))
             plots.append(
                 plot
             )  # work around to have clean up seg faults only at the end of the script
