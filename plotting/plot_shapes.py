@@ -136,8 +136,7 @@ def main(args):
                 "e2",
                 markersize=0,
                 fillcolor=styles.color_dict["unc"],
-                linecolor=0,
-                fillstyle=3001 if args.png else 1001)
+                linecolor=0)
 
             bkg_ggH = plot.subplot(2).get_hist("ggH")
             bkg_qqH = plot.subplot(2).get_hist("qqH")
