@@ -103,6 +103,7 @@ def main(args):
 
             plot.add_hist(
                 rootfile.get(channel, category, "data_obs"), "data_obs")
+            plot.setGraphStyle("data_obs", "e0")
 
             plot.add_hist(
                 rootfile.get(channel, category, "TotalBkg"), "total_bkg")
