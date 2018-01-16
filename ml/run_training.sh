@@ -7,7 +7,14 @@ source utils/setup_cvmfs_sft.sh
 export KERAS_BACKEND=theano
 export OMP_NUM_THREADS=12
 export THEANO_FLAGS=gcc.cxxflags=-march=corei7
-export CUDA_VISIBLE_DEVICES=3
+
+if uname -a | grep ekpdeepthought
+then
+    source utils/setup_cuda.sh
+    export KERAS_BACKEND=tensorflow
+    export CUDA_VISIBLE_DEVICES='3'
+fi
+
 
 mkdir -p ml/${CHANNEL}
 
