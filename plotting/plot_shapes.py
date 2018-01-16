@@ -125,6 +125,7 @@ def main(args):
             plot.add_hist(
                 rootfile.get(channel, category, "TotalBkg"), "total_bkg")
 
+            plot.subplot(0).setGraphStyle("data_obs", "e0")
             plot.subplot(1).setGraphStyle(
                 "ggH", "hist", linecolor=styles.color_dict["ggH"], linewidth=3)
             plot.subplot(1).setGraphStyle("ggH_top", "hist", linecolor=0)
