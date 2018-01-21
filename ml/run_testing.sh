@@ -8,6 +8,13 @@ export KERAS_BACKEND=theano
 export OMP_NUM_THREADS=24
 export THEANO_FLAGS=gcc.cxxflags=-march=corei7
 
+if uname -a | grep ekpdeepthought
+then
+    source utils/setup_cuda.sh
+    export KERAS_BACKEND=tensorflow
+    export CUDA_VISIBLE_DEVICES='3'
+fi
+
 mkdir -p ml/${CHANNEL}
 
 # AMS score
