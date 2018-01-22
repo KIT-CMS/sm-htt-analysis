@@ -76,7 +76,7 @@ def main(args):
     # Channel: et, mt
 
     cat["variable"] = "m_sv"
-    cat["cut"] = "(m_sv<400)&&(mjj>300)"
+    cat["cut"] = "(m_sv<400)&&(mjj>300)&&(njets>1)"
 
     binning_steps = range(95, 160, 20) + [400]
     binning = [0]
@@ -85,8 +85,8 @@ def main(args):
     cat["binning"] = binning
 
     expression_bins = [
-        "(mjj>300)*(mjj<700)", "(mjj>700)*(mjj<1100)",
-        "(mjj>1100)*(mjj<1500)", "(mjj>1500)"
+        "(mjj>300)*(mjj<700)", "(mjj>700)*(mjj<1100)", "(mjj>1100)*(mjj<1500)",
+        "(mjj>1500)"
     ]
     expression = ""
     for i, e in enumerate(expression_bins):
@@ -105,7 +105,7 @@ def main(args):
     # Channel: tt
 
     cat["variable"] = "m_sv"
-    cat["cut"] = "(m_sv<250)&&(mjj>0)"
+    cat["cut"] = "(m_sv<250)&&(mjj>0)&&(njets>1)"
 
     binning_steps = [40, 60] + range(70, 140, 10) + [150, 200, 250]
     binning = [0]
@@ -137,7 +137,7 @@ def main(args):
     # Channel: et, mt
 
     cat["variable"] = "m_sv"
-    cat["cut"] = "(m_sv<300)&&(pt_tt>0)"
+    cat["cut"] = "(m_sv<300)&&(pt_tt>0)&&(njets==1)"
 
     binning_steps = range(80, 170, 10) + [300]
     binning = [0]
@@ -166,7 +166,7 @@ def main(args):
     # Channel: tt
 
     cat["variable"] = "m_sv"
-    cat["cut"] = "(m_sv<250)*(pt_tt>0)"
+    cat["cut"] = "(m_sv<250)*(pt_tt>0)&&(njets==1)"
 
     binning_steps = [40] + range(60, 140, 10) + [150, 200, 250]
     binning = [0]
