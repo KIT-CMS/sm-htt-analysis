@@ -46,6 +46,7 @@ RUN yum -y install \
     tcsh \
     atlas \
     libpng-devel \
+    libjpeg-turbo \
     ; \
     yum clean all
 
