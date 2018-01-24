@@ -28,7 +28,6 @@ cd src
 sed -i "s%CMSSW_7_4_7%${BASE_PATH}/CMSSW_7_4_7%g" utils/setup_cmssw.sh
 
 ./utils/clean.sh
-./gof/produce_shapes.sh $CHANNEL $VARIABLE
 ./gof/run_gof.sh $CHANNEL $VARIABLE
 
 mkdir -p $OUTPUT_DIR

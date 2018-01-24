@@ -2,6 +2,11 @@
 
 CHANNEL=$1
 VARIABLE=$2
+BINNING=gof/binning.yaml
+
+source utils/setup_cvmfs_sft.sh
+source utils/setup_python.sh
+source utils/setup_samples.sh
 
 # Error handling to ensure that script is executed from top-level directory of
 # this repository
@@ -12,15 +17,6 @@ do
         exit 1
     fi
 done
-
-# Clean-up workspace
-./utils/clean.sh
-
-# Setup
-source utils/setup_cvmfs_sft.sh
-source utils/setup_python.sh
-source utils/setup_samples.sh
-BINNING=gof/binning.yaml
 
 # Calculate binning from data distributions if file is not existent
 if [ ! -f "$BINNING" ]

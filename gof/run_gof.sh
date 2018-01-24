@@ -13,6 +13,9 @@ do
     fi
 done
 
+# Produce shapes
+./gof/produce_shapes.sh $CHANNEL $VARIABLE
+
 # Create datacard
 ./gof/produce_datacard.sh $CHANNEL $VARIABLE
 
@@ -20,4 +23,6 @@ done
 ./gof/gof.sh
 
 # Plot prefit and postfit shapes
+./combine/signal_strength.sh
+./combine/prefit_postfit_shapes.sh
 ./gof/plot_shapes.sh $CHANNEL $VARIABLE

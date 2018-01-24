@@ -17,13 +17,7 @@ def parse_arguments():
         description=
         "Plot categories using Dumbledraw from shapes produced by shape-producer module."
     )
-    '''parser.add_argument(
-        "-c",
-        "--categories",
-        nargs="+",
-        type=str,
-        required=True,
-        help="Categories")'''
+
     parser.add_argument(
         "-c",
         "--channels",
@@ -40,17 +34,12 @@ def parse_arguments():
     parser.add_argument(
         "--x-label", type=str, default="NN score", help="Label on x-axis")
     parser.add_argument(
-        "--png", action='store_true', help="Save plots in png format")
-    '''parser.add_argument(
-        "--num-processes",
-        type=int,
-        default=10,
-        help="Number of processes used for plotting")'''
-    '''parser.add_argument(
-        "--scale-signal",
-        type=int,
-        default=1,
-        help="Scale the signal yield by this factor")'''
+        "--gof-variable",
+        type=str,
+        default=None,
+        help="Enable plotting goodness of fit shapes for given variable")
+    parser.add_argument(
+        "--png", action="store_true", help="Save plots in png format")
 
     return parser.parse_args()
 
@@ -69,11 +58,14 @@ def setup_logging(output_file, level=logging.DEBUG):
 
 
 def main(args):
-    channel_categories = {
-        "et": ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"],
-        "mt": ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"],
-        "tt": ["ggh", "qqh", "ztt", "noniso", "misc"]
-    }
+    if args.gof_variable != None:
+        channel_categories = {c: [args.gof_variable] for c in args.channels}
+    else:
+        channel_categories = {
+            "et": ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"],
+            "mt": ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"],
+            "tt": ["ggh", "qqh", "ztt", "noniso", "misc"]
+        }
     channel_dict = {
         "ee": "ee",
         "em": "e#mu",
@@ -82,17 +74,20 @@ def main(args):
         "mt": "#mu#tau_{h}",
         "tt": "#tau_{h}#tau_{h}"
     }
-    category_dict = {
-        "ggh": "ggH",
-        "qqh": "VBF",
-        "ztt": "Z#rightarrow#tau#tau",
-        "zll": "Z#rightarrowll",
-        "w": "W+jets",
-        "tt": "t#bar{t}",
-        "ss": "same sign",
-        "misc": "misc",
-        "noniso": "noniso"
-    }
+    if args.gof_variable != None:
+        category_dict = {args.gof_variable: "inclusive"}
+    else:
+        category_dict = {
+            "ggh": "ggH",
+            "qqh": "VBF",
+            "ztt": "Z#rightarrow#tau#tau",
+            "zll": "Z#rightarrowll",
+            "w": "W+jets",
+            "tt": "t#bar{t}",
+            "ss": "same sign",
+            "misc": "misc",
+            "noniso": "noniso"
+        }
     split_dict = {"et": 50, "mt": 200, "tt": 20}
 
     bkg_processes = ["EWK", "QCD", "VV", "W", "TTT", "TTJ", "ZJ", "ZL", "ZTT"]

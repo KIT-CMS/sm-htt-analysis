@@ -3,7 +3,11 @@
 CHANNEL=$1
 VARIABLE=$2
 
-source utils/setup_cmssw.sh
+source utils/setup_cvmfs_sft.sh
+source utils/setup_python.sh
 
-PostFitShapes -m 125 -d datacard.txt -o datacard_shapes_prefit.root
-./plotting/plot_shapes.py -i datacard_shapes_prefit.root -f ${CHANNEL}_${VARIABLE}_prefit --title ${CHANNEL} --x-label ${VARIABLE}
+mkdir -p plots
+./plotting/plot_shapes.py -i datacard_shapes_prefit.root -c $CHANNEL --x-label $VARIABLE --gof-variable $VARIABLE
+./plotting/plot_shapes.py -i datacard_shapes_prefit.root -c $CHANNEL --x-label $VARIABLE --gof-variable $VARIABLE --png
+./plotting/plot_shapes.py -i datacard_shapes_postfit_sb.root -c $CHANNEL --x-label $VARIABLE --gof-variable $VARIABLE
+./plotting/plot_shapes.py -i datacard_shapes_postfit_sb.root -c $CHANNEL --x-label $VARIABLE --gof-variable $VARIABLE --png

@@ -122,6 +122,8 @@ def get_1d_binning(channel, chain, variables, percentile_min, percentile_max,
             float(x) for x in np.linspace(min_max[0], min_max[1], num_bins)
         ]
         binning[v]["expression"] = v
+        binning[v]["cut"] = "({VAR}>{MIN})&&({VAR}<{MAX})".format(
+            VAR=v, MIN=min_max[0], MAX=min_max[1])
         logger.debug("Binning for variable %s: %s", v, binning[v]["bins"])
 
     return binning
@@ -156,6 +158,8 @@ def add_2d_unrolled_binning(variables, binning):
             binning[name] = {}
             binning[name]["bins"] = [float(x) for x in bins]
             binning[name]["expression"] = expression
+            binning[name]["cut"] = "({VAR}>{MIN})&&({VAR}<{MAX})".format(
+                VAR=v1, MIN=bins1[0], MAX=bins1[-1])
 
     return binning
 
