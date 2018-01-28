@@ -72,8 +72,8 @@ seed: 1234
 
 # Define the model parameter
 model:
-    name: smhtt_et
+    name: smhtt_dropout
     batch_size: 1000
     epochs: 10000
-    early_stopping: 50
+    early_stopping: 20
     save_best_only: true

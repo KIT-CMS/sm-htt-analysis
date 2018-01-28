@@ -88,7 +88,7 @@ def main(args):
             "misc": "misc",
             "noniso": "noniso"
         }
-    split_dict = {"et": 50, "mt": 200, "tt": 20}
+    split_dict = {"et": 101, "mt": 101, "tt": 101}
 
     bkg_processes = ["EWK", "QCD", "VV", "W", "TTT", "TTJ", "ZJ", "ZL", "ZTT"]
     legend_bkg_processes = copy.deepcopy(bkg_processes)
@@ -164,11 +164,12 @@ def main(args):
 
             plot.subplot(0).setYlims(
                 split_dict[channel],
-                2 * plot.subplot(0).get_hist("total_bkg").GetMaximum())
+                max(2 * plot.subplot(0).get_hist("total_bkg").GetMaximum(),
+                    split_dict[channel] * 2))
             plot.subplot(1).setYlims(0.1, split_dict[channel])
             plot.subplot(2).setYlims(0.75, 1.45)
             if channel == "tt" and category == "qqh":
-                plot.subplot(2).setYlims(0.75, 2.15)
+                plot.subplot(2).setYlims(0.75, 2.65)
             plot.subplot(1).setLogY()
             plot.subplot(2).setXlabel(args.x_label)
             plot.subplot(0).setYlabel("N_{events}")
