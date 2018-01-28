@@ -40,6 +40,10 @@ def parse_arguments():
         help="Enable plotting goodness of fit shapes for given variable")
     parser.add_argument(
         "--png", action="store_true", help="Save plots in png format")
+    parser.add_argument(
+        "--normalize-by-bin-width",
+        action="store_true",
+        help="Normelize plots by bin width")
 
     return parser.parse_args()
 
@@ -88,7 +92,12 @@ def main(args):
             "misc": "misc",
             "noniso": "noniso"
         }
-    split_dict = {"et": 101, "mt": 101, "tt": 101}
+
+    if args.normalize_by_bin_width:
+        split_value = 10001
+    else:
+        split_value = 101
+    split_dict = {c: split_value for c in ["et", "mt", "tt"]}
 
     bkg_processes = ["EWK", "QCD", "VV", "W", "TTT", "TTJ", "ZJ", "ZL", "ZTT"]
     legend_bkg_processes = copy.deepcopy(bkg_processes)
@@ -97,15 +106,19 @@ def main(args):
     rootfile = rootfile_parser.Rootfile_parser(args.input)
 
     plots = []
-
     for channel in args.channels:
         for category in channel_categories[channel]:
+            # create plot
             plot = dd.Plot([0.5, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14)
+
+            # get background histograms
             for process in bkg_processes:
                 plot.add_hist(
                     rootfile.get(channel, category, process), process, "bkg")
                 plot.setGraphStyle(
                     process, "hist", fillcolor=styles.color_dict[process])
+
+            # get signal histograms
             for i in range(2):
                 plot.subplot(i + 1).add_hist(
                     rootfile.get(channel, category, "ggH"), "ggH")
@@ -115,6 +128,8 @@ def main(args):
                     rootfile.get(channel, category, "qqH"), "qqH")
                 plot.subplot(i + 1).add_hist(
                     rootfile.get(channel, category, "qqH"), "qqH_top")
+
+            # get observed data and total background histograms
             plot.add_hist(
                 rootfile.get(channel, category, "data_obs"), "data_obs")
             plot.add_hist(
@@ -134,6 +149,7 @@ def main(args):
                 fillcolor=styles.color_dict["unc"],
                 linecolor=0)
 
+            # assemble ratio
             bkg_ggH = plot.subplot(2).get_hist("ggH")
             bkg_qqH = plot.subplot(2).get_hist("qqH")
             bkg_ggH.Add(plot.subplot(2).get_hist("total_bkg"))
@@ -160,8 +176,15 @@ def main(args):
                 "bkg_qqH_top", "data_obs"
             ], "total_bkg")
 
+            # stack background processes
             plot.create_stack(bkg_processes, "stack")
 
+            # normalize stacks by bin-width
+            if args.normalize_by_bin_width:
+                plot.subplot(0).normalizeByBinWidth()
+                plot.subplot(1).normalizeByBinWidth()
+
+            # set axes limits and labels
             plot.subplot(0).setYlims(
                 split_dict[channel],
                 max(2 * plot.subplot(0).get_hist("total_bkg").GetMaximum(),
@@ -172,7 +195,10 @@ def main(args):
                 plot.subplot(2).setYlims(0.75, 2.65)
             plot.subplot(1).setLogY()
             plot.subplot(2).setXlabel(args.x_label)
-            plot.subplot(0).setYlabel("N_{events}")
+            if args.normalize_by_bin_width:
+                plot.subplot(0).setYlabel("N_{events}/bin width")
+            else:
+                plot.subplot(0).setYlabel("N_{events}")
             plot.subplot(1).setYlabel(
                 "")  # otherwise number labels are not drawn on axis
             plot.subplot(2).setYlabel("Ratio to Bkg.")
