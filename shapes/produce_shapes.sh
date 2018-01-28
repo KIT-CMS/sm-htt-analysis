@@ -8,8 +8,10 @@ source utils/setup_python.sh
 source utils/setup_samples.sh
 
 # Calculate binning from data distributions
-# NOTE: Binning is now committed in repository.
-#./shapes/calculate_binning.sh $ARTUS_OUTPUTS $KAPPA_DATABASE $ET_TRAINING $MT_TRAINING
+# NOTE: Binning is committed in this repository.
+#./shapes/calculate_binning.sh et
+#./shapes/calculate_binning.sh mt
+#./shapes/calculate_binning.sh tt
 
 # Produce shapes
 python shapes/produce_shapes.py \
