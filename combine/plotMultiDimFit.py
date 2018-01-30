@@ -45,21 +45,21 @@ else:
 
 limit = plot.MakeTChain(args.files, 'limit')
 graph = plot.TGraph2DFromTree(
-    limit, "r_ggH", "r_bbH", '2*deltaNLL', 'quantileExpected > -0.5 && deltaNLL > 0 && deltaNLL < 1000')
+    limit, "r_ggH", "r_qqH", '2*deltaNLL', 'quantileExpected > -0.5 && deltaNLL > 0 && deltaNLL < 1000')
 best = plot.TGraphFromTree(
-    limit, "r_ggH", "r_bbH", 'deltaNLL == 0')
+    limit, "r_ggH", "r_qqH", 'deltaNLL == 0')
 plot.RemoveGraphXDuplicates(best)
 hists = plot.TH2FromTGraph2D(graph, method='BinCenterAligned')
 plot.fastFillTH2(hists, graph,interpolateMissing=True)
 if args.bg_exp:
     limit_bg = plot.MakeTChain(args.bg_exp, 'limit')
     best_bg = plot.TGraphFromTree(
-        limit_bg, "r_ggH", "r_bbH", 'deltaNLL == 0')
+        limit_bg, "r_ggH", "r_qqH", 'deltaNLL == 0')
     plot.RemoveGraphXDuplicates(best_bg)
 if args.sm_exp:
     limit_sm = plot.MakeTChain(args.sm_exp, 'limit')
     best_sm = plot.TGraphFromTree(
-        limit_sm, "r_ggH", "r_bbH", 'deltaNLL == 0')
+        limit_sm, "r_ggH", "r_qqH", 'deltaNLL == 0')
     plot.RemoveGraphXDuplicates(best_sm)
 hists.SetMaximum(6)
 hists.SetMinimum(0)
