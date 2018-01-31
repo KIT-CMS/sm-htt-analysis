@@ -23,9 +23,9 @@ parser.add_argument(
 parser.add_argument(
     '--title-left', default='', help="""Left header text above the frame""")
 parser.add_argument(
-    '--x-title', default='#sigma#font[42]{(ggH)}#upoint#font[52]{B}#font[42]{(#phi#rightarrow#tau#tau)} (pb)', help="""Title for the x-axis""")
+    '--x-title', default='#mu(ggH)', help="""Title for the x-axis""")
 parser.add_argument(
-    '--y-title', default='#sigma#font[42]{(qqH)}#upoint#font[52]{B}#font[42]{(#phi#rightarrow#tau#tau)} (pb)', help="""Title for the x-axis""")
+    '--y-title', default='#mu(qqH)', help="""Title for the x-axis""")
 parser.add_argument(
     '--debug-output', '-d', help="""If specified, write the contour TH2s and
     TGraphs into this output ROOT file""")
