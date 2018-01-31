@@ -6,8 +6,8 @@ import random
 
 def main():
     outputfile = ROOT.TFile("test_distributions.root", "RECREATE")
-    hist1 = ROOT.TH1F("source", "source", 8, 0., 100.)
-    hist2 = ROOT.TH1F("target", "target", 8, 0., 100.)
+    hist1 = ROOT.TH1F("source", "source", 100, 0., 100.)
+    hist2 = ROOT.TH1F("target", "target", 100, 0., 100.)
     for i in range(100000):
         hist1.Fill(random.gauss(40., 10.))
         hist2.Fill(random.gauss(50., 15.))

@@ -16,4 +16,6 @@ python quantile-method/produce_shapes.py \
     --directory $ARTUS_OUTPUTS \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
-    --channels $CHANNELS
+    --channels $CHANNELS \
+    -f /storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-01-17_ll/calibrated
+

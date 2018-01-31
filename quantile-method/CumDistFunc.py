@@ -30,6 +30,13 @@ def parse_arguments():
         required=True,
         help="Shape names in the input ROOT file")
     parser.add_argument(
+        "-n",
+        "--names",
+        nargs="+",
+        type=str,
+        default=None,
+        help="Alternative names for the cdf splines")
+    parser.add_argument(
         "-o",
         "--output",
         type=str,
@@ -57,6 +64,10 @@ def setup_logging(output_file, level=logging.DEBUG):
 
 def main(args):
     # read inputs
+    if args.names!=None:
+        if len(args.shapes)!=len(args.names):
+            logger.fatal("List of input shape names (-s) and spline names (-n) must have same length!")
+            raise Exception
     input_hists = []
     inputfile = ROOT.TFile(args.input, "READ")
     for entry in args.shapes:
@@ -79,10 +90,32 @@ def main(args):
         logger.debug("y-values: "+" ".join([str(x) for x in ypoints_norm]))
         
         # generate splines
-        print hist.GetName()
         spline = ROOT.TSpline3(hist.GetName(), array.array('d', xpoints), array.array('d', ypoints_norm), npoints+1, "b1e1", 0.0, 0.0)
-        spline.SetName(hist.GetName())
+        if args.names==None:
+            spline.SetName(hist.GetName())
+        else:
+            spline.SetName(args.names[index])
         spline.Write()
+        
+        # check regularity
+        n_val = 0
+        n_der = 0
+        step = (xpoints[-1] - xpoints[0]) / 1000.
+        var = xpoints[0] + step/2.
+        for i in range(1000):
+            if spline.Eval(var) > 1.0 or spline.Eval(var) < 0.0:
+                n_val += 1
+                logger.debug("CDF(%f)=%f"%(var, spline.Eval(var)))
+            if spline.Derivative(var) < 0.0:
+                n_der += 1
+                logger.debug("CDF'(%f)=%f"%(var, spline.Derivative(var)))
+            var += step
+        if n_val > 0:
+            logger.warning("About %i per mille of CDF spline '%s' is out of range [0,1]!"%(n_val, hist.GetName() if args.names==None else args.names[index]))
+        if n_der > 0:
+            logger.warning("About %i per mille of CDF spline '%s' has negative derivative!"%(n_der, hist.GetName() if args.names==None else args.names[index]))
+        
+        # control plots
         if args.control:
             spline.SetLineColor(2+index)
             spline.SetLineWidth(3)
@@ -97,5 +130,5 @@ def main(args):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    setup_logging("cumdistfunc.log", logging.DEBUG)
+    setup_logging("cumdistfunc.log", logging.WARNING)
     main(args)

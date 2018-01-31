@@ -69,10 +69,11 @@ def setup_logging(output_file, level=logging.DEBUG):
 
 def main(args):
     channel_categories = {
-        "ee": ["m_vis", "d0_e", "dZ_e"],
-        "mm": ["m_vis", "d0_m", "dZ_m"],
-        "et": ["d0_te", "dZ_te", "d0_t", "dZ_t"],
-        "mt": ["d0_tm", "dZ_tm", "d0_t", "dZ_t", "d0_f", "dZ_f", "d0_tt", "dZ_tt"],
+        "ee": ["m_vis", "d0_e", "dZ_e", "DCA0_e", "DCAZ_e"],
+        "mm": ["m_vis", "d0_m", "dZ_m", "DCA0_m", "DCAZ_m"],
+        "em": ["d0_em_te", "dZ_em_te", "d0_em_tm", "dZ_em_tm"],#["m_vis_te", "m_vis_tm"],#, "d0_te", "dZ_te", "DCA0_te", "DCAZ_te", "d0_tm", "dZ_tm", "DCA0_tm", "DCAZ_tm"],
+        "et": ["d0_te", "dZ_te"],#["m_vis", "d0_te", "dZ_te"],#, "d0_t", "dZ_t"],
+        "mt": ["d0_tm", "dZ_tm"],#["m_vis", "d0_tm", "dZ_tm"],#, "d0_t", "dZ_t", "d0_f", "dZ_f", "d0_tt", "dZ_tt"],
         "tt": ["d0_t2", "dZ_t2"]
     }
     channel_dict = {
@@ -86,12 +87,28 @@ def main(args):
     category_dict = {
         "d0_e": "#rightarrowe",
         "dZ_e": "#rightarrowe",
+        "DCA0_e": "#rightarrowe",
+        "DCAZ_e": "#rightarrowe",
         "d0_m": "#rightarrowm",
         "dZ_m": "#rightarrowm",
+        "DCA0_m": "#rightarrowm",
+        "DCAZ_m": "#rightarrowm",
         "d0_te": "#rightarrow#tau#rightarrowe",
         "dZ_te": "#rightarrow#tau#rightarrowe",
+        "DCA0_te": "#rightarrow#tau#rightarrowe",
+        "DCAZ_te": "#rightarrow#tau#rightarrowe",
         "d0_tm": "#rightarrow#tau#rightarrowm",
         "dZ_tm": "#rightarrow#tau#rightarrowm",
+        "DCA0_tm": "#rightarrow#tau#rightarrowm",
+        "DCAZ_tm": "#rightarrow#tau#rightarrowm",
+        "d0_em_te": "#rightarrow#tau#rightarrowe",
+        "dZ_em_te": "#rightarrow#tau#rightarrowe",
+        "DCA0_em_te": "#rightarrow#tau#rightarrowe",
+        "DCAZ_em_te": "#rightarrow#tau#rightarrowe",
+        "d0_em_tm": "#rightarrow#tau#rightarrowm",
+        "dZ_em_tm": "#rightarrow#tau#rightarrowm",
+        "DCA0_em_tm": "#rightarrow#tau#rightarrowm",
+        "DCAZ_em_tm": "#rightarrow#tau#rightarrowm",
         "d0_t":  "#rightarrow#tau#rightarrow#tau_{h}",
         "dZ_t":  "#rightarrow#tau#rightarrow#tau_{h}",
         "d0_t2": "#rightarrow#tau#rightarrow#tau_{h}",
@@ -100,17 +117,35 @@ def main(args):
         "dZ_f":  "fake#rightarrow#tau_{h}",
         "d0_tt": "fake#rightarrow#tau_{h}",
         "dZ_tt": "fake#rightarrow#tau_{h}",
-        "m_vis": "inclusive"
+        "m_vis": "inclusive",
+        "m_vis_te": "muon antiiso",
+        "m_vis_tm": "ele antiiso"
     }
     variable_dict = {
-        "d0_e": "d0_1",
-        "dZ_e": "dZ_1",
-        "d0_m": "d0_1",
-        "dZ_m": "dZ_1",
-        "d0_te": "d0_1",
-        "dZ_te": "dZ_1",
-        "d0_tm": "d0_1",
-        "dZ_tm": "dZ_1",
+        "d0_e": "d0_1_calib_all",
+        "dZ_e": "dZ_1_calib_all",
+        "DCA0_e": "DCA0_1",
+        "DCAZ_e": "DCAZ_1",
+        "d0_m": "d0_1_calib_all",
+        "dZ_m": "dZ_1_calib_all",
+        "DCA0_m": "DCA0_1",
+        "DCAZ_m": "DCAZ_1",
+        "d0_te": "d0_1_calib",
+        "dZ_te": "dZ_1_calib",
+        "DCA0_te": "d0_1",
+        "DCAZ_te": "dZ_1",
+        "d0_tm": "d0_1_calib",
+        "dZ_tm": "dZ_1_calib",
+        "DCA0_tm": "d0_1",
+        "DCAZ_tm": "dZ_1",
+        "d0_em_te": "d0_1_calib_all",
+        "dZ_em_te": "dZ_1_calib_all",
+        "DCA0_em_te": "d0_1",
+        "DCAZ_em_te": "dZ_1",
+        "d0_em_tm": "d0_2_calib_all",
+        "dZ_em_tm": "dZ_2_calib_all",
+        "DCA0_em_tm": "d0_2",
+        "DCAZ_em_tm": "dZ_2",
         "d0_t":  "d0_2",
         "dZ_t":  "dZ_2",
         "d0_t2": "d0_2",
@@ -119,23 +154,25 @@ def main(args):
         "dZ_f":  "dZ_2",
         "d0_tt": "d0_2",
         "dZ_tt": "dZ_2",
-        "m_vis": "m_vis"
+        "m_vis": "m_vis",
+        "m_vis_te": "m_vis",
+        "m_vis_tm": "m_vis"
     }
     split_dict = {
         "ee": 10000000,
-        "em": 10000000,
-        "et": 10,
+        "em": 10000,
+        "et": 1000000,
         "mm": 100000000,
-        "mt": 10,
+        "mt": 1000000,
         "tt": 10
     }
 
     MC_processes = {
         "ee": ["HTT", "EWK", "QCD", "VV", "W", "TT", "ZJ", "ZTT", "ZL"],
         "em": ["HTT", "EWK", "QCD", "VV", "W", "TT", "ZJ", "ZTT", "ZL"],
-        "et": ["HTT", "EWK", "QCD", "VV", "W", "TTT", "TTJ", "ZJ", "ZTT", "ZL"],
+        "et": ["HTT", "EWK", "QCD", "VV", "TTT", "TTJ", "ZJ", "WL", "WT", "ZTT", "ZL"],
         "mm": ["HTT", "EWK", "QCD", "VV", "W", "TT", "ZJ", "ZTT", "ZL"],
-        "mt": ["HTT", "EWK", "QCD", "VV", "W", "TTT", "TTJ", "ZJ", "ZTT", "ZL"],
+        "mt": ["HTT", "EWK", "QCD", "VV", "TTT", "TTJ", "ZJ", "WL", "WT", "ZTT", "ZL"],
         "tt": ["HTT", "EWK", "QCD", "VV", "W", "TTT", "TTJ", "ZJ", "ZTT", "ZL"]
     }
     legend_MC_processes={}
@@ -164,6 +201,10 @@ def main(args):
                 "MC", "hist", linecolor=1, linewidth=3)
 	    plot.setGraphStyle(
                 "data_obs", "e0")
+	    
+	    scalefactor = plot.subplot(2).get_hist("data_obs").GetSumOfWeights()/plot.subplot(1).get_hist("MC").GetSumOfWeights()
+	    print scalefactor
+	    plot.subplot(2)._hists["MC"][0].Scale(scalefactor)
 
             plot.subplot(2).normalize(["MC", "data_obs"], "data_obs")
             plot.subplot(0).normalizeByBinWidth()
@@ -171,12 +212,14 @@ def main(args):
 
             plot.create_stack(MC_processes[channel], "stack")
 
-            plot.subplot(0).setYlims(split_dict[channel], 2 * plot.subplot(0).get_hist("MC").GetMaximum())
+            plot.subplot(0).setYlims(split_dict[channel]/1000 if "DCA" in category else split_dict[channel], 2 * plot.subplot(0).get_hist("MC").GetMaximum())
             #plot.subplot(0).setYlims(10, 10000000)
-            plot.subplot(1).setYlims(1.0, split_dict[channel])
-            plot.subplot(2).setYlims(0.6, 1.4)
+            plot.subplot(1).setYlims(0.1 if "DCA" in category else 100.0 if "t" in channel else 100.0, split_dict[channel]/1000 if "DCA" in category else split_dict[channel])
+            #plot.subplot(2).setYlims(0.95, 1.05)
+            plot.subplot(2).setYlims(0.8, 1.2)
+            #plot.subplot(2).setYlims(0.6, 1.4)
             plot.subplot(2).setXlabel(variable_dict[category])
-            plot.subplot(0).setYlabel("N_{events}")
+            plot.subplot(0).setYlabel("N_{events} / bin width")
             plot.subplot(1).setYlabel("")
             plot.subplot(2).setYlabel("Ratio to data")
 
@@ -185,7 +228,7 @@ def main(args):
             plot.scaleYTitleSize(0.9)
             #plot.scaleYLabelSize(0.8)
             #plot.scaleXLabelOffset(2.0)
-            plot.scaleYTitleOffset(1.3)
+            plot.scaleYTitleOffset(1.25)
             #plot.setXlims(-0.02, 0.02)
             plot.subplot(1).setLogY()
 
@@ -225,7 +268,8 @@ def main(args):
                                              if args.png else 'pdf'))
             
             # plot zoomed version
-            plot.setXlims(-0.02, 0.02)
+            lim = 0.01 * 600 if "DCA" in category else 0.01
+            plot.setXlims(-lim, lim)
             plot.scaleYTitleSize(1.0)
             plot.scaleYTitleOffset(1.0)
             plot.subplot(1).Draw(["stack", "data_obs"])

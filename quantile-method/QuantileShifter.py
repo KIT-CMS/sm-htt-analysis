@@ -10,33 +10,64 @@ import array
 import random
 
 import logging
-logger = logging.getLogger("")
+logger = logging.getLogger(__name__)
 
 class QuantileShifter(object):
-    def __init__(self, inputfile, source, target):
+    def __init__(self, inputfile, source, target, use_bisecting=False):
         quantilefile = ROOT.TFile(inputfile, "READ")
         self._source = copy.deepcopy(quantilefile.Get(source))
         self._target = copy.deepcopy(quantilefile.Get(target))
         quantilefile.Close()
+        self._use_bisecting = use_bisecting
+        if self._use_bisecting:
+            logger.info("Using bisecting.")
+    
+    def _bisecting(self, quantile, up , down, steps):
+        if steps <= 0:
+            return down + (quantile - self._target.Eval(down)) / (self._target.Eval(up) - self._target.Eval(down)) * (up - down)
+        middle = (up + down) / 2.0
+        if quantile > self._target.Eval(middle):
+            return self._bisecting(quantile, up, middle, steps - 1)
+        else:
+            return self._bisecting(quantile, middle, down, steps - 1)
     
     def shift(self, value):
-        value = self._source.Eval(value)
-        npoints = self._target.GetNp()
         xup = ROOT.Double()
         yup = ROOT.Double()
         xdown = ROOT.Double()
         ydown = ROOT.Double()
+        
+        npoints = self._target.GetNp()
+        self._source.GetKnot(0, xdown, ydown)
+        self._source.GetKnot(npoints-1, xup, yup)
+        if value < xdown or value > xup:
+            logger.warning("Input value %f out of range [%f, %f]. No correction applied."%(value, xdown, xup))
+            return value
+        
+        quantile = max(0.0, min(self._source.Eval(value), 1.0))
         self._target.GetKnot(0, xdown, ydown)
-        i = 0
-        for index in range(npoints):
-            i = index
+        bin_index = 0
+        for index in range(npoints-1):
+            bin_index = index
             self._target.GetKnot(index, xdown, ydown)
             self._target.GetKnot(index+1, xup, yup)
-            if value <= yup and yup != 0.0:
+            if quantile <= yup and yup != 0.0:
                 break            
+                
+        steps = 5
+        if self._use_bisecting:
+            return self._bisecting(quantile, xup, xdown, steps)
         
-        result = xdown + (value - ydown) / (yup - ydown) * (xup - xdown)
-        result -= (self._target.Eval(result) - value) / self._target.Derivative(result)
+        result = xdown + (quantile - ydown) / (yup - ydown) * (xup - xdown)
+        derivative = self._target.Derivative(result)
+        if derivative == 0.0:
+            logger.warning("Default inversion method fails due to zero derivative. Bisecting is used instead.")
+            return self._bisecting(quantile, xup, xdown, steps)
+        correction = (quantile - self._target.Eval(result)) / self._target.Derivative(result)
+        result += correction
+        if (abs(correction) > (xup - xdown) / 2.0 or result < xdown or result > xup):
+            logger.warning("Default inversion method yields too large corrections. Bisecting is used instead.")
+            return self._bisecting(quantile, xup, xdown, steps)
         return result
 
 def setup_logging(output_file, level=logging.DEBUG):
@@ -52,8 +83,8 @@ def setup_logging(output_file, level=logging.DEBUG):
     logger.addHandler(file_handler)
 
 def main():
-    shifter = QuantileShifter("splines.root", "source", "target")
-    backshifter = QuantileShifter("splines.root", "target", "source")
+    shifter = QuantileShifter("splines.root", "source", "target", True)
+    backshifter = QuantileShifter("splines.root", "target", "source", True)
     hist1 = ROOT.TH1F("source", "source", 100, 0., 100.)
     hist2 = ROOT.TH1F("shifted", "shifted", 100, 0., 100.)
     hist3 = ROOT.TH1F("backshift", "backshift", 100, 0., 100.)
