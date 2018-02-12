@@ -222,7 +222,8 @@ def main(args):
             Category(
                 args.gof_variable,
                 et,
-                Cuts(binning["gof"]["et"][args.gof_variable]["cut"]),
+                Cuts(
+                    Cut(binning["gof"]["et"][args.gof_variable]["cut"], "binning")),
                 variable=score))
 
     mt_categories = []
@@ -263,7 +264,8 @@ def main(args):
             Category(
                 args.gof_variable,
                 mt,
-                Cuts(binning["gof"]["mt"][args.gof_variable]["cut"]),
+                Cuts(
+                    Cut(binning["gof"]["mt"][args.gof_variable]["cut"], "binning")),
                 variable=score))
 
     tt_categories = []
@@ -304,7 +306,8 @@ def main(args):
             Category(
                 args.gof_variable,
                 tt,
-                Cuts(binning["gof"]["tt"][args.gof_variable]["cut"]),
+                Cuts(
+                    Cut(binning["gof"]["tt"][args.gof_variable]["cut"], "binning")),
                 variable=score))
 
     # Nominal histograms
