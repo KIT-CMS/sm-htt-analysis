@@ -87,10 +87,18 @@ def main(args):
                     np.sum(events_matrix[categories_unique.index(c), :]))
 
     # Print number of events for processes in simulation
-    logger.info("Print number of events for processes.")
+    logger.info(
+        "Print number of events for processes summed over all categories.")
     for p in procs_unique:
         logger.info("Process %s (simulation): %s", p,
                     np.sum(events_matrix[:, procs_unique.index(p)]))
+
+    for c in dict_obs:
+        logger.info("Print number of events for processes for category %s.", c)
+        for p in procs_unique:
+            logger.info("Process %s (simulation): %s", p,
+                        events_matrix[categories_unique.index(c),
+                                      procs_unique.index(p)])
 
 
 if __name__ == "__main__":
