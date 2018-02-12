@@ -197,7 +197,11 @@ def main(args):
                     category,
                     et,
                     Cuts(
-                        Cut(binning["HIG16043"]["et"][category]["cut"], "et_cut_{}".format(category))),
+                        Cut(binning["HIG16043"]["et"][category]["cut_unrolling"],
+                            "et_cut_unrolling_{}".format(category)),
+                        Cut(binning["HIG16043"]["et"][category]["cut_category"],
+                            "et_cut_category_{}".format(category))
+                        ),
                     variable=variable))
     # Analysis shapes
     elif "et" in args.channels:
@@ -239,7 +243,11 @@ def main(args):
                     category,
                     mt,
                     Cuts(
-                        Cut(binning["HIG16043"]["mt"][category]["cut"], "mt_cut_{}".format(category))),
+                        Cut(binning["HIG16043"]["mt"][category]["cut_unrolling"],
+                            "mt_cut_unrolling_{}".format(category)),
+                        Cut(binning["HIG16043"]["mt"][category]["cut_category"],
+                            "mt_cut_category_{}".format(category))
+                        ),
                     variable=variable))
     # Analysis shapes
     elif "mt" in args.channels:
@@ -281,7 +289,11 @@ def main(args):
                     category,
                     tt,
                     Cuts(
-                        Cut(binning["HIG16043"]["tt"][category]["cut"], "tt_cut_{}".format(category))),
+                        Cut(binning["HIG16043"]["tt"][category]["cut_unrolling"],
+                            "tt_cut_unrolling_{}".format(category)),
+                        Cut(binning["HIG16043"]["tt"][category]["cut_category"],
+                            "tt_cut_category_{}".format(category))
+                        ),
                     variable=variable))
     # Analysis shapes
     elif "tt" in args.channels:

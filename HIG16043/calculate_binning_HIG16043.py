@@ -33,9 +33,16 @@ def main(args):
 
     # Channel: et, mt
 
-    cat = {"variable": None, "binning": None, "expression": None, "cut": None}
+    cat = {
+        "variable": None,
+        "binning": None,
+        "expression": None,
+        "cut_unrolling": None,
+        "cut_category": None
+    }
 
     cat["variable"] = "m_vis"
+    cat["cut_unrolling"] = "m_vis<400"
 
     binning_steps = range(60, 115, 5) + [400]
     binning = [0]
@@ -55,8 +62,7 @@ def main(args):
             expression += " + "
     cat["expression"] = expression
 
-    cat["cut"] = "(m_vis<400)&&(njets==0)"
-
+    cat["cut_category"] = "njets==0"
     et["0jet"] = deepcopy(cat)
     mt["0jet"] = deepcopy(cat)
 
@@ -64,7 +70,8 @@ def main(args):
 
     cat["variable"] = "m_sv"
     cat["expression"] = None
-    cat["cut"] = "njets==0"
+    cat["cut_unrolling"] = "1"
+    cat["cut_category"] = "njets==0"
     cat["binning"] = [0] + range(50, 310, 10)
 
     tt["0jet"] = deepcopy(cat)
@@ -76,7 +83,7 @@ def main(args):
     # Channel: et, mt
 
     cat["variable"] = "m_sv"
-    cat["cut"] = "(m_sv<400)&&(mjj>300)&&(njets>1)"
+    cat["cut_unrolling"] = "m_sv<400"
 
     binning_steps = range(95, 160, 20) + [400]
     binning = [0]
@@ -99,13 +106,16 @@ def main(args):
             expression += " + "
     cat["expression"] = expression
 
+    cat["cut_category"] = "(njets>1)&&(mjj>300)&&(pt_tt>50)"
     et["vbf"] = deepcopy(cat)
+
+    cat["cut_category"] = "(njets>1)&&(mjj>300)&&(pt_tt>50)&&(pt_2>40)"
     mt["vbf"] = deepcopy(cat)
 
     # Channel: tt
 
     cat["variable"] = "m_sv"
-    cat["cut"] = "(m_sv<250)&&(mjj>0)&&(njets>1)"
+    cat["cut_unrolling"] = "m_sv<250"
 
     binning_steps = [40, 60] + range(70, 140, 10) + [150, 200, 250]
     binning = [0]
@@ -128,6 +138,7 @@ def main(args):
             expression += " + "
     cat["expression"] = expression
 
+    cat["cut_category"] = "(njets>1)&&(pt_tt>100)&&(jdeta>2.5)"
     tt["vbf"] = deepcopy(cat)
 
     ###########################################################################
@@ -137,7 +148,7 @@ def main(args):
     # Channel: et, mt
 
     cat["variable"] = "m_sv"
-    cat["cut"] = "(m_sv<300)&&(pt_tt>0)&&(njets==1)"
+    cat["cut_unrolling"] = "m_sv<300"
 
     binning_steps = range(80, 170, 10) + [300]
     binning = [0]
@@ -160,13 +171,18 @@ def main(args):
             expression += " + "
     cat["expression"] = expression
 
+    cat["cut_category"] = "(!({}) && !({}))".format(et["0jet"]["cut_category"],
+                                                    et["vbf"]["cut_category"])
     et["boosted"] = deepcopy(cat)
+
+    cat["cut_category"] = "(!({}) && !({}))".format(mt["0jet"]["cut_category"],
+                                                    mt["vbf"]["cut_category"])
     mt["boosted"] = deepcopy(cat)
 
     # Channel: tt
 
     cat["variable"] = "m_sv"
-    cat["cut"] = "(m_sv<250)*(pt_tt>0)&&(njets==1)"
+    cat["cut_unrolling"] = "m_sv<250"
 
     binning_steps = [40] + range(60, 140, 10) + [150, 200, 250]
     binning = [0]
@@ -189,6 +205,8 @@ def main(args):
             expression += " + "
     cat["expression"] = expression
 
+    cat["cut_category"] = "(!({}) && !({}))".format(tt["0jet"]["cut_category"],
+                                                    tt["vbf"]["cut_category"])
     tt["boosted"] = deepcopy(cat)
 
     ###########################################################################
