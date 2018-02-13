@@ -70,7 +70,7 @@ def main(args):
 
     cat["variable"] = "m_sv"
     cat["expression"] = None
-    cat["cut_unrolling"] = "1"
+    cat["cut_unrolling"] = "m_sv>0"
     cat["cut_category"] = "njets==0"
     cat["binning"] = [0] + range(50, 310, 10)
 
