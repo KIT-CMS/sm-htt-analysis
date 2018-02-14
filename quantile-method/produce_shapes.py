@@ -194,7 +194,7 @@ def main(args):
         "ggH"   : Process("ggH",      ggHEstimation  (era, directory, tt, friend_directory=args.friend_directory)),
         "qqH"   : Process("qqH",      qqHEstimation  (era, directory, tt, friend_directory=args.friend_directory)),
         "VH"    : Process("VH",       VHEstimation   (era, directory, tt, friend_directory=args.friend_directory)),
-        "ZTT"   : Process("ZTT",      ZTTEstimation  (era, directory, tt, friend_directory=args.friend_directory)),
+        "ZTT"   : Process("ZTT",      ZTTEstimationTT(era, directory, tt, friend_directory=args.friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimationTT (era, directory, tt, friend_directory=args.friend_directory)),
         "ZJ"    : Process("ZJ",       ZJEstimationTT (era, directory, tt, friend_directory=args.friend_directory)),
         "W"     : Process("W",        WEstimation    (era, directory, tt, friend_directory=args.friend_directory)),
