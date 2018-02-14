@@ -164,6 +164,8 @@ def main(args):
     tt = TTSM()
     if args.QCD_extrap_fit:
         tt.cuts.get("os").invert()
+    if args.HIG16043:
+        tt.cuts.remove("pt_h")
     tt_processes = {
         "data"  : Process("data_obs", DataEstimation (era, directory, tt, friend_directory=tt_friend_directory)),
         "HTT"   : Process("HTT",      HTTEstimation  (era, directory, tt, friend_directory=tt_friend_directory)),
