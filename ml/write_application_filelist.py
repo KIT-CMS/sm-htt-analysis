@@ -129,7 +129,7 @@ def main(args):
                 ggHEstimation(era, args.directory, channel),
                 qqHEstimation(era, args.directory, channel),
                 VHEstimation(era, args.directory, channel),
-                ZTTEstimation(era, args.directory, channel),
+                ZTTEstimationTT(era, args.directory, channel),
                 ZLEstimationTT(era, args.directory, channel),
                 ZJEstimationTT(era, args.directory, channel),
                 TTTEstimationTT(era, args.directory, channel),
