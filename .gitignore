@@ -8,13 +8,8 @@
 *.log
 *.txt
 .nfs*
-*dataset_config.yaml
 fold*
-mt/
-et/
-CMSSW_7_4_7/
-impacts*
-plots/
-gof.json
+*.json
 *.yaml
 *.html
+CMSSW_7_4_7/
