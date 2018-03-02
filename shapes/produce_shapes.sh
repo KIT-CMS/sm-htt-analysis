@@ -16,9 +16,8 @@ source utils/setup_samples.sh
 # Produce shapes
 python shapes/produce_shapes.py \
     --directory $ARTUS_OUTPUTS \
-    --et-friend-directory $ARTUS_FRIENDS_ET \
-    --mt-friend-directory $ARTUS_FRIENDS_MT \
-    --tt-friend-directory $ARTUS_FRIENDS_TT \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
-    --channels $CHANNELS
+    --emb \
+    --gof-channel $CHANNELS \
+    --gof-variable m_vis

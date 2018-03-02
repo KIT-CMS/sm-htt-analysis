@@ -57,7 +57,11 @@ def parse_arguments():
         "--use-data-for-observation",
         action="store_true",
         help="Use data for the observation and not an Asimov dataset.")
-
+    parser.add_argument(
+        "--emb",
+        action="store_true",
+        default=False,
+        help="Create systematics custom to embedded events instead of ZTT simulation.")
     return parser.parse_args()
 
 
@@ -153,15 +157,15 @@ def main(args):
     db.add_shape_systematic("CMS_scale_t_1prong1pi0", 1.0, channels,
                             ["ggH", "qqH", "ZTT", "TTT", "VV", "EWK"])
     db.add_shape_systematic("CMS_htt_dyShape", 1.0, channels,
-                            ["ZTT", "ZL", "ZJ"])
+                            ["ZTT", "ZL", "ZJ"] if not args.emb else ["ZL", "ZJ"])
     db.add_shape_systematic("CMS_htt_ttbarShape", 1.0, channels,
                             ["TTT", "TTJ"])
     db.add_shape_systematic(
         "CMS_scale_j", 1.0, channels,
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"] if not args.emb else ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
     db.add_shape_systematic(
         "CMS_scale_met_unclustered", 1.0, channels,
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"] if not args.emb else ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
     db.add_shape_systematic("CMS_htt_jetToTauFake", 1.0, channels,
                             ["ZJ", "W", "TTJ"])
     db.add_shape_systematic("CMS_htt_eToTauFake_OneProng", 1.0, "et", ["ZL"])
@@ -172,10 +176,10 @@ def main(args):
                             ["ZL"])
     db.add_shape_systematic(
         "CMS_htt_eff_b", 1.0, channels,
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"] if not args.emb else ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
     db.add_shape_systematic(
         "CMS_htt_mistag_b", 1.0, channels,
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"] if not args.emb else ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
 
     # Add normalization systematics
     db.add_normalization_systematic(
@@ -227,7 +231,13 @@ def main(args):
     db.add_normalization_systematic("pdf_Higgs_ggH", 1.032, channels, "ggH")
     db.add_normalization_systematic("CMS_scale_qqH", 1.004, channels, "qqH")
     db.add_normalization_systematic("pdf_Higgs_qqH", 1.021, channels, "qqH")
-
+    
+    if args.emb:
+        # embedded event systematics
+        db.add_shape_systematic("CMS_htt_emb_ttbar_", 1.0, channels,
+                                ["ZTT"])
+        db.add_shape_systematic("CMS_scale_muonES", 1.0, "mt",
+                                ["ZTT"])
     # Extract shapes
     for channel in args.channels:
         if args.gof != None:
