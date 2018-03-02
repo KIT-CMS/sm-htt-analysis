@@ -35,7 +35,8 @@ python shapes/produce_shapes.py \
     --binning $BINNING \
     --gof-channel $CHANNEL \
     --gof-variable $VARIABLE \
-    --num-threads 1
+    --num-threads 1 \
+    --emb
 
 # Apply blinding strategy
 ./shapes/apply_blinding.sh
