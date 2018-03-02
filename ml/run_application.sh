@@ -10,7 +10,8 @@ python ml/write_application_filelist.py \
     --directory $ARTUS_OUTPUTS \
     --database $KAPPA_DATABASE \
     --channel ${CHANNEL} \
-    --output ml/${CHANNEL}/application_filelist.yaml
+    --output ml/${CHANNEL}/application_filelist.yaml \
+    --emb
 
 export KERAS_BACKEND=theano
 export OMP_NUM_THREADS=1

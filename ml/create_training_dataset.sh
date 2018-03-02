@@ -17,6 +17,7 @@ python ml/write_dataset_config.py \
     --tree-path ${CHANNEL}_nominal/ntuple \
     --event-branch event \
     --training-weight-branch training_weight \
-    --output-config ml/${CHANNEL}/dataset_config.yaml
+    --output-config ml/${CHANNEL}/dataset_config.yaml \
+    --emb
 
 ./htt-ml/dataset/create_training_dataset.py ml/${CHANNEL}/dataset_config.yaml
