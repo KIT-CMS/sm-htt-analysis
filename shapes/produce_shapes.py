@@ -349,6 +349,9 @@ def main(args):
                     era=era,
                     variation=Nominal(),
                     mass="125"))
+    #~ for process in mt_processes.values():
+        #~ print process.name
+    #~ exit()
     if "mt" in [args.gof_channel] + args.channels:
         for process, category in product(mt_processes.values(), mt_categories):
             systematics.add(
@@ -639,7 +642,6 @@ def main(args):
                     process=tt_processes[process_nick],
                     channel=tt,
                     era=era)
-    
     if args.emb:
         # Embedded event specifics
         
@@ -647,85 +649,83 @@ def main(args):
         tttautau_process_mt = Process("TTTauTau",      TTTauTauEstimationMT (era, directory, mt, friend_directory=mt_friend_directory))
         tttautau_process_et = Process("TTTauTau",      TTTauTauEstimationET (era, directory, et, friend_directory=et_friend_directory))
         tttautau_process_tt = Process("TTTauTau",      TTTauTauEstimationTT (era, directory, tt, friend_directory=tt_friend_directory))
-
-
         if 'mt' in [args.gof_channel] + args.channels:
-            mt_processes['ZTTpTTTauTauDown'] = Process("ZTTpTTTauTauDown", AddHistogramEstimationMethod("AddHistogram","nominal",era, directory,  mt, [mt_processes["ZTT"],tttautau_process_mt], [1.0,-0.1]))
-            systematics.add(
-                Systematic(
-                    category=category,
-                    process=mt_processes['ZTTpTTTauTauDown'],
-                    analysis="smhtt",
-                    era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar","Down"),
-                    mass="125"))
+            for category in mt_categories:
+                mt_processes['ZTTpTTTauTauDown'] = Process("ZTTpTTTauTauDown", AddHistogramEstimationMethod("AddHistogram","nominal",era, directory,  mt, [mt_processes["ZTT"],tttautau_process_mt], [1.0,-0.1]))
+                systematics.add(
+                    Systematic(
+                        category=category,
+                        process=mt_processes['ZTTpTTTauTauDown'],
+                        analysis="smhtt",
+                        era=era,
+                        variation=Relabel("CMS_htt_emb_ttbar","Down"),
+                        mass="125"))
 
-            mt_processes['ZTTpTTTauTauUp'] = Process("ZTTpTTTauTauUp", AddHistogramEstimationMethod("AddHistogram","nominal",era, directory,  mt, [mt_processes["ZTT"],tttautau_process_mt], [1.0,0.1]))
-            systematics.add(
-                Systematic(
-                    category=category,
-                    process=mt_processes['ZTTpTTTauTauUp'],
-                    analysis="smhtt",
-                    era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar","Up"),
-                    mass="125"))
-                    
-            #Muon ES uncertainty (needed for smearing due to initial reconstruction)
-            muon_es_variations = create_systematic_variations("CMS_scale_muonES", "muonES",
-                                                         DifferentPipeline)
-            for variation in muon_es_variations:
-                for process_nick in [
-                    "ZTT"
-                ]:
-                    if "mt" in [args.gof_channel] + args.channels:
-                        systematics.add_systematic_variation(
-                            variation=variation,
-                            process=mt_processes[process_nick],
-                            channel=mt,
-                            era=era)    
-                            
-                            
+                mt_processes['ZTTpTTTauTauUp'] = Process("ZTTpTTTauTauUp", AddHistogramEstimationMethod("AddHistogram","nominal",era, directory,  mt, [mt_processes["ZTT"],tttautau_process_mt], [1.0,0.1]))
+                systematics.add(
+                    Systematic(
+                        category=category,
+                        process=mt_processes['ZTTpTTTauTauUp'],
+                        analysis="smhtt",
+                        era=era,
+                        variation=Relabel("CMS_htt_emb_ttbar","Up"),
+                        mass="125"))
+                        
+                #Muon ES uncertainty (needed for smearing due to initial reconstruction)
+                muon_es_variations = create_systematic_variations("CMS_scale_muonES", "muonES",
+                                                             DifferentPipeline)
+                for variation in muon_es_variations:
+                    for process_nick in ["ZTT"]:
+                        if "mt" in [args.gof_channel] + args.channels:
+                            systematics.add_systematic_variation(
+                                variation=variation,
+                                process=mt_processes[process_nick],
+                                channel=mt,
+                                era=era)    
+                                             
         if 'et' in [args.gof_channel] + args.channels:
-            et_processes['ZTTpTTTauTauDown'] = Process("ZTTpTTTauTauDown", AddHistogramEstimationMethod("AddHistogram","nominal",era, directory,  et, [et_processes["ZTT"],tttautau_process_et], [1.0,-0.1]))
-            systematics.add(
-                Systematic(
-                    category=category,
-                    process=et_processes['ZTTpTTTauTauDown'],
-                    analysis="smhtt",
-                    era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar","Down"),
-                    mass="125"))
+            for category in et_categories:
+                et_processes['ZTTpTTTauTauDown'] = Process("ZTTpTTTauTauDown", AddHistogramEstimationMethod("AddHistogram","nominal",era, directory,  et, [et_processes["ZTT"],tttautau_process_et], [1.0,-0.1]))
+                systematics.add(
+                    Systematic(
+                        category=category,
+                        process=et_processes['ZTTpTTTauTauDown'],
+                        analysis="smhtt",
+                        era=era,
+                        variation=Relabel("CMS_htt_emb_ttbar","Down"),
+                        mass="125"))
 
-            et_processes['ZTTpTTTauTauUp'] = Process("ZTTpTTTauTauUp", AddHistogramEstimationMethod("AddHistogram","nominal",era, directory,  et, [et_processes["ZTT"],tttautau_process_et], [1.0,0.1]))
-            systematics.add(
-                Systematic(
-                    category=category,
-                    process=et_processes['ZTTpTTTauTauUp'],
-                    analysis="smhtt",
-                    era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar","Up"),
-                    mass="125"))  
+                et_processes['ZTTpTTTauTauUp'] = Process("ZTTpTTTauTauUp", AddHistogramEstimationMethod("AddHistogram","nominal",era, directory,  et, [et_processes["ZTT"],tttautau_process_et], [1.0,0.1]))
+                systematics.add(
+                    Systematic(
+                        category=category,
+                        process=et_processes['ZTTpTTTauTauUp'],
+                        analysis="smhtt",
+                        era=era,
+                        variation=Relabel("CMS_htt_emb_ttbar","Up"),
+                        mass="125"))  
         if 'tt' in [args.gof_channel] + args.channels:
-            tt_processes['ZTTpTTTauTauDown'] = Process("ZTTpTTTauTauDown", AddHistogramEstimationMethod("AddHistogram","nominal",era, directory,  tt, [tt_processes["ZTT"],tttautau_process_tt], [1.0,-0.1]))
-            systematics.add(
-                Systematic(
-                    category=category,
-                    process=tt_processes['ZTTpTTTauTauDown'],
-                    analysis="smhtt",
-                    era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar","Down"),
-                    mass="125"))
+            for category in tt_categories:
+                tt_processes['ZTTpTTTauTauDown'] = Process("ZTTpTTTauTauDown", AddHistogramEstimationMethod("AddHistogram","nominal",era, directory,  tt, [tt_processes["ZTT"],tttautau_process_tt], [1.0,-0.1]))
+                systematics.add(
+                    Systematic(
+                        category=category,
+                        process=tt_processes['ZTTpTTTauTauDown'],
+                        analysis="smhtt",
+                        era=era,
+                        variation=Relabel("CMS_htt_emb_ttbar","Down"),
+                        mass="125"))
 
-            tt_processes['ZTTpTTTauTauUp'] = Process("ZTTpTTTauTauUp", AddHistogramEstimationMethod("AddHistogram","nominal",era, directory,  tt, [tt_processes["ZTT"],tttautau_process_tt], [1.0,0.1]))
-            systematics.add(
-                Systematic(
-                    category=category,
-                    process=tt_processes['ZTTpTTTauTauUp'],
-                    analysis="smhtt",
-                    era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar","Up"),
-                    mass="125"))  
-                    
+                tt_processes['ZTTpTTTauTauUp'] = Process("ZTTpTTTauTauUp", AddHistogramEstimationMethod("AddHistogram","nominal",era, directory,  tt, [tt_processes["ZTT"],tttautau_process_tt], [1.0,0.1]))
+                systematics.add(
+                    Systematic(
+                        category=category,
+                        process=tt_processes['ZTTpTTTauTauUp'],
+                        analysis="smhtt",
+                        era=era,
+                        variation=Relabel("CMS_htt_emb_ttbar","Up"),
+                        mass="125"))  
+                            
     # Produce histograms
     systematics.produce()
 
