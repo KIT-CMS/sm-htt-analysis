@@ -349,9 +349,7 @@ def main(args):
                     era=era,
                     variation=Nominal(),
                     mass="125"))
-    #~ for process in mt_processes.values():
-        #~ print process.name
-    #~ exit()
+
     if "mt" in [args.gof_channel] + args.channels:
         for process, category in product(mt_processes.values(), mt_categories):
             systematics.add(
