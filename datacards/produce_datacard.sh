@@ -9,4 +9,5 @@ VARIABLE=$2
 if [ $VARIABLE = "" ]; then
 python datacards/produce_datacard.py --channels $CHANNELS --emb --use-data-for-observation
 else
-python datacards/produce_datacard.py --channels $CHANNELS  --emb --use-data-for-observation --gof-variable $VARIABLE
+python datacards/produce_datacard.py --channels $CHANNELS  --emb --use-data-for-observation --gof $VARIABLE
+fi
