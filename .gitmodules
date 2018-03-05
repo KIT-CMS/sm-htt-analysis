@@ -1,6 +1,7 @@
 [submodule "shape-producer"]
 	path = shape-producer
 	url = ssh://git@github.com/janekbechtel/shape-producer
+	branch = master
 [submodule "datacard-producer"]
 	path = datacard-producer
 	url = ssh://git@github.com/KIT-CMS/datacard-producer
