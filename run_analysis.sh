@@ -14,8 +14,10 @@ done
 ./utils/clean.sh
 
 # Create shapes of systematics
-CHANNELS=$@
-./shapes/produce_shapes.sh $CHANNELS
+CHANNELS=$1
+VARIABLE=$2
+
+./shapes/produce_shapes.sh $CHANNELS $VARIABLE
 
 # Apply blinding strategy
 #./shapes/apply_blinding.sh
@@ -24,7 +26,7 @@ CHANNELS=$@
 #./plotting/plot_control.sh $CHANNELS
 
 # Write datacard
-./datacards/produce_datacard.sh $CHANNELS
+./datacards/produce_datacard.sh $CHANNELS $VARIABLE
 
 # Run statistical inference
 ./combine/significance.sh | tee significance.log
@@ -35,4 +37,4 @@ CHANNELS=$@
 
 # Make prefit and postfit shapes
 ./combine/prefit_postfit_shapes.sh
-./plotting/plot_shapes.sh $CHANNELS
+./plotting/plot_shapes.sh $CHANNELS $VARIABLE

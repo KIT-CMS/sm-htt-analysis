@@ -1,7 +1,8 @@
 #!/bin/bash
 
 BINNING=shapes/binning.yaml
-CHANNELS=$@
+CHANNELS=$1
+VARIABLE=$2
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
@@ -14,12 +15,26 @@ source utils/setup_samples.sh
 #./shapes/calculate_binning.sh tt
 
 # Produce shapes
-python shapes/produce_shapes.py \
-    --directory $ARTUS_OUTPUTS \
-    --datasets $KAPPA_DATABASE \
-    --et-friend-directory $ARTUS_FRIENDS_ET \
-    --mt-friend-directory $ARTUS_FRIENDS_MT \
-    --tt-friend-directory $ARTUS_FRIENDS_TT \
-    --binning $BINNING \
-    --emb \
-    --channels $CHANNELS 
+
+if [ $VARIABLE = "" ]; then
+	python shapes/produce_shapes.py \
+		--directory $ARTUS_OUTPUTS \
+		--datasets $KAPPA_DATABASE \
+		--et-friend-directory $ARTUS_FRIENDS_ET \
+		--mt-friend-directory $ARTUS_FRIENDS_MT \
+		--tt-friend-directory $ARTUS_FRIENDS_TT \
+		--binning $BINNING \
+		--emb \
+		--channels $CHANNELS 
+else
+	python shapes/produce_shapes.py \
+		--directory $ARTUS_OUTPUTS \
+		--datasets $KAPPA_DATABASE \
+		--et-friend-directory $ARTUS_FRIENDS_ET \
+		--mt-friend-directory $ARTUS_FRIENDS_MT \
+		--tt-friend-directory $ARTUS_FRIENDS_TT \
+		--binning $BINNING \
+		--emb \
+		--gof-channel $CHANNELS \
+		--gof-variable $VARIABLE
+fi

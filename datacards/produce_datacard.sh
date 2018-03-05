@@ -3,4 +3,10 @@
 source utils/setup_cmssw.sh
 source utils/setup_python.sh
 
-python datacards/produce_datacard.py --channels $@  --emb
+CHANNELS=$1
+VARIABLE=$2
+
+if [ $VARIABLE = "" ]; then
+python datacards/produce_datacard.py --channels $CHANNELS --emb --use-data-for-observation
+else
+python datacards/produce_datacard.py --channels $CHANNELS  --emb --use-data-for-observation --gof-variable $VARIABLE
