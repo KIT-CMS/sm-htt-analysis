@@ -7,13 +7,14 @@ CHANNELS=$1
 VARIABLE=$2
 
 mkdir -p plots
-for FILE in "datacard_shapes_prefit.root" "datacard_shapes_postfit_sb.root"
+for FILE in "datacard_shapes_prefit.root"
 do
     for OPTION in "" "--png"
     do
 		if [ $VARIABLE = "" ]; then
-			./plotting/plot_shapes.py -i $FILE -c $CHANNELS $OPTION
+		./plotting/plot_shapes.py -i $FILE -c $CHANNELS $OPTION
 		else
-			./plotting/plot_shapes.py -i $FILE -c $CHANNELS --gof-variable $VARIABLE $OPTION
+		./plotting/plot_shapes.py -i $FILE -c $CHANNELS --gof-variable $VARIABLE $OPTION
+		fi
     done
 done
