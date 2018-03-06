@@ -96,7 +96,7 @@ def parse_arguments():
         help="Create shapes of HIG16043 reference analysis.")
     parser.add_argument(
         "--num-threads",
-        default=1,
+        default=32,
         type=int,
         help="Number of threads to be used.")
     parser.add_argument(
