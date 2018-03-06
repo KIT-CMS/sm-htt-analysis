@@ -12,9 +12,9 @@ do
     for OPTION in "" "--png"
     do
 		if [ -z $VARIABLE ]; then
-		./plotting/plot_shapes.py -i $FILE -c $CHANNELS $OPTION
+		./plotting/plot_shapes.py -i $FILE -c $CHANNELS $OPTION --x-label $VARIABLE
 		else
-		./plotting/plot_shapes.py -i $FILE -c $CHANNELS --gof-variable $VARIABLE $OPTION
+		./plotting/plot_shapes.py -i $FILE -c $CHANNELS --gof-variable $VARIABLE $OPTION --x-label $VARIABLE
 		fi
     done
 done

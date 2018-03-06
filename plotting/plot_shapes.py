@@ -17,7 +17,13 @@ def parse_arguments():
         description=
         "Plot categories using Dumbledraw from shapes produced by shape-producer module."
     )
-
+    parser.add_argument(
+        "-l",
+        "--log",
+        type=bool,
+        default=False,
+        help=" Enable for half log axis"
+    )
     parser.add_argument(
         "-c",
         "--channels",
@@ -92,11 +98,13 @@ def main(args):
             "misc": "misc",
             "noniso": "noniso"
         }
-
-    if args.normalize_by_bin_width:
-        split_value = 10001
+    if args.log == True:
+        if args.normalize_by_bin_width:
+            split_value = 10001
+        else:
+            split_value = 101
     else:
-        split_value = 101
+        split_value = 0
     split_dict = {c: split_value for c in ["et", "mt", "tt"]}
 
     bkg_processes = ["EWK", "QCD", "VV", "W", "TTT", "TTJ", "ZJ", "ZL", "ZTT"]
@@ -109,8 +117,10 @@ def main(args):
     for channel in args.channels:
         for category in channel_categories[channel]:
             # create plot
-            plot = dd.Plot([0.5, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14)
-
+            if args.log == True:
+                plot = dd.Plot([0.5, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14)
+            else:
+                plot = plot = dd.Plot([0.3, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14)
             # get background histograms
             for process in bkg_processes:
                 plot.add_hist(
@@ -189,18 +199,21 @@ def main(args):
                 split_dict[channel],
                 max(2 * plot.subplot(0).get_hist("total_bkg").GetMaximum(),
                     split_dict[channel] * 2))
-            plot.subplot(1).setYlims(0.1, split_dict[channel])
+            
             plot.subplot(2).setYlims(0.75, 1.45)
             if channel == "tt" and category == "qqh":
                 plot.subplot(2).setYlims(0.75, 2.65)
-            plot.subplot(1).setLogY()
+            if args.log == True:
+                plot.subplot(1).setYlims(0.1, split_dict[channel])
+                plot.subplot(1).setLogY()
+                plot.subplot(1).setYlabel(
+                "")  # otherwise number labels are not drawn on axis
             plot.subplot(2).setXlabel(args.x_label)
             if args.normalize_by_bin_width:
                 plot.subplot(0).setYlabel("N_{events}/bin width")
             else:
                 plot.subplot(0).setYlabel("N_{events}")
-            plot.subplot(1).setYlabel(
-                "")  # otherwise number labels are not drawn on axis
+            
             plot.subplot(2).setYlabel("Ratio to Bkg.")
 
             #plot.scaleXTitleSize(0.8)
@@ -214,10 +227,11 @@ def main(args):
 
             # draw subplots. Argument contains names of objects to be drawn in corresponding order.
             plot.subplot(0).Draw(["stack", "total_bkg", "data_obs"])
-            plot.subplot(1).Draw([
-                "stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top",
-                "data_obs"
-            ])
+            if args.log == True:
+                plot.subplot(1).Draw([
+                    "stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top",
+                    "data_obs"
+                ])
             plot.subplot(2).Draw([
                 "total_bkg", "bkg_ggH", "bkg_ggH_top", "bkg_qqH",
                 "bkg_qqH_top", "data_obs"
@@ -262,7 +276,7 @@ def main(args):
 
             # save plot
             postfix = "prefit" if "prefit" in args.input else "postfit" if "postfit" in args.input else "undefined"
-            plot.save("plots/%s_%s_%s.%s" % (channel, category, postfix, "png"
+            plot.save("plots/%s_%s_%s_sim.%s" % (channel, category, postfix, "png"
                                              if args.png else "pdf"))
             plots.append(
                 plot
