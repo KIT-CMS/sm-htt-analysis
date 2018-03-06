@@ -7,7 +7,7 @@ CHANNELS=$1
 VARIABLE=$2
 LABELING=Dumbledraw/Dumbledraw/style.yaml
 mkdir -p plots
-for FILE in "datacard_shapes_prefit.root"
+for FILE in "datacard_shapes_prefit.root" "datacard_shapes_postfit_sb.root"
 do
     for OPTION in "" "--png"
     do
