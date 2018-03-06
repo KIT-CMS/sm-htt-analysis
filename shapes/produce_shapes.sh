@@ -23,7 +23,7 @@ if [ -z $VARIABLE  ]; then
 		--et-friend-directory $ARTUS_FRIENDS_ET \
 		--mt-friend-directory $ARTUS_FRIENDS_MT \
 		--tt-friend-directory $ARTUS_FRIENDS_TT \
-		--binning $BINNING \	
+		--binning $BINNING \
 		--channels $CHANNELS 
 else
 	python shapes/produce_shapes.py \
