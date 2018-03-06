@@ -42,7 +42,7 @@ def parse_arguments():
         "--png", action="store_true", help="Save plots in png format")
     parser.add_argument(
         "--xlabeling",
-        required=True,
+        default=None,
         type=str,
         help="xlabeling configuration.")
     parser.add_argument(
@@ -105,7 +105,8 @@ def main(args):
     else:
         split_value = 0
     split_dict = {c: split_value for c in ["et", "mt", "tt"]}
-    xlabeling = yaml.load(open(args.xlabeling))
+    if args.xlabeling is not None:
+        xlabeling = yaml.load(open(args.xlabeling))
 
     bkg_processes = ["EWK", "QCD", "VV", "W", "TTT", "TTJ", "ZJ", "ZL", "ZTT"]
     legend_bkg_processes = copy.deepcopy(bkg_processes)
@@ -210,8 +211,11 @@ def main(args):
                 plot.subplot(1).setYlabel(
                     "")  # otherwise number labels are not drawn on axis
             if args.gof_variable != None:
-                plot.subplot(2).setXlabel(xlabeling['xlabeling'][args.channels[
-                    0]][args.gof_variable]["label"])
+                if args.xlabeling is not None:
+                    plot.subplot(2).setXlabel(xlabeling['xlabeling'][args.channels[
+                        0]][args.gof_variable]["label"])
+                else:
+                    plot.subplot(2).setXlabel(args.gof_variable)
             else:
                 plot.subplot(2).setXlabel("NN score")
             if args.normalize_by_bin_width:
@@ -281,7 +285,7 @@ def main(args):
 
             # save plot
             postfix = "prefit" if "prefit" in args.input else "postfit" if "postfit" in args.input else "undefined"
-            plot.save("plots/%s_%s_%s_sim.%s" % (channel, category, postfix,
+            plot.save("plots/%s_%s_%s.%s" % (channel, category, postfix,
                                                  "png" if args.png else "pdf"))
             plots.append(
                 plot
