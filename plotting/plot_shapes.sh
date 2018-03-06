@@ -11,7 +11,7 @@ for FILE in "datacard_shapes_prefit.root"
 do
     for OPTION in "" "--png"
     do
-		if [ $VARIABLE = "" ]; then
+		if [ -z $VARIABLE ]; then
 		./plotting/plot_shapes.py -i $FILE -c $CHANNELS $OPTION
 		else
 		./plotting/plot_shapes.py -i $FILE -c $CHANNELS --gof-variable $VARIABLE $OPTION
