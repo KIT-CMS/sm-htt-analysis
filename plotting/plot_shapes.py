@@ -7,6 +7,7 @@ import Dumbledraw.styles as styles
 
 import argparse
 import copy
+import yaml
 
 import logging
 logger = logging.getLogger("")
@@ -45,6 +46,8 @@ def parse_arguments():
         help="Enable plotting goodness of fit shapes for given variable")
     parser.add_argument(
         "--png", action="store_true", help="Save plots in png format")
+    parser.add_argument(
+        "--xlabeling", required=True, type=str, help="xlabeling configuration.")
     parser.add_argument(
         "--normalize-by-bin-width",
         action="store_true",
@@ -105,6 +108,9 @@ def main(args):
     else:
         split_value = 0
     split_dict = {c: split_value for c in ["et", "mt", "tt"]}
+    xlabeling = yaml.load(open(args.xlabeling))
+
+
 
     bkg_processes = ["EWK", "QCD", "VV", "W", "TTT", "TTJ", "ZJ", "ZL", "ZTT"]
     legend_bkg_processes = copy.deepcopy(bkg_processes)
@@ -207,7 +213,7 @@ def main(args):
                 plot.subplot(1).setLogY()
                 plot.subplot(1).setYlabel(
                 "")  # otherwise number labels are not drawn on axis
-            plot.subplot(2).setXlabel(args.x_label)
+            plot.subplot(2).setXlabel(xlabeling['xlabeling'][args.channels[0]][args.gof_variable]["label"])
             if args.normalize_by_bin_width:
                 plot.subplot(0).setYlabel("N_{events}/bin width")
             else:
