@@ -16,7 +16,6 @@ do
 		else
 		./plotting/plot_shapes.py -i $FILE -c $CHANNELS \
 		--gof-variable $VARIABLE $OPTION \
-		--x-label $VARIABLE \
 		--xlabeling $LABELING
 		fi
     done

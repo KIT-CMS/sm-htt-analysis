@@ -23,8 +23,7 @@ if [ -z $VARIABLE  ]; then
 		--et-friend-directory $ARTUS_FRIENDS_ET \
 		--mt-friend-directory $ARTUS_FRIENDS_MT \
 		--tt-friend-directory $ARTUS_FRIENDS_TT \
-		--binning $BINNING \
-		--emb \
+		--binning $BINNING \	
 		--channels $CHANNELS 
 else
 	python shapes/produce_shapes.py \
@@ -32,6 +31,5 @@ else
 		--datasets $KAPPA_DATABASE \
 		--binning $BINNING \
 		--gof-channel $CHANNELS \
-		--emb \
 		--gof-variable $VARIABLE
 fi

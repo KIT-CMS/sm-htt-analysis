@@ -19,11 +19,7 @@ def parse_arguments():
         "Plot categories using Dumbledraw from shapes produced by shape-producer module."
     )
     parser.add_argument(
-        "-l",
-        "--log",
-        action = "store_true",
-        help=" Enable for half log axis"
-    )
+        "-l", "--log", action="store_true", help=" Enable for half log axis")
     parser.add_argument(
         "-c",
         "--channels",
@@ -38,8 +34,6 @@ def parse_arguments():
         required=True,
         help="ROOT file with shapes of processes")
     parser.add_argument(
-        "--x-label", type=str, default="NN score", help="Label on x-axis")
-    parser.add_argument(
         "--gof-variable",
         type=str,
         default=None,
@@ -47,7 +41,10 @@ def parse_arguments():
     parser.add_argument(
         "--png", action="store_true", help="Save plots in png format")
     parser.add_argument(
-        "--xlabeling", required=True, type=str, help="xlabeling configuration.")
+        "--xlabeling",
+        required=True,
+        type=str,
+        help="xlabeling configuration.")
     parser.add_argument(
         "--normalize-by-bin-width",
         action="store_true",
@@ -110,8 +107,6 @@ def main(args):
     split_dict = {c: split_value for c in ["et", "mt", "tt"]}
     xlabeling = yaml.load(open(args.xlabeling))
 
-
-
     bkg_processes = ["EWK", "QCD", "VV", "W", "TTT", "TTJ", "ZJ", "ZL", "ZTT"]
     legend_bkg_processes = copy.deepcopy(bkg_processes)
     legend_bkg_processes.reverse()
@@ -125,7 +120,8 @@ def main(args):
             if args.log == True:
                 plot = dd.Plot([0.5, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14)
             else:
-                plot = plot = dd.Plot([0.3, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14)
+                plot = plot = dd.Plot(
+                    [0.3, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14)
             # get background histograms
             for process in bkg_processes:
                 plot.add_hist(
@@ -204,7 +200,7 @@ def main(args):
                 split_dict[channel],
                 max(2 * plot.subplot(0).get_hist("total_bkg").GetMaximum(),
                     split_dict[channel] * 2))
-            
+
             plot.subplot(2).setYlims(0.75, 1.45)
             if channel == "tt" and category == "qqh":
                 plot.subplot(2).setYlims(0.75, 2.65)
@@ -212,13 +208,17 @@ def main(args):
                 plot.subplot(1).setYlims(0.1, split_dict[channel])
                 plot.subplot(1).setLogY()
                 plot.subplot(1).setYlabel(
-                "")  # otherwise number labels are not drawn on axis
-            plot.subplot(2).setXlabel(xlabeling['xlabeling'][args.channels[0]][args.gof_variable]["label"])
+                    "")  # otherwise number labels are not drawn on axis
+            if args.gof_variable != None:
+                plot.subplot(2).setXlabel(xlabeling['xlabeling'][args.channels[
+                    0]][args.gof_variable]["label"])
+            else:
+                plot.subplot(2).setXlabel("NN score")
             if args.normalize_by_bin_width:
                 plot.subplot(0).setYlabel("N_{events}/bin width")
             else:
                 plot.subplot(0).setYlabel("N_{events}")
-            
+
             plot.subplot(2).setYlabel("Ratio to Bkg.")
 
             #plot.scaleXTitleSize(0.8)
@@ -281,8 +281,8 @@ def main(args):
 
             # save plot
             postfix = "prefit" if "prefit" in args.input else "postfit" if "postfit" in args.input else "undefined"
-            plot.save("plots/%s_%s_%s_sim.%s" % (channel, category, postfix, "png"
-                                             if args.png else "pdf"))
+            plot.save("plots/%s_%s_%s_sim.%s" % (channel, category, postfix,
+                                                 "png" if args.png else "pdf"))
             plots.append(
                 plot
             )  # work around to have clean up seg faults only at the end of the script
