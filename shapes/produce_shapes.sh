@@ -31,7 +31,7 @@ else
 		--directory $ARTUS_OUTPUTS \
 		--datasets $KAPPA_DATABASE \
 		--binning $BINNING \
-		--emb \
 		--gof-channel $CHANNELS \
+		--emb \
 		--gof-variable $VARIABLE
 fi
