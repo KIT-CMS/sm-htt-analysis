@@ -20,8 +20,7 @@ def parse_arguments():
     parser.add_argument(
         "-l",
         "--log",
-        type=bool,
-        default=False,
+        action = "store_true",
         help=" Enable for half log axis"
     )
     parser.add_argument(
