@@ -51,7 +51,10 @@ def main(args):
 
     # Channel: mt
     if args.channel == "mt":
-        channel = MT()
+        channel = MTSM()
+        if args.emb:
+            mt.cuts.remove("trg_singlemuoncross")
+            mt.cuts.add(Cut("(trg_singlemuon==1 && pt_1>23 && pt_2>30)", "trg_singlemuon"))
         for estimation in [
                 ggHEstimation(era, args.directory, channel),
                 qqHEstimation(era, args.directory, channel),
@@ -94,7 +97,7 @@ def main(args):
 
     # Channel: et
     if args.channel == "et":
-        channel = ET()
+        channel = ETSM()
         for estimation in [
                 ggHEstimation(era, args.directory, channel),
                 qqHEstimation(era, args.directory, channel),
@@ -137,7 +140,7 @@ def main(args):
 
     # Channel: tt
     if args.channel == "tt":
-        channel = TT()
+        channel = TTSM()
         for estimation in [
                 ggHEstimation(era, args.directory, channel),
                 qqHEstimation(era, args.directory, channel),
