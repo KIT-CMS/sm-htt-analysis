@@ -56,10 +56,14 @@ def main(args):
                 ggHEstimation(era, args.directory, channel),
                 qqHEstimation(era, args.directory, channel),
                 VHEstimation(era, args.directory, channel),
-                ZTTEstimation(era, args.directory, channel) if not args.emb else ZTTEmbeddedEstimation(era, args.directory, channel),
+                ZTTEstimation(era, args.directory, channel)
+                if not args.emb else ZTTEmbeddedEstimation(
+                    era, args.directory, channel),
                 ZLEstimationMTSM(era, args.directory, channel),
                 ZJEstimationMT(era, args.directory, channel),
-                TTTEstimationMT(era, args.directory, channel) if not args.emb else TTTNoTauTauEstimationMT(era, args.directory, channel),
+                TTTEstimationMT(era, args.directory, channel)
+                if not args.emb else TTTNoTauTauEstimationMT(
+                    era, args.directory, channel),
                 TTJEstimationMT(era, args.directory, channel),
                 WEstimation(era, args.directory, channel),
                 VVEstimation(era, args.directory, channel),
@@ -95,10 +99,14 @@ def main(args):
                 ggHEstimation(era, args.directory, channel),
                 qqHEstimation(era, args.directory, channel),
                 VHEstimation(era, args.directory, channel),
-                ZTTEstimation(era, args.directory, channel) if not args.emb else ZTTEmbeddedEstimation(era, args.directory, channel),
+                ZTTEstimation(era, args.directory, channel)
+                if not args.emb else ZTTEmbeddedEstimation(
+                    era, args.directory, channel),
                 ZLEstimationETSM(era, args.directory, channel),
                 ZJEstimationET(era, args.directory, channel),
-                TTTEstimationET(era, args.directory, channel) if not args.emb else TTTNoTauTauEstimationET(era, args.directory, channel),
+                TTTEstimationET(era, args.directory, channel)
+                if not args.emb else TTTNoTauTauEstimationET(
+                    era, args.directory, channel),
                 TTJEstimationET(era, args.directory, channel),
                 WEstimation(era, args.directory, channel),
                 VVEstimation(era, args.directory, channel),
@@ -134,10 +142,14 @@ def main(args):
                 ggHEstimation(era, args.directory, channel),
                 qqHEstimation(era, args.directory, channel),
                 VHEstimation(era, args.directory, channel),
-                ZTTEstimation(era, args.directory, channel) if not args.emb else ZTTEmbeddedEstimation(era, args.directory, channel),
+                ZTTEstimation(era, args.directory, channel)
+                if not args.emb else ZTTEmbeddedEstimation(
+                    era, args.directory, channel),
                 ZLEstimationTT(era, args.directory, channel),
                 ZJEstimationTT(era, args.directory, channel),
-                TTTEstimationTT(era, args.directory, channel) if not args.emb else TTTNoTauTauEstimationTT(era, args.directory, channel),
+                TTTEstimationTT(era, args.directory, channel)
+                if not args.emb else TTTNoTauTauEstimationTT(
+                    era, args.directory, channel),
                 TTJEstimationTT(era, args.directory, channel),
                 WEstimation(era, args.directory, channel),
                 VVEstimation(era, args.directory, channel),
