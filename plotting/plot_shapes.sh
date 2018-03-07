@@ -5,7 +5,7 @@ source utils/setup_python.sh
 
 CHANNELS=$1
 VARIABLE=$2
-LABELING=Dumbledraw/Dumbledraw/style.yaml
+LABELING=Dumbledraw/Dumbledraw/labels.yaml
 mkdir -p plots
 for FILE in "datacard_shapes_prefit.root" "datacard_shapes_postfit_sb.root"
 do
@@ -16,7 +16,7 @@ do
 		else
 		./plotting/plot_shapes.py -i $FILE -c $CHANNELS \
 		--gof-variable $VARIABLE $OPTION \
-		--xlabeling $LABELING
+		--x_label $LABELING
 		fi
     done
 done

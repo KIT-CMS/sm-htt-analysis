@@ -19,7 +19,7 @@ def parse_arguments():
         "Plot categories using Dumbledraw from shapes produced by shape-producer module."
     )
     parser.add_argument(
-        "-l", "--log", action="store_true", help=" Enable for half log axis")
+        "-l", "--linear", action="store_true", help="Enable linear x-axis")
     parser.add_argument(
         "-c",
         "--channels",
@@ -41,10 +41,7 @@ def parse_arguments():
     parser.add_argument(
         "--png", action="store_true", help="Save plots in png format")
     parser.add_argument(
-        "--xlabeling",
-        default=None,
-        type=str,
-        help="xlabeling configuration.")
+        "--x_label", default=None, type=str, help="x_label configuration.")
     parser.add_argument(
         "--normalize-by-bin-width",
         action="store_true",
@@ -97,16 +94,18 @@ def main(args):
             "misc": "misc",
             "noniso": "noniso"
         }
-    if args.log == True:
+    if args.linear == True:
+        print("Hier bin ich !")
+        split_value = 0
+    else:
         if args.normalize_by_bin_width:
             split_value = 10001
         else:
             split_value = 101
-    else:
-        split_value = 0
+
     split_dict = {c: split_value for c in ["et", "mt", "tt"]}
-    if args.xlabeling is not None:
-        xlabeling = yaml.load(open(args.xlabeling))
+    if args.x_label is not None:
+        x_label = yaml.load(open(args.x_label))
 
     bkg_processes = ["EWK", "QCD", "VV", "W", "TTT", "TTJ", "ZJ", "ZL", "ZTT"]
     legend_bkg_processes = copy.deepcopy(bkg_processes)
@@ -118,11 +117,12 @@ def main(args):
     for channel in args.channels:
         for category in channel_categories[channel]:
             # create plot
-            if args.log == True:
-                plot = dd.Plot([0.5, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14)
-            else:
+            if args.linear == True:
                 plot = plot = dd.Plot(
                     [0.3, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14)
+            else:
+                plot = dd.Plot([0.5, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14)
+
             # get background histograms
             for process in bkg_processes:
                 plot.add_hist(
@@ -205,15 +205,15 @@ def main(args):
             plot.subplot(2).setYlims(0.75, 1.45)
             if channel == "tt" and category == "qqh":
                 plot.subplot(2).setYlims(0.75, 2.65)
-            if args.log == True:
+            if args.linear != True:
                 plot.subplot(1).setYlims(0.1, split_dict[channel])
                 plot.subplot(1).setLogY()
                 plot.subplot(1).setYlabel(
                     "")  # otherwise number labels are not drawn on axis
             if args.gof_variable != None:
-                if args.xlabeling is not None:
-                    plot.subplot(2).setXlabel(xlabeling['xlabeling'][args.channels[
-                        0]][args.gof_variable]["label"])
+                if args.x_label is not None:
+                    plot.subplot(2).setXlabel(x_label['x_label'][args.channels[
+                        0]][args.gof_variable])
                 else:
                     plot.subplot(2).setXlabel(args.gof_variable)
             else:
@@ -236,7 +236,7 @@ def main(args):
 
             # draw subplots. Argument contains names of objects to be drawn in corresponding order.
             plot.subplot(0).Draw(["stack", "total_bkg", "data_obs"])
-            if args.log == True:
+            if args.linear != True:
                 plot.subplot(1).Draw([
                     "stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top",
                     "data_obs"
@@ -285,8 +285,8 @@ def main(args):
 
             # save plot
             postfix = "prefit" if "prefit" in args.input else "postfit" if "postfit" in args.input else "undefined"
-            plot.save("plots/%s_%s_%s.%s" % (channel, category, postfix,
-                                                 "png" if args.png else "pdf"))
+            plot.save("plots/%s_%s_%s.%s" % (channel, category, postfix, "png"
+                                             if args.png else "pdf"))
             plots.append(
                 plot
             )  # work around to have clean up seg faults only at the end of the script
