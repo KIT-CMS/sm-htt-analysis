@@ -95,7 +95,6 @@ def main(args):
             "noniso": "noniso"
         }
     if args.linear == True:
-        print("Hier bin ich !")
         split_value = 0
     else:
         if args.normalize_by_bin_width:
