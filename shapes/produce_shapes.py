@@ -241,7 +241,7 @@ def main(args):
         score = Variable(
                 args.gof_variable,
                 VariableBinning(binning["gof"]["et"][args.gof_variable]["bins"]),
-                expression=binning["gof"]["et"][args.gof_variable]["expression"])
+                expression=args.gof_variable)
         et_categories.append(
             Category(
                 args.gof_variable,
@@ -286,7 +286,7 @@ def main(args):
         score = Variable(
                 args.gof_variable,
                 VariableBinning(binning["gof"]["mt"][args.gof_variable]["bins"]),
-                expression=binning["gof"]["mt"][args.gof_variable]["expression"])
+                expression=args.gof_variable)
         mt_categories.append(
             Category(
                 args.gof_variable,
@@ -331,7 +331,7 @@ def main(args):
         score = Variable(
                 args.gof_variable,
                 VariableBinning(binning["gof"]["tt"][args.gof_variable]["bins"]),
-                expression=binning["gof"]["tt"][args.gof_variable]["expression"])
+                expression=args.gof_variable)
         tt_categories.append(
             Category(
                 args.gof_variable,
