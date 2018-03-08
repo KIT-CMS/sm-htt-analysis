@@ -241,7 +241,7 @@ def main(args):
         score = Variable(
                 args.gof_variable,
                 VariableBinning(binning["gof"]["et"][args.gof_variable]["bins"]),
-                expression=args.gof_variable)
+                expression=binning["gof"]["et"][args.gof_variable]["expression"])
         if "cut" in binning["gof"]["et"][args.gof_variable].keys():
             cuts=binning["gof"]["et"][args.gof_variable]["cuts"]
         else:
@@ -290,7 +290,7 @@ def main(args):
         score = Variable(
                 args.gof_variable,
                 VariableBinning(binning["gof"]["mt"][args.gof_variable]["bins"]),
-                expression=args.gof_variable)
+                expression=binning["gof"]["mt"][args.gof_variable]["expression"])
         if "cut" in binning["gof"]["mt"][args.gof_variable].keys():
             cuts=binning["gof"]["mt"][args.gof_variable]["cuts"]
         else:
@@ -339,7 +339,7 @@ def main(args):
         score = Variable(
                 args.gof_variable,
                 VariableBinning(binning["gof"]["tt"][args.gof_variable]["bins"]),
-                expression=args.gof_variable)
+                expression=binning["gof"]["tt"][args.gof_variable]["expression"])
         if "cut" in binning["gof"]["tt"][args.gof_variable].keys():
             cuts=binning["gof"]["tt"][args.gof_variable]["cuts"]
         else:
