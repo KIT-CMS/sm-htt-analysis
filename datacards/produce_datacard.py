@@ -152,27 +152,42 @@ def main(args):
         categories += tt_categories
 
     # Add shapes systematics
+    if args.emb:
+        db.add_shape_systematic("CMS_htt_dyShape", 1.0, channels, ["ZL", "ZJ"])
+        db.add_shape_systematic(
+            "CMS_htt_eff_b", 1.0, channels,
+            ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+        db.add_shape_systematic(
+            "CMS_htt_mistag_b", 1.0, channels,
+            ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+        db.add_shape_systematic(
+            "CMS_scale_j", 1.0, channels,
+            ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+        db.add_shape_systematic(
+            "CMS_scale_met_unclustered", 1.0, channels,
+            ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+    else:
+        db.add_shape_systematic("CMS_htt_dyShape", 1.0, channels,
+                                ["ZTT", "ZL", "ZJ"])
+        db.add_shape_systematic(
+            "CMS_htt_eff_b", 1.0, channels,
+            ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+        db.add_shape_systematic(
+            "CMS_htt_mistag_b", 1.0, channels,
+            ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+        db.add_shape_systematic(
+            "CMS_scale_j", 1.0, channels,
+            ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+        db.add_shape_systematic(
+            "CMS_scale_met_unclustered", 1.0, channels,
+            ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+
     db.add_shape_systematic("CMS_scale_t_3prong0pi0", 1.0, channels,
                             ["ggH", "qqH", "ZTT", "TTT", "VV", "EWK"])
     db.add_shape_systematic("CMS_scale_t_1prong0pi0", 1.0, channels,
                             ["ggH", "qqH", "ZTT", "TTT", "VV", "EWK"])
-    db.add_shape_systematic("CMS_scale_t_1prong1pi0", 1.0, channels,
-                            ["ggH", "qqH", "ZTT", "TTT", "VV", "EWK"])
-    db.add_shape_systematic("CMS_htt_dyShape", 1.0, channels,
-                            ["ZTT", "ZL", "ZJ"]
-                            if not args.emb else ["ZL", "ZJ"])
     db.add_shape_systematic("CMS_htt_ttbarShape", 1.0, channels,
                             ["TTT", "TTJ"])
-    db.add_shape_systematic(
-        "CMS_scale_j", 1.0, channels,
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"]
-        if not args.emb else
-        ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
-    db.add_shape_systematic(
-        "CMS_scale_met_unclustered", 1.0, channels,
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"]
-        if not args.emb else
-        ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
     db.add_shape_systematic("CMS_htt_jetToTauFake", 1.0, channels,
                             ["ZJ", "W", "TTJ"])
     db.add_shape_systematic("CMS_htt_eToTauFake_OneProng", 1.0, "et", ["ZL"])
@@ -181,16 +196,6 @@ def main(args):
     db.add_shape_systematic("CMS_htt_mToTauFake_OneProng", 1.0, "mt", ["ZL"])
     db.add_shape_systematic("CMS_htt_mToTauFake_OneProngPiZeros", 1.0, "mt",
                             ["ZL"])
-    db.add_shape_systematic(
-        "CMS_htt_eff_b", 1.0, channels,
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"]
-        if not args.emb else
-        ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
-    db.add_shape_systematic(
-        "CMS_htt_mistag_b", 1.0, channels,
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"]
-        if not args.emb else
-        ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
 
     # Add normalization systematics
     db.add_normalization_systematic(
