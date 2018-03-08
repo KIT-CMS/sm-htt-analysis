@@ -114,7 +114,7 @@ def parse_arguments():
 
 
 def main(args):
-    # ainer for all distributions to be drawn
+    # Container for all distributions to be drawn
     systematics = Systematics("shapes.root", num_threads=args.num_threads)
 
     # Era
@@ -242,11 +242,15 @@ def main(args):
                 args.gof_variable,
                 VariableBinning(binning["gof"]["et"][args.gof_variable]["bins"]),
                 expression=args.gof_variable)
+        if "cut" in binning["gof"]["et"][args.gof_variable].keys():
+            cuts=binning["gof"]["et"][args.gof_variable]["cuts"]
+        else:
+            cuts=Cuts()
         et_categories.append(
             Category(
                 args.gof_variable,
                 et,
-                Cuts(),
+                cuts,
                 variable=score))
 
     mt_categories = []
@@ -287,11 +291,15 @@ def main(args):
                 args.gof_variable,
                 VariableBinning(binning["gof"]["mt"][args.gof_variable]["bins"]),
                 expression=args.gof_variable)
+        if "cut" in binning["gof"]["mt"][args.gof_variable].keys():
+            cuts=binning["gof"]["mt"][args.gof_variable]["cuts"]
+        else:
+            cuts=Cuts()
         mt_categories.append(
             Category(
                 args.gof_variable,
                 mt,
-                Cuts(),
+                cuts,
                 variable=score))
 
     tt_categories = []
@@ -332,12 +340,16 @@ def main(args):
                 args.gof_variable,
                 VariableBinning(binning["gof"]["tt"][args.gof_variable]["bins"]),
                 expression=args.gof_variable)
+        if "cut" in binning["gof"]["tt"][args.gof_variable].keys():
+            cuts=binning["gof"]["tt"][args.gof_variable]["cuts"]
+        else:
+            cuts=Cuts()
         tt_categories.append(
             Category(
                 args.gof_variable,
                 tt,
-                Cuts(
-                    Cut())))
+                cuts,
+                variable=score))
 
     # Nominal histograms
     # yapf: enable
