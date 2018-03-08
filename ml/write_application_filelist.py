@@ -54,7 +54,9 @@ def main(args):
         channel = MTSM()
         if args.emb:
             mt.cuts.remove("trg_singlemuoncross")
-            mt.cuts.add(Cut("(trg_singlemuon==1 && pt_1>23 && pt_2>30)", "trg_singlemuon"))
+            mt.cuts.add(
+                Cut("(trg_singlemuon==1 && pt_1>23 && pt_2>30)",
+                    "trg_singlemuon"))
         for estimation in [
                 ggHEstimation(era, args.directory, channel),
                 qqHEstimation(era, args.directory, channel),
