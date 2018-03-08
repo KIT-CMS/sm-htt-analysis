@@ -150,7 +150,7 @@ def main(args):
         }
     if args.emb:
         mt_processes["ZTT"] = Process("ZTT", ZTTEmbeddedEstimation(era, directory, mt, friend_directory=mt_friend_directory))
-        mt_processes["TTT"] = Process("TTT", TTTNoTauTauEstimationMT (era, directory, mt, friend_directory=mt_friend_directory))
+        mt_processes["TTT"] = Process("TTT", TTLEstimationMT (era, directory, mt, friend_directory=mt_friend_directory))
     mt_processes["QCD"] = Process("QCD", QCDEstimationMT(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWK"]], mt_processes["data"], extrapolation_factor=1.17))
     et = ETSM()
     if args.QCD_extrap_fit:
@@ -173,7 +173,7 @@ def main(args):
         }
     if args.emb:
         et_processes["ZTT"] = Process("ZTT", ZTTEmbeddedEstimation(era, directory, et, friend_directory=et_friend_directory))
-        et_processes["TTT"] = Process("TTT", TTTNoTauTauEstimationET (era, directory, et, friend_directory=et_friend_directory))
+        et_processes["TTT"] = Process("TTT", TTLEstimationET (era, directory, et, friend_directory=et_friend_directory))
     et_processes["QCD"] = Process("QCD", QCDEstimationET(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWK"]], et_processes["data"], extrapolation_factor=1.16))
     tt = TTSM()
     if args.QCD_extrap_fit:
@@ -197,7 +197,7 @@ def main(args):
         }
     if args.emb:
         tt_processes["ZTT"] = Process("ZTT", ZTTEmbeddedEstimation(era, directory, tt, friend_directory=tt_friend_directory))
-        tt_processes["TTT"] = Process("TTT", TTTNoTauTauEstimationTT (era, directory, tt, friend_directory=tt_friend_directory))
+        tt_processes["TTT"] = Process("TTT", TTLEstimationTT (era, directory, tt, friend_directory=tt_friend_directory))
 
     tt_processes["QCD"] = Process("QCD", QCDEstimationTT(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWK"]], tt_processes["data"]))
 
@@ -658,18 +658,18 @@ def main(args):
     if args.emb:
         # Embedded event specifics
 
-        # embedding ttbar shape
+        # 10% removed events in ttbar simulation (ttbar -> real tau tau events) will be added/subtracted to ZTT shape to use as systematic
         tttautau_process_mt = Process(
-            "TTTauTau",
-            TTTauTauEstimationMT(
+            "TTTT",
+            TTTTEstimationMT(
                 era, directory, mt, friend_directory=mt_friend_directory))
         tttautau_process_et = Process(
-            "TTTauTau",
-            TTTauTauEstimationET(
+            "TTTT",
+            TTTTEstimationET(
                 era, directory, et, friend_directory=et_friend_directory))
         tttautau_process_tt = Process(
-            "TTTauTau",
-            TTTauTauEstimationTT(
+            "TTTT",
+            TTTEstimationTT(
                 era, directory, tt, friend_directory=tt_friend_directory))
         if 'mt' in [args.gof_channel] + args.channels:
             for category in mt_categories:
