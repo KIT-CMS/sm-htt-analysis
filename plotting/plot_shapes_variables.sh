@@ -13,6 +13,6 @@ do
 		
     ./plotting/plot_shapes.py -i $FILE -c $CHANNELS \
     --gof-variable $VARIABLE $OPTION \
-    -l \
+    -l 
     done
 done
