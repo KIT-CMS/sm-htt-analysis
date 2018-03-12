@@ -30,6 +30,11 @@ def parse_arguments():
         "--database", required=True, help="Path to Kappa datasets database")
     parser.add_argument("--channel", required=True, help="Analysis channel")
     parser.add_argument("--output", required=True, help="Output filelist")
+    parser.add_argument(
+        "--emb",
+        action="store_true",
+        default=False,
+        help="Use mu->tau embedded samples as ZTT background estimation.")
     return parser.parse_args()
 
 
@@ -46,15 +51,24 @@ def main(args):
 
     # Channel: mt
     if args.channel == "mt":
-        channel = MT()
+        channel = MTSM()
+        if args.emb:
+            mt.cuts.remove("trg_singlemuoncross")
+            mt.cuts.add(
+                Cut("(trg_singlemuon==1 && pt_1>23 && pt_2>30)",
+                    "trg_singlemuon"))
         for estimation in [
                 ggHEstimation(era, args.directory, channel),
                 qqHEstimation(era, args.directory, channel),
                 VHEstimation(era, args.directory, channel),
-                ZTTEstimation(era, args.directory, channel),
+                ZTTEstimation(era, args.directory, channel)
+                if not args.emb else ZTTEmbeddedEstimation(
+                    era, args.directory, channel),
                 ZLEstimationMTSM(era, args.directory, channel),
                 ZJEstimationMT(era, args.directory, channel),
-                TTTEstimationMT(era, args.directory, channel),
+                TTTEstimationMT(era, args.directory, channel)
+                if not args.emb else TTTNoTauTauEstimationMT(
+                    era, args.directory, channel),
                 TTJEstimationMT(era, args.directory, channel),
                 WEstimation(era, args.directory, channel),
                 VVEstimation(era, args.directory, channel),
@@ -85,15 +99,19 @@ def main(args):
 
     # Channel: et
     if args.channel == "et":
-        channel = ET()
+        channel = ETSM()
         for estimation in [
                 ggHEstimation(era, args.directory, channel),
                 qqHEstimation(era, args.directory, channel),
                 VHEstimation(era, args.directory, channel),
-                ZTTEstimation(era, args.directory, channel),
+                ZTTEstimation(era, args.directory, channel)
+                if not args.emb else ZTTEmbeddedEstimation(
+                    era, args.directory, channel),
                 ZLEstimationETSM(era, args.directory, channel),
                 ZJEstimationET(era, args.directory, channel),
-                TTTEstimationET(era, args.directory, channel),
+                TTTEstimationET(era, args.directory, channel)
+                if not args.emb else TTTNoTauTauEstimationET(
+                    era, args.directory, channel),
                 TTJEstimationET(era, args.directory, channel),
                 WEstimation(era, args.directory, channel),
                 VVEstimation(era, args.directory, channel),
@@ -124,15 +142,19 @@ def main(args):
 
     # Channel: tt
     if args.channel == "tt":
-        channel = TT()
+        channel = TTSM()
         for estimation in [
                 ggHEstimation(era, args.directory, channel),
                 qqHEstimation(era, args.directory, channel),
                 VHEstimation(era, args.directory, channel),
-                ZTTEstimationTT(era, args.directory, channel),
+                ZTTEstimation(era, args.directory, channel)
+                if not args.emb else ZTTEmbeddedEstimation(
+                    era, args.directory, channel),
                 ZLEstimationTT(era, args.directory, channel),
                 ZJEstimationTT(era, args.directory, channel),
-                TTTEstimationTT(era, args.directory, channel),
+                TTTEstimationTT(era, args.directory, channel)
+                if not args.emb else TTTNoTauTauEstimationTT(
+                    era, args.directory, channel),
                 TTJEstimationTT(era, args.directory, channel),
                 WEstimation(era, args.directory, channel),
                 VVEstimation(era, args.directory, channel),

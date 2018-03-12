@@ -7,6 +7,7 @@ import Dumbledraw.styles as styles
 
 import argparse
 import copy
+import yaml
 
 import logging
 logger = logging.getLogger("")
@@ -17,7 +18,8 @@ def parse_arguments():
         description=
         "Plot categories using Dumbledraw from shapes produced by shape-producer module."
     )
-
+    parser.add_argument(
+        "-l", "--linear", action="store_true", help="Enable linear x-axis")
     parser.add_argument(
         "-c",
         "--channels",
@@ -31,8 +33,6 @@ def parse_arguments():
         type=str,
         required=True,
         help="ROOT file with shapes of processes")
-    parser.add_argument(
-        "--x-label", type=str, default="NN score", help="Label on x-axis")
     parser.add_argument(
         "--gof-variable",
         type=str,
@@ -92,13 +92,15 @@ def main(args):
             "misc": "misc",
             "noniso": "noniso"
         }
-
-    if args.normalize_by_bin_width:
-        split_value = 10001
+    if args.linear == True:
+        split_value = 0
     else:
-        split_value = 101
-    split_dict = {c: split_value for c in ["et", "mt", "tt"]}
+        if args.normalize_by_bin_width:
+            split_value = 10001
+        else:
+            split_value = 101
 
+    split_dict = {c: split_value for c in ["et", "mt", "tt"]}
     bkg_processes = ["EWK", "QCD", "VV", "W", "TTT", "TTJ", "ZJ", "ZL", "ZTT"]
     legend_bkg_processes = copy.deepcopy(bkg_processes)
     legend_bkg_processes.reverse()
@@ -109,7 +111,11 @@ def main(args):
     for channel in args.channels:
         for category in channel_categories[channel]:
             # create plot
-            plot = dd.Plot([0.5, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14)
+            if args.linear == True:
+                plot = plot = dd.Plot(
+                    [0.3, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14)
+            else:
+                plot = dd.Plot([0.5, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14)
 
             # get background histograms
             for process in bkg_processes:
@@ -189,18 +195,25 @@ def main(args):
                 split_dict[channel],
                 max(2 * plot.subplot(0).get_hist("total_bkg").GetMaximum(),
                     split_dict[channel] * 2))
-            plot.subplot(1).setYlims(0.1, split_dict[channel])
+
             plot.subplot(2).setYlims(0.75, 1.45)
             if channel == "tt" and category == "qqh":
                 plot.subplot(2).setYlims(0.75, 2.65)
-            plot.subplot(1).setLogY()
-            plot.subplot(2).setXlabel(args.x_label)
+            if args.linear != True:
+                plot.subplot(1).setYlims(0.1, split_dict[channel])
+                plot.subplot(1).setLogY()
+                plot.subplot(1).setYlabel(
+                    "")  # otherwise number labels are not drawn on axis
+            if args.gof_variable != None:
+                plot.subplot(2).setXlabel(
+                    styles.x_label_dict[args.channels[0]][args.gof_variable])
+            else:
+                plot.subplot(2).setXlabel("NN score")
             if args.normalize_by_bin_width:
                 plot.subplot(0).setYlabel("N_{events}/bin width")
             else:
                 plot.subplot(0).setYlabel("N_{events}")
-            plot.subplot(1).setYlabel(
-                "")  # otherwise number labels are not drawn on axis
+
             plot.subplot(2).setYlabel("Ratio to Bkg.")
 
             #plot.scaleXTitleSize(0.8)
@@ -214,10 +227,11 @@ def main(args):
 
             # draw subplots. Argument contains names of objects to be drawn in corresponding order.
             plot.subplot(0).Draw(["stack", "total_bkg", "data_obs"])
-            plot.subplot(1).Draw([
-                "stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top",
-                "data_obs"
-            ])
+            if args.linear != True:
+                plot.subplot(1).Draw([
+                    "stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top",
+                    "data_obs"
+                ])
             plot.subplot(2).Draw([
                 "total_bkg", "bkg_ggH", "bkg_ggH_top", "bkg_qqH",
                 "bkg_qqH_top", "data_obs"
@@ -228,9 +242,9 @@ def main(args):
             for i in range(2):
                 plot.add_legend(width=0.48, height=0.15)
                 for process in legend_bkg_processes:
-                    plot.legend(i).add_entry(0, process,
-                                             styles.label_dict[process.replace(
-                                                 "EWK", "EWKZ")], 'f')
+                    plot.legend(i).add_entry(
+                        0, process, styles.legend_label_dict[process.replace(
+                            "EWK", "EWKZ")], 'f')
                 plot.legend(i).add_entry(0, "total_bkg", "Bkg. unc.", 'f')
                 plot.legend(i).add_entry(1, "ggH%s" % suffix[i], "ggH", 'l')
                 plot.legend(i).add_entry(1, "qqH%s" % suffix[i], "qqH", 'l')
