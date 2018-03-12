@@ -41,8 +41,6 @@ def parse_arguments():
     parser.add_argument(
         "--png", action="store_true", help="Save plots in png format")
     parser.add_argument(
-        "--x_label", default=None, type=str, help="x_label configuration.")
-    parser.add_argument(
         "--normalize-by-bin-width",
         action="store_true",
         help="Normelize plots by bin width")
@@ -103,8 +101,7 @@ def main(args):
             split_value = 101
 
     split_dict = {c: split_value for c in ["et", "mt", "tt"]}
-    if args.x_label is not None:
-        x_label = yaml.load(open(args.x_label))
+    x_label = yaml.load(open(styles.labels_path))
 
     bkg_processes = ["EWK", "QCD", "VV", "W", "TTT", "TTJ", "ZJ", "ZL", "ZTT"]
     legend_bkg_processes = copy.deepcopy(bkg_processes)
@@ -210,11 +207,8 @@ def main(args):
                 plot.subplot(1).setYlabel(
                     "")  # otherwise number labels are not drawn on axis
             if args.gof_variable != None:
-                if args.x_label is not None:
-                    plot.subplot(2).setXlabel(x_label['x_label'][args.channels[
+                plot.subplot(2).setXlabel(x_label['x_label'][args.channels[
                         0]][args.gof_variable])
-                else:
-                    plot.subplot(2).setXlabel(args.gof_variable)
             else:
                 plot.subplot(2).setXlabel("NN score")
             if args.normalize_by_bin_width:
