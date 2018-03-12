@@ -101,8 +101,6 @@ def main(args):
             split_value = 101
 
     split_dict = {c: split_value for c in ["et", "mt", "tt"]}
-    x_label = yaml.load(open(styles.labels_path))
-
     bkg_processes = ["EWK", "QCD", "VV", "W", "TTT", "TTJ", "ZJ", "ZL", "ZTT"]
     legend_bkg_processes = copy.deepcopy(bkg_processes)
     legend_bkg_processes.reverse()
@@ -208,7 +206,7 @@ def main(args):
                     "")  # otherwise number labels are not drawn on axis
             if args.gof_variable != None:
                 plot.subplot(2).setXlabel(
-                    x_label['x_label'][args.channels[0]][args.gof_variable])
+                    styles.x_label_dict[args.channels[0]][args.gof_variable])
             else:
                 plot.subplot(2).setXlabel("NN score")
             if args.normalize_by_bin_width:
@@ -245,7 +243,7 @@ def main(args):
                 plot.add_legend(width=0.48, height=0.15)
                 for process in legend_bkg_processes:
                     plot.legend(i).add_entry(0, process,
-                                             styles.label_dict[process.replace(
+                                             styles.legend_label_dict[process.replace(
                                                  "EWK", "EWKZ")], 'f')
                 plot.legend(i).add_entry(0, "total_bkg", "Bkg. unc.", 'f')
                 plot.legend(i).add_entry(1, "ggH%s" % suffix[i], "ggH", 'l')
