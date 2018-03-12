@@ -242,9 +242,9 @@ def main(args):
             for i in range(2):
                 plot.add_legend(width=0.48, height=0.15)
                 for process in legend_bkg_processes:
-                    plot.legend(i).add_entry(0, process,
-                                             styles.legend_label_dict[process.replace(
-                                                 "EWK", "EWKZ")], 'f')
+                    plot.legend(i).add_entry(
+                        0, process, styles.legend_label_dict[process.replace(
+                            "EWK", "EWKZ")], 'f')
                 plot.legend(i).add_entry(0, "total_bkg", "Bkg. unc.", 'f')
                 plot.legend(i).add_entry(1, "ggH%s" % suffix[i], "ggH", 'l')
                 plot.legend(i).add_entry(1, "qqH%s" % suffix[i], "qqH", 'l')
