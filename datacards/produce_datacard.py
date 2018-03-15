@@ -280,7 +280,7 @@ def main(args):
         fix_norm=True)
 
     # Perform auto-rebinning
-    #db.auto_rebin(threshold=1.0, mode=0)
+    db.auto_rebin(threshold=1.0, mode=0)
 
     # Write datacard
     #db.print_datacard()
