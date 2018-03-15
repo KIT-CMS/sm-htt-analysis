@@ -243,7 +243,7 @@ def main(args):
                 VariableBinning(binning["gof"]["et"][args.gof_variable]["bins"]),
                 expression=binning["gof"]["et"][args.gof_variable]["expression"])
         if "cut" in binning["gof"]["et"][args.gof_variable].keys():
-            cuts=binning["gof"]["et"][args.gof_variable]["cuts"]
+            cuts=Cuts(Cut(binning["gof"]["et"][args.gof_variable]["cut"], "binning"))
         else:
             cuts=Cuts()
         et_categories.append(
@@ -292,7 +292,7 @@ def main(args):
                 VariableBinning(binning["gof"]["mt"][args.gof_variable]["bins"]),
                 expression=binning["gof"]["mt"][args.gof_variable]["expression"])
         if "cut" in binning["gof"]["mt"][args.gof_variable].keys():
-            cuts=binning["gof"]["mt"][args.gof_variable]["cuts"]
+            cuts=Cuts(Cut(binning["gof"]["mt"][args.gof_variable]["cut"], "binning"))
         else:
             cuts=Cuts()
         mt_categories.append(
@@ -341,7 +341,7 @@ def main(args):
                 VariableBinning(binning["gof"]["tt"][args.gof_variable]["bins"]),
                 expression=binning["gof"]["tt"][args.gof_variable]["expression"])
         if "cut" in binning["gof"]["tt"][args.gof_variable].keys():
-            cuts=binning["gof"]["tt"][args.gof_variable]["cuts"]
+            cuts=Cuts(Cut(binning["gof"]["tt"][args.gof_variable]["cut"], "binning"))
         else:
             cuts=Cuts()
         tt_categories.append(
