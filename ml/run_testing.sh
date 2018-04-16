@@ -23,3 +23,12 @@ python htt-ml/testing/keras_confusion_matrix.py \
 
 python htt-ml/testing/keras_confusion_matrix.py \
     ml/${CHANNEL}_training_config.yaml ml/${CHANNEL}_keras_testing_config.yaml 1
+
+# Taylor analysis (1D)
+if [ -n "$TEST_TAYLOR_1D" ]; then
+python htt-ml/testing/keras_taylor_1D.py \
+    ml/${CHANNEL}_training_config.yaml ml/${CHANNEL}_keras_testing_config.yaml 0
+
+python htt-ml/testing/keras_taylor_1D.py \
+    ml/${CHANNEL}_training_config.yaml ml/${CHANNEL}_keras_testing_config.yaml 1
+fi
