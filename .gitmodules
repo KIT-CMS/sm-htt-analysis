@@ -10,3 +10,6 @@
 [submodule "Dumbledraw"]
 	path = Dumbledraw
 	url = git@github.com:KIT-CMS/Dumbledraw.git
+[submodule "tensorflow_derivative"]
+	path = tensorflow_derivative
+	url = https://github.com/KIT-CMS/tensorflow_derivative
