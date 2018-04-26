@@ -157,6 +157,7 @@ def main(args):
     ax1.set_xlim((-0.5, len(variables) - 0.5))
     ax1.set_xticks(x)
     ax1.set_xticklabels(variables, rotation=90)
+    ax1.xaxis.grid()
 
     ax2 = ax1.twinx()
     ax2.plot(
