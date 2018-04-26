@@ -205,8 +205,12 @@ def main(args):
                 plot.subplot(1).setYlabel(
                     "")  # otherwise number labels are not drawn on axis
             if args.gof_variable != None:
-                plot.subplot(2).setXlabel(
-                    styles.x_label_dict[args.channels[0]][args.gof_variable])
+                if args.gof_variable in styles.x_label_dict[args.channels[0]]:
+                    x_label = styles.x_label_dict[args.channels[0]][
+                        args.gof_variable]
+                else:
+                    x_label = args.gof_variable
+                plot.subplot(2).setXlabel(x_label)
             else:
                 plot.subplot(2).setXlabel("NN score")
             if args.normalize_by_bin_width:
