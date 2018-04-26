@@ -114,6 +114,10 @@ def main(args):
 
     gof_variable_pairs = []
     for v in variable_pairs:
+        if v[0] == v[1]:
+            gof_variable_pairs.append(np.nan)
+            continue
+
         path_1 = os.path.join(args.gof_results, "{}_{}".format(
             args.channel, "_".join(v)))
         path_2 = os.path.join(args.gof_results, "{}_{}".format(
@@ -155,13 +159,17 @@ def main(args):
 
     ax2 = ax1.twinx()
     ax2.plot(x, ranking_variables, "g+", mew=4, ms=16, alpha=0.8)
-    ax2.set_ylabel("Neural network sensitivity", labelpad=20, color="g")
-    ax2.set_ylim((-0.05, np.max(ranking_variables) * 1.05))
+    ax2.set_ylabel(
+        "Neural network sensitivity $\\langle t_{i} \\rangle$",
+        labelpad=20,
+        color="g")
+    ax2.set_ylim((-0.01, np.max(ranking_variables) * 1.05))
 
-    plt.savefig(
-        os.path.join(args.output_path,
-                     "fold{}_combined_taylor_gof_1D.png".format(args.fold)),
-        bbox_inches="tight")
+    plot_path = os.path.join(args.output_path,
+                             "fold{}_combined_taylor_gof_1D.png".format(
+                                 args.fold))
+    logger.info("Save plot to {}.".format(plot_path))
+    plt.savefig(plot_path, bbox_inches="tight")
 
     # Plot combination of gof and Taylor ranking for variable pairs (2D)
     matrix_ranking = np.ones((len(variables), len(variables))) * (np.nan)
@@ -174,8 +182,11 @@ def main(args):
         matrix_ranking[idx_1, idx_2] = r
         matrix_ranking[idx_2, idx_1] = r
 
-        matrix_gof[idx_1, idx_2] = g
-        matrix_gof[idx_2, idx_1] = g
+        if idx_1 == idx_2:
+            matrix_gof[idx_1, idx_1] = gof_variables[idx_1]
+        else:
+            matrix_gof[idx_1, idx_2] = g
+            matrix_gof[idx_2, idx_1] = g
 
     plt.figure(figsize=(1.5 * len(variables), 1.0 * len(variables)))
     ax = plt.gca()
@@ -185,10 +196,16 @@ def main(args):
             ax.text(
                 i1 + 0.5,
                 i2 + 0.5,
-                '{0:.2f}\n{1:.2f}'.format(matrix_gof[i1, i2],
-                                          matrix_ranking[i1, i2]),
-                ha='center',
-                va='center')
+                "{0:.2f}\n".format(matrix_gof[i1, i2], matrix_ranking[i1, i2]),
+                ha="center",
+                va="center")
+            ax.text(
+                i1 + 0.5,
+                i2 + 0.5,
+                "\n{1:.2f}".format(matrix_gof[i1, i2], matrix_ranking[i1, i2]),
+                ha="center",
+                va="center",
+                weight="bold")
 
     cmap = make_cmap([(1, 0, 0), (1, 1, 0), (0, 1, 0)],
                      np.array([0.0, 0.05, 1.0]))
@@ -208,10 +225,11 @@ def main(args):
         rotation='horizontal')
     plt.xlim(0, len(variables))
     plt.ylim(0, len(variables))
-    plt.savefig(
-        os.path.join(args.output_path,
-                     "fold{}_combined_taylor_gof_2D.png".format(args.fold)),
-        bbox_inches="tight")
+    plot_path = os.path.join(args.output_path,
+                             "fold{}_combined_taylor_gof_2D.png".format(
+                                 args.fold))
+    logger.info("Save plot to {}.".format(plot_path))
+    plt.savefig(plot_path, bbox_inches="tight")
 
 
 if __name__ == "__main__":

@@ -49,3 +49,16 @@ python htt-ml/testing/keras_taylor_ranking.py \
 python htt-ml/testing/keras_taylor_ranking.py \
     ml/${CHANNEL}_training_config.yaml ml/${CHANNEL}_keras_testing_config.yaml 1
 fi
+
+# Make plots combining goodness of fit and Taylor ranking
+#TEST_PLOT_COMBINED_GOF_TAYLOR=1
+if [ -n "$TEST_TAYLOR_RANKING" ]; then
+    for IFOLD in 0 1; do
+        python ml/plot_combined_taylor_gof.py \
+            ml/${CHANNEL}/fold${IFOLD}_keras_taylor_ranking.yaml \
+            /path/to/gof/result/dir/ \
+            ${CHANNEL} \
+            ${IFOLD} \
+            ml/${CHANNEL}/
+    done
+fi
