@@ -149,20 +149,22 @@ def main(args):
     plt.figure(figsize=(len(variables) * 0.5, 5.0))
     x = range(len(variables))
     ax1 = plt.gca()
-    ax1.axhline(y=0.05, linewidth=3, color='r', alpha=0.8)
-    ax1.plot(x, gof_variables, "b+", mew=4, ms=16, alpha=0.8)
-    ax1.set_ylabel("Saturated goodness of fit p-value", labelpad=20, color="b")
+    ax1.axhline(y=0.05, linewidth=3, color='tab:red', alpha=0.8)
+    ax1.plot(x, gof_variables, "+", mew=4, ms=16, alpha=0.8, color="tab:blue")
+    ax1.set_ylabel(
+        "Saturated goodness of fit p-value", labelpad=20, color="tab:blue")
     ax1.set_ylim((-0.05, 1.05))
     ax1.set_xlim((-0.5, len(variables) - 0.5))
     ax1.set_xticks(x)
     ax1.set_xticklabels(variables, rotation=90)
 
     ax2 = ax1.twinx()
-    ax2.plot(x, ranking_variables, "g+", mew=4, ms=16, alpha=0.8)
+    ax2.plot(
+        x, ranking_variables, "+", mew=4, ms=16, alpha=0.8, color="tab:orange")
     ax2.set_ylabel(
         "Neural network sensitivity $\\langle t_{i} \\rangle$",
         labelpad=20,
-        color="g")
+        color="tab:orange")
     ax2.set_ylim((-0.01, np.max(ranking_variables) * 1.05))
 
     plot_path = os.path.join(args.output_path,
