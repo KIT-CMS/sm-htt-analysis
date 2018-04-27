@@ -52,7 +52,7 @@ fi
 
 # Make plots combining goodness of fit and Taylor ranking
 #TEST_PLOT_COMBINED_GOF_TAYLOR=1
-if [ -n "$TEST_TAYLOR_RANKING" ]; then
+if [ -n "$TEST_PLOT_COMBINED_GOF_TAYLOR" ]; then
     for IFOLD in 0 1; do
         python ml/plot_combined_taylor_gof.py \
             ml/${CHANNEL}/fold${IFOLD}_keras_taylor_ranking.yaml \
