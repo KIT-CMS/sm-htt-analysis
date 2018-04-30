@@ -1,9 +1,10 @@
 #!/bin/bash
 
-CHANNEL=$1
-VARIABLE=$2
+ERA=$1
+CHANNEL=$2
+VARIABLE=$3
 
 source utils/setup_cmssw.sh
 source utils/setup_python.sh
 
-python datacards/produce_datacard.py --channels $CHANNEL --gof $VARIABLE --use-data-for-observation
+python datacards/produce_datacard.py --era $ERA --channels $CHANNEL --gof $VARIABLE --use-data-for-observation
