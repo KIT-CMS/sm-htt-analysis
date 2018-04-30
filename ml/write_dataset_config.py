@@ -10,8 +10,6 @@ import copy
 
 from shape_producer.cutstring import Cut, Cuts
 from shape_producer.channel import *
-from shape_producer.estimation_methods_2016 import *
-from shape_producer.era import Run2016
 
 import logging
 logger = logging.getLogger("write_dataset_config")
@@ -29,6 +27,7 @@ def parse_arguments():
         "Write dataset config for creation of training dataset for a specific channel."
     )
     parser.add_argument("--channel", required=True, help="Analysis channel")
+    parser.add_argument("--era", required=True, help="Experiment era")
     parser.add_argument(
         "--base-path", required=True, help="Path to Artus output files")
     parser.add_argument(
@@ -69,7 +68,13 @@ def main(args):
     output_config["training_weight_branch"] = args.training_weight_branch
 
     # Define era
-    era = Run2016(args.database)
+    if "2016" in args.era:
+        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, qqHEstimation, VHEstimation, ZTTEstimation, ZTTEstimationTT, ZLEstimationMTSM, ZLEstimationETSM, ZLEstimationTT, ZJEstimationMT, ZJEstimationET, ZJEstimationTT, WEstimation, TTTEstimationMT, TTTEstimationET, TTTEstimationTT, TTJEstimationMT, TTJEstimationET, TTJEstimationTT, VVEstimation, EWKEstimation, QCDEstimationMT, QCDEstimationET, QCDEstimationTT
+        from shape_producer.era import Run2016
+        era = Run2016(args.database)
+    else:
+        logger.fatal("Era {} is not implemented.".format(args.era))
+        raise Exception
 
     ############################################################################
 

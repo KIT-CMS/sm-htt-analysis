@@ -1,4 +1,4 @@
-# Trained Keras model
+# Trained model
 # NOTE: They need to be booked in the correct order! The index (0,1) is
 # matched with the dataset (1,0) so that the testing runs not on the
 # training dataset.

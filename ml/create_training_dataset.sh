@@ -10,6 +10,7 @@ source utils/setup_samples.sh $ERA
 mkdir -p ml/${ERA}_${CHANNEL}
 
 python ml/write_dataset_config.py \
+    --era ${ERA} \
     --channel ${CHANNEL} \
     --base-path $ARTUS_OUTPUTS \
     --database $KAPPA_DATABASE \

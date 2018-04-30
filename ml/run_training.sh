@@ -1,6 +1,7 @@
 #!/bin/bash
 
-CHANNEL=$1
+ERA=$1
+CHANNEL=$2
 
 source utils/setup_cvmfs_sft.sh
 
@@ -16,7 +17,7 @@ then
 fi
 
 
-mkdir -p ml/${CHANNEL}
+mkdir -p ml/${ERA}_${CHANNEL}
 
-python htt-ml/training/keras_training.py ml/${CHANNEL}_training_config.yaml 0
-python htt-ml/training/keras_training.py ml/${CHANNEL}_training_config.yaml 1
+python htt-ml/training/keras_training.py ml/${ERA}_${CHANNEL}_training.yaml 0
+python htt-ml/training/keras_training.py ml/${ERA}_${CHANNEL}_training.yaml 1

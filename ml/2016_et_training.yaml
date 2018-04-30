@@ -1,26 +1,32 @@
 # Training datasets for different folds
 datasets:
-    - ml/tt/fold0_tt_training_dataset.root
-    - ml/tt/fold1_tt_training_dataset.root
+    - ml/2016_et/fold0_training_dataset.root
+    - ml/2016_et/fold1_training_dataset.root
 
 # Base path for all output files
-output_path: ml/tt
+output_path: ml/2016_et
 
 # Define classes based on tree names in dataset file
 classes:
     - ggh
     - qqh
     - ztt
-    - noniso
+    - zll
+    - w
+    - tt
+    - ss
     - misc
 
 # Set class weights
 class_weights:
-    ggh: 144.8
-    qqh: 505.3
-    ztt: 3.4
-    noniso: 1.7
-    misc: 8.3
+    ggh: 213.8
+    qqh: 1932.3
+    ztt: 2.3
+    zll: 7.0
+    w: 6.1
+    tt: 14.7
+    ss: 6.2
+    misc: 69.4
 
 # Define global scale factor, which is multiplied to all event weights
 global_weight_scale: 1.0
@@ -33,18 +39,11 @@ variables:
     - m_sv
     - pt_1
     - pt_2
-    - eta_1
-    - phi_1
-    - phi_2
     - jpt_1
-    - jeta_1
-    - jphi_1
-    - jphi_2
-    - jcsv_1
     - jcsv_2
     - jm_1
-    - jmva_1
     - bpt_1
+    - bpt_2
     - beta_1
     - beta_2
     - bphi_1
@@ -54,15 +53,13 @@ variables:
     - njets
     - nbtag
     - mt_1
+    - mt_2
     - ptvis
     - pt_tt
     - mjj
-    - jdeta
     - m_vis
-    - dijetphi
     - dijetpt
     - met
-    - d0_1
 
 # Split of dataset in training and validation (in TMVA called training and testing)
 train_test_split: 0.75
