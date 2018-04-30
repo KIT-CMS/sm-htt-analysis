@@ -114,7 +114,7 @@ def parse_arguments():
 
 def main(args):
     # Container for all distributions to be drawn
-    systematics = Systematics("shapes.root", num_threads=args.num_threads)
+    systematics = Systematics("{}_shapes.root".format(args.era), num_threads=args.num_threads)
 
     # Era selection
     if "2016" in args.era:
@@ -792,5 +792,5 @@ if __name__ == "__main__":
     if ('tt' in args.channels or 'em' in args.channels) and args.emb:
         print "Channels tt and em not yet considered for embedded background estimation."
         exit()
-    setup_logging("produce_shapes.log", logging.INFO)
+    setup_logging("{}_produce_shapes.log".format(args.era), logging.INFO)
     main(args)

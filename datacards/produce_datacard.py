@@ -290,10 +290,10 @@ def main(args):
 
     # Write datacard
     #db.print_datacard()
-    db.write("datacard.txt", "datacard_shapes.root")
+    db.write("{}_datacard.txt".format(args.era), "{}_datacard_shapes.root".format(args.era))
 
 
 if __name__ == "__main__":
     args = parse_arguments()
-    setup_logging("produce_datacard.log", logging.DEBUG)
+    setup_logging("{}_produce_datacard.log".format(args.era), logging.DEBUG)
     main(args)
