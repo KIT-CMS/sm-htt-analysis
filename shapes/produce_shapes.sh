@@ -6,7 +6,7 @@ CHANNELS=${@:2}
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
-source utils/setup_samples.sh
+source utils/setup_samples.sh $ERA
 
 # Calculate binning from data distributions
 # NOTE: Binning is committed in this repository.
