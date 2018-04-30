@@ -17,7 +17,7 @@ then
     ARTUS_FRIENDS_TT=$ARTUS_FRIENDS_TT_2016
 else
     echo "[ERROR] Era $ERA is not implemented." 1>&2
-    wait
+    read -p "Press any key to continue... " -n1 -s
 fi
 
 # Kappa database
