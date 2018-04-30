@@ -2,7 +2,8 @@
 
 source utils/setup_cmssw.sh
 
-DATACARD=datacard.txt
+ERA=$1
+DATACARD=${ERA}_datacard.txt
 SEED=1234
 MASS=125
 NUM_TOYS=300

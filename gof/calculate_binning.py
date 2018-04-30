@@ -5,10 +5,8 @@ import ROOT
 ROOT.PyConfig.IgnoreCommandLineOptions = True  # disable ROOT internal argument parser
 
 from shape_producer.cutstring import Cut, Cuts
-from shape_producer.era import Run2016
 from shape_producer.channel import ETSM, MTSM, TTSM
 from shape_producer.process import Process
-from shape_producer.estimation_methods_2016 import DataEstimation
 
 import argparse
 import numpy as np
@@ -41,6 +39,8 @@ def parse_arguments():
         type=str,
         help="Directory with Artus outputs.")
     parser.add_argument(
+        "--era", required=True, type=str, help="Experiment era.")
+    parser.add_argument(
         "--datasets", required=True, type=str, help="Kappa datsets database.")
     parser.add_argument(
         "--output",
@@ -54,6 +54,11 @@ def parse_arguments():
 
 def get_properties(dict_, era, channel, directory, additional_cuts):
     # Get data estimation method
+    if "2016" in era.name:
+        from shape_producer.estimation_methods_2016 import DataEstimation
+    else:
+        logger.fatal("Can not import data estimation because era {} is not implemented.".format(era.name))
+        raise Exception
     estimation = DataEstimation(era, directory, channel)
 
     # Extract weight string, which should be equal (1.0)
@@ -166,7 +171,12 @@ def add_2d_unrolled_binning(variables, binning):
 
 def main(args):
     # Define era
-    era = Run2016(args.datasets)
+    if "2016" in args.era:
+        from shape_producer.era import Run2016
+        era = Run2016(args.datasets)
+    else:
+        logger.fatal("Era {} is not implemented.".format(args.era))
+        raise Exception
 
     # Load variables
     variables = yaml.load(open(args.variables))["variables"]
