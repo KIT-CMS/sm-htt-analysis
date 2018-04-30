@@ -285,7 +285,7 @@ def main(args):
 
             # save plot
             postfix = "prefit" if "prefit" in args.input else "postfit" if "postfit" in args.input else "undefined"
-            plot.save("plots/%s_%s_%s.%s" % (channel, category, postfix, "png"
+            plot.save("plots/%s_%s_%s_%s.%s" % (args.era, channel, category, postfix, "png"
                                              if args.png else "pdf"))
             plots.append(
                 plot
@@ -294,5 +294,5 @@ def main(args):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    setup_logging("plot_nominal.log", logging.INFO)
+    setup_logging("{}_plot_shapes.log".format(args.era), logging.INFO)
     main(args)
