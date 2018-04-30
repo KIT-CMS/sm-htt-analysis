@@ -1,7 +1,8 @@
 #!/bin/bash
 
 BINNING=shapes/binning.yaml
-CHANNELS=$@
+ERA=$1
+CHANNELS=${@:2}
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
@@ -21,4 +22,5 @@ python shapes/produce_shapes.py \
     --tt-friend-directory $ARTUS_FRIENDS_TT \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
-    --channels $CHANNELS
+    --channels $CHANNELS \
+    --era $ERA

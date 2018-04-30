@@ -38,6 +38,8 @@ def parse_arguments():
         required=True,
         help="Select channels to be included in the datacard.")
     parser.add_argument(
+        "--era", type=str, required=True, help="Experiment era.")
+    parser.add_argument(
         "--gof",
         default=None,
         help=
@@ -70,6 +72,13 @@ def parse_arguments():
 def main(args):
     db = DatacardBuilder(args.shapes)
 
+    # Select era
+    if "2016" in args.era:
+        era = "Run2016"
+    else:
+        logger.critical("Era {} is not implemented.".format(args.era))
+        raise Exception
+
     # Register observations, signals and backgrounds
     channels = []
     categories = []
@@ -95,10 +104,9 @@ def main(args):
             ]
         et_category_pairs = db.make_pairs(et_categories)
 
-        db.add_observation("125", "smhtt", "Run2016", "et", et_category_pairs)
-        db.add_signals("125", "smhtt", "Run2016", "et", signals,
-                       et_category_pairs)
-        db.add_backgrounds("125", "smhtt", "Run2016", "et", backgrounds,
+        db.add_observation("125", "smhtt", era, "et", et_category_pairs)
+        db.add_signals("125", "smhtt", era, "et", signals, et_category_pairs)
+        db.add_backgrounds("125", "smhtt", era, "et", backgrounds,
                            et_category_pairs)
 
         channels.append("et")
@@ -120,10 +128,9 @@ def main(args):
             ]
         mt_category_pairs = db.make_pairs(mt_categories)
 
-        db.add_observation("125", "smhtt", "Run2016", "mt", mt_category_pairs)
-        db.add_signals("125", "smhtt", "Run2016", "mt", signals,
-                       mt_category_pairs)
-        db.add_backgrounds("125", "smhtt", "Run2016", "mt", backgrounds,
+        db.add_observation("125", "smhtt", era, "mt", mt_category_pairs)
+        db.add_signals("125", "smhtt", era, "mt", signals, mt_category_pairs)
+        db.add_backgrounds("125", "smhtt", era, "mt", backgrounds,
                            mt_category_pairs)
 
         channels.append("mt")
@@ -142,10 +149,9 @@ def main(args):
             ]
         tt_category_pairs = db.make_pairs(tt_categories)
 
-        db.add_observation("125", "smhtt", "Run2016", "tt", tt_category_pairs)
-        db.add_signals("125", "smhtt", "Run2016", "tt", signals,
-                       tt_category_pairs)
-        db.add_backgrounds("125", "smhtt", "Run2016", "tt", backgrounds,
+        db.add_observation("125", "smhtt", era, "tt", tt_category_pairs)
+        db.add_signals("125", "smhtt", era, "tt", signals, tt_category_pairs)
+        db.add_backgrounds("125", "smhtt", era, "tt", backgrounds,
                            tt_category_pairs)
 
         channels.append("tt")
@@ -255,17 +261,17 @@ def main(args):
     # Extract shapes
     for channel in args.channels:
         if args.gof != None:
-            db.extract_shapes(channel, "smhtt", "Run2016", args.gof)
+            db.extract_shapes(channel, "smhtt", era, args.gof)
         elif args.HIG16043:
             if channel in ["et", "mt"]:
-                db.extract_shapes(channel, "smhtt", "Run2016", "m_vis",
+                db.extract_shapes(channel, "smhtt", era, "m_vis",
                                   channel + "_0jet")
-                db.extract_shapes(channel, "smhtt", "Run2016", "m_sv",
+                db.extract_shapes(channel, "smhtt", era, "m_sv",
                                   [channel + "_vbf", channel + "_boosted"])
             else:
-                db.extract_shapes(channel, "smhtt", "Run2016", "m_sv")
+                db.extract_shapes(channel, "smhtt", era, "m_sv")
         else:
-            db.extract_shapes(channel, "smhtt", "Run2016",
+            db.extract_shapes(channel, "smhtt", era,
                               "{}_max_score".format(channel))
 
     # Replace observation with Asimov dataset

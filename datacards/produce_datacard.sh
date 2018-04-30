@@ -3,4 +3,7 @@
 source utils/setup_cmssw.sh
 source utils/setup_python.sh
 
-python datacards/produce_datacard.py --channels $@
+ERA=$1
+CHANNELS=${@:2}
+
+python datacards/produce_datacard.py --era $ERA --channels $CHANNELS

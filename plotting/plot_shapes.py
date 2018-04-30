@@ -27,6 +27,7 @@ def parse_arguments():
         type=str,
         required=True,
         help="Channels")
+    parser.add_argument("-e", "--era", type=str, required=True, help="Era")
     parser.add_argument(
         "-i",
         "--input",
@@ -274,7 +275,11 @@ def main(args):
 
             # draw additional labels
             plot.DrawCMS()
-            plot.DrawLumi("35.9 fb^{-1} (13 TeV)")
+            if "2016" in args.era:
+                plot.DrawLumi("35.9 fb^{-1} (13 TeV)")
+            else:
+                logger.critical("Era {} is not implemented.".format(args.era))
+                raise Exception
             plot.DrawChannelCategoryLabel("%s, %s" % (channel_dict[channel],
                                                       category_dict[category]))
 
