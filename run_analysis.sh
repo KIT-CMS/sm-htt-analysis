@@ -13,27 +13,25 @@ done
 # Clean-up workspace
 ./utils/clean.sh
 
-# Create shapes of systematics
+# Parse arguments
 ERA=$1
 CHANNELS=${@:2}
+
+# Create shapes of systematics
 ./shapes/produce_shapes.sh $ERA $CHANNELS
 
 # Apply blinding strategy
-#./shapes/apply_blinding.sh
-
-# Make control plots of produced shapes
-#./plotting/plot_control.sh $CHANNELS
+#./shapes/apply_blinding.sh $ERA
 
 # Write datacard
 ./datacards/produce_datacard.sh $ERA $CHANNELS
 
 # Run statistical inference
-./combine/significance.sh | tee significance.log
-./combine/signal_strength.sh | tee signal_strength.log
-#./combine/2D_signal_strength.sh | tee 2D_signal_strength.log
-./combine/diff_nuisances.sh
+./combine/significance.sh $ERA | tee ${ERA}_significance.log
+./combine/signal_strength.sh $ERA | tee ${ERA}_signal_strength.log
+./combine/diff_nuisances.sh $ERA
 #./combine/nuisance_impacts.sh
 
 # Make prefit and postfit shapes
-./combine/prefit_postfit_shapes.sh
+./combine/prefit_postfit_shapes.sh $ERA
 ./plotting/plot_shapes.sh $ERA $CHANNELS
