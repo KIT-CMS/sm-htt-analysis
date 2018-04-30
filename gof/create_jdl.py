@@ -7,12 +7,12 @@ import argparse
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument("output", type=str, help="Output path")
     parser.add_argument(
-        "--binning",
-        type=str,
-        default="gof/binning.yaml",
-        help="Binning config")
+        "--output", type=str, required=True, help="Output path")
+    parser.add_argument(
+        "--era", type=str, required=True, help="Experiment era.")
+    parser.add_argument(
+        "--binning", type=str, required=True, help="Binning config.")
     return parser.parse_args()
 
 
@@ -30,7 +30,7 @@ def main(args):
     config = yaml.load(open(args.binning))
     for channel in config["gof"]:
         for variable in config["gof"][channel]:
-            arguments.append("{} {}".format(channel, variable))
+            arguments.append("{} {} {}".format(args.era, channel, variable))
     jobs.arguments = arguments
 
     # The job requires lots of CPU resources

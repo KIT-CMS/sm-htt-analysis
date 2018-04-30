@@ -57,7 +57,9 @@ def get_properties(dict_, era, channel, directory, additional_cuts):
     if "2016" in era.name:
         from shape_producer.estimation_methods_2016 import DataEstimation
     else:
-        logger.fatal("Can not import data estimation because era {} is not implemented.".format(era.name))
+        logger.fatal(
+            "Can not import data estimation because era {} is not implemented.".
+            format(era.name))
         raise Exception
     estimation = DataEstimation(era, directory, channel)
 
