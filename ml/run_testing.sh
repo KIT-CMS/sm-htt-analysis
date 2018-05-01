@@ -31,7 +31,7 @@ fi
 
 # Taylor analysis (1D)
 export KERAS_BACKEND=tensorflow
-#TEST_TAYLOR_1D=1
+TEST_TAYLOR_1D=1
 if [ -n "$TEST_TAYLOR_1D" ]; then
 python htt-ml/testing/keras_taylor_1D.py \
     ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 0
