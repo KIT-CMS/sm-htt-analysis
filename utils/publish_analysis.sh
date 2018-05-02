@@ -7,17 +7,13 @@ mkdir -p ${OUTPUT_PATH}
 cp plots/*.png ${OUTPUT_PATH}
 cp utils/index.php ${OUTPUT_PATH}
 
-mkdir -p ${OUTPUT_PATH}/${ERA}_mt
-cp ml/${ERA}_mt/*.png ${OUTPUT_PATH}/${ERA}_mt
-cp utils/index.php ${OUTPUT_PATH}/${ERA}_mt
-
-mkdir -p ${OUTPUT_PATH}/${ERA}_et
-cp ml/${ERA}_et/*.png ${OUTPUT_PATH}/${ERA}_et
-cp utils/index.php ${OUTPUT_PATH}/${ERA}_et
-
-mkdir -p ${OUTPUT_PATH}/${ERA}_tt
-cp ml/${ERA}_tt/*.png ${OUTPUT_PATH}/${ERA}_tt
-cp utils/index.php ${OUTPUT_PATH}/${ERA}_tt
+for CHANNEL in "et" "mt" "tt"
+do
+    mkdir -p ${OUTPUT_PATH}/${ERA}_${CHANNEL}
+    cp ml/${ERA}_${CHANNEL}/*.png ${OUTPUT_PATH}/${ERA}_${CHANNEL}/
+    cp ml/${ERA}_${CHANNEL}/*.txt ${OUTPUT_PATH}/${ERA}_${CHANNEL}/
+    cp utils/index.php ${OUTPUT_PATH}/${ERA}_${CHANNEL}
+done
 
 mkdir -p ${OUTPUT_PATH}/log
 cp *.log ${OUTPUT_PATH}/log
