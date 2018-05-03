@@ -4,9 +4,9 @@ ERA=$1
 
 # Samples Run2016
 ARTUS_OUTPUTS_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-02-25/merged
-ARTUS_FRIENDS_ET_2016=/storage/c/wunsch/Artus_2018-02-25/et_keras_2
-ARTUS_FRIENDS_MT_2016=/storage/c/wunsch/Artus_2018-02-25/mt_keras_2
-ARTUS_FRIENDS_TT_2016=/storage/c/wunsch/Artus_2018-02-25/tt_keras_2
+ARTUS_FRIENDS_ET_2016=/storage/c/wunsch/Artus_2018-02-25/et_keras_11
+ARTUS_FRIENDS_MT_2016=/storage/c/wunsch/Artus_2018-02-25/mt_keras_11
+ARTUS_FRIENDS_TT_2016=/storage/c/wunsch/Artus_2018-02-25/tt_keras_11
 
 # Error-handling
 if [[ $ERA == *"2016"* ]]

@@ -31,38 +31,26 @@ event_weights: training_weight
 # Define list of variables to be used for training
 variables:
     - m_sv
+    - m_vis
+    - ptvis
     - pt_1
     - pt_2
-    - eta_1
-    - phi_1
-    - phi_2
     - jpt_1
-    - jeta_1
-    - jphi_1
-    - jphi_2
     - jcsv_1
     - jcsv_2
     - jm_1
     - jmva_1
     - bpt_1
-    - beta_1
-    - beta_2
-    - bphi_1
-    - bphi_2
     - bcsv_1
     - bcsv_2
     - njets
     - nbtag
     - mt_1
-    - ptvis
     - pt_tt
     - mjj
     - jdeta
-    - m_vis
-    - dijetphi
     - dijetpt
     - met
-    - d0_1
 
 # Split of dataset in training and validation (in TMVA called training and testing)
 train_test_split: 0.75
@@ -75,8 +63,8 @@ seed: 1234
 
 # Define the model parameter
 model:
-    name: smhtt_dropout
-    batch_size: -1
+    name: smhtt_dropout_tanh
+    batch_size: 100
     epochs: 100000
-    early_stopping: 200
+    early_stopping: 50
     save_best_only: true
