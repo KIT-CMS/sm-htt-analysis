@@ -31,7 +31,7 @@ def parse_arguments():
     parser.add_argument("--channel", required=True, help="Analysis channel")
     parser.add_argument("--output", required=True, help="Output filelist")
     parser.add_argument(
-        "--emb",
+        "--embedding",
         action="store_true",
         default=False,
         help="Use mu->tau embedded samples as ZTT background estimation.")
@@ -52,7 +52,7 @@ def main(args):
     # Channel: mt
     if args.channel == "mt":
         channel = MTSM()
-        if args.emb:
+        if args.embedding:
             mt.cuts.remove("trg_singlemuoncross")
             mt.cuts.add(
                 Cut("(trg_singlemuon==1 && pt_1>23 && pt_2>30)",
@@ -62,12 +62,12 @@ def main(args):
                 qqHEstimation(era, args.directory, channel),
                 VHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel)
-                if not args.emb else ZTTEmbeddedEstimation(
+                if not args.embedding else ZTTEmbeddedEstimation(
                     era, args.directory, channel),
                 ZLEstimationMTSM(era, args.directory, channel),
                 ZJEstimationMT(era, args.directory, channel),
                 TTTEstimationMT(era, args.directory, channel)
-                if not args.emb else TTTNoTauTauEstimationMT(
+                if not args.embedding else TTTNoTauTauEstimationMT(
                     era, args.directory, channel),
                 TTJEstimationMT(era, args.directory, channel),
                 WEstimation(era, args.directory, channel),
@@ -105,12 +105,12 @@ def main(args):
                 qqHEstimation(era, args.directory, channel),
                 VHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel)
-                if not args.emb else ZTTEmbeddedEstimation(
+                if not args.embedding else ZTTEmbeddedEstimation(
                     era, args.directory, channel),
                 ZLEstimationETSM(era, args.directory, channel),
                 ZJEstimationET(era, args.directory, channel),
                 TTTEstimationET(era, args.directory, channel)
-                if not args.emb else TTTNoTauTauEstimationET(
+                if not args.embedding else TTTNoTauTauEstimationET(
                     era, args.directory, channel),
                 TTJEstimationET(era, args.directory, channel),
                 WEstimation(era, args.directory, channel),
@@ -148,12 +148,12 @@ def main(args):
                 qqHEstimation(era, args.directory, channel),
                 VHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel)
-                if not args.emb else ZTTEmbeddedEstimation(
+                if not args.embedding else ZTTEmbeddedEstimation(
                     era, args.directory, channel),
                 ZLEstimationTT(era, args.directory, channel),
                 ZJEstimationTT(era, args.directory, channel),
                 TTTEstimationTT(era, args.directory, channel)
-                if not args.emb else TTTNoTauTauEstimationTT(
+                if not args.embedding else TTTNoTauTauEstimationTT(
                     era, args.directory, channel),
                 TTJEstimationTT(era, args.directory, channel),
                 WEstimation(era, args.directory, channel),

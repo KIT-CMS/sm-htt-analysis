@@ -49,7 +49,7 @@ def parse_arguments():
     parser.add_argument(
         "--database", required=True, help="Kappa datsets database.")
     parser.add_argument(
-        "--emb",
+        "--embedding",
         action="store_true",
         default=False,
         help="Use mu->tau embedded samples as ZTT background estimation.")
@@ -108,12 +108,12 @@ def main(args):
                 ggHEstimation(era, args.base_path, channel),
                 qqHEstimation(era, args.base_path, channel),
                 ZTTEstimation(era, args.base_path, channel)
-                if not args.emb else ZTTEmbeddedEstimation(
+                if not args.embedding else ZTTEmbeddedEstimation(
                     era, args.base_path, channel),
                 ZLEstimationMTSM(era, args.base_path, channel),
                 ZJEstimationMT(era, args.base_path, channel),
                 TTTEstimationMT(era, args.base_path, channel)
-                if not args.emb else TTTNoTauTauEstimationMT(
+                if not args.embedding else TTTNoTauTauEstimationMT(
                     era, args.base_path, channel),
                 TTJEstimationMT(era, args.base_path, channel),
                 WEstimation(era, args.base_path, channel),
@@ -183,12 +183,12 @@ def main(args):
                 ggHEstimation(era, args.base_path, channel),
                 qqHEstimation(era, args.base_path, channel),
                 ZTTEstimation(era, args.base_path, channel)
-                if not args.emb else ZTTEmbeddedEstimation(
+                if not args.embedding else ZTTEmbeddedEstimation(
                     era, args.base_path, channel),
                 ZLEstimationETSM(era, args.base_path, channel),
                 ZJEstimationET(era, args.base_path, channel),
                 TTTEstimationET(era, args.base_path, channel)
-                if not args.emb else TTTNoTauTauEstimationET(
+                if not args.embedding else TTTNoTauTauEstimationET(
                     era, args.base_path, channel),
                 TTJEstimationET(era, args.base_path, channel),
                 WEstimation(era, args.base_path, channel),
@@ -258,12 +258,12 @@ def main(args):
                 ggHEstimation(era, args.base_path, channel),
                 qqHEstimation(era, args.base_path, channel),
                 ZTTEstimation(era, args.base_path, channel)
-                if not args.emb else ZTTEmbeddedEstimation(
+                if not args.embedding else ZTTEmbeddedEstimation(
                     era, args.base_path, channel),
                 ZLEstimationTT(era, args.base_path, channel),
                 ZJEstimationTT(era, args.base_path, channel),
                 TTTEstimationTT(era, args.base_path, channel)
-                if not args.emb else TTTNoTauTauEstimationTT(
+                if not args.embedding else TTTNoTauTauEstimationTT(
                     era, args.base_path, channel),
                 TTJEstimationTT(era, args.base_path, channel),
                 WEstimation(era, args.base_path, channel),

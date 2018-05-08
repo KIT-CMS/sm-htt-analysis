@@ -60,7 +60,7 @@ def parse_arguments():
         action="store_true",
         help="Use data for the observation and not an Asimov dataset.")
     parser.add_argument(
-        "--emb",
+        "--embedding",
         action="store_true",
         default=False,
         help=
@@ -158,7 +158,7 @@ def main(args):
         categories += tt_categories
 
     # Add shapes systematics
-    if args.emb:
+    if args.embedding:
         db.add_shape_systematic("CMS_htt_dyShape", 1.0, channels, ["ZL", "ZJ"])
         db.add_shape_systematic(
             "CMS_htt_eff_b", 1.0, channels,
@@ -254,7 +254,7 @@ def main(args):
     db.add_normalization_systematic("CMS_scale_qqH", 1.004, channels, "qqH")
     db.add_normalization_systematic("pdf_Higgs_qqH", 1.021, channels, "qqH")
 
-    if args.emb:
+    if args.embedding:
         # embedded event systematics
         db.add_shape_systematic("CMS_htt_emb_ttbar_", 1.0, channels, ["ZTT"])
         db.add_shape_systematic("CMS_scale_muonES", 1.0, "mt", ["ZTT"])

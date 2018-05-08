@@ -135,7 +135,7 @@ def main(args):
     if args.QCD_extrap_fit:
         mt.cuts.remove("muon_iso")
         mt.cuts.add(Cut("(iso_1<0.5)*(iso_1>=0.15)", "muon_iso_loose"))
-    if args.emb:
+    if args.embedding:
         mt.cuts.remove("trg_singlemuoncross")
         mt.cuts.add(Cut("(trg_singlemuon==1 && pt_1>23 && pt_2>30)", "trg_singlemuon"))
     mt_processes = {
@@ -153,7 +153,7 @@ def main(args):
         "VV"    : Process("VV",       VVEstimation    (era, directory, mt, friend_directory=mt_friend_directory)),
         "EWK"   : Process("EWK",      EWKEstimation   (era, directory, mt, friend_directory=mt_friend_directory))
         }
-    if args.emb:
+    if args.embedding:
         mt_processes["ZTT"] = Process("ZTT", ZTTEmbeddedEstimation(era, directory, mt, friend_directory=mt_friend_directory))
         mt_processes["TTT"] = Process("TTT", TTLEstimationMT (era, directory, mt, friend_directory=mt_friend_directory))
     mt_processes["QCD"] = Process("QCD", QCDEstimationMT(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWK"]], mt_processes["data"], extrapolation_factor=1.17))
@@ -176,7 +176,7 @@ def main(args):
         "VV"    : Process("VV",       VVEstimation    (era, directory, et, friend_directory=et_friend_directory)),
         "EWK"   : Process("EWK",      EWKEstimation   (era, directory, et, friend_directory=et_friend_directory))
         }
-    if args.emb:
+    if args.embedding:
         et_processes["ZTT"] = Process("ZTT", ZTTEmbeddedEstimation(era, directory, et, friend_directory=et_friend_directory))
         et_processes["TTT"] = Process("TTT", TTLEstimationET (era, directory, et, friend_directory=et_friend_directory))
     et_processes["QCD"] = Process("QCD", QCDEstimationET(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWK"]], et_processes["data"], extrapolation_factor=1.16))
@@ -200,7 +200,7 @@ def main(args):
         "VV"    : Process("VV",       VVEstimation   (era, directory, tt, friend_directory=tt_friend_directory)),
         "EWK"   : Process("EWK",      EWKEstimation  (era, directory, tt, friend_directory=tt_friend_directory)),
         }
-    if args.emb:
+    if args.embedding:
         tt_processes["ZTT"] = Process("ZTT", ZTTEmbeddedEstimation(era, directory, tt, friend_directory=tt_friend_directory))
         tt_processes["TTT"] = Process("TTT", TTLEstimationTT (era, directory, tt, friend_directory=tt_friend_directory))
 
@@ -430,7 +430,7 @@ def main(args):
                 "HTT", "VH", "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT",
                 "TTJ", "VV", "EWK"
         ]:
-            if args.emb and process_nick == 'ZTT':
+            if args.embedding and process_nick == 'ZTT':
                 continue
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -461,7 +461,7 @@ def main(args):
                 "HTT", "VH", "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT",
                 "TTJ", "VV", "EWK"
         ]:
-            if args.emb and process_nick == 'ZTT':
+            if args.embedding and process_nick == 'ZTT':
                 continue
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -487,7 +487,7 @@ def main(args):
         "CMS_htt_dyShape", "zPtReweightWeight", SquareAndRemoveWeight)
     for variation in zpt_variations:
         for process_nick in ["ZTT", "ZL", "ZJ"]:
-            if args.emb and process_nick == 'ZTT':
+            if args.embedding and process_nick == 'ZTT':
                 continue
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -640,7 +640,7 @@ def main(args):
                 "HTT", "VH", "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT",
                 "TTJ", "VV", "EWK"
         ]:
-            if args.emb and process_nick == 'ZTT':
+            if args.embedding and process_nick == 'ZTT':
                 continue
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -660,7 +660,7 @@ def main(args):
                     process=tt_processes[process_nick],
                     channel=tt,
                     era=era)
-    if args.emb:
+    if args.embedding:
         # Embedded event specifics
 
         # 10% removed events in ttbar simulation (ttbar -> real tau tau events) will be added/subtracted to ZTT shape to use as systematic
@@ -789,8 +789,8 @@ def main(args):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    if ('tt' in args.channels or 'em' in args.channels) and args.emb:
-        print "Channels tt and em not yet considered for embedded background estimation."
-        exit()
     setup_logging("{}_produce_shapes.log".format(args.era), logging.INFO)
+    if ('tt' in args.channels or 'em' in args.channels) and args.embedding:
+        logger.fatal("Channels tt and em not yet considered for embedded background estimation.")
+        raise Exception
     main(args)
