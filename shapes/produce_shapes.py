@@ -6,7 +6,7 @@ from shape_producer.systematics import Systematics, Systematic
 from shape_producer.categories import Category
 from shape_producer.binning import ConstantBinning, VariableBinning
 from shape_producer.variable import Variable
-from shape_producer.systematic_variations import Nominal, DifferentPipeline, SquareAndRemoveWeight, create_systematic_variations, AddWeight, ReplaceWeight
+from shape_producer.systematic_variations import Nominal, DifferentPipeline, SquareAndRemoveWeight, create_systematic_variations, AddWeight, ReplaceWeight, Relabel
 from shape_producer.process import Process
 from shape_producer.estimation_methods import AddHistogramEstimationMethod
 from shape_producer.channel import ETSM, MTSM, TTSM
@@ -105,7 +105,7 @@ def parse_arguments():
         type=str,
         help="Backend. Use classic or tdf.")
     parser.add_argument(
-        "--emb",
+        "--embedding",
         action="store_true",
         default=False,
         help="Use mu->tau embedded samples as ZTT background estimation.")
@@ -118,7 +118,7 @@ def main(args):
 
     # Era selection
     if "2016" in args.era:
-        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, qqHEstimation, VHEstimation, ZTTEstimation, ZTTEstimationTT, ZLEstimationMTSM, ZLEstimationETSM, ZLEstimationTT, ZJEstimationMT, ZJEstimationET, ZJEstimationTT, WEstimation, TTTEstimationMT, TTTEstimationET, TTTEstimationTT, TTJEstimationMT, TTJEstimationET, TTJEstimationTT, VVEstimation, EWKEstimation, QCDEstimationMT, QCDEstimationET, QCDEstimationTT
+        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, qqHEstimation, VHEstimation, ZTTEstimation, ZTTEstimationTT, ZLEstimationMTSM, ZLEstimationETSM, ZLEstimationTT, ZJEstimationMT, ZJEstimationET, ZJEstimationTT, WEstimation, TTTEstimationMT, TTTEstimationET, TTTEstimationTT, TTJEstimationMT, TTJEstimationET, TTJEstimationTT, VVEstimation, EWKEstimation, QCDEstimationMT, QCDEstimationET, QCDEstimationTT, ZTTEmbeddedEstimation, TTLEstimationMT, TTLEstimationET, TTLEstimationTT, TTTTEstimationMT, TTTTEstimationET
         from shape_producer.era import Run2016
         era = Run2016(args.datasets)
     else:
