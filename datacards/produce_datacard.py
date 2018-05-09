@@ -256,7 +256,7 @@ def main(args):
 
     if args.embedding:
         # embedded event systematics
-        db.add_shape_systematic("CMS_htt_emb_ttbar_", 1.0, channels, ["ZTT"])
+        db.add_shape_systematic("CMS_htt_emb_ttbar", 1.0, channels, ["ZTT"])
         db.add_shape_systematic("CMS_scale_muonES", 1.0, "mt", ["ZTT"])
     # Extract shapes
     for channel in args.channels:
