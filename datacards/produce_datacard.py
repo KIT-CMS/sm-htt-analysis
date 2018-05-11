@@ -159,48 +159,50 @@ def main(args):
 
     # Add shapes systematics
     if args.embedding:
-        db.add_shape_systematic("CMS_htt_dyShape", 1.0, channels, ["ZL", "ZJ"])
+        db.add_shape_systematic("CMS_htt_dyShape_13TeV", 1.0, channels, ["ZL", "ZJ"])
         db.add_shape_systematic(
-            "CMS_htt_eff_b", 1.0, channels,
+            "CMS_htt_eff_b_13TeV", 1.0, channels,
             ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
         db.add_shape_systematic(
-            "CMS_htt_mistag_b", 1.0, channels,
+            "CMS_htt_mistag_b_13TeV", 1.0, channels,
             ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
         db.add_shape_systematic(
-            "CMS_scale_j", 1.0, channels,
+            "CMS_scale_j_13TeV", 1.0, channels,
             ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
         db.add_shape_systematic(
-            "CMS_scale_met_unclustered", 1.0, channels,
+            "CMS_scale_met_unclustered_13TeV", 1.0, channels,
             ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
     else:
-        db.add_shape_systematic("CMS_htt_dyShape", 1.0, channels,
+        db.add_shape_systematic("CMS_htt_dyShape_13TeV", 1.0, channels,
                                 ["ZTT", "ZL", "ZJ"])
         db.add_shape_systematic(
-            "CMS_htt_eff_b", 1.0, channels,
+            "CMS_htt_eff_b_13TeV", 1.0, channels,
             ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
         db.add_shape_systematic(
-            "CMS_htt_mistag_b", 1.0, channels,
+            "CMS_htt_mistag_b_13TeV", 1.0, channels,
             ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
         db.add_shape_systematic(
-            "CMS_scale_j", 1.0, channels,
+            "CMS_scale_j_13TeV", 1.0, channels,
             ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
         db.add_shape_systematic(
-            "CMS_scale_met_unclustered", 1.0, channels,
+            "CMS_scale_met_unclustered_13TeV", 1.0, channels,
             ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
 
-    db.add_shape_systematic("CMS_scale_t_3prong0pi0", 1.0, channels,
+    db.add_shape_systematic("CMS_scale_t_3prong_13TeV", 1.0, channels,
                             ["ggH", "qqH", "ZTT", "TTT", "VV", "EWK"])
-    db.add_shape_systematic("CMS_scale_t_1prong0pi0", 1.0, channels,
+    db.add_shape_systematic("CMS_scale_t_1prong_13TeV", 1.0, channels,
                             ["ggH", "qqH", "ZTT", "TTT", "VV", "EWK"])
-    db.add_shape_systematic("CMS_htt_ttbarShape", 1.0, channels,
+    db.add_shape_systematic("CMS_scale_t_1prong1pizero_13TeV", 1.0, channels,
+                            ["ggH", "qqH", "ZTT", "TTT", "VV", "EWK"])
+    db.add_shape_systematic("CMS_htt_ttbarShape_13TeV", 1.0, channels,
                             ["TTT", "TTJ"])
-    db.add_shape_systematic("CMS_htt_jetToTauFake", 1.0, channels,
+    db.add_shape_systematic("CMS_htt_jetToTauFake_13TeV", 1.0, channels,
                             ["ZJ", "W", "TTJ"])
-    db.add_shape_systematic("CMS_htt_eToTauFake_OneProng", 1.0, "et", ["ZL"])
-    db.add_shape_systematic("CMS_htt_eToTauFake_OneProngPiZeros", 1.0, "et",
+    db.add_shape_systematic("CMS_htt_eFakeTau_1prong_13TeV", 1.0, "et", ["ZL"])
+    db.add_shape_systematic("CMS_htt_eFakeTau_1prong1pizero_13TeV", 1.0, "et",
                             ["ZL"])
-    db.add_shape_systematic("CMS_htt_mToTauFake_OneProng", 1.0, "mt", ["ZL"])
-    db.add_shape_systematic("CMS_htt_mToTauFake_OneProngPiZeros", 1.0, "mt",
+    db.add_shape_systematic("CMS_htt_mFakeTau_1prong_13TeV", 1.0, "mt", ["ZL"])
+    db.add_shape_systematic("CMS_htt_mFakeTau_1prong1pizero_13TeV", 1.0, "mt",
                             ["ZL"])
 
     # Add normalization systematics
