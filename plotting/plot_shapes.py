@@ -128,13 +128,13 @@ def main(args):
             # get signal histograms
             for i in range(2):
                 plot.subplot(i + 1).add_hist(
-                    rootfile.get(channel, category, "ggH"), "ggH")
+                    rootfile.get(channel, category, "ggH125"), "ggH")
                 plot.subplot(i + 1).add_hist(
-                    rootfile.get(channel, category, "ggH"), "ggH_top")
+                    rootfile.get(channel, category, "ggH125"), "ggH_top")
                 plot.subplot(i + 1).add_hist(
-                    rootfile.get(channel, category, "qqH"), "qqH")
+                    rootfile.get(channel, category, "qqH125"), "qqH")
                 plot.subplot(i + 1).add_hist(
-                    rootfile.get(channel, category, "qqH"), "qqH_top")
+                    rootfile.get(channel, category, "qqH125"), "qqH_top")
 
             # get observed data and total background histograms
             plot.add_hist(
