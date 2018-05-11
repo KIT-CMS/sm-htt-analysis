@@ -24,3 +24,6 @@ python shapes/produce_shapes.py \
     --binning $BINNING \
     --channels $CHANNELS \
     --era $ERA
+
+# Convert shapes to synced format
+python shapes/convert_to_synced_shapes.py ${ERA}_shapes.root .
