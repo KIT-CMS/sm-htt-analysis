@@ -82,7 +82,7 @@ def main(args):
     # Register observations, signals and backgrounds
     channels = []
     categories = []
-    signals = ["ggH", "qqH"]
+    signals = ["ggH125", "qqH125"]
     backgrounds = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK", "QCD"]
     if args.QCD_extrap_fit:
         signals = ["QCD"]
