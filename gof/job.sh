@@ -2,13 +2,16 @@
 
 echo "### Begin of job"
 
-CHANNEL=$1
+ERA=$1
+echo "Era:" $ERA
+
+CHANNEL=$2
 echo "Channel:" $CHANNEL
 
-VARIABLE=$2
+VARIABLE=$3
 echo "Variable:" $VARIABLE
 
-OUTPUT_DIR=/storage/c/wunsch/jobs_gof/${CHANNEL}_${VARIABLE}
+OUTPUT_DIR=/storage/c/wunsch/jobs_gof/${ERA}_${CHANNEL}_${VARIABLE}
 echo "Output directory:" $OUTPUT_DIR
 
 BASE_PATH=/portal/ekpbms1/home/wunsch/sm-htt-analysis-gof
