@@ -159,7 +159,8 @@ def main(args):
 
     # Add shapes systematics
     if args.embedding:
-        db.add_shape_systematic("CMS_htt_dyShape_13TeV", 1.0, channels, ["ZL", "ZJ"])
+        db.add_shape_systematic("CMS_htt_dyShape_13TeV", 1.0, channels,
+                                ["ZL", "ZJ"])
         db.add_shape_systematic(
             "CMS_htt_eff_b_13TeV", 1.0, channels,
             ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
@@ -292,7 +293,8 @@ def main(args):
 
     # Write datacard
     #db.print_datacard()
-    db.write("{}_datacard.txt".format(args.era), "{}_datacard_shapes.root".format(args.era))
+    db.write("{}_datacard.txt".format(args.era),
+             "{}_datacard_shapes.root".format(args.era))
 
 
 if __name__ == "__main__":
