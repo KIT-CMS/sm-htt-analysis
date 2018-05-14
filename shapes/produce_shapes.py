@@ -114,7 +114,8 @@ def parse_arguments():
 
 def main(args):
     # Container for all distributions to be drawn
-    systematics = Systematics("{}_shapes.root".format(args.era), num_threads=args.num_threads)
+    systematics = Systematics(
+        "{}_shapes.root".format(args.era), num_threads=args.num_threads)
 
     # Era selection
     if "2016" in args.era:
@@ -398,7 +399,8 @@ def main(args):
     tau_es_1prong_variations = create_systematic_variations(
         "CMS_scale_t_1prong_13TeV", "tauEsOneProng", DifferentPipeline)
     tau_es_1prong1pizero_variations = create_systematic_variations(
-        "CMS_scale_t_1prong1pizero_13TeV", "tauEsOneProngPiZeros", DifferentPipeline)
+        "CMS_scale_t_1prong1pizero_13TeV", "tauEsOneProngPiZeros",
+        DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
         for process_nick in [
                 "HTT", "VH", "ggH", "qqH", "ZTT", "TTT", "VV", "EWK"
@@ -423,8 +425,8 @@ def main(args):
                     era=era)
 
     # Jet energy scale
-    jet_es_variations = create_systematic_variations("CMS_scale_j_13TeV", "jecUnc",
-                                                     DifferentPipeline)
+    jet_es_variations = create_systematic_variations(
+        "CMS_scale_j_13TeV", "jecUnc", DifferentPipeline)
     for variation in jet_es_variations:
         for process_nick in [
                 "HTT", "VH", "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT",
@@ -453,7 +455,8 @@ def main(args):
 
     # MET energy scale
     met_unclustered_variations = create_systematic_variations(
-        "CMS_scale_met_unclustered_13TeV", "metUnclusteredEn", DifferentPipeline)
+        "CMS_scale_met_unclustered_13TeV", "metUnclusteredEn",
+        DifferentPipeline)
     met_clustered_variations = create_systematic_variations(
         "CMS_scale_met_clustered_13TeV", "metJetEn", DifferentPipeline)
     for variation in met_unclustered_variations + met_clustered_variations:
@@ -510,7 +513,8 @@ def main(args):
 
     # top pt reweighting
     top_pt_variations = create_systematic_variations(
-        "CMS_htt_ttbarShape_13TeV", "topPtReweightWeight", SquareAndRemoveWeight)
+        "CMS_htt_ttbarShape_13TeV", "topPtReweightWeight",
+        SquareAndRemoveWeight)
     for variation in top_pt_variations:
         for process_nick in ["TTT", "TTJ"]:
             if "et" in [args.gof_channel] + args.channels:
@@ -791,6 +795,8 @@ if __name__ == "__main__":
     args = parse_arguments()
     setup_logging("{}_produce_shapes.log".format(args.era), logging.INFO)
     if ('tt' in args.channels or 'em' in args.channels) and args.embedding:
-        logger.fatal("Channels tt and em not yet considered for embedded background estimation.")
+        logger.fatal(
+            "Channels tt and em not yet considered for embedded background estimation."
+        )
         raise Exception
     main(args)
