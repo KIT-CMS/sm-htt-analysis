@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import ROOT
+ROOT.PyConfig.IgnoreCommandLineOptions = True  # disable ROOT internal argument parser
+ROOT.gErrorIgnoreLevel = ROOT.kError
+
 from shape_producer.cutstring import Cut, Cuts, Weight
 from shape_producer.systematics import Systematics, Systematic
 from shape_producer.categories import Category
@@ -17,7 +21,7 @@ import argparse
 import yaml
 
 import logging
-logger = logging.getLogger("")
+logger = logging.getLogger("produce_shapes")
 
 
 def setup_logging(output_file, level=logging.DEBUG):
@@ -114,6 +118,7 @@ def parse_arguments():
 
 def main(args):
     # Container for all distributions to be drawn
+    logger.info("Set up shape variations.")
     systematics = Systematics(
         "{}_shapes.root".format(args.era), num_threads=args.num_threads)
 
@@ -788,7 +793,9 @@ def main(args):
                         mass="125"))
 
     # Produce histograms
+    logger.info("Start producing shapes.")
     systematics.produce()
+    logger.info("Done producing shapes.")
 
 
 if __name__ == "__main__":
