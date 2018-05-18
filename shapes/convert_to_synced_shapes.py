@@ -80,6 +80,8 @@ def main(args):
             os.mkdir(args.output)
         file_output = ROOT.TFile(filename_output, "RECREATE")
         for category in hist_map[channel]:
+            if category.endswith("_ss") or category.endswith("_B"):
+                continue
             file_output.cd()
             dir_name = "{CHANNEL}_{CATEGORY}".format(
                 CHANNEL=channel, CATEGORY=category)
