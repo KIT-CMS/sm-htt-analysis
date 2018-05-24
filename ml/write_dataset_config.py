@@ -69,7 +69,7 @@ def main(args):
 
     # Define era
     if "2016" in args.era:
-        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, ggHEstimation_0J, ggHEstimation_1J, ggHEstimation_GE2J, ggHEstimation_VBFTOPO, qqHEstimation, qqHEstimation_VBFTOPO_JET3VETO, qqHEstimation_VBFTOPO_JET3, qqHEstimation_REST, qqHEstimation_PTJET1_GT200, VHEstimation, ZTTEstimation, ZTTEstimationTT, ZLEstimationMTSM, ZLEstimationETSM, ZLEstimationTT, ZJEstimationMT, ZJEstimationET, ZJEstimationTT, WEstimation, TTTEstimationMT, TTTEstimationET, TTTEstimationTT, TTJEstimationMT, TTJEstimationET, TTJEstimationTT, VVEstimation, EWKEstimation, QCDEstimationMT, QCDEstimationET, QCDEstimationTT, ZTTEmbeddedEstimation, TTLEstimationMT, TTLEstimationET, TTLEstimationTT, TTTTEstimationMT, TTTTEstimationET
+        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, ggHEstimation_0J, ggHEstimation_1J, ggHEstimation_GE2J, ggHEstimation_VBFTOPO, qqHEstimation, qqHEstimation_VBFTOPO_JET3VETO, qqHEstimation_VBFTOPO_JET3, qqHEstimation_REST, qqHEstimation_PTJET1_GT200, VHEstimation, ZTTEstimation, ZTTEstimationTT, ZLEstimationMTSM, ZLEstimationETSM, ZLEstimationTT, ZJEstimationMT, ZJEstimationET, ZJEstimationTT, WEstimationRaw, TTTEstimationMT, TTTEstimationET, TTTEstimationTT, TTJEstimationMT, TTJEstimationET, TTJEstimationTT, VVEstimation, QCDEstimationMT, QCDEstimationET, QCDEstimationTT, ZTTEmbeddedEstimation, TTLEstimationMT, TTLEstimationET, TTLEstimationTT, TTTTEstimationMT, TTTTEstimationET, EWKWpEstimation, EWKWmEstimation, EWKZllEstimation, EWKZnnEstimation
         from shape_producer.era import Run2016
         era = Run2016(args.database)
     else:
@@ -131,12 +131,12 @@ def main(args):
                 if not args.embedding else TTTNoTauTauEstimationMT(
                     era, args.base_path, channel),
                 TTJEstimationMT(era, args.base_path, channel),
-                WEstimationRaw(era, args.directory, channel),
-                EWKWpEstimation(era, args.directory, channel),
-                EWKWmEstimation(era, args.directory, channel),
-                VVEstimation(era, args.directory, channel),
-                EWKZllEstimation(era, args.directory, channel),
-                EWKZnnEstimation(era, args.directory, channel)
+                WEstimationRaw(era, args.base_path, channel),
+                EWKWpEstimation(era, args.base_path, channel),
+                EWKWmEstimation(era, args.base_path, channel),
+                VVEstimation(era, args.base_path, channel),
+                EWKZllEstimation(era, args.base_path, channel),
+                EWKZnnEstimation(era, args.base_path, channel)
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
@@ -224,12 +224,12 @@ def main(args):
                 if not args.embedding else TTTNoTauTauEstimationET(
                     era, args.base_path, channel),
                 TTJEstimationET(era, args.base_path, channel),
-                WEstimationRaw(era, args.directory, channel),
-                EWKWpEstimation(era, args.directory, channel),
-                EWKWmEstimation(era, args.directory, channel),
-                VVEstimation(era, args.directory, channel),
-                EWKZllEstimation(era, args.directory, channel),
-                EWKZnnEstimation(era, args.directory, channel)
+                WEstimationRaw(era, args.base_path, channel),
+                EWKWpEstimation(era, args.base_path, channel),
+                EWKWmEstimation(era, args.base_path, channel),
+                VVEstimation(era, args.base_path, channel),
+                EWKZllEstimation(era, args.base_path, channel),
+                EWKZnnEstimation(era, args.base_path, channel)
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
@@ -317,12 +317,12 @@ def main(args):
                 if not args.embedding else TTTNoTauTauEstimationTT(
                     era, args.base_path, channel),
                 TTJEstimationTT(era, args.base_path, channel),
-                WEstimationRaw(era, args.directory, channel),
-                EWKWpEstimation(era, args.directory, channel),
-                EWKWmEstimation(era, args.directory, channel),
-                VVEstimation(era, args.directory, channel),
-                EWKZllEstimation(era, args.directory, channel),
-                EWKZnnEstimation(era, args.directory, channel)
+                WEstimationRaw(era, args.base_path, channel),
+                EWKWpEstimation(era, args.base_path, channel),
+                EWKWmEstimation(era, args.base_path, channel),
+                VVEstimation(era, args.base_path, channel),
+                EWKZllEstimation(era, args.base_path, channel),
+                EWKZnnEstimation(era, args.base_path, channel)
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
