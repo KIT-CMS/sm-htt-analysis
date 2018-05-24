@@ -102,7 +102,7 @@ def main(args):
             split_value = 101
 
     split_dict = {c: split_value for c in ["et", "mt", "tt"]}
-    bkg_processes = ["EWK", "QCD", "VV", "W", "TTT", "TTJ", "ZJ", "ZL", "ZTT"]
+    bkg_processes = ["EWKZ", "QCD", "VV", "W", "TTT", "TTJ", "ZJ", "ZL", "ZTT"]
     legend_bkg_processes = copy.deepcopy(bkg_processes)
     legend_bkg_processes.reverse()
 
@@ -248,8 +248,7 @@ def main(args):
                 plot.add_legend(width=0.48, height=0.15)
                 for process in legend_bkg_processes:
                     plot.legend(i).add_entry(
-                        0, process, styles.legend_label_dict[process.replace(
-                            "EWK", "EWKZ")], 'f')
+                        0, process, styles.legend_label_dict[process], 'f')
                 plot.legend(i).add_entry(0, "total_bkg", "Bkg. unc.", 'f')
                 plot.legend(i).add_entry(1, "ggH%s" % suffix[i], "ggH", 'l')
                 plot.legend(i).add_entry(1, "qqH%s" % suffix[i], "qqH", 'l')

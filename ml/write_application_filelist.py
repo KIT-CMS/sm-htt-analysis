@@ -70,9 +70,12 @@ def main(args):
                 if not args.embedding else TTTNoTauTauEstimationMT(
                     era, args.directory, channel),
                 TTJEstimationMT(era, args.directory, channel),
-                WEstimation(era, args.directory, channel),
+                WEstimationRaw(era, args.directory, channel),
+                EWKWpEstimation(era, args.directory, channel),
+                EWKWmEstimation(era, args.directory, channel),
                 VVEstimation(era, args.directory, channel),
-                EWKEstimation(era, args.directory, channel),
+                EWKZllEstimation(era, args.directory, channel),
+                EWKZnnEstimation(era, args.directory, channel),
                 DataEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method
@@ -113,9 +116,12 @@ def main(args):
                 if not args.embedding else TTTNoTauTauEstimationET(
                     era, args.directory, channel),
                 TTJEstimationET(era, args.directory, channel),
-                WEstimation(era, args.directory, channel),
+                WEstimationRaw(era, args.directory, channel),
+                EWKWpEstimation(era, args.directory, channel),
+                EWKWmEstimation(era, args.directory, channel),
                 VVEstimation(era, args.directory, channel),
-                EWKEstimation(era, args.directory, channel),
+                EWKZllEstimation(era, args.directory, channel),
+                EWKZnnEstimation(era, args.directory, channel),
                 DataEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method
@@ -156,9 +162,12 @@ def main(args):
                 if not args.embedding else TTTNoTauTauEstimationTT(
                     era, args.directory, channel),
                 TTJEstimationTT(era, args.directory, channel),
-                WEstimation(era, args.directory, channel),
+                WEstimationRaw(era, args.directory, channel),
+                EWKWpEstimation(era, args.directory, channel),
+                EWKWmEstimation(era, args.directory, channel),
                 VVEstimation(era, args.directory, channel),
-                EWKEstimation(era, args.directory, channel),
+                EWKZllEstimation(era, args.directory, channel),
+                EWKZnnEstimation(era, args.directory, channel),
                 DataEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method

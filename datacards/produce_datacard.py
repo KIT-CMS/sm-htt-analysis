@@ -83,10 +83,10 @@ def main(args):
     channels = []
     categories = []
     signals = ["ggH125", "qqH125"]
-    backgrounds = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK", "QCD"]
+    backgrounds = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ", "QCD"]
     if args.QCD_extrap_fit:
         signals = ["QCD"]
-        backgrounds = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"]
+        backgrounds = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"]
 
     if "et" in args.channels:
         if args.gof != None:
@@ -163,38 +163,38 @@ def main(args):
                                 ["ZL", "ZJ"])
         db.add_shape_systematic(
             "CMS_htt_eff_b_13TeV", 1.0, channels,
-            ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+            ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
         db.add_shape_systematic(
             "CMS_htt_mistag_b_13TeV", 1.0, channels,
-            ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+            ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
         db.add_shape_systematic(
             "CMS_scale_j_13TeV", 1.0, channels,
-            ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+            ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
         db.add_shape_systematic(
             "CMS_scale_met_unclustered_13TeV", 1.0, channels,
-            ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+            ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
     else:
         db.add_shape_systematic("CMS_htt_dyShape_13TeV", 1.0, channels,
                                 ["ZTT", "ZL", "ZJ"])
         db.add_shape_systematic(
             "CMS_htt_eff_b_13TeV", 1.0, channels,
-            ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+            ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
         db.add_shape_systematic(
             "CMS_htt_mistag_b_13TeV", 1.0, channels,
-            ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+            ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
         db.add_shape_systematic(
             "CMS_scale_j_13TeV", 1.0, channels,
-            ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+            ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
         db.add_shape_systematic(
             "CMS_scale_met_unclustered_13TeV", 1.0, channels,
-            ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+            ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
 
     db.add_shape_systematic("CMS_scale_t_3prong_13TeV", 1.0, channels,
-                            ["ggH", "qqH", "ZTT", "TTT", "VV", "EWK"])
+                            ["ggH", "qqH", "ZTT", "TTT", "VV", "EWKZ"])
     db.add_shape_systematic("CMS_scale_t_1prong_13TeV", 1.0, channels,
-                            ["ggH", "qqH", "ZTT", "TTT", "VV", "EWK"])
+                            ["ggH", "qqH", "ZTT", "TTT", "VV", "EWKZ"])
     db.add_shape_systematic("CMS_scale_t_1prong1pizero_13TeV", 1.0, channels,
-                            ["ggH", "qqH", "ZTT", "TTT", "VV", "EWK"])
+                            ["ggH", "qqH", "ZTT", "TTT", "VV", "EWKZ"])
     db.add_shape_systematic("CMS_htt_ttbarShape_13TeV", 1.0, channels,
                             ["TTT", "TTJ"])
     db.add_shape_systematic("CMS_htt_jetToTauFake_13TeV", 1.0, channels,
@@ -209,34 +209,34 @@ def main(args):
     # Add normalization systematics
     db.add_normalization_systematic(
         "lumi_13TeV", 1.026, channels,
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
     db.add_normalization_systematic(
         "CMS_eff_m", 1.02, "mt",
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
     db.add_normalization_systematic(
         "CMS_eff_e", 1.02, "et",
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
     db.add_normalization_systematic(
         "CMS_eff_t_corr", 1.08, "tt",
-        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWK"])
+        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWKZ"])
     db.add_normalization_systematic(
         "CMS_eff_t_corr", 1.04, ["et", "mt"],
-        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWK"])
+        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWKZ"])
     db.add_normalization_systematic(
         "CMS_eff_t_et", 1.03, "et",
-        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWK"])
+        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWKZ"])
     db.add_normalization_systematic(
         "CMS_eff_t_mt", 1.03, "mt",
-        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWK"])
+        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWKZ"])
     db.add_normalization_systematic(
         "CMS_eff_t_tt", 1.06, "tt",
-        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWK"])
+        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWKZ"])
     db.add_normalization_systematic(
         "CMS_eff_trigger_mt", 1.02, "mt",
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
     db.add_normalization_systematic(
         "CMS_eff_trigger_et", 1.02, "et",
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWK"])
+        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
     if not args.QCD_extrap_fit:
         db.add_normalization_systematic("CMS_Extrap_SSOS_mt", 1.03, "mt",
                                         "QCD")

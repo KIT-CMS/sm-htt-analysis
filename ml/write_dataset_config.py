@@ -107,8 +107,11 @@ def main(args):
             "TTT": "tt",
             "TTJ": "tt",
             "W": "w",
+            "EWKWp": "w",
+            "EWKWm": "w",
             "VV": "misc",
-            "EWK": "misc"
+            "EWKZll": "misc",
+            "EWKZnn": "misc"
         }
         for estimation in [
                 ggHEstimation_0J(era, args.base_path, channel),
@@ -128,9 +131,12 @@ def main(args):
                 if not args.embedding else TTTNoTauTauEstimationMT(
                     era, args.base_path, channel),
                 TTJEstimationMT(era, args.base_path, channel),
-                WEstimation(era, args.base_path, channel),
-                VVEstimation(era, args.base_path, channel),
-                EWKEstimation(era, args.base_path, channel)
+                WEstimationRaw(era, args.directory, channel),
+                EWKWpEstimation(era, args.directory, channel),
+                EWKWmEstimation(era, args.directory, channel),
+                VVEstimation(era, args.directory, channel),
+                EWKZllEstimation(era, args.directory, channel),
+                EWKZnnEstimation(era, args.directory, channel)
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
@@ -194,8 +200,11 @@ def main(args):
             "TTT": "tt",
             "TTJ": "tt",
             "W": "w",
+            "EWKWp": "w",
+            "EWKWm": "w",
             "VV": "misc",
-            "EWK": "misc"
+            "EWKZll": "misc",
+            "EWKZnn": "misc"
         }
         for estimation in [
                 ggHEstimation_0J(era, args.base_path, channel),
@@ -215,9 +224,12 @@ def main(args):
                 if not args.embedding else TTTNoTauTauEstimationET(
                     era, args.base_path, channel),
                 TTJEstimationET(era, args.base_path, channel),
-                WEstimation(era, args.base_path, channel),
-                VVEstimation(era, args.base_path, channel),
-                EWKEstimation(era, args.base_path, channel)
+                WEstimationRaw(era, args.directory, channel),
+                EWKWpEstimation(era, args.directory, channel),
+                EWKWmEstimation(era, args.directory, channel),
+                VVEstimation(era, args.directory, channel),
+                EWKZllEstimation(era, args.directory, channel),
+                EWKZnnEstimation(era, args.directory, channel)
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
@@ -280,9 +292,12 @@ def main(args):
             "ZJ": "misc",
             "TTT": "misc",
             "TTJ": "misc",
-            "W": "misc",
+            "W": "w",
+            "EWKWp": "w",
+            "EWKWm": "w",
             "VV": "misc",
-            "EWK": "misc"
+            "EWKZll": "misc",
+            "EWKZnn": "misc"
         }
         for estimation in [
                 ggHEstimation_0J(era, args.base_path, channel),
@@ -302,9 +317,12 @@ def main(args):
                 if not args.embedding else TTTNoTauTauEstimationTT(
                     era, args.base_path, channel),
                 TTJEstimationTT(era, args.base_path, channel),
-                WEstimation(era, args.base_path, channel),
-                VVEstimation(era, args.base_path, channel),
-                EWKEstimation(era, args.base_path, channel)
+                WEstimationRaw(era, args.directory, channel),
+                EWKWpEstimation(era, args.directory, channel),
+                EWKWmEstimation(era, args.directory, channel),
+                VVEstimation(era, args.directory, channel),
+                EWKZllEstimation(era, args.directory, channel),
+                EWKZnnEstimation(era, args.directory, channel)
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [

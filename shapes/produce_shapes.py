@@ -124,7 +124,7 @@ def main(args):
 
     # Era selection
     if "2016" in args.era:
-        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, ggHEstimation_0J, ggHEstimation_1J, ggHEstimation_GE2J, ggHEstimation_VBFTOPO, qqHEstimation, qqHEstimation_VBFTOPO_JET3VETO, qqHEstimation_VBFTOPO_JET3, qqHEstimation_REST, qqHEstimation_PTJET1_GT200, VHEstimation, ZTTEstimation, ZTTEstimationTT, ZLEstimationMTSM, ZLEstimationETSM, ZLEstimationTT, ZJEstimationMT, ZJEstimationET, ZJEstimationTT, WEstimation, TTTEstimationMT, TTTEstimationET, TTTEstimationTT, TTJEstimationMT, TTJEstimationET, TTJEstimationTT, VVEstimation, EWKEstimation, QCDEstimationMT, QCDEstimationET, QCDEstimationTT, ZTTEmbeddedEstimation, TTLEstimationMT, TTLEstimationET, TTLEstimationTT, TTTTEstimationMT, TTTTEstimationET
+        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, ggHEstimation_0J, ggHEstimation_1J, ggHEstimation_GE2J, ggHEstimation_VBFTOPO, qqHEstimation, qqHEstimation_VBFTOPO_JET3VETO, qqHEstimation_VBFTOPO_JET3, qqHEstimation_REST, qqHEstimation_PTJET1_GT200, VHEstimation, ZTTEstimation, ZTTEstimationTT, ZLEstimationMTSM, ZLEstimationETSM, ZLEstimationTT, ZJEstimationMT, ZJEstimationET, ZJEstimationTT, WEstimation, TTTEstimationMT, TTTEstimationET, TTTEstimationTT, TTJEstimationMT, TTJEstimationET, TTJEstimationTT, VVEstimation, EWKZEstimation, QCDEstimationMT, QCDEstimationET, QCDEstimationTT, ZTTEmbeddedEstimation, TTLEstimationMT, TTLEstimationET, TTLEstimationTT, TTTTEstimationMT, TTTTEstimationET
         from shape_producer.era import Run2016
         era = Run2016(args.datasets)
     else:
@@ -162,16 +162,17 @@ def main(args):
         "ZTT"   : Process("ZTT",      ZTTEstimation   (era, directory, mt, friend_directory=mt_friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimationMTSM(era, directory, mt, friend_directory=mt_friend_directory)),
         "ZJ"    : Process("ZJ",       ZJEstimationMT  (era, directory, mt, friend_directory=mt_friend_directory)),
-        "W"     : Process("W",        WEstimation     (era, directory, mt, friend_directory=mt_friend_directory)),
+        "W"     : Process("W",        WEstimation     (era, directory, mt, friend_directory=None)),
         "TTT"   : Process("TTT",      TTTEstimationMT (era, directory, mt, friend_directory=mt_friend_directory)),
         "TTJ"   : Process("TTJ",      TTJEstimationMT (era, directory, mt, friend_directory=mt_friend_directory)),
         "VV"    : Process("VV",       VVEstimation    (era, directory, mt, friend_directory=mt_friend_directory)),
-        "EWK"   : Process("EWK",      EWKEstimation   (era, directory, mt, friend_directory=mt_friend_directory))
+        "EWKZ"  : Process("EWKZ",     EWKZEstimation  (era, directory, mt, friend_directory=None))
         }
+    print mt_processes["W"].estimation_method.get_files()
     if args.embedding:
         mt_processes["ZTT"] = Process("ZTT", ZTTEmbeddedEstimation(era, directory, mt, friend_directory=mt_friend_directory))
         mt_processes["TTT"] = Process("TTT", TTLEstimationMT (era, directory, mt, friend_directory=mt_friend_directory))
-    mt_processes["QCD"] = Process("QCD", QCDEstimationMT(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWK"]], mt_processes["data"], extrapolation_factor=1.17))
+    mt_processes["QCD"] = Process("QCD", QCDEstimationMT(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWKZ"]], mt_processes["data"], extrapolation_factor=1.17))
     et = ETSM()
     if args.QCD_extrap_fit:
         et.cuts.remove("ele_iso")
@@ -194,16 +195,16 @@ def main(args):
         "ZTT"   : Process("ZTT",      ZTTEstimation   (era, directory, et, friend_directory=et_friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimationETSM(era, directory, et, friend_directory=et_friend_directory)),
         "ZJ"    : Process("ZJ",       ZJEstimationET  (era, directory, et, friend_directory=et_friend_directory)),
-        "W"     : Process("W",        WEstimation     (era, directory, et, friend_directory=et_friend_directory)),
+        "W"     : Process("W",        WEstimation     (era, directory, et, friend_directory=None)),
         "TTT"   : Process("TTT",      TTTEstimationET (era, directory, et, friend_directory=et_friend_directory)),
         "TTJ"   : Process("TTJ",      TTJEstimationET (era, directory, et, friend_directory=et_friend_directory)),
         "VV"    : Process("VV",       VVEstimation    (era, directory, et, friend_directory=et_friend_directory)),
-        "EWK"   : Process("EWK",      EWKEstimation   (era, directory, et, friend_directory=et_friend_directory))
+        "EWKZ"  : Process("EWKZ",     EWKZEstimation  (era, directory, et, friend_directory=None))
         }
     if args.embedding:
         et_processes["ZTT"] = Process("ZTT", ZTTEmbeddedEstimation(era, directory, et, friend_directory=et_friend_directory))
         et_processes["TTT"] = Process("TTT", TTLEstimationET (era, directory, et, friend_directory=et_friend_directory))
-    et_processes["QCD"] = Process("QCD", QCDEstimationET(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWK"]], et_processes["data"], extrapolation_factor=1.16))
+    et_processes["QCD"] = Process("QCD", QCDEstimationET(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWKZ"]], et_processes["data"], extrapolation_factor=1.16))
     tt = TTSM()
     if args.QCD_extrap_fit:
         tt.cuts.get("os").invert()
@@ -227,17 +228,17 @@ def main(args):
         "ZTT"   : Process("ZTT",      ZTTEstimationTT(era, directory, tt, friend_directory=tt_friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimationTT (era, directory, tt, friend_directory=tt_friend_directory)),
         "ZJ"    : Process("ZJ",       ZJEstimationTT (era, directory, tt, friend_directory=tt_friend_directory)),
-        "W"     : Process("W",        WEstimation    (era, directory, tt, friend_directory=tt_friend_directory)),
+        "W"     : Process("W",        WEstimation    (era, directory, tt, friend_directory=None)),
         "TTT"   : Process("TTT",      TTTEstimationTT(era, directory, tt, friend_directory=tt_friend_directory)),
         "TTJ"   : Process("TTJ",      TTJEstimationTT(era, directory, tt, friend_directory=tt_friend_directory)),
         "VV"    : Process("VV",       VVEstimation   (era, directory, tt, friend_directory=tt_friend_directory)),
-        "EWK"   : Process("EWK",      EWKEstimation  (era, directory, tt, friend_directory=tt_friend_directory)),
+        "EWKZ"  : Process("EWKZ",     EWKZEstimation (era, directory, tt, friend_directory=None)),
         }
     if args.embedding:
         tt_processes["ZTT"] = Process("ZTT", ZTTEmbeddedEstimation(era, directory, tt, friend_directory=tt_friend_directory))
         tt_processes["TTT"] = Process("TTT", TTLEstimationTT (era, directory, tt, friend_directory=tt_friend_directory))
 
-    tt_processes["QCD"] = Process("QCD", QCDEstimationTT(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWK"]], tt_processes["data"]))
+    tt_processes["QCD"] = Process("QCD", QCDEstimationTT(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWKZ"]], tt_processes["data"]))
 
     # Variables and categories
     binning = yaml.load(open(args.binning))
@@ -435,7 +436,7 @@ def main(args):
         DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
         for process_nick in [
-                "HTT", "VH", "ggH", "ggH_0J", "ggH_1J", "ggH_GE2J", "ggH_VBFTOPO", "qqH", "qqH_VBFTOPO_JET3VETO", "qqH_VBFTOPO_JET3", "qqH_REST", "qqH_PTJET1_GT200", "ZTT", "TTT", "VV", "EWK"
+                "HTT", "VH", "ggH", "ggH_0J", "ggH_1J", "ggH_GE2J", "ggH_VBFTOPO", "qqH", "qqH_VBFTOPO_JET3VETO", "qqH_VBFTOPO_JET3", "qqH_REST", "qqH_PTJET1_GT200", "ZTT", "TTT", "VV", "EWKZ"
         ]:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -462,7 +463,7 @@ def main(args):
     for variation in jet_es_variations:
         for process_nick in [
                 "HTT", "VH", "ggH", "ggH_0J", "ggH_1J", "ggH_GE2J", "ggH_VBFTOPO", "qqH", "qqH_VBFTOPO_JET3VETO", "qqH_VBFTOPO_JET3", "qqH_REST", "qqH_PTJET1_GT200", "ZTT", "ZL", "ZJ", "W", "TTT",
-                "TTJ", "VV", "EWK"
+                "TTJ", "VV", "EWKZ"
         ]:
             if args.embedding and process_nick == 'ZTT':
                 continue
@@ -494,7 +495,7 @@ def main(args):
     for variation in met_unclustered_variations + met_clustered_variations:
         for process_nick in [
                 "HTT", "VH", "ggH", "ggH_0J", "ggH_1J", "ggH_GE2J", "ggH_VBFTOPO", "qqH", "qqH_VBFTOPO_JET3VETO", "qqH_VBFTOPO_JET3", "qqH_REST", "qqH_PTJET1_GT200", "ZTT", "ZL", "ZJ", "W", "TTT",
-                "TTJ", "VV", "EWK"
+                "TTJ", "VV", "EWKZ"
         ]:
             if args.embedding and process_nick == 'ZTT':
                 continue
@@ -674,7 +675,7 @@ def main(args):
     for variation in btag_eff_variations + mistag_eff_variations:
         for process_nick in [
                 "HTT", "VH", "ggH", "ggH_0J", "ggH_1J", "ggH_GE2J", "ggH_VBFTOPO", "qqH", "qqH_VBFTOPO_JET3VETO", "qqH_VBFTOPO_JET3", "qqH_REST", "qqH_PTJET1_GT200", "ZTT", "ZL", "ZJ", "W", "TTT",
-                "TTJ", "VV", "EWK"
+                "TTJ", "VV", "EWKZ"
         ]:
             if args.embedding and process_nick == 'ZTT':
                 continue
