@@ -69,7 +69,7 @@ def main(args):
 
     # Define era
     if "2016" in args.era:
-        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, qqHEstimation, VHEstimation, ZTTEstimation, ZTTEstimationTT, ZLEstimationMTSM, ZLEstimationETSM, ZLEstimationTT, ZJEstimationMT, ZJEstimationET, ZJEstimationTT, WEstimation, TTTEstimationMT, TTTEstimationET, TTTEstimationTT, TTJEstimationMT, TTJEstimationET, TTJEstimationTT, VVEstimation, EWKEstimation, QCDEstimationMT, QCDEstimationET, QCDEstimationTT
+        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, ggHEstimation_0J, ggHEstimation_1J, ggHEstimation_GE2J, ggHEstimation_VBFTOPO, qqHEstimation, qqHEstimation_VBFTOPO_JET3VETO, qqHEstimation_VBFTOPO_JET3, qqHEstimation_REST, qqHEstimation_PTJET1_GT200, VHEstimation, ZTTEstimation, ZTTEstimationTT, ZLEstimationMTSM, ZLEstimationETSM, ZLEstimationTT, ZJEstimationMT, ZJEstimationET, ZJEstimationTT, WEstimation, TTTEstimationMT, TTTEstimationET, TTTEstimationTT, TTJEstimationMT, TTJEstimationET, TTJEstimationTT, VVEstimation, EWKEstimation, QCDEstimationMT, QCDEstimationET, QCDEstimationTT, ZTTEmbeddedEstimation, TTLEstimationMT, TTLEstimationET, TTLEstimationTT, TTTTEstimationMT, TTTTEstimationET
         from shape_producer.era import Run2016
         era = Run2016(args.database)
     else:
@@ -93,8 +93,14 @@ def main(args):
         # MC-driven processes
         # NOTE: Define here the mappig of the process estimations to the training classes
         classes_map = {
-            "ggH": "ggh",
-            "qqH": "qqh",
+            "ggH_0J": "ggh",
+            "ggH_1J": "ggh",
+            "ggH_GE2J": "ggh",
+            "ggH_VBFTOPO": "ggh",
+            "qqH_VBFTOPO_JET3VETO": "qqh",
+            "qqH_VBFTOPO_JET3": "qqh",
+            "qqH_REST": "qqh",
+            "qqH_PTJET1_GT200": "qqh",
             "ZTT": "ztt",
             "ZL": "zll",
             "ZJ": "zll",
@@ -105,8 +111,14 @@ def main(args):
             "EWK": "misc"
         }
         for estimation in [
-                ggHEstimation(era, args.base_path, channel),
-                qqHEstimation(era, args.base_path, channel),
+                ggHEstimation_0J(era, args.base_path, channel),
+                ggHEstimation_1J(era, args.base_path, channel),
+                ggHEstimation_GE2J(era, args.base_path, channel),
+                ggHEstimation_VBFTOPO(era, args.base_path, channel),
+                qqHEstimation_VBFTOPO_JET3VETO(era, args.base_path, channel),
+                qqHEstimation_VBFTOPO_JET3(era, args.base_path, channel),
+                qqHEstimation_REST(era, args.base_path, channel),
+                qqHEstimation_PTJET1_GT200(era, args.base_path, channel),
                 ZTTEstimation(era, args.base_path, channel)
                 if not args.embedding else ZTTEmbeddedEstimation(
                     era, args.base_path, channel),
@@ -168,8 +180,14 @@ def main(args):
         # MC-driven processes
         # NOTE: Define here the mappig of the process estimations to the training classes
         classes_map = {
-            "ggH": "ggh",
-            "qqH": "qqh",
+            "ggH_0J": "ggh",
+            "ggH_1J": "ggh",
+            "ggH_GE2J": "ggh",
+            "ggH_VBFTOPO": "ggh",
+            "qqH_VBFTOPO_JET3VETO": "qqh",
+            "qqH_VBFTOPO_JET3": "qqh",
+            "qqH_REST": "qqh",
+            "qqH_PTJET1_GT200": "qqh",
             "ZTT": "ztt",
             "ZL": "zll",
             "ZJ": "zll",
@@ -180,8 +198,14 @@ def main(args):
             "EWK": "misc"
         }
         for estimation in [
-                ggHEstimation(era, args.base_path, channel),
-                qqHEstimation(era, args.base_path, channel),
+                ggHEstimation_0J(era, args.base_path, channel),
+                ggHEstimation_1J(era, args.base_path, channel),
+                ggHEstimation_GE2J(era, args.base_path, channel),
+                ggHEstimation_VBFTOPO(era, args.base_path, channel),
+                qqHEstimation_VBFTOPO_JET3VETO(era, args.base_path, channel),
+                qqHEstimation_VBFTOPO_JET3(era, args.base_path, channel),
+                qqHEstimation_REST(era, args.base_path, channel),
+                qqHEstimation_PTJET1_GT200(era, args.base_path, channel),
                 ZTTEstimation(era, args.base_path, channel)
                 if not args.embedding else ZTTEmbeddedEstimation(
                     era, args.base_path, channel),
@@ -243,8 +267,14 @@ def main(args):
         # MC-driven processes
         # NOTE: Define here the mappig of the process estimations to the training classes
         classes_map = {
-            "ggH": "ggh",
-            "qqH": "qqh",
+            "ggH_0J": "ggh",
+            "ggH_1J": "ggh",
+            "ggH_GE2J": "ggh",
+            "ggH_VBFTOPO": "ggh",
+            "qqH_VBFTOPO_JET3VETO": "qqh",
+            "qqH_VBFTOPO_JET3": "qqh",
+            "qqH_REST": "qqh",
+            "qqH_PTJET1_GT200": "qqh",
             "ZTT": "ztt",
             "ZL": "misc",
             "ZJ": "misc",
@@ -255,8 +285,14 @@ def main(args):
             "EWK": "misc"
         }
         for estimation in [
-                ggHEstimation(era, args.base_path, channel),
-                qqHEstimation(era, args.base_path, channel),
+                ggHEstimation_0J(era, args.base_path, channel),
+                ggHEstimation_1J(era, args.base_path, channel),
+                ggHEstimation_GE2J(era, args.base_path, channel),
+                ggHEstimation_VBFTOPO(era, args.base_path, channel),
+                qqHEstimation_VBFTOPO_JET3VETO(era, args.base_path, channel),
+                qqHEstimation_VBFTOPO_JET3(era, args.base_path, channel),
+                qqHEstimation_REST(era, args.base_path, channel),
+                qqHEstimation_PTJET1_GT200(era, args.base_path, channel),
                 ZTTEstimation(era, args.base_path, channel)
                 if not args.embedding else ZTTEmbeddedEstimation(
                     era, args.base_path, channel),
