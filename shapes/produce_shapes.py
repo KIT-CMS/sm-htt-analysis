@@ -124,7 +124,7 @@ def main(args):
 
     # Era selection
     if "2016" in args.era:
-        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, qqHEstimation, VHEstimation, ZTTEstimation, ZTTEstimationTT, ZLEstimationMTSM, ZLEstimationETSM, ZLEstimationTT, ZJEstimationMT, ZJEstimationET, ZJEstimationTT, WEstimation, TTTEstimationMT, TTTEstimationET, TTTEstimationTT, TTJEstimationMT, TTJEstimationET, TTJEstimationTT, VVEstimation, EWKEstimation, QCDEstimationMT, QCDEstimationET, QCDEstimationTT, ZTTEmbeddedEstimation, TTLEstimationMT, TTLEstimationET, TTLEstimationTT, TTTTEstimationMT, TTTTEstimationET
+        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, ggHEstimation_0J, ggHEstimation_1J, ggHEstimation_GE2J, ggHEstimation_VBFTOPO, qqHEstimation, qqHEstimation_VBFTOPO_JET3VETO, qqHEstimation_VBFTOPO_JET3, qqHEstimation_REST, qqHEstimation_PTJET1_GT200, VHEstimation, ZTTEstimation, ZTTEstimationTT, ZLEstimationMTSM, ZLEstimationETSM, ZLEstimationTT, ZJEstimationMT, ZJEstimationET, ZJEstimationTT, WEstimation, TTTEstimationMT, TTTEstimationET, TTTEstimationTT, TTJEstimationMT, TTJEstimationET, TTJEstimationTT, VVEstimation, EWKEstimation, QCDEstimationMT, QCDEstimationET, QCDEstimationTT, ZTTEmbeddedEstimation, TTLEstimationMT, TTLEstimationET, TTLEstimationTT, TTTTEstimationMT, TTTTEstimationET
         from shape_producer.era import Run2016
         era = Run2016(args.datasets)
     else:
@@ -149,6 +149,15 @@ def main(args):
         "HTT"   : Process("HTT",      HTTEstimation   (era, directory, mt, friend_directory=mt_friend_directory)),
         "ggH"   : Process("ggH125",   ggHEstimation   (era, directory, mt, friend_directory=mt_friend_directory)),
         "qqH"   : Process("qqH125",   qqHEstimation   (era, directory, mt, friend_directory=mt_friend_directory)),
+        "ggH_0J"               : Process("ggH125_0J",               ggHEstimation_0J              (era, directory, mt, friend_directory=mt_friend_directory)),
+        "ggH_1J"               : Process("ggH125_1J",               ggHEstimation_1J              (era, directory, mt, friend_directory=mt_friend_directory)),
+        "ggH_GE2J"             : Process("ggH125_GE2J",             ggHEstimation_GE2J            (era, directory, mt, friend_directory=mt_friend_directory)),
+        "ggH_VBFTOPO"          : Process("ggH125_VBFTOPO",          ggHEstimation_VBFTOPO         (era, directory, mt, friend_directory=mt_friend_directory)),
+        "qqH"                  : Process("qqH125",                  qqHEstimation                 (era, directory, mt, friend_directory=mt_friend_directory)),
+        "qqH_VBFTOPO_JET3VETO" : Process("qqH125_VBFTOPO_JET3VETO", qqHEstimation_VBFTOPO_JET3VETO(era, directory, mt, friend_directory=mt_friend_directory)),
+        "qqH_VBFTOPO_JET3"     : Process("qqH125_VBFTOPO_JET3",     qqHEstimation_VBFTOPO_JET3    (era, directory, mt, friend_directory=mt_friend_directory)),
+        "qqH_REST"             : Process("qqH125_REST",             qqHEstimation_REST            (era, directory, mt, friend_directory=mt_friend_directory)),
+        "qqH_PTJET1_GT200"     : Process("qqH125_PTJET1_GT200",     qqHEstimation_PTJET1_GT200    (era, directory, mt, friend_directory=mt_friend_directory)),
         "VH"    : Process("VH125",    VHEstimation    (era, directory, mt, friend_directory=mt_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation   (era, directory, mt, friend_directory=mt_friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimationMTSM(era, directory, mt, friend_directory=mt_friend_directory)),
@@ -172,6 +181,15 @@ def main(args):
         "HTT"   : Process("HTT",      HTTEstimation   (era, directory, et, friend_directory=et_friend_directory)),
         "ggH"   : Process("ggH125",   ggHEstimation   (era, directory, et, friend_directory=et_friend_directory)),
         "qqH"   : Process("qqH125",   qqHEstimation   (era, directory, et, friend_directory=et_friend_directory)),
+        "ggH_0J"               : Process("ggH125_0J",               ggHEstimation_0J              (era, directory, et, friend_directory=et_friend_directory)),
+        "ggH_1J"               : Process("ggH125_1J",               ggHEstimation_1J              (era, directory, et, friend_directory=et_friend_directory)),
+        "ggH_GE2J"             : Process("ggH125_GE2J",             ggHEstimation_GE2J            (era, directory, et, friend_directory=et_friend_directory)),
+        "ggH_VBFTOPO"          : Process("ggH125_VBFTOPO",          ggHEstimation_VBFTOPO         (era, directory, et, friend_directory=et_friend_directory)),
+        "qqH"                  : Process("qqH125",                  qqHEstimation                 (era, directory, et, friend_directory=et_friend_directory)),
+        "qqH_VBFTOPO_JET3VETO" : Process("qqH125_VBFTOPO_JET3VETO", qqHEstimation_VBFTOPO_JET3VETO(era, directory, et, friend_directory=et_friend_directory)),
+        "qqH_VBFTOPO_JET3"     : Process("qqH125_VBFTOPO_JET3",     qqHEstimation_VBFTOPO_JET3    (era, directory, et, friend_directory=et_friend_directory)),
+        "qqH_REST"             : Process("qqH125_REST",             qqHEstimation_REST            (era, directory, et, friend_directory=et_friend_directory)),
+        "qqH_PTJET1_GT200"     : Process("qqH125_PTJET1_GT200",     qqHEstimation_PTJET1_GT200    (era, directory, et, friend_directory=et_friend_directory)),
         "VH"    : Process("VH125",    VHEstimation    (era, directory, et, friend_directory=et_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation   (era, directory, et, friend_directory=et_friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimationETSM(era, directory, et, friend_directory=et_friend_directory)),
@@ -196,6 +214,15 @@ def main(args):
         "HTT"   : Process("HTT",      HTTEstimation  (era, directory, tt, friend_directory=tt_friend_directory)),
         "ggH"   : Process("ggH125",   ggHEstimation  (era, directory, tt, friend_directory=tt_friend_directory)),
         "qqH"   : Process("qqH125",   qqHEstimation  (era, directory, tt, friend_directory=tt_friend_directory)),
+        "ggH_0J"               : Process("ggH125_0J",               ggHEstimation_0J              (era, directory, tt, friend_directory=tt_friend_directory)),
+        "ggH_1J"               : Process("ggH125_1J",               ggHEstimation_1J              (era, directory, tt, friend_directory=tt_friend_directory)),
+        "ggH_GE2J"             : Process("ggH125_GE2J",             ggHEstimation_GE2J            (era, directory, tt, friend_directory=tt_friend_directory)),
+        "ggH_VBFTOPO"          : Process("ggH125_VBFTOPO",          ggHEstimation_VBFTOPO         (era, directory, tt, friend_directory=tt_friend_directory)),
+        "qqH"                  : Process("qqH125",                  qqHEstimation                 (era, directory, tt, friend_directory=tt_friend_directory)),
+        "qqH_VBFTOPO_JET3VETO" : Process("qqH125_VBFTOPO_JET3VETO", qqHEstimation_VBFTOPO_JET3VETO(era, directory, tt, friend_directory=tt_friend_directory)),
+        "qqH_VBFTOPO_JET3"     : Process("qqH125_VBFTOPO_JET3",     qqHEstimation_VBFTOPO_JET3    (era, directory, tt, friend_directory=tt_friend_directory)),
+        "qqH_REST"             : Process("qqH125_REST",             qqHEstimation_REST            (era, directory, tt, friend_directory=tt_friend_directory)),
+        "qqH_PTJET1_GT200"     : Process("qqH125_PTJET1_GT200",     qqHEstimation_PTJET1_GT200    (era, directory, tt, friend_directory=tt_friend_directory)),
         "VH"    : Process("VH125",    VHEstimation   (era, directory, tt, friend_directory=tt_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimationTT(era, directory, tt, friend_directory=tt_friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimationTT (era, directory, tt, friend_directory=tt_friend_directory)),
@@ -408,7 +435,7 @@ def main(args):
         DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
         for process_nick in [
-                "HTT", "VH", "ggH", "qqH", "ZTT", "TTT", "VV", "EWK"
+                "HTT", "VH", "ggH", "ggH_0J", "ggH_1J", "ggH_GE2J", "ggH_VBFTOPO", "qqH", "qqH_VBFTOPO_JET3VETO", "qqH_VBFTOPO_JET3", "qqH_REST", "qqH_PTJET1_GT200", "ZTT", "TTT", "VV", "EWK"
         ]:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -434,7 +461,7 @@ def main(args):
         "CMS_scale_j_13TeV", "jecUnc", DifferentPipeline)
     for variation in jet_es_variations:
         for process_nick in [
-                "HTT", "VH", "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT",
+                "HTT", "VH", "ggH", "ggH_0J", "ggH_1J", "ggH_GE2J", "ggH_VBFTOPO", "qqH", "qqH_VBFTOPO_JET3VETO", "qqH_VBFTOPO_JET3", "qqH_REST", "qqH_PTJET1_GT200", "ZTT", "ZL", "ZJ", "W", "TTT",
                 "TTJ", "VV", "EWK"
         ]:
             if args.embedding and process_nick == 'ZTT':
@@ -466,7 +493,7 @@ def main(args):
         "CMS_scale_met_clustered_13TeV", "metJetEn", DifferentPipeline)
     for variation in met_unclustered_variations + met_clustered_variations:
         for process_nick in [
-                "HTT", "VH", "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT",
+                "HTT", "VH", "ggH", "ggH_0J", "ggH_1J", "ggH_GE2J", "ggH_VBFTOPO", "qqH", "qqH_VBFTOPO_JET3VETO", "qqH_VBFTOPO_JET3", "qqH_REST", "qqH_PTJET1_GT200", "ZTT", "ZL", "ZJ", "W", "TTT",
                 "TTJ", "VV", "EWK"
         ]:
             if args.embedding and process_nick == 'ZTT':
@@ -646,7 +673,7 @@ def main(args):
         "CMS_htt_mistag_b_13TeV", "btagMistag", DifferentPipeline)
     for variation in btag_eff_variations + mistag_eff_variations:
         for process_nick in [
-                "HTT", "VH", "ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT",
+                "HTT", "VH", "ggH", "ggH_0J", "ggH_1J", "ggH_GE2J", "ggH_VBFTOPO", "qqH", "qqH_VBFTOPO_JET3VETO", "qqH_VBFTOPO_JET3", "qqH_REST", "qqH_PTJET1_GT200", "ZTT", "ZL", "ZJ", "W", "TTT",
                 "TTJ", "VV", "EWK"
         ]:
             if args.embedding and process_nick == 'ZTT':
