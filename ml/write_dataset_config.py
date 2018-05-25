@@ -136,7 +136,7 @@ def main(args):
                 EWKWmEstimation(era, args.base_path, channel),
                 VVEstimation(era, args.base_path, channel),
                 EWKZllEstimation(era, args.base_path, channel),
-                EWKZnnEstimation(era, args.base_path, channel)
+                #EWKZnnEstimation(era, args.base_path, channel)
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
@@ -229,7 +229,7 @@ def main(args):
                 EWKWmEstimation(era, args.base_path, channel),
                 VVEstimation(era, args.base_path, channel),
                 EWKZllEstimation(era, args.base_path, channel),
-                EWKZnnEstimation(era, args.base_path, channel)
+                #EWKZnnEstimation(era, args.base_path, channel)
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
@@ -292,9 +292,9 @@ def main(args):
             "ZJ": "misc",
             "TTT": "misc",
             "TTJ": "misc",
-            "W": "w",
-            "EWKWp": "w",
-            "EWKWm": "w",
+            "W": "misc",
+            "EWKWp": "misc",
+            "EWKWm": "misc",
             "VV": "misc",
             "EWKZll": "misc",
             "EWKZnn": "misc"
@@ -322,7 +322,7 @@ def main(args):
                 EWKWmEstimation(era, args.base_path, channel),
                 VVEstimation(era, args.base_path, channel),
                 EWKZllEstimation(era, args.base_path, channel),
-                EWKZnnEstimation(era, args.base_path, channel)
+                #EWKZnnEstimation(era, args.base_path, channel)
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
