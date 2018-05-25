@@ -168,7 +168,6 @@ def main(args):
         "VV"    : Process("VV",       VVEstimation    (era, directory, mt, friend_directory=mt_friend_directory)),
         "EWKZ"  : Process("EWKZ",     EWKZEstimation  (era, directory, mt, friend_directory=None))
         }
-    print mt_processes["W"].estimation_method.get_files()
     if args.embedding:
         mt_processes["ZTT"] = Process("ZTT", ZTTEmbeddedEstimation(era, directory, mt, friend_directory=mt_friend_directory))
         mt_processes["TTT"] = Process("TTT", TTLEstimationMT (era, directory, mt, friend_directory=mt_friend_directory))
