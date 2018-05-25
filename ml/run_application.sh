@@ -13,7 +13,7 @@ python ml/write_application_filelist.py \
     --channel ${CHANNEL} \
     --output ml/${ERA}_${CHANNEL}/application_filelist.yaml
 
-export KERAS_BACKEND=theano
+export KERAS_BACKEND=tensorflow
 export OMP_NUM_THREADS=1
 export THEANO_FLAGS=gcc.cxxflags=-march=corei7
 
