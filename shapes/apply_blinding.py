@@ -45,14 +45,17 @@ def parse_arguments():
         help="Uncertainty of background yield in term (e*b)**2.")
     parser.add_argument(
         "--signal-processes",
-        default=["ggH", "qqH", "VH"],
-        help="Name of signal processes.")
+        nargs="+",
+        required=True,
+        help="Substrings to be present in signal categories.")
     parser.add_argument(
         "--exclude-categories",
-        default=["_ss", "_B"],
+        nargs="+",
+        required=True,
         help="Substrings to be present in excluded categories.")
     parser.add_argument(
         "--exclude-processes",
+        nargs="+",
         default=["data"],
         help="Substrings to be present in excluded processes.")
 
@@ -99,6 +102,7 @@ def main(args):
             shapes[channel][category]["histograms"].append(name)
 
     # Debug output
+    signal_processes = {}
     for channel in shapes:
         logger.debug("Categories in channel %s: %s", channel,
                      shapes[channel].keys())
@@ -117,11 +121,15 @@ def main(args):
         logger.debug("Processes in categories of channel %s: %s", channel,
                      processes)
 
-        for process in args.signal_processes:
-            if not process in processes:
-                logger.fatal("Signal process %s not present in processes.",
-                             process, processes)
-                raise Exception
+        # Find signal processes
+        signal_processes[channel] = []
+        for category in shapes[channel]:
+            for process in shapes[channel][category]["processes"]:
+                for substring in args.signal_processes:
+                    if substring in process and not process in signal_processes[channel]:
+                        signal_processes[channel].append(process)
+        logger.debug("Identified signal processes for channel %s: %s", channel,
+                     signal_processes[channel])
 
     # Set bins to zero if expectation is above threshold
     for channel in shapes:
@@ -132,7 +140,7 @@ def main(args):
             backgrounds = None
             for i, process in enumerate(
                     shapes[channel][category]["processes"]):
-                if process in args.signal_processes:
+                if process in signal_processes[channel]:
                     if signals == None:
                         signals = file_.Get(shapes[channel][category][
                             "histograms"][i]).Clone()
