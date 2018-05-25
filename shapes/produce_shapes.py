@@ -162,11 +162,11 @@ def main(args):
         "ZTT"   : Process("ZTT",      ZTTEstimation   (era, directory, mt, friend_directory=mt_friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimationMTSM(era, directory, mt, friend_directory=mt_friend_directory)),
         "ZJ"    : Process("ZJ",       ZJEstimationMT  (era, directory, mt, friend_directory=mt_friend_directory)),
-        "W"     : Process("W",        WEstimation     (era, directory, mt, friend_directory=None)),
+        "W"     : Process("W",        WEstimation     (era, directory, mt, friend_directory=mt_friend_directory)),
         "TTT"   : Process("TTT",      TTTEstimationMT (era, directory, mt, friend_directory=mt_friend_directory)),
         "TTJ"   : Process("TTJ",      TTJEstimationMT (era, directory, mt, friend_directory=mt_friend_directory)),
         "VV"    : Process("VV",       VVEstimation    (era, directory, mt, friend_directory=mt_friend_directory)),
-        "EWKZ"  : Process("EWKZ",     EWKZEstimation  (era, directory, mt, friend_directory=None))
+        "EWKZ"  : Process("EWKZ",     EWKZEstimation  (era, directory, mt, friend_directory=mt_friend_directory))
         }
     if args.embedding:
         mt_processes["ZTT"] = Process("ZTT", ZTTEmbeddedEstimation(era, directory, mt, friend_directory=mt_friend_directory))
@@ -194,11 +194,11 @@ def main(args):
         "ZTT"   : Process("ZTT",      ZTTEstimation   (era, directory, et, friend_directory=et_friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimationETSM(era, directory, et, friend_directory=et_friend_directory)),
         "ZJ"    : Process("ZJ",       ZJEstimationET  (era, directory, et, friend_directory=et_friend_directory)),
-        "W"     : Process("W",        WEstimation     (era, directory, et, friend_directory=None)),
+        "W"     : Process("W",        WEstimation     (era, directory, et, friend_directory=et_friend_directory)),
         "TTT"   : Process("TTT",      TTTEstimationET (era, directory, et, friend_directory=et_friend_directory)),
         "TTJ"   : Process("TTJ",      TTJEstimationET (era, directory, et, friend_directory=et_friend_directory)),
         "VV"    : Process("VV",       VVEstimation    (era, directory, et, friend_directory=et_friend_directory)),
-        "EWKZ"  : Process("EWKZ",     EWKZEstimation  (era, directory, et, friend_directory=None))
+        "EWKZ"  : Process("EWKZ",     EWKZEstimation  (era, directory, et, friend_directory=et_friend_directory))
         }
     if args.embedding:
         et_processes["ZTT"] = Process("ZTT", ZTTEmbeddedEstimation(era, directory, et, friend_directory=et_friend_directory))
@@ -227,11 +227,11 @@ def main(args):
         "ZTT"   : Process("ZTT",      ZTTEstimationTT(era, directory, tt, friend_directory=tt_friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimationTT (era, directory, tt, friend_directory=tt_friend_directory)),
         "ZJ"    : Process("ZJ",       ZJEstimationTT (era, directory, tt, friend_directory=tt_friend_directory)),
-        "W"     : Process("W",        WEstimation    (era, directory, tt, friend_directory=None)),
+        "W"     : Process("W",        WEstimation    (era, directory, tt, friend_directory=tt_friend_directory)),
         "TTT"   : Process("TTT",      TTTEstimationTT(era, directory, tt, friend_directory=tt_friend_directory)),
         "TTJ"   : Process("TTJ",      TTJEstimationTT(era, directory, tt, friend_directory=tt_friend_directory)),
         "VV"    : Process("VV",       VVEstimation   (era, directory, tt, friend_directory=tt_friend_directory)),
-        "EWKZ"  : Process("EWKZ",     EWKZEstimation (era, directory, tt, friend_directory=None)),
+        "EWKZ"  : Process("EWKZ",     EWKZEstimation (era, directory, tt, friend_directory=tt_friend_directory)),
         }
     if args.embedding:
         tt_processes["ZTT"] = Process("ZTT", ZTTEmbeddedEstimation(era, directory, tt, friend_directory=tt_friend_directory))
