@@ -113,6 +113,8 @@ def parse_arguments():
         action="store_true",
         default=False,
         help="Use mu->tau embedded samples as ZTT background estimation.")
+    parser.add_argument(
+        "--tag", default="ERA_CHANNEL", type=str, help="Tag of output files.")
     return parser.parse_args()
 
 
@@ -120,7 +122,7 @@ def main(args):
     # Container for all distributions to be drawn
     logger.info("Set up shape variations.")
     systematics = Systematics(
-        "{}_shapes.root".format(args.era), num_threads=args.num_threads)
+        "{}_shapes.root".format(args.tag), num_threads=args.num_threads)
 
     # Era selection
     if "2016" in args.era:
@@ -435,7 +437,10 @@ def main(args):
         DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
         for process_nick in [
-                "HTT", "VH", "ggH", "ggH_0J", "ggH_1J", "ggH_GE2J", "ggH_VBFTOPO", "qqH", "qqH_VBFTOPO_JET3VETO", "qqH_VBFTOPO_JET3", "qqH_REST", "qqH_PTJET1_GT200", "ZTT", "TTT", "VV", "EWKZ"
+                "HTT", "VH", "ggH", "ggH_0J", "ggH_1J", "ggH_GE2J",
+                "ggH_VBFTOPO", "qqH", "qqH_VBFTOPO_JET3VETO",
+                "qqH_VBFTOPO_JET3", "qqH_REST", "qqH_PTJET1_GT200", "ZTT",
+                "TTT", "VV", "EWKZ"
         ]:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -461,8 +466,10 @@ def main(args):
         "CMS_scale_j_13TeV", "jecUnc", DifferentPipeline)
     for variation in jet_es_variations:
         for process_nick in [
-                "HTT", "VH", "ggH", "ggH_0J", "ggH_1J", "ggH_GE2J", "ggH_VBFTOPO", "qqH", "qqH_VBFTOPO_JET3VETO", "qqH_VBFTOPO_JET3", "qqH_REST", "qqH_PTJET1_GT200", "ZTT", "ZL", "ZJ", "W", "TTT",
-                "TTJ", "VV", "EWKZ"
+                "HTT", "VH", "ggH", "ggH_0J", "ggH_1J", "ggH_GE2J",
+                "ggH_VBFTOPO", "qqH", "qqH_VBFTOPO_JET3VETO",
+                "qqH_VBFTOPO_JET3", "qqH_REST", "qqH_PTJET1_GT200", "ZTT",
+                "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"
         ]:
             if args.embedding and process_nick == 'ZTT':
                 continue
@@ -493,8 +500,10 @@ def main(args):
         "CMS_scale_met_clustered_13TeV", "metJetEn", DifferentPipeline)
     for variation in met_unclustered_variations + met_clustered_variations:
         for process_nick in [
-                "HTT", "VH", "ggH", "ggH_0J", "ggH_1J", "ggH_GE2J", "ggH_VBFTOPO", "qqH", "qqH_VBFTOPO_JET3VETO", "qqH_VBFTOPO_JET3", "qqH_REST", "qqH_PTJET1_GT200", "ZTT", "ZL", "ZJ", "W", "TTT",
-                "TTJ", "VV", "EWKZ"
+                "HTT", "VH", "ggH", "ggH_0J", "ggH_1J", "ggH_GE2J",
+                "ggH_VBFTOPO", "qqH", "qqH_VBFTOPO_JET3VETO",
+                "qqH_VBFTOPO_JET3", "qqH_REST", "qqH_PTJET1_GT200", "ZTT",
+                "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"
         ]:
             if args.embedding and process_nick == 'ZTT':
                 continue
@@ -673,8 +682,10 @@ def main(args):
         "CMS_htt_mistag_b_13TeV", "btagMistag", DifferentPipeline)
     for variation in btag_eff_variations + mistag_eff_variations:
         for process_nick in [
-                "HTT", "VH", "ggH", "ggH_0J", "ggH_1J", "ggH_GE2J", "ggH_VBFTOPO", "qqH", "qqH_VBFTOPO_JET3VETO", "qqH_VBFTOPO_JET3", "qqH_REST", "qqH_PTJET1_GT200", "ZTT", "ZL", "ZJ", "W", "TTT",
-                "TTJ", "VV", "EWKZ"
+                "HTT", "VH", "ggH", "ggH_0J", "ggH_1J", "ggH_GE2J",
+                "ggH_VBFTOPO", "qqH", "qqH_VBFTOPO_JET3VETO",
+                "qqH_VBFTOPO_JET3", "qqH_REST", "qqH_PTJET1_GT200", "ZTT",
+                "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"
         ]:
             if args.embedding and process_nick == 'ZTT':
                 continue
@@ -827,7 +838,7 @@ def main(args):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    setup_logging("{}_produce_shapes.log".format(args.era), logging.INFO)
+    setup_logging("{}_produce_shapes.log".format(args.tag), logging.INFO)
     if ('tt' in args.channels or 'em' in args.channels) and args.embedding:
         logger.fatal(
             "Channels tt and em not yet considered for embedded background estimation."
