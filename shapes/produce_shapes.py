@@ -21,7 +21,7 @@ import argparse
 import yaml
 
 import logging
-logger = logging.getLogger("produce_shapes")
+logger = logging.getLogger()
 
 
 def setup_logging(output_file, level=logging.DEBUG):
