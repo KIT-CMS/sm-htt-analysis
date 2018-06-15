@@ -10,7 +10,7 @@ from shape_producer.systematic_variations import Nominal, DifferentPipeline, Squ
 from shape_producer.process import Process
 from shape_producer.estimation_methods_Fall17 import *
 from shape_producer.estimation_methods import AddHistogramEstimationMethod
-from shape_producer.era import Run2017ReReco17Nov
+from shape_producer.era import Run2017ReReco31Mar
 from shape_producer.channel import MTMSSM2017 as MT
 from shape_producer.channel import ETMSSM2017 as ET
 from shape_producer.channel import TTMSSM2017 as TT
@@ -109,17 +109,13 @@ def parse_arguments():
 
 def main(args):
     # Container for all distributions to be drawn
-    #systematics = Systematics("shapes_singlelepton_no_weights_15-05-2018.root", num_threads=args.num_threads)
-    #systematics = Systematics("shapes_singlelepton_pu_15-05-2018.root", num_threads=args.num_threads)
-    #systematics = Systematics("shapes_singlelepton_pu_trg_15-05-2018.root", num_threads=args.num_threads)
-    #systematics = Systematics("shapes_singlelepton_pu_trg_lepfake_15-05-2018.root", num_threads=args.num_threads)
-    #systematics = Systematics("shapes_singlelepton_pu_trg_lepfake_tauidiso_15-05-2018.root", num_threads=args.num_threads)
-    #systematics = Systematics("shapes_singlelepton_pu_trg_lepfake_tauidiso_elehltzvtx_15-05-2018.root", num_threads=args.num_threads)
-    systematics = Systematics("shapes_singlelepton_test_stitching_15-05-2018.root", num_threads=args.num_threads)
-    #systematics = Systematics("shapes_singlelepton_test_stitching_16-05-2018.root", num_threads=args.num_threads)
+    systematics_mt = Systematics("shapes_mt.root", num_threads=args.num_threads)
+    systematics_et = Systematics("shapes_et.root", num_threads=args.num_threads)
+    systematics_tt = Systematics("shapes_tt.root", num_threads=args.num_threads)
+    systematics_em = Systematics("shapes_em.root", num_threads=args.num_threads)
 
     # Era
-    era = Run2017ReReco17Nov(args.datasets)
+    era = Run2017ReReco31Mar(args.datasets)
 
     # Channels and processes
     # yapf: disable
@@ -130,12 +126,15 @@ def main(args):
         "data"  : Process("data_obs", DataEstimation  (era, directory, mt)),
         "ZTT"   : Process("ZTT",      ZTTEstimation   (era, directory, mt)),
         "ZLL"   : Process("ZLL",      ZLLEstimation   (era, directory, mt)),
-        "W"     : Process("W",        WEstimation     (era, directory, mt)),
+    #    "W"     : Process("W",        WEstimation     (era, directory, mt)),
         "TT"    : Process("TT",       TTEstimation    (era, directory, mt)),
         "VV"    : Process("VV",       VVEstimation    (era, directory, mt)),
         "EWK"   : Process("EWK",      EWKEstimation   (era, directory, mt))
         }
-    mt_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZLL", "W", "TT", "VV", "EWK"]], mt_processes["data"], extrapolation_factor=1.1))
+    wjets_mc_mt = Process("WMC",        WEstimation     (era, directory, mt))
+    #mt_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZLL", "W", "TT", "VV", "EWK"]], mt_processes["data"], extrapolation_factor=1.1))
+    mt_processes["W"] = Process("W", WEstimationWithQCD(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZLL", "TT", "VV", "EWK"]], mt_processes["data"], wjets_mc_mt, qcd_ss_to_os_extrapolation_factor=1.1))
+    mt_processes["QCD"] = Process("QCD", QCDEstimationWithW(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZLL", "TT", "VV", "EWK"]], mt_processes["data"], wjets_mc_mt, qcd_ss_to_os_extrapolation_factor=1.1))
 
     em = EM()
     em_processes = {
@@ -154,12 +153,15 @@ def main(args):
         "data"  : Process("data_obs", DataEstimation  (era, directory, et)),
         "ZTT"   : Process("ZTT",      ZTTEstimation   (era, directory, et)),
         "ZLL"   : Process("ZLL",      ZLLEstimation   (era, directory, et)),
-        "W"     : Process("W",        WEstimation     (era, directory, et)),
+    #    "W"     : Process("W",        WEstimation     (era, directory, et)),
         "TT"    : Process("TT",       TTEstimation    (era, directory, et)),
         "VV"    : Process("VV",       VVEstimation    (era, directory, et)),
         "EWK"   : Process("EWK",      EWKEstimation   (era, directory, et))
         }
-    et_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, et, [et_processes[process] for process in ["ZTT", "ZLL", "W", "TT", "VV", "EWK"]], et_processes["data"], extrapolation_factor=1.09))
+    wjets_mc_et = Process("WMC",        WEstimation     (era, directory, et))
+    #et_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, et, [et_processes[process] for process in ["ZTT", "ZLL", "W", "TT", "VV", "EWK"]], et_processes["data"], extrapolation_factor=1.09))
+    et_processes["W"] = Process("W", WEstimationWithQCD(era, directory, et, [et_processes[process] for process in ["ZTT", "ZLL", "TT", "VV", "EWK"]], et_processes["data"], wjets_mc_et, qcd_ss_to_os_extrapolation_factor=1.09))
+    et_processes["QCD"] = Process("QCD", QCDEstimationWithW(era, directory, et, [et_processes[process] for process in ["ZTT", "ZLL", "TT", "VV", "EWK"]], et_processes["data"], wjets_mc_et, qcd_ss_to_os_extrapolation_factor=1.09))
 
     tt = TT()
     tt_processes = {
@@ -172,6 +174,8 @@ def main(args):
         "EWK"   : Process("EWK",      EWKEstimation  (era, directory, tt)),
         }
     tt_processes["QCD"] = Process("QCD", QCDEstimation_ABCD_TT_ISO2(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZLL", "W", "TT", "VV", "EWK"]], tt_processes["data"]))
+    #tt_processes["QCD"] = Process("QCD", QCDEstimation_ABCD_TT_ISO2_TRANSPOSED(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZLL", "W", "TT", "VV", "EWK"]], tt_processes["data"]))
+    #tt_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZLL", "W", "TT", "VV", "EWK"]], tt_processes["data"], extrapolation_factor=1.0))
 
     # Variables and categories
     binning = yaml.load(open(args.binning))
@@ -182,16 +186,14 @@ def main(args):
     em_categories = []
 
     variable_names = ["mt_1","mt_2", "pt_1","pt_2", "eta_1", "eta_2", "m_vis", "ptvis", "npv", "njets", "nbtag", "jpt_1", "jpt_2", "jeta_1", "jeta_2", "met", "mjj", "dijetpt", "pZetaMissVis", "m_1", "m_2", "decayMode_1", "decayMode_2", "iso_1", "iso_2", "rho"]
-    #variable_names = ["pt_1","pt_2"]
 
     if "mt" in args.channels:
         variables = [Variable(v,VariableBinning(binning["control"]["mt"][v]["bins"]), expression=binning["control"]["mt"][v]["expression"]) for v in variable_names]
-        cuts=Cuts(Cut("mt_1 < 70","mt_cut"))
         for name, var in zip(variable_names, variables):
             if name == "mt_1":
                 cuts = Cuts()
             else:
-                cuts=Cuts(Cut("mt_1 < 70","mt_cut"))
+                cuts=Cuts(Cut("mt_1 < 70","mt"))
             mt_categories.append(
                 Category(
                     name,
@@ -204,12 +206,11 @@ def main(args):
 
     if "et" in args.channels:
         variables = [Variable(v,VariableBinning(binning["control"]["et"][v]["bins"]), expression=binning["control"]["et"][v]["expression"]) for v in variable_names]
-        cuts=Cuts(Cut("mt_1 < 70","mt_cut"))
         for name, var in zip(variable_names, variables):
             if name == "mt_1":
                 cuts = Cuts()
             else:
-                cuts=Cuts(Cut("mt_1 < 70","mt_cut"))
+                cuts=Cuts(Cut("mt_1 < 70","mt"))
             et_categories.append(
                 Category(
                     name,
@@ -221,18 +222,18 @@ def main(args):
                 et_categories[-1].cuts.remove("tau_iso")
 
     if "tt" in args.channels:
-        variables = [Variable(v,VariableBinning(binning["control"]["tt"][v]["bins"]), expression=binning["control"]["tt"][v]["expression"]) for v in variable_names]
-        cuts=Cuts()
-        for name, var in zip(variable_names, variables):
-            tt_categories.append(
-                Category(
-                    name,
-                    tt,
-                    cuts,
-                    variable=var))
-            if name == "iso_1" or name == "iso_2":
-                tt_categories[-1].cuts.remove("tau_1_iso")
-            #    tt_categories[-1].cuts.remove("tau_2_iso")
+       variables = [Variable(v,VariableBinning(binning["control"]["tt"][v]["bins"]), expression=binning["control"]["tt"][v]["expression"]) for v in variable_names]
+       cuts=Cuts()
+       for name, var in zip(variable_names, variables):
+           tt_categories.append(
+               Category(
+                   name,
+                   tt,
+                   cuts,
+                   variable=var))
+           if name == "iso_1" or name == "iso_2":
+               tt_categories[-1].cuts.remove("tau_1_iso")
+               tt_categories[-1].cuts.remove("tau_2_iso")
 
     if "em" in args.channels:
         variables = [Variable(v,VariableBinning(binning["control"]["em"][v]["bins"]), expression=binning["control"]["em"][v]["expression"]) for v in variable_names]
@@ -255,7 +256,7 @@ def main(args):
     # Nominal histograms
     if "mt" in args.channels:
         for process, category in product(mt_processes.values(), mt_categories):
-            systematics.add(
+            systematics_mt.add(
                 Systematic(
                     category=category,
                     process=process,
@@ -266,7 +267,7 @@ def main(args):
 
     if "et" in args.channels:
         for process, category in product(et_processes.values(), et_categories):
-            systematics.add(
+            systematics_et.add(
                 Systematic(
                     category=category,
                     process=process,
@@ -277,7 +278,7 @@ def main(args):
 
     if "tt" in args.channels:
         for process, category in product(tt_processes.values(), tt_categories):
-            systematics.add(
+            systematics_tt.add(
                 Systematic(
                     category=category,
                     process=process,
@@ -288,7 +289,7 @@ def main(args):
 
     if "em" in args.channels:
         for process, category in product(em_processes.values(), em_categories):
-            systematics.add(
+            systematics_em.add(
                 Systematic(
                     category=category,
                     process=process,
@@ -299,7 +300,10 @@ def main(args):
 
 
     # Produce histograms
-    systematics.produce()
+    if "mt" in args.channels: systematics_mt.produce()
+    if "et" in args.channels: systematics_et.produce()
+    if "tt" in args.channels: systematics_tt.produce()
+    if "em" in args.channels: systematics_em.produce()
 
 
 if __name__ == "__main__":
@@ -307,5 +311,5 @@ if __name__ == "__main__":
     if ('tt' in args.channels or 'em' in args.channels) and args.emb:
         print "Channels tt and em not yet considered for embedded background estimation."
         exit()
-    setup_logging("produce_shapes.log", logging.INFO)
+    setup_logging("produce_shapes.log", logging.DEBUG)
     main(args)
