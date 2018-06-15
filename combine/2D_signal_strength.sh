@@ -7,7 +7,7 @@ source utils/setup_cmssw.sh
 # 2D best-fit
 MAKE_BESTFIT=1
 if [ -n "$MAKE_BESTFIT" ]; then
-    combineTool.py -M T2W -m 125 -o ${ERA}_workspace.root -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel --PO '"map=^.*/ggH.?$:r_ggH[0,0,200]"' --PO '"map=^.*/qqH$:r_qqH[0,0,200]"' -i ${ERA}_datacard.txt
+    combineTool.py -M T2W -m 125 -o ${ERA}_workspace.root -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel --PO '"map=^.*/ggH125.?$:r_ggH[0,0,200]"' --PO '"map=^.*/qqH125$:r_qqH[0,0,200]"' -i ${ERA}_datacard.txt
     combineTool.py -M MultiDimFit -m 125 -d ${ERA}_workspace.root --algo singles --robustFit 1 -n $ERA
 fi
 
