@@ -60,6 +60,8 @@ def parse_arguments():
         action="store_true",
         help="Use data for the observation and not an Asimov dataset.")
     parser.add_argument(
+        "--stxs-stage", type=int, required=True, help="Select STXS stage.")
+    parser.add_argument(
         "--embedding",
         action="store_true",
         default=False,
@@ -82,7 +84,18 @@ def main(args):
     # Register observations, signals and backgrounds
     channels = []
     categories = []
-    signals = ["ggH125", "qqH125"]
+    if args.stxs_stage == 0:
+        signals = ["ggH125", "qqH125"]
+    elif args.stxs_stage == 1:
+        signals = [
+            "ggH125_0J", "ggH125_1J", "ggH125_GE2J", "ggH125_VBFTOPO",
+            "qqH125_VBFTOPO_JET3VETO", "qqH125_VBFTOPO_JET3", "qqH125_REST",
+            "qqH125_PTJET1_GT200"
+        ]
+    else:
+        logger.critical("Unknown STXS stage {} selected.".format(
+            args.stxs_stage))
+        raise Exception
     backgrounds = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ", "QCD"]
     if args.QCD_extrap_fit:
         signals = ["QCD"]

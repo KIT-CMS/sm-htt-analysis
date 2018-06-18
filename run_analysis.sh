@@ -24,7 +24,8 @@ CHANNELS=${@:2}
 #./shapes/apply_blinding.sh $ERA
 
 # Write datacard
-./datacards/produce_datacard.sh $ERA $CHANNELS
+STXS_STAGE=0
+./datacards/produce_datacard.sh $ERA $STXS_STAGE $CHANNELS
 
 # Run statistical inference
 ./combine/significance.sh $ERA | tee ${ERA}_significance.log
