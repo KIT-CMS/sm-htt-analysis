@@ -7,4 +7,4 @@ ERA=$1
 CHANNELS=$2
 VARIABLE=$3
 
-python datacards/produce_datacard.py --era $ERA --channels $CHANNELS  --use-data-for-observation --gof $VARIABLE --shapes ${ERA}_${CHANNELS}_shapes.root
+python datacards/produce_datacard.py --stxs-signals 0 --stxs-categories 0 --era $ERA --channels $CHANNELS  --use-data-for-observation --gof $VARIABLE --shapes ${ERA}_${CHANNELS}_shapes.root
