@@ -8,12 +8,6 @@ source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
 source utils/setup_samples.sh $ERA
 
-# Calculate binning from data distributions
-# NOTE: Binning is committed in this repository.
-#./shapes/calculate_binning.sh et
-#./shapes/calculate_binning.sh mt
-#./shapes/calculate_binning.sh tt
-
 # Produce shapes
 for CHANNEL in $CHANNELS
 do
@@ -27,7 +21,7 @@ do
         --channels $CHANNEL \
         --era $ERA \
         --tag ${ERA}_${CHANNEL} \
-        --num-threads 8 &
+        --num-threads 16 # & # NOTE: We are at the file descriptor limit.
 done
 
 wait

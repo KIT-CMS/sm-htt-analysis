@@ -276,6 +276,26 @@ def main(args):
                     Cuts(
                         Cut("et_max_index=={index}".format(index=i), "exclusive_score")),
                     variable=score))
+            if "ggh" in label:
+                for stxs_njets_cut, stxs_njets_label in zip(["==0", "==1", ">=2"], ["0jet", "1jet", "ge2jets"]):
+                    et_categories.append(
+                        Category(
+                            "{}_{}".format(label, stxs_njets_label),
+                            et,
+                            Cuts(
+                                Cut("et_max_index=={index}".format(index=i), "exclusive_score"),
+                                Cut("njets{}".format(stxs_njets_cut), "stxs_njets_cut")),
+                            variable=score))
+            if "qqh" in label:
+                for stxs_njets_cut, stxs_njets_label in zip(["<2", "==2", ">2"], ["l2jets", "2jets", "g2jets"]):
+                    et_categories.append(
+                        Category(
+                            "{}_{}".format(label, stxs_njets_label),
+                            et,
+                            Cuts(
+                                Cut("et_max_index=={index}".format(index=i), "exclusive_score"),
+                                Cut("njets{}".format(stxs_njets_cut), "stxs_njets_cut")),
+                            variable=score))
     # Goodness of fit shapes
     elif "et" == args.gof_channel:
         score = Variable(
@@ -325,6 +345,26 @@ def main(args):
                     Cuts(
                         Cut("mt_max_index=={index}".format(index=i), "exclusive_score")),
                     variable=score))
+            if "ggh" in label:
+                for stxs_njets_cut, stxs_njets_label in zip(["==0", "==1", ">=2"], ["0jet", "1jet", "ge2jets"]):
+                    mt_categories.append(
+                        Category(
+                            "{}_{}".format(label, stxs_njets_label),
+                            mt,
+                            Cuts(
+                                Cut("mt_max_index=={index}".format(index=i), "exclusive_score"),
+                                Cut("njets{}".format(stxs_njets_cut), "stxs_njets_cut")),
+                            variable=score))
+            if "qqh" in label:
+                for stxs_njets_cut, stxs_njets_label in zip(["<2", "==2", ">2"], ["l2jets", "2jets", "g2jets"]):
+                    mt_categories.append(
+                        Category(
+                            "{}_{}".format(label, stxs_njets_label),
+                            mt,
+                            Cuts(
+                                Cut("mt_max_index=={index}".format(index=i), "exclusive_score"),
+                                Cut("njets{}".format(stxs_njets_cut), "stxs_njets_cut")),
+                            variable=score))
     # Goodness of fit shapes
     elif args.gof_channel == "mt":
         score = Variable(
@@ -374,6 +414,26 @@ def main(args):
                     Cuts(
                         Cut("tt_max_index=={index}".format(index=i), "exclusive_score")),
                     variable=score))
+            if "ggh" in label:
+                for stxs_njets_cut, stxs_njets_label in zip(["==0", "==1", ">=2"], ["0jet", "1jet", "ge2jets"]):
+                    tt_categories.append(
+                        Category(
+                            "{}_{}".format(label, stxs_njets_label),
+                            tt,
+                            Cuts(
+                                Cut("tt_max_index=={index}".format(index=i), "exclusive_score"),
+                                Cut("njets{}".format(stxs_njets_cut), "stxs_njets_cut")),
+                            variable=score))
+            if "qqh" in label:
+                for stxs_njets_cut, stxs_njets_label in zip(["<2", "==2", ">2"], ["l2jets", "2jets", "g2jets"]):
+                    tt_categories.append(
+                        Category(
+                            "{}_{}".format(label, stxs_njets_label),
+                            tt,
+                            Cuts(
+                                Cut("tt_max_index=={index}".format(index=i), "exclusive_score"),
+                                Cut("njets{}".format(stxs_njets_cut), "stxs_njets_cut")),
+                            variable=score))
     # Goodness of fit shapes
     elif args.gof_channel == "tt":
         score = Variable(
@@ -578,7 +638,6 @@ def main(args):
                     era=era)
 
     # jet to tau fake efficiency
-
     jet_to_tau_fake_variations = []
     jet_to_tau_fake_variations.append(
         AddWeight("CMS_htt_jetToTauFake_13TeV", "jetToTauFake_weight",
