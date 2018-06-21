@@ -3,7 +3,8 @@
 source utils/setup_cmssw.sh
 source utils/setup_python.sh
 
-CHANNELS=$1
-VARIABLE=$2
+ERA=$1
+CHANNELS=$2
+VARIABLE=$3
 
-python datacards/produce_datacard.py --channels $CHANNELS  --use-data-for-observation --gof $VARIABLE
+python datacards/produce_datacard.py --era $ERA --channels $CHANNELS  --use-data-for-observation --gof $VARIABLE --shapes ${ERA}_${CHANNELS}_shapes.root

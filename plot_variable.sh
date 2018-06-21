@@ -14,18 +14,13 @@ done
 #./utils/clean.sh
 
 # Create shapes of systematics
-CHANNELS=$1
-VARIABLE=$2
+ERA=$1
+CHANNELS=$2
+VARIABLE=$3
 
-./shapes/produce_shapes_variables.sh $CHANNELS $VARIABLE
-./datacards/produce_datacard_variables.sh $CHANNELS $VARIABLE
-
-#./combine/significance.sh | tee significance.log
-#./combine/signal_strength.sh | tee signal_strength.log
-#./combine/2D_signal_strength.sh | tee 2D_signal_strength.log
-#./combine/diff_nuisances.sh
-#./combine/nuisance_impacts.sh
+./shapes/produce_shapes_variables.sh $ERA $CHANNELS $VARIABLE
+./datacards/produce_datacard_variables.sh $ERA $CHANNELS $VARIABLE
 
 # Make prefit and postfit shapes
-./combine/prefit_shapes.sh
-./plotting/plot_shapes_variables.sh $CHANNELS $VARIABLE
+./combine/prefit_shapes.sh $ERA
+./plotting/plot_shapes_variables.sh $ERA $CHANNELS $VARIABLE

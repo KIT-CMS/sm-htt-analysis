@@ -1,12 +1,13 @@
 #!/bin/bash
 
-BINNING=shapes/binning.yaml
-CHANNELS=$1
-VARIABLE=$2
+BINNING=plotting/custom_binning.yaml #shapes/binning.yaml
+ERA=$1
+CHANNELS=$2
+VARIABLE=$3
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
-source utils/setup_samples.sh
+source utils/setup_samples.sh $ERA
 
 # Calculate binning from data distributions
 # NOTE: Binning is committed in this repository.
@@ -19,7 +20,12 @@ source utils/setup_samples.sh
 
 python shapes/produce_shapes.py \
     --directory $ARTUS_OUTPUTS \
+    --et-friend-directory $ARTUS_FRIENDS_ET \
+    --mt-friend-directory $ARTUS_FRIENDS_MT \
+    --tt-friend-directory $ARTUS_FRIENDS_TT \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
     --gof-channel $CHANNELS \
-    --gof-variable $VARIABLE
+    --gof-variable $VARIABLE \
+    --era $ERA \
+    --tag ${ERA}_${CHANNELS}
