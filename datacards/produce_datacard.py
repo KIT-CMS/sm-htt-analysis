@@ -60,7 +60,15 @@ def parse_arguments():
         action="store_true",
         help="Use data for the observation and not an Asimov dataset.")
     parser.add_argument(
-        "--stxs-stage", type=int, required=True, help="Select STXS stage.")
+        "--stxs-signals",
+        type=int,
+        required=True,
+        help="Select STXS signal templates.")
+    parser.add_argument(
+        "--stxs-categories",
+        type=int,
+        required=True,
+        help="Select STXS categorization.")
     parser.add_argument(
         "--embedding",
         action="store_true",
@@ -84,17 +92,17 @@ def main(args):
     # Register observations, signals and backgrounds
     channels = []
     categories = []
-    if args.stxs_stage == 0:
+    if args.stxs_signals == 0:
         signals = ["ggH125", "qqH125"]
-    elif args.stxs_stage == 1:
+    elif args.stxs_signals == 1:
         signals = [
             "ggH125_0J", "ggH125_1J", "ggH125_GE2J", "ggH125_VBFTOPO",
             "qqH125_VBFTOPO_JET3VETO", "qqH125_VBFTOPO_JET3", "qqH125_REST",
             "qqH125_PTJET1_GT200"
         ]
     else:
-        logger.critical("Unknown STXS stage {} selected.".format(
-            args.stxs_stage))
+        logger.critical("Unknown STXS stage {} for signals selected.".format(
+            args.stxs_signals))
         raise Exception
     backgrounds = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ", "QCD"]
     if args.QCD_extrap_fit:
@@ -112,9 +120,20 @@ def main(args):
             et_categories = ["et_0jet", "et_vbf", "et_boosted"]
         else:
             et_categories = [
-                "et_ggh", "et_qqh", "et_ztt", "et_zll", "et_w", "et_tt",
-                "et_ss", "et_misc"
+                "et_ztt", "et_zll", "et_w", "et_tt", "et_ss", "et_misc"
             ]
+            if args.stxs_categories == 0:
+                et_categories += ["et_ggh", "et_qqh"]
+            elif args.stxs_categories == 1:
+                et_categories += [
+                    "et_ggh_0jet", "et_ggh_1jet", "et_ggh_ge2jets",
+                    "et_qqh_l2jets", "et_qqh_2jets", "et_qqh_g2jets"
+                ]
+            else:
+                logger.critical(
+                    "Unknown STXS stage {} for categories selected.".format(
+                        args.stxs_signals))
+                raise Exception
         et_category_pairs = db.make_pairs(et_categories)
 
         db.add_observation("125", "smhtt", era, "et", et_category_pairs)
@@ -136,9 +155,20 @@ def main(args):
             mt_categories = ["mt_0jet", "mt_vbf", "mt_boosted"]
         else:
             mt_categories = [
-                "mt_ggh", "mt_qqh", "mt_ztt", "mt_zll", "mt_w", "mt_tt",
-                "mt_ss", "mt_misc"
+                "mt_ztt", "mt_zll", "mt_w", "mt_tt", "mt_ss", "mt_misc"
             ]
+            if args.stxs_categories == 0:
+                mt_categories += ["mt_ggh", "mt_qqh"]
+            elif args.stxs_categories == 1:
+                mt_categories += [
+                    "mt_ggh_0jet", "mt_ggh_1jet", "mt_ggh_ge2jets",
+                    "mt_qqh_l2jets", "mt_qqh_2jets", "mt_qqh_g2jets"
+                ]
+            else:
+                logger.critical(
+                    "Unknown STXS stage {} for categories selected.".format(
+                        args.stxs_signals))
+                raise Exception
         mt_category_pairs = db.make_pairs(mt_categories)
 
         db.add_observation("125", "smhtt", era, "mt", mt_category_pairs)
@@ -157,9 +187,19 @@ def main(args):
         elif args.HIG16043:
             tt_categories = ["tt_0jet", "tt_vbf", "tt_boosted"]
         else:
-            tt_categories = [
-                "tt_ggh", "tt_qqh", "tt_ztt", "tt_noniso", "tt_misc"
-            ]
+            tt_categories = ["tt_ztt", "tt_noniso", "tt_misc"]
+            if args.stxs_categories == 0:
+                tt_categories += ["tt_ggh", "tt_qqh"]
+            elif args.stxs_categories == 1:
+                tt_categories += [
+                    "tt_ggh_0jet", "tt_ggh_1jet", "tt_ggh_ge2jets",
+                    "tt_qqh_l2jets", "tt_qqh_2jets", "tt_qqh_g2jets"
+                ]
+            else:
+                logger.critical(
+                    "Unknown STXS stage {} for categories selected.".format(
+                        args.stxs_signals))
+                raise Exception
         tt_category_pairs = db.make_pairs(tt_categories)
 
         db.add_observation("125", "smhtt", era, "tt", tt_category_pairs)

@@ -4,7 +4,13 @@ source utils/setup_cmssw.sh
 source utils/setup_python.sh
 
 ERA=$1
-STXS_STAGE=$2
-CHANNELS=${@:3}
+STXS_SIGNALS=$2
+STXS_CATEGORIES=$3
+CHANNELS=${@:4}
 
-python datacards/produce_datacard.py --era $ERA --channels $CHANNELS --stxs-stage $STXS_STAGE --shapes ${ERA}_shapes.root
+python datacards/produce_datacard.py \
+    --era $ERA \
+    --channels $CHANNELS \
+    --stxs-signals $STXS_SIGNALS \
+    --stxs-categories $STXS_CATEGORIES \
+    --shapes ${ERA}_shapes.root
