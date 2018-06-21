@@ -24,15 +24,16 @@ CHANNELS=${@:2}
 #./shapes/apply_blinding.sh $ERA
 
 # Write datacard
-STXS_STAGE=0
-./datacards/produce_datacard.sh $ERA $STXS_STAGE $CHANNELS
+STXS_SIGNALS=0
+STXS_CATEGORIES=0
+./datacards/produce_datacard.sh $ERA $STXS_SIGNALS $STXS_CATEGORIES $CHANNELS
 
 # Run statistical inference
 ./combine/significance.sh $ERA | tee ${ERA}_significance.log
-./combine/signal_strength.sh $ERA | tee ${ERA}_signal_strength.log
+./combine/signal_strength.sh $ERA $STXS_SIGNALS | tee ${ERA}_signal_strength.log
 ./combine/diff_nuisances.sh $ERA
 #./combine/nuisance_impacts.sh
 
 # Make prefit and postfit shapes
 ./combine/prefit_postfit_shapes.sh $ERA
-./plotting/plot_shapes.sh $ERA $CHANNELS
+./plotting/plot_shapes.sh $ERA $STXS_SIGNALS $STXS_CHANNELS $CHANNELS
