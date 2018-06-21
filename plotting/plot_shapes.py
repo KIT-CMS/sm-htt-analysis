@@ -42,6 +42,11 @@ def parse_arguments():
     parser.add_argument(
         "--png", action="store_true", help="Save plots in png format")
     parser.add_argument(
+        "--stxs-categories",
+        type=int,
+        required=True,
+        help="Select STXS categorization.")
+    parser.add_argument(
         "--normalize-by-bin-width",
         action="store_true",
         help="Normelize plots by bin width")
@@ -67,10 +72,23 @@ def main(args):
         channel_categories = {c: [args.gof_variable] for c in args.channels}
     else:
         channel_categories = {
-            "et": ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"],
-            "mt": ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"],
-            "tt": ["ggh", "qqh", "ztt", "noniso", "misc"]
+            "et": ["ztt", "zll", "w", "tt", "ss", "misc"],
+            "mt": ["ztt", "zll", "w", "tt", "ss", "misc"],
+            "tt": ["ztt", "noniso", "misc"]
         }
+        if args.stxs_categories == 0:
+            for channel in ["et", "mt", "tt"]:
+                channel_categories[channel] += ["ggh", "qqh"]
+        elif args.stxs_categories == 1:
+            for channel in ["et", "mt", "tt"]:
+                channel_categories[channel] += [
+                    "ggh_0jet", "ggh_1jet", "ggh_ge2jets", "qqh_l2jets",
+                    "qqh_2jets", "qqh_g2jets"
+                ]
+        else:
+            logger.critical("Selected unkown STXS categorization {}",
+                            args.stxs_categories)
+            raise Exception
     channel_dict = {
         "ee": "ee",
         "em": "e#mu",
@@ -84,7 +102,13 @@ def main(args):
     else:
         category_dict = {
             "ggh": "ggH",
+            "ggh_0jet": "ggH, 0 jet",
+            "ggh_1jet": "ggH, 1 jet",
+            "ggh_ge2jets": "ggH, >= 2 jets",
             "qqh": "VBF",
+            "qqh_l2jets": "VBF, < 2 jets",
+            "qqh_2jets": "VBF, 2 jets",
+            "qqh_g2jets": "VBF, > 2 jets",
             "ztt": "Z#rightarrow#tau#tau",
             "zll": "Z#rightarrowll",
             "w": "W+jets",
@@ -281,13 +305,14 @@ def main(args):
             else:
                 logger.critical("Era {} is not implemented.".format(args.era))
                 raise Exception
-            plot.DrawChannelCategoryLabel("%s, %s" % (channel_dict[channel],
-                                                      category_dict[category]))
+            plot.DrawChannelCategoryLabel(
+                "%s, %s" % (channel_dict[channel], category_dict[category]))
 
             # save plot
             postfix = "prefit" if "prefit" in args.input else "postfit" if "postfit" in args.input else "undefined"
-            plot.save("plots/%s_%s_%s_%s.%s" % (args.era, channel, category, postfix, "png"
-                                             if args.png else "pdf"))
+            plot.save("plots/%s_%s_%s_%s.%s" % (args.era, channel, category,
+                                                postfix, "png"
+                                                if args.png else "pdf"))
             plots.append(
                 plot
             )  # work around to have clean up seg faults only at the end of the script
