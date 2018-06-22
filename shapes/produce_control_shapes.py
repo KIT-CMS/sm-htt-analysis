@@ -231,9 +231,6 @@ def main(args):
                    tt,
                    cuts,
                    variable=var))
-           if name == "iso_1" or name == "iso_2":
-               tt_categories[-1].cuts.remove("tau_1_iso")
-               tt_categories[-1].cuts.remove("tau_2_iso")
 
     if "em" in args.channels:
         variables = [Variable(v,VariableBinning(binning["control"]["em"][v]["bins"]), expression=binning["control"]["em"][v]["expression"]) for v in variable_names]
