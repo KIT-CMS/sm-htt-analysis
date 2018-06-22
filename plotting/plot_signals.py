@@ -85,12 +85,14 @@ def main(args):
 
     if args.stxs_signals == 0:
         signals = ["ggH125", "qqH125"]
+        signal_linestlyes = [1, 1]
     elif args.stxs_signals == 1:
         signals = [
             "ggH125_0J", "ggH125_1J", "ggH125_GE2J", "ggH125_VBFTOPO",
             "qqH125_VBFTOPO_JET3VETO", "qqH125_VBFTOPO_JET3", "qqH125_REST",
             "qqH125_PTJET1_GT200"
         ]
+        signal_linestlyes = [1, 2, 3, 4] * 2
     else:
         logger.critical("Selected unkown STXS signals {}", args.stxs_signals)
         raise Exception
@@ -140,7 +142,8 @@ def main(args):
                     "hist",
                     linecolor=styles.color_dict[name.split("_")[0]],
                     linewidth=5)
-                plot.subplot(0).get_hist(name).SetLineStyle(2 + i)
+                plot.subplot(0).get_hist(name).SetLineStyle(
+                    signal_linestlyes[i])
 
             # Normalize by bin-width
             if args.normalize_by_bin_width:
@@ -155,11 +158,7 @@ def main(args):
 
             # Draw signals
             plot.subplot(0).setLogY()
-            maximum = [
-                plot.subplot(0).get_hist(name).GetMaximum()
-                for name in signal_names
-            ]
-            plot.subplot(0).setYlims(0.1, 100.0 * max(maximum))
+            plot.subplot(0).setYlims(1e-3, 1e5)
             plot.subplot(0).Draw(signal_names)
 
             # Draw additional labels
@@ -175,7 +174,7 @@ def main(args):
                 "%s, %s" % (channel_dict[channel], category_dict[category]))
 
             # Create legends
-            plot.add_legend(width=0.48, height=0.30)
+            plot.add_legend(width=0.40, height=0.30)
             plot.legend(0).setNColumns(1)
             for i, name in enumerate(signal_names):
                 plot.legend(0).add_entry(0, name, name, 'l')
