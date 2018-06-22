@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LCG_RELEASE=93
+LCG_RELEASE=93c
 
 if uname -a | grep ekpdeepthought
 then

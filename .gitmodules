@@ -1,15 +1,15 @@
 [submodule "shape-producer"]
 	path = shape-producer
-	url = ssh://git@github.com/KIT-CMS/shape-producer
+	url = https://github.com/KIT-CMS/shape-producer.git
 [submodule "datacard-producer"]
 	path = datacard-producer
-	url = ssh://git@github.com/KIT-CMS/datacard-producer
+	url = https://github.com/KIT-CMS/datacard-producer.git
 [submodule "htt-ml"]
 	path = htt-ml
-	url = ssh://git@github.com/KIT-CMS/htt-ml
+	url = https://github.com/KIT-CMS/htt-ml.git
 [submodule "Dumbledraw"]
 	path = Dumbledraw
-	url = git@github.com:KIT-CMS/Dumbledraw.git
+	url = https://github.com/KIT-CMS/Dumbledraw.git
 [submodule "tensorflow_derivative"]
 	path = tensorflow_derivative
-	url = https://github.com/KIT-CMS/tensorflow_derivative
+	url = https://github.com/KIT-CMS/tensorflow_derivative.git
