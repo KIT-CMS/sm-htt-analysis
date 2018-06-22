@@ -9,7 +9,7 @@ STXS_CATEGORIES=$3
 CHANNELS=${@:4}
 
 mkdir -p plots
-for FILE in "${ERA}_datacard_shapes_prefit.root" "${ERA}_datacard_shapes_postfit_sb.root"
+for FILE in "${ERA}_datacard_shapes_prefit.root" # "${ERA}_datacard_shapes_postfit_sb.root" # NOTE: Do this only prefit for now.
 do
     for OPTION in "" "--png"
     do
