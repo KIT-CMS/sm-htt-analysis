@@ -37,3 +37,4 @@ STXS_CATEGORIES=0
 # Make prefit and postfit shapes
 ./combine/prefit_postfit_shapes.sh $ERA
 ./plotting/plot_shapes.sh $ERA $STXS_SIGNALS $STXS_CATEGORIES $CHANNELS
+./plotting/plot_signals.sh $ERA $STXS_SIGNALS $STXS_CATEGORIES $CHANNELS
