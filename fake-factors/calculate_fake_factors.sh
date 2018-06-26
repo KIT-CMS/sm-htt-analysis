@@ -13,5 +13,7 @@ python fake-factors/calculate_fake_factors.py --era $ERA \
         --mt-friend-directory $ARTUS_FRIENDS_MT \
         --tt-friend-directory $ARTUS_FRIENDS_TT \
         -o $OUTPUTDIRECTORY \
-        -f CMSSW_7_4_7/src/HTTutilities/Jet2TauFakes/data/SM2016_ML/180504_tight \
-        --num-threads 2
+        --et-fake-factor-directory CMSSW_8_0_4/src/HTTutilities/Jet2TauFakes/data/SM2016_ML/180504_tight/et/fakeFactors_20180412_tight.root \
+        --mt-fake-factor-directory CMSSW_8_0_4/src/HTTutilities/Jet2TauFakes/data/SM2016_ML/180504_tight/mt/fakeFactors_20180406_tight.root \
+        --tt-fake-factor-directory CMSSW_8_0_4/src/HTTutilities/Jet2TauFakes/data/SM2016_ML/180504_tight/tt/fakeFactors_tt_inclusive.root \
+        --num-threads 1
