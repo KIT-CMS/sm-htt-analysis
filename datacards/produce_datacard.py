@@ -76,6 +76,13 @@ def parse_arguments():
         help=
         "Create systematics custom to embedded events instead of ZTT simulation."
     )
+    parser.add_argument(
+        "--fake-factor",
+        action="store_true",
+        default=False,
+        help=
+        "Use fake factor estimation."
+    )
     return parser.parse_args()
 
 
@@ -104,10 +111,11 @@ def main(args):
         logger.critical("Unknown STXS stage {} for signals selected.".format(
             args.stxs_signals))
         raise Exception
-    backgrounds = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ", "QCD"]
+    tau_fakes = ["jetFakes"] if args.fake_factor else ["ZJ", "W", "TTJ", "VVJ", "QCD"]
+    backgrounds = ["ZTT", "ZL", "TTT", "VVT", "EWKZ"] + tau_fakes
     if args.QCD_extrap_fit:
         signals = ["QCD"]
-        backgrounds = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"]
+        backgrounds = ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VVT", "VVJ", "EWKZ"]
 
     if "et" in args.channels:
         if args.gof != None:
@@ -211,47 +219,99 @@ def main(args):
         categories += tt_categories
 
     # Add shapes systematics
+    if args.fake_factor:
+        tau_fakes = [] #leave out data driven processes for systematic processes and treat them separately
+        for channel in ["et", "mt", "tt"]:
+            db.add_shape_systematic("norm_ff_qcd_%s_syst"%channel, 1.0, channel,
+                                "jetFakes")
+            
+            db.add_shape_systematic("norm_ff_qcd_dm0_njet0_%s_stat"%channel, 1.0, channel,
+                                "jetFakes")
+            db.add_shape_systematic("norm_ff_qcd_dm0_njet1_%s_stat"%channel, 1.0, channel,
+                                "jetFakes")
+            db.add_shape_systematic("norm_ff_qcd_dm1_njet0_%s_stat"%channel, 1.0, channel,
+                                "jetFakes")
+            db.add_shape_systematic("norm_ff_qcd_dm1_njet1_%s_stat"%channel, 1.0, channel,
+                                "jetFakes")
+            
+            db.add_shape_systematic("norm_ff_w_dm0_njet0_%s_stat"%channel, 1.0, channel,
+                                "jetFakes")
+            db.add_shape_systematic("norm_ff_w_dm0_njet1_%s_stat"%channel, 1.0, channel,
+                                "jetFakes")
+            db.add_shape_systematic("norm_ff_w_dm1_njet0_%s_stat"%channel, 1.0, channel,
+                                "jetFakes")
+            db.add_shape_systematic("norm_ff_w_dm1_njet1_%s_stat"%channel, 1.0, channel,
+                                "jetFakes")
+            
+        db.add_shape_systematic("norm_ff_tt_dm0_njet0_stat", 1.0, ["et", "mt"],
+                                "jetFakes")
+        db.add_shape_systematic("norm_ff_tt_dm0_njet1_stat", 1.0, ["et", "mt"],
+                                "jetFakes")
+        db.add_shape_systematic("norm_ff_tt_dm1_njet0_stat", 1.0, ["et", "mt"],
+                                "jetFakes")
+        db.add_shape_systematic("norm_ff_tt_dm1_njet1_stat", 1.0, ["et", "mt"],
+                                "jetFakes")
+        
+        db.add_shape_systematic("norm_ff_w_syst"%channel, 1.0, ["et", "mt"],
+                                "jetFakes")
+        db.add_shape_systematic("norm_ff_w_tt_syst"%channel, 1.0, "tt",
+                                "jetFakes")
+        db.add_shape_systematic("norm_ff_tt_syst"%channel, 1.0, ["et", "mt"],
+                                "jetFakes")
+        db.add_shape_systematic("norm_ff_tt_tt_syst"%channel, 1.0, "tt",
+                                "jetFakes")
+        
+        
+        db.add_shape_systematic("norm_ff_w_frac_tt_syst"%channel, 1.0, "tt",
+                                "jetFakes")
+        db.add_shape_systematic("norm_ff_tt_frac_tt_syst"%channel, 1.0, "tt",
+                                "jetFakes")
+        db.add_shape_systematic("norm_ff_dy_frac_tt_syst"%channel, 1.0, "tt",
+                                "jetFakes")
+        
+    else:
+        tau_fakes = ["ZJ", "W", "TTJ", "VVJ"] #leave out data driven processes for systematic processes and treat them separately
     if args.embedding:
         db.add_shape_systematic("CMS_htt_dyShape_13TeV", 1.0, channels,
-                                ["ZL", "ZJ"])
+                                ["ZL"] if args.fake_factor else ["ZL", "ZJ"])
         db.add_shape_systematic(
             "CMS_htt_eff_b_13TeV", 1.0, channels,
-            ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
+            ["ggH", "qqH", "ZL", "TTT", "VVT", "EWKZ"] + tau_fakes)
         db.add_shape_systematic(
             "CMS_htt_mistag_b_13TeV", 1.0, channels,
-            ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
+            ["ggH", "qqH", "ZL", "TTT", "VVT", "EWKZ"] + tau_fakes)
         db.add_shape_systematic(
             "CMS_scale_j_13TeV", 1.0, channels,
-            ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
+            ["ggH", "qqH", "ZL", "TTT", "VVT", "EWKZ"] + tau_fakes)
         db.add_shape_systematic(
             "CMS_scale_met_unclustered_13TeV", 1.0, channels,
-            ["ggH", "qqH", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
+            ["ggH", "qqH", "ZL", "TTT", "VVT", "EWKZ"] + tau_fakes)
     else:
         db.add_shape_systematic("CMS_htt_dyShape_13TeV", 1.0, channels,
                                 ["ZTT", "ZL", "ZJ"])
         db.add_shape_systematic(
             "CMS_htt_eff_b_13TeV", 1.0, channels,
-            ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
+            ["ggH", "qqH", "ZTT", "ZL", "TTT", "VVT", "EWKZ"] + tau_fakes)
         db.add_shape_systematic(
             "CMS_htt_mistag_b_13TeV", 1.0, channels,
-            ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
+            ["ggH", "qqH", "ZTT", "ZL", "TTT", "VVT", "EWKZ"] + tau_fakes)
         db.add_shape_systematic(
             "CMS_scale_j_13TeV", 1.0, channels,
-            ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
+            ["ggH", "qqH", "ZTT", "ZL", "TTT", "VVT", "EWKZ"] + tau_fakes)
         db.add_shape_systematic(
             "CMS_scale_met_unclustered_13TeV", 1.0, channels,
-            ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
+            ["ggH", "qqH", "ZTT", "ZL", "TTT", "VVT", "EWKZ"] + tau_fakes)
 
     db.add_shape_systematic("CMS_scale_t_3prong_13TeV", 1.0, channels,
-                            ["ggH", "qqH", "ZTT", "TTT", "VV", "EWKZ"])
+                            ["ggH", "qqH", "ZTT", "TTT", "VVT", "EWKZ"])
     db.add_shape_systematic("CMS_scale_t_1prong_13TeV", 1.0, channels,
-                            ["ggH", "qqH", "ZTT", "TTT", "VV", "EWKZ"])
+                            ["ggH", "qqH", "ZTT", "TTT", "VVT", "EWKZ"])
     db.add_shape_systematic("CMS_scale_t_1prong1pizero_13TeV", 1.0, channels,
-                            ["ggH", "qqH", "ZTT", "TTT", "VV", "EWKZ"])
+                            ["ggH", "qqH", "ZTT", "TTT", "VVT", "EWKZ"])
     db.add_shape_systematic("CMS_htt_ttbarShape_13TeV", 1.0, channels,
                             ["TTT", "TTJ"])
     db.add_shape_systematic("CMS_htt_jetToTauFake_13TeV", 1.0, channels,
-                            ["ZJ", "W", "TTJ"])
+                            ["ZJ", "W", "TTJ", "VVJ"])
     db.add_shape_systematic("CMS_htt_eFakeTau_1prong_13TeV", 1.0, "et", ["ZL"])
     db.add_shape_systematic("CMS_htt_eFakeTau_1prong1pizero_13TeV", 1.0, "et",
                             ["ZL"])
@@ -262,47 +322,54 @@ def main(args):
     # Add normalization systematics
     db.add_normalization_systematic(
         "lumi_13TeV", 1.026, channels,
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
+        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VVT", "EWKZ"] + tau_fakes)
     db.add_normalization_systematic(
         "CMS_eff_m", 1.02, "mt",
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
+        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VVT", "EWKZ"] + tau_fakes)
     db.add_normalization_systematic(
         "CMS_eff_e", 1.02, "et",
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
+        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VVT", "EWKZ"] + tau_fakes)
     db.add_normalization_systematic(
         "CMS_eff_t_corr", 1.08, "tt",
-        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWKZ"])
+        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VVT", "EWKZ"])
     db.add_normalization_systematic(
         "CMS_eff_t_corr", 1.04, ["et", "mt"],
-        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWKZ"])
+        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VVT", "EWKZ"])
     db.add_normalization_systematic(
         "CMS_eff_t_et", 1.03, "et",
-        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWKZ"])
+        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VVT", "EWKZ"])
     db.add_normalization_systematic(
         "CMS_eff_t_mt", 1.03, "mt",
-        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWKZ"])
+        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VVT", "EWKZ"])
     db.add_normalization_systematic(
         "CMS_eff_t_tt", 1.06, "tt",
-        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VV", "EWKZ"])
+        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VVT", "EWKZ"])
     db.add_normalization_systematic(
         "CMS_eff_trigger_mt", 1.02, "mt",
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
+        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VVT", "EWKZ"] + tau_fakes)
     db.add_normalization_systematic(
         "CMS_eff_trigger_et", 1.02, "et",
-        ["ggH", "qqH", "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VV", "EWKZ"])
-    if not args.QCD_extrap_fit:
+        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VVT", "EWKZ"] + tau_fakes)
+    if not args.QCD_extrap_fit and not args.fake_factor:
         db.add_normalization_systematic("CMS_Extrap_SSOS_mt", 1.03, "mt",
                                         "QCD")
         db.add_normalization_systematic("CMS_Extrap_SSOS_et", 1.05, "et",
                                         "QCD")
         db.add_normalization_systematic("CMS_Extrap_ABCD_tt", 1.03, "tt",
                                         "QCD")
-    db.add_normalization_systematic("CMS_htt_wjXsec", 1.04, channels, "W")
-    db.add_normalization_systematic("CMS_htt_vvXsec", 1.06, channels, "VV")
-    db.add_normalization_systematic("CMS_htt_zjXsec", 1.04, channels,
-                                    ["ZTT", "ZL", "ZJ"])
-    db.add_normalization_systematic("CMS_htt_ttXsec", 1.06, channels,
-                                    ["TTT", "TTJ"])
+    if args.fake_factor:
+        db.add_normalization_systematic("CMS_htt_vvXsec", 1.06, channels, ["VVT"])
+        db.add_normalization_systematic("CMS_htt_zjXsec", 1.04, channels,
+                                        ["ZTT", "ZL"])
+        db.add_normalization_systematic("CMS_htt_ttXsec", 1.06, channels, ["TTT"])
+        #TODO add fake factor norm uncs.
+    else:
+        db.add_normalization_systematic("CMS_htt_wjXsec", 1.04, channels, "W")
+        db.add_normalization_systematic("CMS_htt_vvXsec", 1.06, channels, ["VVT", "VVJ"])
+        db.add_normalization_systematic("CMS_htt_zjXsec", 1.04, channels,
+                                        ["ZTT", "ZL", "ZJ"])
+        db.add_normalization_systematic("CMS_htt_ttXsec", 1.06, channels,
+                                        ["TTT", "TTJ"])
     db.add_normalization_systematic("CMS_htt_mFakeTau", 1.25, "mt", "ZL")
     db.add_normalization_systematic("CMS_htt_eFakeTau", 1.12, "et", "ZL")
     db.add_normalization_systematic("CMS_scale_ggH", 1.039, channels, "ggH")
