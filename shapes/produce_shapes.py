@@ -178,7 +178,7 @@ def main(args):
         "VVT"   : Process("VVT",      VVTEstimationTT (era, directory, mt, friend_directory=mt_friend_directory)),
         "VVJ"   : Process("VVJ",      VVJEstimationTT (era, directory, mt, friend_directory=mt_friend_directory)),
         "EWKZ"  : Process("EWKZ",     EWKZEstimation  (era, directory, mt, friend_directory=mt_friend_directory)),
-        "FAKES" : Process("fakes",    FakeEstimationLT(era, directory, mt, friend_directory=[mt_friend_directory, ff_friend_directory]))
+        "FAKES" : Process("jetFakes",    FakeEstimationLT(era, directory, mt, friend_directory=[mt_friend_directory, ff_friend_directory]))
         }
     if args.embedding:
         mt_processes["ZTT"] = Process("ZTT", ZTTEmbeddedEstimation(era, directory, mt, friend_directory=mt_friend_directory))
@@ -212,7 +212,7 @@ def main(args):
         "VVT"   : Process("VVT",      VVTEstimationTT (era, directory, et, friend_directory=et_friend_directory)),
         "VVJ"   : Process("VVJ",      VVJEstimationTT (era, directory, et, friend_directory=et_friend_directory)),
         "EWKZ"  : Process("EWKZ",     EWKZEstimation  (era, directory, et, friend_directory=et_friend_directory)),
-        "FAKES" : Process("fakes",    FakeEstimationLT(era, directory, et, friend_directory=[et_friend_directory, ff_friend_directory]))
+        "FAKES" : Process("jetFakes",    FakeEstimationLT(era, directory, et, friend_directory=[et_friend_directory, ff_friend_directory]))
         }
     if args.embedding:
         et_processes["ZTT"] = Process("ZTT", ZTTEmbeddedEstimation(era, directory, et, friend_directory=et_friend_directory))
@@ -247,7 +247,7 @@ def main(args):
         "VVT"   : Process("VVT",      VVTEstimationTT (era, directory, tt, friend_directory=tt_friend_directory)),
         "VVJ"   : Process("VVJ",      VVJEstimationTT (era, directory, tt, friend_directory=tt_friend_directory)),
         "EWKZ"  : Process("EWKZ",     EWKZEstimation  (era, directory, tt, friend_directory=tt_friend_directory)),
-        "FAKES" : Process("fakes",    FakeEstimationTT(era, directory, tt, friend_directory=[tt_friend_directory, ff_friend_directory]))
+        "FAKES" : Process("jetFakes",    FakeEstimationTT(era, directory, tt, friend_directory=[tt_friend_directory, ff_friend_directory]))
         }
     if args.embedding:
         tt_processes["ZTT"] = Process("ZTT", ZTTEmbeddedEstimation(era, directory, tt, friend_directory=tt_friend_directory))
@@ -902,6 +902,76 @@ def main(args):
                         era=era,
                         variation=Relabel("CMS_htt_emb_ttbar", "Up"),
                         mass="125"))
+    # Fake factor uncertainties
+    fake_factor_variations_et = []
+    fake_factor_variations_mt = []
+    for systematic_shift in ["ff_qcd{ch}_syst{shift}",
+                             "ff_qcd_dm0_njet0{ch}_stat{shift}",
+                             "ff_qcd_dm0_njet1{ch}_stat{shift}",
+                             "ff_qcd_dm1_njet0{ch}_stat{shift}",
+                             "ff_qcd_dm1_njet1{ch}_stat{shift}",
+                             "ff_w_syst{shift}",
+                             "ff_w_dm0_njet0{ch}_stat{shift}",
+                             "ff_w_dm0_njet1{ch}_stat{shift}",
+                             "ff_w_dm1_njet0{ch}_stat{shift}",
+                             "ff_w_dm1_njet1{ch}_stat{shift}",
+                             "ff_tt_syst{shift}",
+                             "ff_tt_dm0_njet0_stat{shift}",
+                             "ff_tt_dm0_njet1_stat{shift}",
+                             "ff_tt_dm1_njet0_stat{shift}",
+                             "ff_tt_dm1_njet1_stat{shift}"]:
+        for shift_direction in ["Up", "Down"]:
+            fake_factor_variations_et.append(
+                ReplaceWeight(
+                    "norm_%s"%(systematic_shift.format(ch='_et', shift="")), "fake_factor",
+                    Weight(
+                        "ff2_{syst}".format(syst=systematic_shift.format(ch="", shift="_%s"%shift_direction.lower())),
+                        "fake_factor"), shift_direction))
+            fake_factor_variations_mt.append(
+                ReplaceWeight(
+                    "norm_%s"%(systematic_shift.format(ch='_mt', shift="")), "fake_factor",
+                    Weight(
+                        "ff2_{syst}".format(syst=systematic_shift.format(ch="", shift="_%s"%shift_direction.lower())),
+                        "fake_factor"), shift_direction))
+    if "et" in [args.gof_channel] + args.channels:
+        for variation in fake_factor_variations_et:
+            systematics.add_systematic_variation(
+                variation=variation,
+                process=et_processes["FAKES"],
+                channel=et,
+                era=era)
+    if "mt" in [args.gof_channel] + args.channels:
+        for variation in fake_factor_variations_mt:
+            systematics.add_systematic_variation(
+                variation=variation,
+                process=mt_processes["FAKES"],
+                channel=mt,
+                era=era)
+    fake_factor_variations_tt = []
+    for systematic_shift in ["ff_qcd{ch}_syst{shift}",
+                             "ff_qcd_dm0_njet0{ch}_stat{shift}",
+                             "ff_qcd_dm0_njet1{ch}_stat{shift}",
+                             "ff_qcd_dm1_njet0{ch}_stat{shift}",
+                             "ff_qcd_dm1_njet1{ch}_stat{shift}",
+                             "ff_w{ch}_syst{shift}",
+                             "ff_tt{ch}_syst{shift}",
+                             "ff_w_frac{ch}_syst{shift}",
+                             "ff_tt_frac{ch}_syst{shift}",
+                             "ff_dy_frac{ch}_syst{shift}"]:
+        for shift_direction in ["Up", "Down"]:
+            fake_factor_variations_tt.append(
+                ReplaceWeight(
+                    "norm_%s"%(systematic_shift.format(ch='_tt', shift="")), "fake_factor",
+                    Weight(
+                        "(0.5*ff1_{syst}*(byTightIsolationMVArun2v1DBoldDMwLT_1<0.5)+0.5*ff2_{syst}*(byTightIsolationMVArun2v1DBoldDMwLT_2<0.5))".format(syst=systematic_shift.format(ch="", shift="_%s"%shift_direction.lower())),
+                        "fake_factor"), shift_direction))
+    if "tt" in [args.gof_channel] + args.channels:
+        for variation in fake_factor_variations_tt:
+            systematics.add_systematic_variation(
+                variation=variation,
+                process=tt_processes["FAKES"],
+                channel=tt,
+                era=era)
 
     # Produce histograms
     logger.info("Start producing shapes.")
