@@ -17,6 +17,7 @@ cd ../..
 
 # Clone CombineHarvester
 git clone https://github.com/cms-analysis/CombineHarvester CombineHarvester -b SMHTT2017-dev
+mkdir -p CombineHarvester/HTTSM2017/shapes
 
 # Build
 scram b -j 24

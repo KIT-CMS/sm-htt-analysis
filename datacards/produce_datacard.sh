@@ -21,8 +21,7 @@ fi
 USE_COMBINEHARVESTER=1
 if [ -n "$USE_COMBINEHARVESTER" ]; then
     CMSSW_7_4_7/bin/slc6_amd64_gcc491/MorphingSM2017 \
-        --base_path="./" \
-        --input_folder_mt="." \
+        --input_folder_mt="../../../../.." \
         --real_data=false \
         --jetfakes=false \
         --postfix="-ML" \
