@@ -905,33 +905,35 @@ def main(args):
     # Fake factor uncertainties
     fake_factor_variations_et = []
     fake_factor_variations_mt = []
-    for systematic_shift in ["ff_qcd{ch}_syst{shift}",
-                             "ff_qcd_dm0_njet0{ch}_stat{shift}",
-                             "ff_qcd_dm0_njet1{ch}_stat{shift}",
-                             "ff_qcd_dm1_njet0{ch}_stat{shift}",
-                             "ff_qcd_dm1_njet1{ch}_stat{shift}",
-                             "ff_w_syst{shift}",
-                             "ff_w_dm0_njet0{ch}_stat{shift}",
-                             "ff_w_dm0_njet1{ch}_stat{shift}",
-                             "ff_w_dm1_njet0{ch}_stat{shift}",
-                             "ff_w_dm1_njet1{ch}_stat{shift}",
-                             "ff_tt_syst{shift}",
-                             "ff_tt_dm0_njet0_stat{shift}",
-                             "ff_tt_dm0_njet1_stat{shift}",
-                             "ff_tt_dm1_njet0_stat{shift}",
-                             "ff_tt_dm1_njet1_stat{shift}"]:
+    for systematic_shift in [
+            "ff_qcd{ch}_syst{shift}", "ff_qcd_dm0_njet0{ch}_stat{shift}",
+            "ff_qcd_dm0_njet1{ch}_stat{shift}",
+            "ff_qcd_dm1_njet0{ch}_stat{shift}",
+            "ff_qcd_dm1_njet1{ch}_stat{shift}", "ff_w_syst{shift}",
+            "ff_w_dm0_njet0{ch}_stat{shift}", "ff_w_dm0_njet1{ch}_stat{shift}",
+            "ff_w_dm1_njet0{ch}_stat{shift}", "ff_w_dm1_njet1{ch}_stat{shift}",
+            "ff_tt_syst{shift}", "ff_tt_dm0_njet0_stat{shift}",
+            "ff_tt_dm0_njet1_stat{shift}", "ff_tt_dm1_njet0_stat{shift}",
+            "ff_tt_dm1_njet1_stat{shift}"
+    ]:
         for shift_direction in ["Up", "Down"]:
             fake_factor_variations_et.append(
                 ReplaceWeight(
-                    "norm_%s"%(systematic_shift.format(ch='_et', shift="")), "fake_factor",
+                    "norm_%s" % (systematic_shift.format(ch='_et', shift="")),
+                    "fake_factor",
                     Weight(
-                        "ff2_{syst}".format(syst=systematic_shift.format(ch="", shift="_%s"%shift_direction.lower())),
+                        "ff2_{syst}".format(
+                            syst=systematic_shift.format(
+                                ch="", shift="_%s" % shift_direction.lower())),
                         "fake_factor"), shift_direction))
             fake_factor_variations_mt.append(
                 ReplaceWeight(
-                    "norm_%s"%(systematic_shift.format(ch='_mt', shift="")), "fake_factor",
+                    "norm_%s" % (systematic_shift.format(ch='_mt', shift="")),
+                    "fake_factor",
                     Weight(
-                        "ff2_{syst}".format(syst=systematic_shift.format(ch="", shift="_%s"%shift_direction.lower())),
+                        "ff2_{syst}".format(
+                            syst=systematic_shift.format(
+                                ch="", shift="_%s" % shift_direction.lower())),
                         "fake_factor"), shift_direction))
     if "et" in [args.gof_channel] + args.channels:
         for variation in fake_factor_variations_et:
@@ -948,22 +950,24 @@ def main(args):
                 channel=mt,
                 era=era)
     fake_factor_variations_tt = []
-    for systematic_shift in ["ff_qcd{ch}_syst{shift}",
-                             "ff_qcd_dm0_njet0{ch}_stat{shift}",
-                             "ff_qcd_dm0_njet1{ch}_stat{shift}",
-                             "ff_qcd_dm1_njet0{ch}_stat{shift}",
-                             "ff_qcd_dm1_njet1{ch}_stat{shift}",
-                             "ff_w{ch}_syst{shift}",
-                             "ff_tt{ch}_syst{shift}",
-                             "ff_w_frac{ch}_syst{shift}",
-                             "ff_tt_frac{ch}_syst{shift}",
-                             "ff_dy_frac{ch}_syst{shift}"]:
+    for systematic_shift in [
+            "ff_qcd{ch}_syst{shift}", "ff_qcd_dm0_njet0{ch}_stat{shift}",
+            "ff_qcd_dm0_njet1{ch}_stat{shift}",
+            "ff_qcd_dm1_njet0{ch}_stat{shift}",
+            "ff_qcd_dm1_njet1{ch}_stat{shift}", "ff_w{ch}_syst{shift}",
+            "ff_tt{ch}_syst{shift}", "ff_w_frac{ch}_syst{shift}",
+            "ff_tt_frac{ch}_syst{shift}", "ff_dy_frac{ch}_syst{shift}"
+    ]:
         for shift_direction in ["Up", "Down"]:
             fake_factor_variations_tt.append(
                 ReplaceWeight(
-                    "norm_%s"%(systematic_shift.format(ch='_tt', shift="")), "fake_factor",
+                    "norm_%s" % (systematic_shift.format(ch='_tt', shift="")),
+                    "fake_factor",
                     Weight(
-                        "(0.5*ff1_{syst}*(byTightIsolationMVArun2v1DBoldDMwLT_1<0.5)+0.5*ff2_{syst}*(byTightIsolationMVArun2v1DBoldDMwLT_2<0.5))".format(syst=systematic_shift.format(ch="", shift="_%s"%shift_direction.lower())),
+                        "(0.5*ff1_{syst}*(byTightIsolationMVArun2v1DBoldDMwLT_1<0.5)+0.5*ff2_{syst}*(byTightIsolationMVArun2v1DBoldDMwLT_2<0.5))".
+                        format(
+                            syst=systematic_shift.format(
+                                ch="", shift="_%s" % shift_direction.lower())),
                         "fake_factor"), shift_direction))
     if "tt" in [args.gof_channel] + args.channels:
         for variation in fake_factor_variations_tt:
