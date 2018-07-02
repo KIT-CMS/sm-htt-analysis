@@ -39,7 +39,8 @@ def setup_logging(output_file, level=logging.DEBUG):
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
-        description="Produce single bin histograms to determine fake factor fractions")
+        description=
+        "Produce single bin histograms to determine fake factor fractions")
 
     parser.add_argument(
         "--directory",
@@ -90,7 +91,8 @@ def main(args):
     # Container for all distributions to be drawn
     logger.info("Set up shape variations.")
     systematics = Systematics(
-        "fake-factors/{}_ff_yields.root".format(args.tag), num_threads=args.num_threads)
+        "fake-factors/{}_ff_yields.root".format(args.tag),
+        num_threads=args.num_threads)
 
     # Era selection
     if "2016" in args.era:
@@ -107,7 +109,7 @@ def main(args):
     et_friend_directory = args.et_friend_directory
     mt_friend_directory = args.mt_friend_directory
     tt_friend_directory = args.tt_friend_directory
-    
+
     mt = MTSM()
     mt.cuts.remove("tau_iso")
     mt.cuts.add(Cut("(byTightIsolationMVArun2v1DBoldDMwLT_2<0.5&&byLooseIsolationMVArun2v1DBoldDMwLT_2>0.5)", "tau_anti_iso"))
@@ -123,7 +125,7 @@ def main(args):
         "VVJ"   : Process("VVJ",      VVJEstimationLT (era, directory, mt, friend_directory=mt_friend_directory))
         #"EWKZ"  : Process("EWKZ",     EWKZEstimation  (era, directory, mt, friend_directory=mt_friend_directory))
         }
-    
+
     et = ETSM()
     et.cuts.remove("tau_iso")
     et.cuts.add(Cut("(byTightIsolationMVArun2v1DBoldDMwLT_2<0.5&&byLooseIsolationMVArun2v1DBoldDMwLT_2>0.5)", "tau_anti_iso"))
@@ -139,7 +141,7 @@ def main(args):
         "VVJ"   : Process("VVJ",      VVJEstimationLT (era, directory, et, friend_directory=et_friend_directory))
         #"EWKZ"  : Process("EWKZ",     EWKZEstimation  (era, directory, et, friend_directory=et_friend_directory))
         }
-    
+
     #in tt two 'channels' are needed: antiisolated region for each tau respectively
     tt1 = TTSM()
     tt1.cuts.remove("tau_1_iso")
@@ -214,7 +216,7 @@ def main(args):
                 Cuts(
                     Cut("tt_max_index=={index}".format(index=i), "exclusive_score")),
                 variable=count_var))
-    
+
     # Nominal histograms
     # yapf: enable
     for process, category in product(et_processes.values(), et_categories):
@@ -236,7 +238,7 @@ def main(args):
                 era=era,
                 variation=Nominal(),
                 mass="125"))
-                
+
     for process, category in product(tt1_processes.values(), tt1_categories):
         systematics.add(
             Systematic(
@@ -246,7 +248,7 @@ def main(args):
                 era=era,
                 variation=Nominal(),
                 mass="125"))
-    
+
     for process, category in product(tt2_processes.values(), tt2_categories):
         systematics.add(
             Systematic(
