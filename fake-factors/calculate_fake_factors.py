@@ -4,6 +4,7 @@
 import os
 import ROOT
 import numpy
+import copy
 from array import array
 from multiprocessing import Pool
 
@@ -116,27 +117,32 @@ def determine_fractions(era, categories):
     for channel in categories.keys():
         subdict = {}
         for category in categories[channel]:
-            subsubdict = {"QCD": 0.0}
+            subsubdict = {}
+            for fraction in composition[channel].keys():
+                subsubdict[fraction] = copy.deepcopy(
+                    hist_file.Get(
+                        "#{ch}#{ch}_{cat}#data_obs#smhtt#Run{era}#m_vis#125#".
+                        format(
+                            ch=channel, cat=category, era=era)))
+                subsubdict[fraction].Reset()
             for fraction in composition[channel].keys():
                 if fraction == "QCD":
                     continue
-                subsubdict[fraction] = sum(
-                    ROOT.TH1F(
+                for process in composition[channel][fraction]:
+                    subsubdict[fraction].Add(
                         hist_file.Get(
-                            "#{ch}#{ch}_{cat}#{proc}#smhtt#Run{era}#1.0#125#".
+                            "#{ch}#{ch}_{cat}#{proc}#smhtt#Run{era}#m_vis#125#".
                             format(
                                 ch=channel,
                                 cat=category,
                                 proc=process,
-                                era=era))).Integral()
-                    for process in composition[channel][fraction])
+                                era=era)))
                 if fraction == "data":
-                    subsubdict["QCD"] += subsubdict[fraction]
+                    subsubdict["QCD"].Add(subsubdict[fraction], 1.0)
                 else:
-                    subsubdict["QCD"] -= subsubdict[fraction]
-            total_yield = subsubdict["data"]
+                    subsubdict["QCD"].Add(subsubdict[fraction], -1.0)
             for fraction in composition[channel].keys():
-                subsubdict[fraction] /= total_yield
+                subsubdict[fraction].Divide(subsubdict["data"])
             subdict[category] = subsubdict
         fractions[channel] = subdict
     hist_file.Close()
@@ -233,22 +239,25 @@ def apply_fake_factors(config):
                 getattr(event, "%s_max_index" % channel) +
                 (0.5 * len(categories[channel])
                  if channel == "tt" and x == 2 else 0.0))]]
+            bin_index = cat_fractions["data"].GetXaxis().FindBin(event.m_vis)
             if channel == "tt":
                 inputs = [
                     getattr(event, "pt_%i" % x),
                     getattr(event, "pt_%i" % (3 - x)),
                     getattr(event, "decayMode_%i" % x), event.njets,
-                    event.m_vis
+                    event.m_vis, cat_fractions["QCD"].GetBinContent(bin_index),
+                    cat_fractions["W"].GetBinContent(bin_index),
+                    cat_fractions["TT"].GetBinContent(bin_index),
+                    cat_fractions["DY"].GetBinContent(bin_index)
                 ]
-                inputs.extend((cat_fractions["QCD"], cat_fractions["W"],
-                               cat_fractions["TT"], cat_fractions["DY"]))
             else:
                 inputs = [
                     event.pt_2, event.decayMode_2, event.njets, event.m_vis,
-                    event.mt_1, event.iso_1
+                    event.mt_1, event.iso_1,
+                    cat_fractions["QCD"].GetBinContent(bin_index),
+                    cat_fractions["W"].GetBinContent(bin_index),
+                    cat_fractions["TT"].GetBinContent(bin_index)
                 ]
-                inputs.extend((cat_fractions["QCD"], cat_fractions["W"],
-                               cat_fractions["TT"]))
             output_buffer["nom_%i" % x][0] = ff.value(
                 len(inputs), array('d', inputs))
             for syst in unc_shifts[channel]:
