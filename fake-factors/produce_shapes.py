@@ -175,8 +175,8 @@ def main(args):
         }
 
     # Variables and categories
-    binning = ConstantBinning(1, 0.0, 2.0)
-    count_var = Variable("1.0", binning)
+    binning = ConstantBinning(10, 0.0, 200.0)
+    count_var = Variable("m_vis", binning)
 
     et_categories = []
     # Analysis shapes
