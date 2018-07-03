@@ -255,20 +255,20 @@ def main(args):
         db.add_shape_systematic("norm_ff_tt_dm1_njet1_stat", 1.0, ["et", "mt"],
                                 "jetFakes")
 
-        db.add_shape_systematic("norm_ff_w_syst" % channel, 1.0, ["et", "mt"],
+        db.add_shape_systematic("norm_ff_w_syst", 1.0, ["et", "mt"],
                                 "jetFakes")
-        db.add_shape_systematic("norm_ff_w_tt_syst" % channel, 1.0, "tt",
+        db.add_shape_systematic("norm_ff_w_tt_syst", 1.0, "tt",
                                 "jetFakes")
-        db.add_shape_systematic("norm_ff_tt_syst" % channel, 1.0, ["et", "mt"],
+        db.add_shape_systematic("norm_ff_tt_syst", 1.0, ["et", "mt"],
                                 "jetFakes")
-        db.add_shape_systematic("norm_ff_tt_tt_syst" % channel, 1.0, "tt",
+        db.add_shape_systematic("norm_ff_tt_tt_syst", 1.0, "tt",
                                 "jetFakes")
 
-        db.add_shape_systematic("norm_ff_w_frac_tt_syst" % channel, 1.0, "tt",
+        db.add_shape_systematic("norm_ff_w_frac_tt_syst", 1.0, "tt",
                                 "jetFakes")
-        db.add_shape_systematic("norm_ff_tt_frac_tt_syst" % channel, 1.0, "tt",
+        db.add_shape_systematic("norm_ff_tt_frac_tt_syst", 1.0, "tt",
                                 "jetFakes")
-        db.add_shape_systematic("norm_ff_dy_frac_tt_syst" % channel, 1.0, "tt",
+        db.add_shape_systematic("norm_ff_dy_frac_tt_syst", 1.0, "tt",
                                 "jetFakes")
 
     else:
