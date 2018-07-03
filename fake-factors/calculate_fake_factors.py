@@ -141,8 +141,20 @@ def determine_fractions(era, categories):
                     subsubdict["QCD"].Add(subsubdict[fraction], 1.0)
                 else:
                     subsubdict["QCD"].Add(subsubdict[fraction], -1.0)
+            #normalize to data to get fractions
+            denominator_hist = copy.deepcopy(subsubdict["data"])
             for fraction in composition[channel].keys():
-                subsubdict[fraction].Divide(subsubdict["data"])
+                subsubdict[fraction].Divide(denominator_hist)
+            #sanity check: if QCD negative i.e. data < MC, normalize to MC
+            for i in range(subsubdict["QCD"].GetNbinsX()+2):
+                qcd_fraction = subsubdict["QCD"].GetBinContent(i)
+                if qcd_fraction < 0.0:
+                    logger.info("Found bin with negative QCD fraction (%s, %s, index %i). Set fraction to zero and rescale other fractions..."%(channel, category, i))
+                    subsubdict["QCD"].SetBinContent(i, 0)
+                    for fraction in composition[channel].keys():
+                        if not fraction == "data":
+                            subsubdict[fraction].SetBinContent(i, subsubdict[fraction].GetBinContent(i) / (1.0 - qcd_fraction))
+                            logger.debug("Rescaled %s fraction to %f"%(fraction, subsubdict[fraction].GetBinContent(i)))
             subdict[category] = subsubdict
         fractions[channel] = subdict
     hist_file.Close()
