@@ -25,6 +25,9 @@ if [ -n "$USE_COMBINEHARVESTER" ]; then
         --real_data=false \
         --jetfakes=false \
         --postfix="-ML" \
+        --channel="mt" \
         --auto_rebin=true \
-        --output_folder="output"
+        --output="smhtt"
+
+    combineTool.py -M T2W -o workspace.root -i output/smhtt/cmb/125/*.txt --parallel 8
 fi
