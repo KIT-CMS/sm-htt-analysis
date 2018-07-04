@@ -316,12 +316,16 @@ def main(args):
                             ["TTT", "TTJ"])
     db.add_shape_systematic("CMS_htt_jetToTauFake_13TeV", 1.0, channels,
                             ["ZJ", "W", "TTJ", "VVJ"])
-    db.add_shape_systematic("CMS_htt_eFakeTau_1prong_13TeV", 1.0, "et", ["ZL"])
-    db.add_shape_systematic("CMS_htt_eFakeTau_1prong1pizero_13TeV", 1.0, "et",
+    db.add_shape_systematic("CMS_eFakeTau_1prong_13TeV", 1.0, "et", ["ZL"])
+    db.add_shape_systematic("CMS_eFakeTau_1prong1pizero_13TeV", 1.0, "et",
                             ["ZL"])
+    db.add_shape_systematic("CMS_ZLShape_et_1prong_13TeV", 1.0, "et", ["ZL"])
+    db.add_shape_systematic("CMS_ZLShape_et_1prong1pizero_13TeV", 1.0, "et", ["ZL"])
     db.add_shape_systematic("CMS_mFakeTau_1prong_13TeV", 1.0, "mt", ["ZL"])
     db.add_shape_systematic("CMS_mFakeTau_1prong1pizero_13TeV", 1.0, "mt",
                             ["ZL"])
+    db.add_shape_systematic("CMS_ZLShape_mt_1prong_13TeV", 1.0, "mt", ["ZL"])
+    db.add_shape_systematic("CMS_ZLShape_mt_1prong1pizero_13TeV", 1.0, "mt", ["ZL"])
 
     # Add normalization systematics
     db.add_normalization_systematic(

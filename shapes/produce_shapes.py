@@ -680,29 +680,58 @@ def main(args):
                     channel=tt,
                     era=era)
 
+    # ZL fakes energy scale
+    ele_fake_es_1prong_variations = create_systematic_variations(
+        "CMS_ZLShape_et_1prong_13TeV", "tauEleFakeEsOneProng", DifferentPipeline)
+    ele_fake_es_1prong1pizero_variations = create_systematic_variations(
+        "CMS_ZLShape_et_1prong1pizero_13TeV", "tauEleFakeEsOneProngPiZeros", DifferentPipeline)
+
+    if "et" in [args.gof_channel] + args.channels:
+        for process_nick in ["ZL"]:
+            for variation in ele_fake_es_1prong_variations + ele_fake_es_1prong1pizero_variations:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+
+    mu_fake_es_1prong_variations = create_systematic_variations(
+        "CMS_ZLShape_mt_1prong_13TeV", "tauMuFakeEsOneProng", DifferentPipeline)
+    mu_fake_es_1prong1pizero_variations = create_systematic_variations(
+        "CMS_ZLShape_mt_1prong1pizero_13TeV", "tauMuFakeEsOneProngPiZeros", DifferentPipeline)
+
+    if "mt" in [args.gof_channel] + args.channels:
+        for process_nick in ["ZL"]:
+            for variation in mu_fake_es_1prong_variations + mu_fake_es_1prong1pizero_variations:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+
     # Zll reweighting
     zll_et_weight_variations = []
     zll_et_weight_variations.append(
         ReplaceWeight(
-            "CMS_htt_eFakeTau_1prong_13TeV", "decay_mode_reweight",
+            "CMS_eFakeTau_1prong_13TeV", "decay_mode_reweight",
             Weight(
                 "(((decayMode_2 == 0)*0.98*1.12) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.2) + ((decayMode_2 == 10)*1.0))",
                 "decay_mode_reweight"), "Up"))
     zll_et_weight_variations.append(
         ReplaceWeight(
-            "CMS_htt_eFakeTau_1prong_13TeV", "decay_mode_reweight",
+            "CMS_eFakeTau_1prong_13TeV", "decay_mode_reweight",
             Weight(
                 "(((decayMode_2 == 0)*0.98*0.88) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.2) + ((decayMode_2 == 10)*1.0))",
                 "decay_mode_reweight"), "Down"))
     zll_et_weight_variations.append(
         ReplaceWeight(
-            "CMS_htt_eFakeTau_1prong1pizero_13TeV", "decay_mode_reweight",
+            "CMS_eFakeTau_1prong1pizero_13TeV", "decay_mode_reweight",
             Weight(
                 "(((decayMode_2 == 0)*0.98) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.2*1.12) + ((decayMode_2 == 10)*1.0))",
                 "decay_mode_reweight"), "Up"))
     zll_et_weight_variations.append(
         ReplaceWeight(
-            "CMS_htt_eFakeTau_1prong1pizero_13TeV", "decay_mode_reweight",
+            "CMS_eFakeTau_1prong1pizero_13TeV", "decay_mode_reweight",
             Weight(
                 "(((decayMode_2 == 0)*0.98) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.2*0.88) + ((decayMode_2 == 10)*1.0))",
                 "decay_mode_reweight"), "Down"))
