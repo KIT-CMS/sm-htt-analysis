@@ -316,12 +316,16 @@ def main(args):
                             ["TTT", "TTJ"])
     db.add_shape_systematic("CMS_htt_jetToTauFake_13TeV", 1.0, channels,
                             ["ZJ", "W", "TTJ", "VVJ"])
-    db.add_shape_systematic("CMS_htt_eFakeTau_1prong_13TeV", 1.0, "et", ["ZL"])
-    db.add_shape_systematic("CMS_htt_eFakeTau_1prong1pizero_13TeV", 1.0, "et",
+    db.add_shape_systematic("CMS_eFakeTau_1prong_13TeV", 1.0, "et", ["ZL"])
+    db.add_shape_systematic("CMS_eFakeTau_1prong1pizero_13TeV", 1.0, "et",
                             ["ZL"])
-    db.add_shape_systematic("CMS_htt_mFakeTau_1prong_13TeV", 1.0, "mt", ["ZL"])
-    db.add_shape_systematic("CMS_htt_mFakeTau_1prong1pizero_13TeV", 1.0, "mt",
+    db.add_shape_systematic("CMS_ZLShape_et_1prong_13TeV", 1.0, "et", ["ZL"])
+    db.add_shape_systematic("CMS_ZLShape_et_1prong1pizero_13TeV", 1.0, "et", ["ZL"])
+    db.add_shape_systematic("CMS_mFakeTau_1prong_13TeV", 1.0, "mt", ["ZL"])
+    db.add_shape_systematic("CMS_mFakeTau_1prong1pizero_13TeV", 1.0, "mt",
                             ["ZL"])
+    db.add_shape_systematic("CMS_ZLShape_mt_1prong_13TeV", 1.0, "mt", ["ZL"])
+    db.add_shape_systematic("CMS_ZLShape_mt_1prong1pizero_13TeV", 1.0, "mt", ["ZL"])
 
     # Add normalization systematics
     db.add_normalization_systematic(
@@ -377,8 +381,8 @@ def main(args):
                                         ["ZTT", "ZL", "ZJ"])
         db.add_normalization_systematic("CMS_htt_ttXsec", 1.06, channels,
                                         ["TTT", "TTJ"])
-    db.add_normalization_systematic("CMS_htt_mFakeTau", 1.25, "mt", "ZL")
-    db.add_normalization_systematic("CMS_htt_eFakeTau", 1.12, "et", "ZL")
+    db.add_normalization_systematic("CMS_mFakeTau", 1.25, "mt", "ZL")
+    db.add_normalization_systematic("CMS_eFakeTau", 1.12, "et", "ZL")
     db.add_normalization_systematic("CMS_scale_ggH", 1.039, channels, "ggH")
     db.add_normalization_systematic("pdf_Higgs_ggH", 1.032, channels, "ggH")
     db.add_normalization_systematic("CMS_scale_qqH", 1.004, channels, "qqH")
