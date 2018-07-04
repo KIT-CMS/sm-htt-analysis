@@ -717,25 +717,25 @@ def main(args):
     zll_mt_weight_variations = []
     zll_mt_weight_variations.append(
         ReplaceWeight(
-            "CMS_htt_mFakeTau_1prong_13TeV", "decay_mode_reweight",
+            "CMS_mFakeTau_1prong_13TeV", "decay_mode_reweight",
             Weight(
                 "(((decayMode_2 == 0)*0.75*1.25) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.0) + ((decayMode_2 == 10)*1.0))",
                 "decay_mode_reweight"), "Up"))
     zll_mt_weight_variations.append(
         ReplaceWeight(
-            "CMS_htt_mFakeTau_1prong_13TeV", "decay_mode_reweight",
+            "CMS_mFakeTau_1prong_13TeV", "decay_mode_reweight",
             Weight(
                 "(((decayMode_2 == 0)*0.75*0.75) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.0) + ((decayMode_2 == 10)*1.0))",
                 "decay_mode_reweight"), "Down"))
     zll_mt_weight_variations.append(
         ReplaceWeight(
-            "CMS_htt_mFakeTau_1prong1pizero_13TeV", "decay_mode_reweight",
+            "CMS_mFakeTau_1prong1pizero_13TeV", "decay_mode_reweight",
             Weight(
                 "(((decayMode_2 == 0)*0.75) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.25) + ((decayMode_2 == 10)*1.0))",
                 "decay_mode_reweight"), "Up"))
     zll_mt_weight_variations.append(
         ReplaceWeight(
-            "CMS_htt_mFakeTau_1prong1pizero_13TeV", "decay_mode_reweight",
+            "CMS_mFakeTau_1prong1pizero_13TeV", "decay_mode_reweight",
             Weight(
                 "(((decayMode_2 == 0)*0.75) + ((decayMode_2 == 1 || decayMode_2 == 2)*0.75) + ((decayMode_2 == 10)*1.0))",
                 "decay_mode_reweight"), "Down"))
