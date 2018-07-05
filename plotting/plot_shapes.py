@@ -50,6 +50,10 @@ def parse_arguments():
         "--normalize-by-bin-width",
         action="store_true",
         help="Normelize plots by bin width")
+    parser.add_argument(
+        "--fake-factor",
+        action="store_true",
+        help="Fake factor estimation method used")
 
     return parser.parse_args()
 
@@ -126,7 +130,7 @@ def main(args):
             split_value = 101
 
     split_dict = {c: split_value for c in ["et", "mt", "tt"]}
-    bkg_processes = ["EWKZ", "QCD", "VV", "W", "TTT", "TTJ", "ZJ", "ZL", "ZTT"]
+    bkg_processes = ["EWKZ", "VVT", "TTT", "jetFakes", "ZL", "ZTT"] if args.fake_factor else ["EWKZ", "QCD", "VVT", "VVJ", "W", "TTT", "TTJ", "ZJ", "ZL", "ZTT"]
     legend_bkg_processes = copy.deepcopy(bkg_processes)
     legend_bkg_processes.reverse()
 
