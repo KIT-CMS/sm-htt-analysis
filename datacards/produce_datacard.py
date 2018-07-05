@@ -257,12 +257,10 @@ def main(args):
 
         db.add_shape_systematic("norm_ff_w_syst", 1.0, ["et", "mt"],
                                 "jetFakes")
-        db.add_shape_systematic("norm_ff_w_tt_syst", 1.0, "tt",
-                                "jetFakes")
+        db.add_shape_systematic("norm_ff_w_tt_syst", 1.0, "tt", "jetFakes")
         db.add_shape_systematic("norm_ff_tt_syst", 1.0, ["et", "mt"],
                                 "jetFakes")
-        db.add_shape_systematic("norm_ff_tt_tt_syst", 1.0, "tt",
-                                "jetFakes")
+        db.add_shape_systematic("norm_ff_tt_tt_syst", 1.0, "tt", "jetFakes")
 
         db.add_shape_systematic("norm_ff_w_frac_tt_syst", 1.0, "tt",
                                 "jetFakes")
@@ -324,9 +322,14 @@ def main(args):
                             ["ZL"])
 
     # Add normalization systematics
-    db.add_normalization_systematic(
-        "lumi_13TeV", 1.026, channels,
-        ["ggH", "qqH", "ZTT", "ZL", "TTT", "VVT", "EWKZ"] + tau_fakes)
+    if not args.embedding:
+        db.add_normalization_systematic(
+            "lumi_13TeV", 1.026, channels,
+            ["ggH", "qqH", "ZTT", "ZL", "TTT", "VVT", "EWKZ"] + tau_fakes)
+    else:
+        db.add_normalization_systematic(
+            "lumi_13TeV", 1.026, channels,
+            ["ggH", "qqH", "ZL", "TTT", "VVT", "EWKZ"] + tau_fakes)
     db.add_normalization_systematic(
         "CMS_eff_m", 1.02, "mt",
         ["ggH", "qqH", "ZTT", "ZL", "TTT", "VVT", "EWKZ"] + tau_fakes)
@@ -364,8 +367,12 @@ def main(args):
     if args.fake_factor:
         db.add_normalization_systematic("CMS_htt_vvXsec", 1.06, channels,
                                         ["VVT"])
-        db.add_normalization_systematic("CMS_htt_zjXsec", 1.04, channels,
-                                        ["ZTT", "ZL"])
+        if not args.embedding:
+            db.add_normalization_systematic("CMS_htt_zjXsec", 1.04, channels,
+                                            ["ZTT", "ZL"])
+        else:
+            db.add_normalization_systematic("CMS_htt_zjXsec", 1.04, channels,
+                                            ["ZL"])
         db.add_normalization_systematic("CMS_htt_ttXsec", 1.06, channels,
                                         ["TTT"])
         #TODO add fake factor norm uncs.
@@ -373,8 +380,12 @@ def main(args):
         db.add_normalization_systematic("CMS_htt_wjXsec", 1.04, channels, "W")
         db.add_normalization_systematic("CMS_htt_vvXsec", 1.06, channels,
                                         ["VVT", "VVJ"])
-        db.add_normalization_systematic("CMS_htt_zjXsec", 1.04, channels,
-                                        ["ZTT", "ZL", "ZJ"])
+        if not args.embedding:
+            db.add_normalization_systematic("CMS_htt_zjXsec", 1.04, channels,
+                                            ["ZTT", "ZL", "ZJ"])
+        else:
+            db.add_normalization_systematic("CMS_htt_zjXsec", 1.04, channels,
+                                            ["ZL", "ZJ"])
         db.add_normalization_systematic("CMS_htt_ttXsec", 1.06, channels,
                                         ["TTT", "TTJ"])
     db.add_normalization_systematic("CMS_htt_mFakeTau", 1.25, "mt", "ZL")
@@ -387,7 +398,10 @@ def main(args):
     if args.embedding:
         # embedded event systematics
         db.add_shape_systematic("CMS_htt_emb_ttbar", 1.0, channels, ["ZTT"])
-        db.add_shape_systematic("CMS_scale_muonES", 1.0, "mt", ["ZTT"])
+        db.add_normalization_systematic("CMS_eff_dimutrg", 1.04, channels,
+                                        ["ZTT"])
+        db.add_shape_systematic("CMS_3ProngEff", 1.0, channels, ["ZTT"])
+        db.add_shape_systematic("CMS_1ProngPi0Eff", 1.0, channels, ["ZTT"])
     # Extract shapes
     for channel in args.channels:
         if args.gof != None:
