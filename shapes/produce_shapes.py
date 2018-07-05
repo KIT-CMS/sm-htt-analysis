@@ -175,8 +175,8 @@ def main(args):
         "W"     : Process("W",        WEstimation     (era, directory, mt, friend_directory=mt_friend_directory)),
         "TTT"   : Process("TTT",      TTTEstimationMT (era, directory, mt, friend_directory=mt_friend_directory)),
         "TTJ"   : Process("TTJ",      TTJEstimationMT (era, directory, mt, friend_directory=mt_friend_directory)),
-        "VVT"   : Process("VVT",      VVTEstimationTT (era, directory, mt, friend_directory=mt_friend_directory)),
-        "VVJ"   : Process("VVJ",      VVJEstimationTT (era, directory, mt, friend_directory=mt_friend_directory)),
+        "VVT"   : Process("VVT",      VVTEstimationLT (era, directory, mt, friend_directory=mt_friend_directory)),
+        "VVJ"   : Process("VVJ",      VVJEstimationLT (era, directory, mt, friend_directory=mt_friend_directory)),
         "EWKZ"  : Process("EWKZ",     EWKZEstimation  (era, directory, mt, friend_directory=mt_friend_directory)),
         "FAKES" : Process("jetFakes",    FakeEstimationLT(era, directory, mt, friend_directory=[mt_friend_directory, ff_friend_directory]))
         }
@@ -209,8 +209,8 @@ def main(args):
         "W"     : Process("W",        WEstimation     (era, directory, et, friend_directory=et_friend_directory)),
         "TTT"   : Process("TTT",      TTTEstimationET (era, directory, et, friend_directory=et_friend_directory)),
         "TTJ"   : Process("TTJ",      TTJEstimationET (era, directory, et, friend_directory=et_friend_directory)),
-        "VVT"   : Process("VVT",      VVTEstimationTT (era, directory, et, friend_directory=et_friend_directory)),
-        "VVJ"   : Process("VVJ",      VVJEstimationTT (era, directory, et, friend_directory=et_friend_directory)),
+        "VVT"   : Process("VVT",      VVTEstimationLT (era, directory, et, friend_directory=et_friend_directory)),
+        "VVJ"   : Process("VVJ",      VVJEstimationLT (era, directory, et, friend_directory=et_friend_directory)),
         "EWKZ"  : Process("EWKZ",     EWKZEstimation  (era, directory, et, friend_directory=et_friend_directory)),
         "FAKES" : Process("jetFakes",    FakeEstimationLT(era, directory, et, friend_directory=[et_friend_directory, ff_friend_directory]))
         }
