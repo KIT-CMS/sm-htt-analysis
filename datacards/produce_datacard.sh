@@ -33,5 +33,7 @@ if [ -n "$USE_COMBINEHARVESTER" ]; then
         --auto_rebin=true \
         --output="${ERA}_smhtt"
 
-    combineTool.py -M T2W -o ${ERA}_workspace.root -i output/${ERA}_smhtt/cmb/125/*.txt --parallel 8
+    DATACARD_PATH=output/${ERA}_smhtt/cmb/125
+    combineTool.py -M T2W -o workspace.root -i ${DATACARD_PATH} --parallel 8
+    cp $DATACARD_PATH/workspace.root ${ERA}_workspace.root
 fi
