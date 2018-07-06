@@ -3,11 +3,11 @@
 ERA=$1
 
 # Samples Run2016
-ARTUS_OUTPUTS_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-06-24/merged
-ARTUS_FRIENDS_ET_2016=/storage/c/wunsch/Artus_2018-06-24/et_keras_3
-ARTUS_FRIENDS_MT_2016=/storage/c/wunsch/Artus_2018-06-24/mt_keras_3
-ARTUS_FRIENDS_TT_2016=/storage/c/wunsch/Artus_2018-06-24/tt_keras_3
-ARTUS_FRIENDS_FAKE_FACTOR=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-06-24/fake_factor_friends
+ARTUS_OUTPUTS_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-06-24REMERGEall/merged
+ARTUS_FRIENDS_ET_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-06-24REMERGEall/et_keras_1
+ARTUS_FRIENDS_MT_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-06-24REMERGEall/mt_keras_1
+ARTUS_FRIENDS_TT_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-06-24REMERGEall/tt_keras_1
+ARTUS_FRIENDS_FAKE_FACTOR=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-06-24REMERGEall/fake_factor_friends
 
 # Error-handling
 if [[ $ERA == *"2016"* ]]
