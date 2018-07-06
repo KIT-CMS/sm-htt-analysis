@@ -5,4 +5,4 @@ ERA=$1
 source utils/setup_cmssw.sh
 
 # Prefit shapes
-PostFitShapes -m 125 -d ${ERA}_datacard.txt -o ${ERA}_datacard_shapes_prefit.root
+PostFitShapesFromWorkspace -m 125 -w ${ERA}_workspace.root -o ${ERA}_datacard_shapes_prefit.root
