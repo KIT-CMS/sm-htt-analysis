@@ -22,6 +22,10 @@ fi
 
 #USE_COMBINEHARVESTER=1
 if [ -n "$USE_COMBINEHARVESTER" ]; then
+    # Remove output directory
+    rm -rf output
+
+    # Create datacards
     CMSSW_7_4_7/bin/slc6_amd64_gcc491/MorphingSM2017 \
         --input_folder_mt="../../../../.." \
         --input_folder_et="../../../../.." \
@@ -31,8 +35,11 @@ if [ -n "$USE_COMBINEHARVESTER" ]; then
         --postfix="-ML" \
         --channel="${CHANNELS}" \
         --auto_rebin=true \
+        --stxs_signals=$STXS_SIGNALS \
+        --stxs_categories=$STXS_CATEGORIES \
         --output="${ERA}_smhtt"
 
+    # Merge datacards to workspace
     DATACARD_PATH=output/${ERA}_smhtt/cmb/125
     combineTool.py -M T2W -o workspace.root -i ${DATACARD_PATH} --parallel 8
     cp $DATACARD_PATH/workspace.root ${ERA}_workspace.root
