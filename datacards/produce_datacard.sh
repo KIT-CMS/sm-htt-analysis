@@ -26,10 +26,11 @@ if [ -n "$USE_COMBINEHARVESTER" ]; then
     rm -rf output
 
     # Create datacards
+    INPUT_FOLDER="../../../../.."
     $CMSSW_BASE/bin/slc6_amd64_gcc491/MorphingSM2017 \
-        --input_folder_mt="../../../../.." \
-        --input_folder_et="../../../../.." \
-        --input_folder_tt="../../../../.." \
+        --input_folder_mt=$INPUT_FOLDER \
+        --input_folder_et=$INPUT_FOLDER \
+        --input_folder_tt=$INPUT_FOLDER \
         --real_data=false \
         --jetfakes=false \
         --postfix="-ML" \
@@ -41,6 +42,23 @@ if [ -n "$USE_COMBINEHARVESTER" ]; then
 
     # Merge datacards to workspace
     DATACARD_PATH=output/${ERA}_smhtt/cmb/125
-    combineTool.py -M T2W -o workspace.root -i ${DATACARD_PATH} --parallel 8
+    if [ $STXS_SIGNALS == 0 ]; then
+        combineTool.py -M T2W -o workspace.root -i ${DATACARD_PATH} --parallel 8 \
+            -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel \
+            --PO '"map=^.*/ggH.?$:r_ggH[1,-2,2]"' \
+            --PO '"map=^.*/qqH.?$:r_qqH[1,-2,2]"'
+    fi
+    if [ $STXS_SIGNALS == 1 ]; then
+        combineTool.py -M T2W -o workspace.root -i ${DATACARD_PATH} --parallel 8 \
+            -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel \
+            --PO '"map=^.*/ggH_0J.?$:r_ggH_0J[1,-30,30]"' \
+            --PO '"map=^.*/ggH_1J.?$:r_ggH_1J[1,-30,30]"' \
+            --PO '"map=^.*/ggH_GE2J.?$:r_ggH_GE2J[1,-30,30]"' \
+            --PO '"map=^.*/ggH_VBFTOPO.?$:r_ggH_VBFTOPO[1,-30,30]"' \
+            --PO '"map=^.*/qqH_VBFTOPO_JET3VETO.?$:r_qqH_VBFTOPO_JET3VETO[1,-30,30]"' \
+            --PO '"map=^.*/qqH_VBFTOPO_JET3.?$:r_qqH_VBFTOPO_JET3[1,-30,30]"' \
+            --PO '"map=^.*/qqH_REST.?$:r_qqH_REST[1,-30,30]"' \
+            --PO '"map=^.*/qqH_PTJET1_GT200.?$:r_qqH_PTJET1_GT200[1,-30,30]"'
+    fi
     cp $DATACARD_PATH/workspace.root ${ERA}_workspace.root
 fi
