@@ -228,6 +228,7 @@ def main(args):
             db.add_shape_systematic("norm_ff_qcd_%s_syst" % channel, 1.0,
                                     channel, "jetFakes")
 
+        for channel in ["et", "mt"]:
             db.add_shape_systematic("norm_ff_qcd_dm0_njet0_%s_stat" % channel,
                                     1.0, channel, "jetFakes")
             db.add_shape_systematic("norm_ff_qcd_dm0_njet1_%s_stat" % channel,
@@ -373,6 +374,12 @@ def main(args):
         db.add_normalization_systematic("CMS_htt_ttXsec", 1.06, channels,
                                         ["TTT"])
         #TODO add fake factor norm uncs.
+        db.add_normalization_systematic("CMS_htt_ff_norm_syst_et_13TeV", 1.1, "et",
+                                        ["jetFakes"])
+        db.add_normalization_systematic("CMS_htt_ff_norm_syst_mt_13TeV", 1.1, "mt",
+                                        ["jetFakes"])
+        db.add_normalization_systematic("CMS_htt_ff_norm_syst_tt_13TeV", 1.1, "tt",
+                                        ["jetFakes"])
     else:
         db.add_normalization_systematic("CMS_htt_wjXsec", 1.04, channels, "W")
         db.add_normalization_systematic("CMS_htt_vvXsec", 1.06, channels,
