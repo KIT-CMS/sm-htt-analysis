@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import yaml
 import ROOT
 import numpy
 import copy
@@ -56,12 +57,11 @@ def parse_arguments():
         "Directory arranged as Artus output and containing a friend tree for tt."
     )
     parser.add_argument(
-        "-o",
-        "--output-directory",
+        "-c",
+        "--config",
         required=True,
         type=str,
-        help=
-        "Directory arranged as Artus output and to write friend trees into.")
+        help="Key of desired config in yaml config file.")
     parser.add_argument(
         "--et-fake-factor-directory",
         required=True,
@@ -87,8 +87,8 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def determine_fractions(era, categories):
-    hist_file = ROOT.TFile("fake-factors/%s_ff_yields.root" % era)
+def determine_fractions(args, categories):
+    hist_file = ROOT.TFile("fake-factors/%s_ff_yields.root" % args.era)
     composition = {
         "mt": {
             "data": ["data_obs"],
@@ -121,9 +121,12 @@ def determine_fractions(era, categories):
             for fraction in composition[channel].keys():
                 subsubdict[fraction] = copy.deepcopy(
                     hist_file.Get(
-                        "#{ch}#{ch}_{cat}#data_obs#smhtt#Run{era}#m_vis#125#".
+                        "#{ch}#{ch}_{cat}#data_obs#smhtt#Run{era}#{expr}#125#".
                         format(
-                            ch=channel, cat=category, era=era)))
+                            ch=channel,
+                            cat=category,
+                            era=args.era,
+                            expr=args.config[channel]["expression"])))
                 subsubdict[fraction].Reset()
             for fraction in composition[channel].keys():
                 if fraction == "QCD":
@@ -131,12 +134,13 @@ def determine_fractions(era, categories):
                 for process in composition[channel][fraction]:
                     subsubdict[fraction].Add(
                         hist_file.Get(
-                            "#{ch}#{ch}_{cat}#{proc}#smhtt#Run{era}#m_vis#125#".
+                            "#{ch}#{ch}_{cat}#{proc}#smhtt#Run{era}#{expr}#125#".
                             format(
                                 ch=channel,
                                 cat=category,
                                 proc=process,
-                                era=era)))
+                                era=args.era,
+                                expr=args.config[channel]["expression"])))
                 if fraction == "data":
                     subsubdict["QCD"].Add(subsubdict[fraction], 1.0)
                 else:
@@ -251,7 +255,7 @@ def apply_fake_factors(config):
                 getattr(event, "%s_max_index" % channel) +
                 (0.5 * len(categories[channel])
                  if channel == "tt" and x == 2 else 0.0))]]
-            bin_index = cat_fractions["data"].GetXaxis().FindBin(event.m_vis)
+            bin_index = cat_fractions["data"].GetXaxis().FindBin(getattr(event, args.config[channel]["expression"]))
             if channel == "tt":
                 inputs = [
                     getattr(event, "pt_%i" % x),
@@ -272,11 +276,19 @@ def apply_fake_factors(config):
                 ]
             output_buffer["nom_%i" % x][0] = ff.value(
                 len(inputs), array('d', inputs))
+            if not (output_buffer["nom_%i" % x][0] >= 0.0 and output_buffer["nom_%i" % x][0] <= 999.0):
+                output_buffer["nom_%i" % x][0] = 0.0
             for syst in unc_shifts[channel]:
                 for shift in ["up", "down"]:
                     output_buffer["%s_%s_%i" % (syst, shift, x)][0] = ff.value(
                         len(inputs), array('d', inputs), "%s_%s" % (syst,
                                                                     shift))
+                    if not (output_buffer["%s_%s_%i" % (syst, shift, x)][0] >= 0.0 and output_buffer["%s_%s_%i" % (syst, shift, x)][0] <= 999.0):
+                        #output_buffer["%s_%s_%i" % (syst, shift, x)][0] = 0.0
+                        print syst + shift
+                        print output_buffer["%s_%s_%i" % (syst, shift, x)][0]
+                        print inputs
+                        output_buffer["%s_%s_%i" % (syst, shift, x)][0] = 0.0
         output_tree.Fill()
 
     #save
@@ -292,6 +304,12 @@ def apply_fake_factors(config):
 
 
 def main(args):
+    config = yaml.load(open("fake-factors/config.yaml"))
+    if not args.config in config.keys():
+        logger.critical("Requested config key %s not available in fake-factors/config.yaml!" % args.config)
+        raise Exception
+    args.config = config[args.config]
+    args.output_directory = args.config["outputdir"]
     categories = {
         "et": ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"],
         "mt": ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"],
@@ -300,7 +318,7 @@ def main(args):
             "tt2_ggh", "tt2_qqh", "tt2_ztt", "tt2_noniso", "tt2_misc"
         ]
     }
-    fractions = determine_fractions(args.era, categories)
+    fractions = determine_fractions(args, categories)
 
     #find paths to data files the fake factors are appended
     datafiles = []

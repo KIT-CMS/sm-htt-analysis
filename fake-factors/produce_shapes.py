@@ -69,6 +69,12 @@ def parse_arguments():
         "Directory arranged as Artus output and containing a friend tree for tt."
     )
     parser.add_argument(
+        "-c",
+        "--config",
+        required=True,
+        type=str,
+        help="Key of desired config in yaml config file.")
+    parser.add_argument(
         "--datasets", required=True, type=str, help="Kappa datsets database.")
     parser.add_argument("--era", type=str, help="Experiment era.")
     parser.add_argument(
@@ -175,8 +181,12 @@ def main(args):
         }
 
     # Variables and categories
-    binning = ConstantBinning(10, 0.0, 200.0)
-    count_var = Variable("m_vis", binning)
+    binning = ConstantBinning(3, 0.2, 1.0)
+    config = yaml.load(open("fake-factors/config.yaml"))
+    if not args.config in config.keys():
+        logger.critical("Requested config key %s not available in fake-factors/config.yaml!" % args.config)
+        raise Exception
+    config = config[args.config]
 
     et_categories = []
     # Analysis shapes
@@ -187,7 +197,7 @@ def main(args):
                 et,
                 Cuts(
                     Cut("et_max_index=={index}".format(index=i), "exclusive_score")),
-                variable=count_var))
+                variable=Variable(config["et"]["expression"], VariableBinning(config["et"]["binning"]))))
     mt_categories = []
     # Analysis shapes
     for i, label in enumerate(["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]):
@@ -197,7 +207,7 @@ def main(args):
                 mt,
                 Cuts(
                     Cut("mt_max_index=={index}".format(index=i), "exclusive_score")),
-                variable=count_var))
+                variable=Variable(config["mt"]["expression"], VariableBinning(config["mt"]["binning"]))))
     tt1_categories = []
     tt2_categories = []
     # Analysis shapes
@@ -208,14 +218,14 @@ def main(args):
                 tt1,
                 Cuts(
                     Cut("tt_max_index=={index}".format(index=i), "exclusive_score")),
-                variable=count_var))
+                variable=Variable(config["tt"]["expression"], VariableBinning(config["tt"]["binning"]))))
         tt2_categories.append(
             Category(
                 "tt2_"+label,
                 tt2,
                 Cuts(
                     Cut("tt_max_index=={index}".format(index=i), "exclusive_score")),
-                variable=count_var))
+                variable=Variable(config["tt"]["expression"], VariableBinning(config["tt"]["binning"]))))
 
     # Nominal histograms
     # yapf: enable

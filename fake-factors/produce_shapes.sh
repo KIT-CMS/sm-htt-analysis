@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ERA=$1
+CONFIGKEY=$2
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
@@ -14,4 +15,5 @@ python fake-factors/produce_shapes.py \
         --datasets $KAPPA_DATABASE \
         --era $ERA \
         --tag $ERA \
+        -c $CONFIGKEY \
         --num-threads 16 # & # NOTE: We are at the file descriptor limit.
