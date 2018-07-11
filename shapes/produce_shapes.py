@@ -122,6 +122,8 @@ def parse_arguments():
         help="Use mu->tau embedded samples as ZTT background estimation.")
     parser.add_argument(
         "--tag", default="ERA_CHANNEL", type=str, help="Tag of output files.")
+    parser.add_argument(
+        "--skip-systematic-variations", default=False, type=str, help="Do not produce the systematic variations.")
     return parser.parse_args()
 
 
@@ -129,7 +131,7 @@ def main(args):
     # Container for all distributions to be drawn
     logger.info("Set up shape variations.")
     systematics = Systematics(
-        "{}_shapes.root".format(args.tag), num_threads=args.num_threads)
+        "{}_shapes.root".format(args.tag), num_threads=args.num_threads, skip_systematic_variations=args.skip_systematic_variations)
 
     # Era selection
     if "2016" in args.era:
