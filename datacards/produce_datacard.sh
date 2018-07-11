@@ -6,9 +6,12 @@ source utils/setup_python.sh
 ERA=$1
 STXS_SIGNALS=$2
 STXS_CATEGORIES=$3
-CHANNELS=${@:4}
+STXS_FIT=$4
+CHANNELS=${@:5}
 
-USE_DATACARDPRODUCER=1
+NUM_THREADS=8
+
+#USE_DATACARDPRODUCER=1
 if [ -n "$USE_DATACARDPRODUCER" ]; then
     python datacards/produce_datacard.py \
         --era $ERA \
@@ -17,13 +20,13 @@ if [ -n "$USE_DATACARDPRODUCER" ]; then
         --stxs-categories $STXS_CATEGORIES \
         --shapes ${ERA}_shapes.root
 
-    combineTool.py -M T2W -o ${ERA}_workspace.root -i ${ERA}_datacard.txt -m 125.0 --parallel 8
+    combineTool.py -M T2W -o ${ERA}_workspace.root -i ${ERA}_datacard.txt -m 125.0 --parallel $NUM_THREADS
 fi
 
-#USE_COMBINEHARVESTER=1
+USE_COMBINEHARVESTER=1
 if [ -n "$USE_COMBINEHARVESTER" ]; then
     # Remove output directory
-    rm -rf output
+    rm -rf output/ ${ERA}_workspace.root
 
     # Create datacards
     INPUT_FOLDER="../../../../.."
@@ -40,16 +43,19 @@ if [ -n "$USE_COMBINEHARVESTER" ]; then
         --stxs_categories=$STXS_CATEGORIES \
         --output="${ERA}_smhtt"
 
-    # Merge datacards to workspace
+    # Merge datacards to workspace and define signals to be fitted
     DATACARD_PATH=output/${ERA}_smhtt/cmb/125
-    if [ $STXS_SIGNALS == 0 ]; then
-        combineTool.py -M T2W -o workspace.root -i ${DATACARD_PATH} --parallel 8 \
-            -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel \
-            --PO '"map=^.*/ggH.?$:r_ggH[1,-2,2]"' \
-            --PO '"map=^.*/qqH.?$:r_qqH[1,-2,2]"'
+    if [ $STXS_FIT == "inclusive" ]; then
+        combineTool.py -M T2W -o workspace.root -i ${DATACARD_PATH} --parallel $NUM_THREADS
     fi
-    if [ $STXS_SIGNALS == 1 ]; then
-        combineTool.py -M T2W -o workspace.root -i ${DATACARD_PATH} --parallel 8 \
+    if [ $STXS_FIT == 0 ]; then
+        combineTool.py -M T2W -o workspace.root -i ${DATACARD_PATH} --parallel $NUM_THREADS \
+            -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel \
+            --PO '"map=^.*/ggH.?$:r_ggH[1,-5,5]"' \
+            --PO '"map=^.*/qqH.?$:r_qqH[1,-5,5]"'
+    fi
+    if [ $STXS_FIT == 1 ]; then
+        combineTool.py -M T2W -o workspace.root -i ${DATACARD_PATH} --parallel $NUM_THREADS \
             -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel \
             --PO '"map=^.*/ggH_0J.?$:r_ggH_0J[1,-30,30]"' \
             --PO '"map=^.*/ggH_1J.?$:r_ggH_1J[1,-30,30]"' \

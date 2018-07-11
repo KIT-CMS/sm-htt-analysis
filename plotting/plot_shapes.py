@@ -76,18 +76,21 @@ def main(args):
         channel_categories = {c: [args.gof_variable] for c in args.channels}
     else:
         channel_categories = {
-            "et": ["ztt", "zll", "w", "tt", "ss", "misc"],
-            "mt": ["ztt", "zll", "w", "tt", "ss", "misc"],
-            "tt": ["ztt", "noniso", "misc"]
+            #"et": ["ztt", "zll", "w", "tt", "ss", "misc"],
+            "et": ["12", "15", "11", "13", "14", "16"],
+            #"mt": ["ztt", "zll", "w", "tt", "ss", "misc"],
+            "mt": ["12", "15", "11", "13", "14", "16"],
+            #"tt": ["ztt", "noniso", "misc"]
+            "tt": ["12", "17", "16"]
         }
         if args.stxs_categories == 0:
             for channel in ["et", "mt", "tt"]:
-                channel_categories[channel] += ["ggh", "qqh"]
+                channel_categories[channel] += ["1", "2"]
         elif args.stxs_categories == 1:
             for channel in ["et", "mt", "tt"]:
                 channel_categories[channel] += [
-                    "ggh_0jet", "ggh_1jet", "ggh_ge2jets", "qqh_l2jets",
-                    "qqh_2jets", "qqh_g2jets"
+                    "3", "4", "5", "6",
+                    "7", "8"
                 ]
         else:
             logger.critical("Selected unkown STXS categorization {}",
@@ -105,21 +108,21 @@ def main(args):
         category_dict = {args.gof_variable: "inclusive"}
     else:
         category_dict = {
-            "ggh": "ggH",
-            "ggh_0jet": "ggH, 0 jet",
-            "ggh_1jet": "ggH, 1 jet",
-            "ggh_ge2jets": "ggH, >= 2 jets",
-            "qqh": "VBF",
-            "qqh_l2jets": "VBF, < 2 jets",
-            "qqh_2jets": "VBF, 2 jets",
-            "qqh_g2jets": "VBF, > 2 jets",
-            "ztt": "Z#rightarrow#tau#tau",
-            "zll": "Z#rightarrowll",
-            "w": "W+jets",
-            "tt": "t#bar{t}",
-            "ss": "same sign",
-            "misc": "misc",
-            "noniso": "noniso"
+            "1": "ggH",
+            "3": "ggH, 0 jet",
+            "4": "ggH, 1 jet",
+            "5": "ggH, >= 2 jets",
+            "2": "VBF",
+            "6": "VBF, < 2 jets",
+            "7": "VBF, 2 jets",
+            "8": "VBF, > 2 jets",
+            "12": "Z#rightarrow#tau#tau",
+            "15": "Z#rightarrowll",
+            "11": "W+jets",
+            "13": "t#bar{t}",
+            "14": "same sign",
+            "16": "misc",
+            "17": "noniso"
         }
     if args.linear == True:
         split_value = 0
@@ -156,13 +159,13 @@ def main(args):
             # get signal histograms
             for i in range(2):
                 plot.subplot(i + 1).add_hist(
-                    rootfile.get(channel, category, "ggH125"), "ggH")
+                    rootfile.get(channel, category, "ggH"), "ggH")
                 plot.subplot(i + 1).add_hist(
-                    rootfile.get(channel, category, "ggH125"), "ggH_top")
+                    rootfile.get(channel, category, "ggH"), "ggH_top")
                 plot.subplot(i + 1).add_hist(
-                    rootfile.get(channel, category, "qqH125"), "qqH")
+                    rootfile.get(channel, category, "qqH"), "qqH")
                 plot.subplot(i + 1).add_hist(
-                    rootfile.get(channel, category, "qqH125"), "qqH_top")
+                    rootfile.get(channel, category, "qqH"), "qqH_top")
 
             # get observed data and total background histograms
             plot.add_hist(
