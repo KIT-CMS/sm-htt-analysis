@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 # Error handling to ensure that script is executed from top-level directory of
 # this repository
 for DIRECTORY in shapes datacards combine plotting utils
