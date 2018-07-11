@@ -150,9 +150,9 @@ def main(args):
         "TTT"   : Process("TTT",      TTTEstimationMT (era, directory, mt, friend_directory=mt_friend_directory)),
         "TTJ"   : Process("TTJ",      TTJEstimationMT (era, directory, mt, friend_directory=mt_friend_directory)),
         "VV"    : Process("VV",       VVEstimation    (era, directory, mt, friend_directory=mt_friend_directory)),
-        "EWK"   : Process("EWK",      EWKEstimation   (era, directory, mt, friend_directory=mt_friend_directory))
+        "EWKZ"  : Process("EWKZ",     EWKZEstimation   (era, directory, mt, friend_directory=mt_friend_directory))
         }
-    mt_processes["QCD"] = Process("QCD", QCDEstimationMT(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWK"]], mt_processes["data"], extrapolation_factor=1.17))
+    mt_processes["QCD"] = Process("QCD", QCDEstimationMT(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWKZ"]], mt_processes["data"], extrapolation_factor=1.17))
     et = ETSM()
     if args.QCD_extrap_fit:
         et.cuts.remove("ele_iso")
@@ -170,9 +170,9 @@ def main(args):
         "TTT"   : Process("TTT",      TTTEstimationET (era, directory, et, friend_directory=et_friend_directory)),
         "TTJ"   : Process("TTJ",      TTJEstimationET (era, directory, et, friend_directory=et_friend_directory)),
         "VV"    : Process("VV",       VVEstimation    (era, directory, et, friend_directory=et_friend_directory)),
-        "EWK"   : Process("EWK",      EWKEstimation   (era, directory, et, friend_directory=et_friend_directory))
+        "EWKZ"  : Process("EWKZ",     EWKZEstimation   (era, directory, et, friend_directory=et_friend_directory))
         }
-    et_processes["QCD"] = Process("QCD", QCDEstimationET(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWK"]], et_processes["data"], extrapolation_factor=1.16))
+    et_processes["QCD"] = Process("QCD", QCDEstimationET(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VV", "EWKZ"]], et_processes["data"], extrapolation_factor=1.16))
     tt = TTSM()
     if args.QCD_extrap_fit:
         tt.cuts.get("os").invert()
