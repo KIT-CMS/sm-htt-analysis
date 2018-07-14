@@ -58,12 +58,19 @@ if [ -n "$USE_COMBINEHARVESTER" ]; then
         combineTool.py -M T2W -o workspace.root -i ${DATACARD_PATH} --parallel $NUM_THREADS \
             -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel \
             --PO '"map=^.*/ggH_0J.?$:r_ggH_0J[1,-30,30]"' \
-            --PO '"map=^.*/ggH_1J.?$:r_ggH_1J[1,-30,30]"' \
-            --PO '"map=^.*/ggH_GE2J.?$:r_ggH_GE2J[1,-30,30]"' \
+            --PO '"map=^.*/ggH_1J_PTH_0_60.?$:r_ggH_1J_PTH_0_60[1,-30,30]"' \
+            --PO '"map=^.*/ggH_1J_PTH_60_120.?$:r_ggH_1J_PTH_60_120[1,-30,30]"' \
+            --PO '"map=^.*/ggH_1J_PTH_120_200.?$:r_ggH_1J_PTH_120_200[1,-30,30]"' \
+            --PO '"map=^.*/ggH_1J_PTH_GT200.?$:r_ggH_1J_PTH_GT200[1,-30,30]"' \
+            --PO '"map=^.*/ggH_GE2J_PTH_0_60.?$:r_ggH_GE2J_PTH_0_60[1,-30,30]"' \
+            --PO '"map=^.*/ggH_GE2J_PTH_60_120.?$:r_ggH_GE2J_PTH_60_120[1,-30,30]"' \
+            --PO '"map=^.*/ggH_GE2J_PTH_120_200.?$:r_ggH_GE2J_PTH_120_200[1,-30,30]"' \
+            --PO '"map=^.*/ggH_GE2J_PTH_GT200.?$:r_ggH_GE2J_PTH_GT200[1,-30,30]"' \
             --PO '"map=^.*/ggH_VBFTOPO.?$:r_ggH_VBFTOPO[1,-30,30]"' \
             --PO '"map=^.*/qqH_VBFTOPO_JET3VETO.?$:r_qqH_VBFTOPO_JET3VETO[1,-30,30]"' \
             --PO '"map=^.*/qqH_VBFTOPO_JET3.?$:r_qqH_VBFTOPO_JET3[1,-30,30]"' \
             --PO '"map=^.*/qqH_REST.?$:r_qqH_REST[1,-30,30]"' \
+            --PO '"map=^.*/qqH_VH2JET.?$:r_qqH_VH2JET[1,-30,30]"' \
             --PO '"map=^.*/qqH_PTJET1_GT200.?$:r_qqH_PTJET1_GT200[1,-30,30]"'
     fi
     cp $DATACARD_PATH/workspace.root ${ERA}_workspace.root
