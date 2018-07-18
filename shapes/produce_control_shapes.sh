@@ -1,4 +1,5 @@
 #!/bin/bash
+renice -n 19 -u `whoami`
 
 BINNING=shapes/binning.yaml
 
@@ -11,4 +12,5 @@ python shapes/produce_control_shapes.py \
     --directory $ARTUS_OUTPUTS \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
-    --channels mt et tt em
+    --channels mt et tt em \
+    --num-threads 15

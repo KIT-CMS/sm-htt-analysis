@@ -120,6 +120,7 @@ def main(args):
     # Channels and processes
     # yapf: disable
     directory = args.directory
+    susy_masses = ["250", "300", "700", "2300"]
 
     mt = MT()
     mt_processes = {
@@ -129,12 +130,16 @@ def main(args):
     #    "W"     : Process("W",        WEstimation     (era, directory, mt)),
         "TT"    : Process("TT",       TTEstimation    (era, directory, mt)),
         "VV"    : Process("VV",       VVEstimation    (era, directory, mt)),
-        "EWK"   : Process("EWK",      EWKEstimation   (era, directory, mt))
+        "EWK"   : Process("EWK",      EWKEstimation   (era, directory, mt)),
+        "HTT"   : Process("HTT",      HTTEstimation   (era, directory, mt)),
         }
     wjets_mc_mt = Process("WMC",        WEstimation     (era, directory, mt))
     #mt_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZLL", "W", "TT", "VV", "EWK"]], mt_processes["data"], extrapolation_factor=1.1))
     mt_processes["W"] = Process("W", WEstimationWithQCD(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZLL", "TT", "VV", "EWK"]], mt_processes["data"], wjets_mc_mt, qcd_ss_to_os_extrapolation_factor=1.1))
     mt_processes["QCD"] = Process("QCD", QCDEstimationWithW(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZLL", "TT", "VV", "EWK"]], mt_processes["data"], wjets_mc_mt, qcd_ss_to_os_extrapolation_factor=1.1))
+    for m in susy_masses:
+        mt_processes["ggH_"+m] = Process("ggH_"+m, SUSYggHEstimation(era, directory, mt, m))
+        mt_processes["bbH_"+m] = Process("bbH_"+m, SUSYbbHEstimation(era, directory, mt, m))
 
     em = EM()
     em_processes = {
@@ -144,9 +149,13 @@ def main(args):
         "W"     : Process("W",        WEstimation     (era, directory, em)),
         "TT"    : Process("TT",       TTEstimation    (era, directory, em)),
         "VV"    : Process("VV",       VVEstimation    (era, directory, em)),
-        "EWK"   : Process("EWK",      EWKEstimation   (era, directory, em))
+        "EWK"   : Process("EWK",      EWKEstimation   (era, directory, em)),
+        "HTT"   : Process("HTT",      HTTEstimation   (era, directory, em)),
         }
     em_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, em, [em_processes[process] for process in ["ZTT", "ZLL", "W", "TT", "VV", "EWK"]], em_processes["data"], extrapolation_factor=1.0))
+    for m in susy_masses:
+        em_processes["ggH_"+m] = Process("ggH_"+m, SUSYggHEstimation(era, directory, em, m))
+        em_processes["bbH_"+m] = Process("bbH_"+m, SUSYbbHEstimation(era, directory, em, m))
 
     et = ET()
     et_processes = {
@@ -156,12 +165,16 @@ def main(args):
     #    "W"     : Process("W",        WEstimation     (era, directory, et)),
         "TT"    : Process("TT",       TTEstimation    (era, directory, et)),
         "VV"    : Process("VV",       VVEstimation    (era, directory, et)),
-        "EWK"   : Process("EWK",      EWKEstimation   (era, directory, et))
+        "EWK"   : Process("EWK",      EWKEstimation   (era, directory, et)),
+        "HTT"   : Process("HTT",      HTTEstimation   (era, directory, et)),
         }
     wjets_mc_et = Process("WMC",        WEstimation     (era, directory, et))
     #et_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, et, [et_processes[process] for process in ["ZTT", "ZLL", "W", "TT", "VV", "EWK"]], et_processes["data"], extrapolation_factor=1.09))
     et_processes["W"] = Process("W", WEstimationWithQCD(era, directory, et, [et_processes[process] for process in ["ZTT", "ZLL", "TT", "VV", "EWK"]], et_processes["data"], wjets_mc_et, qcd_ss_to_os_extrapolation_factor=1.09))
     et_processes["QCD"] = Process("QCD", QCDEstimationWithW(era, directory, et, [et_processes[process] for process in ["ZTT", "ZLL", "TT", "VV", "EWK"]], et_processes["data"], wjets_mc_et, qcd_ss_to_os_extrapolation_factor=1.09))
+    for m in susy_masses:
+        et_processes["ggH_"+m] = Process("ggH_"+m, SUSYggHEstimation(era, directory, et, m))
+        et_processes["bbH_"+m] = Process("bbH_"+m, SUSYbbHEstimation(era, directory, et, m))
 
     tt = TT()
     tt_processes = {
@@ -172,10 +185,14 @@ def main(args):
         "TT"    : Process("TT",       TTEstimation   (era, directory, tt)),
         "VV"    : Process("VV",       VVEstimation   (era, directory, tt)),
         "EWK"   : Process("EWK",      EWKEstimation  (era, directory, tt)),
+        "HTT"   : Process("HTT",      HTTEstimation   (era, directory, tt)),
         }
     tt_processes["QCD"] = Process("QCD", QCDEstimation_ABCD_TT_ISO2(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZLL", "W", "TT", "VV", "EWK"]], tt_processes["data"]))
     #tt_processes["QCD"] = Process("QCD", QCDEstimation_ABCD_TT_ISO2_TRANSPOSED(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZLL", "W", "TT", "VV", "EWK"]], tt_processes["data"]))
     #tt_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZLL", "W", "TT", "VV", "EWK"]], tt_processes["data"], extrapolation_factor=1.0))
+    for m in susy_masses:
+        tt_processes["ggH_"+m] = Process("ggH_"+m, SUSYggHEstimation(era, directory, tt, m))
+        tt_processes["bbH_"+m] = Process("bbH_"+m, SUSYbbHEstimation(era, directory, tt, m))
 
     # Variables and categories
     binning = yaml.load(open(args.binning))
@@ -185,7 +202,7 @@ def main(args):
     tt_categories = []
     em_categories = []
 
-    variable_names = ["mt_1","mt_2", "pt_1","pt_2", "eta_1", "eta_2", "m_vis", "ptvis", "npv", "njets", "nbtag", "jpt_1", "jpt_2", "jeta_1", "jeta_2", "met", "mjj", "dijetpt", "pZetaMissVis", "m_1", "m_2", "decayMode_1", "decayMode_2", "iso_1", "iso_2", "rho"]
+    variable_names = ["mt_1","mt_2", "pt_1","pt_2", "eta_1", "eta_2", "m_vis", "ptvis", "npv", "njets", "nbtag", "jpt_1", "jpt_2", "jeta_1", "jeta_2", "met", "mjj", "dijetpt", "pZetaMissVis", "m_1", "m_2", "decayMode_1", "decayMode_2", "iso_1", "iso_2", "rho", "mt_tot", "m_N"]
 
     if "mt" in args.channels:
         variables = [Variable(v,VariableBinning(binning["control"]["mt"][v]["bins"]), expression=binning["control"]["mt"][v]["expression"]) for v in variable_names]
