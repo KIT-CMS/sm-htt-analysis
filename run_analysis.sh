@@ -14,8 +14,8 @@ done
 ./utils/clean.sh
 
 # Parse arguments
-ERA=$1
-CHANNELS=${@:2}
+ERA=$1               # options: 2016
+CHANNELS=${@:2}      # options: et, mt, tt
 
 # Create shapes of systematics
 ./shapes/produce_shapes.sh $ERA $CHANNELS
@@ -26,8 +26,10 @@ CHANNELS=${@:2}
 # Write datacard
 STXS_SIGNALS=0       # options: 0, 1
 STXS_CATEGORIES=0    # options: 0, 1
-STXS_FIT="inclusive" # options: inclusive, 0, 1
-./datacards/produce_datacard.sh $ERA $STXS_SIGNALS $STXS_CATEGORIES $STXS_FIT $CHANNELS
+STXS_FIT="inclusive" # options: 0, 1, inclusive
+JETFAKES=0           # options: 0, 1
+EMBEDDING=0          # options: 0, 1
+./datacards/produce_datacard.sh $ERA $STXS_SIGNALS $STXS_CATEGORIES $STXS_FIT $JETFAKES $EMBEDDING $CHANNELS
 
 # Run statistical inference
 ./combine/significance.sh $ERA | tee ${ERA}_significance.log
@@ -37,5 +39,5 @@ STXS_FIT="inclusive" # options: inclusive, 0, 1
 
 # Make prefit and postfit shapes
 ./combine/prefit_postfit_shapes.sh $ERA
-./plotting/plot_shapes.sh $ERA $STXS_SIGNALS $STXS_CATEGORIES $CHANNELS
+./plotting/plot_shapes.sh $ERA $STXS_SIGNALS $STXS_CATEGORIES $JETFAKES $EMBEDDING $CHANNELS
 ./plotting/plot_signals.sh $ERA $STXS_SIGNALS $STXS_CATEGORIES $CHANNELS

@@ -7,7 +7,9 @@ ERA=$1
 STXS_SIGNALS=$2
 STXS_CATEGORIES=$3
 STXS_FIT=$4
-CHANNELS=${@:5}
+JETFAKES=$5
+EMBEDDING=$6
+CHANNELS=${@:7}
 
 NUM_THREADS=8
 
@@ -35,7 +37,8 @@ if [ -n "$USE_COMBINEHARVESTER" ]; then
         --input_folder_et=$INPUT_FOLDER \
         --input_folder_tt=$INPUT_FOLDER \
         --real_data=false \
-        --jetfakes=false \
+        --jetfakes=$JETFAKES \
+        --embedding=$EMBEDDING \
         --postfix="-ML" \
         --channel="${CHANNELS}" \
         --auto_rebin=true \
