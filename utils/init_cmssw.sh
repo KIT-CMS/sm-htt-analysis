@@ -16,7 +16,8 @@ git checkout v6.3.2
 cd ../..
 
 # Clone CombineHarvester
-git clone https://github.com/cms-analysis/CombineHarvester CombineHarvester -b SMHTT2017-dev
+# NOTE: stwunsch/CombineHarvester:SMHTT2017-dev is synced with the official repository cms-analysis/CombineHarvester:SMHTT2017-dev
+git clone https://github.com/stwunsch/CombineHarvester CombineHarvester -b SMHTT2017-dev
 mkdir -p CombineHarvester/HTTSM2017/shapes
 
 # Build
