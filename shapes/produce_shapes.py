@@ -594,9 +594,10 @@ def main(args):
     met_unclustered_variations = create_systematic_variations(
         "CMS_scale_met_unclustered_13TeV", "metUnclusteredEn",
         DifferentPipeline)
-    met_clustered_variations = create_systematic_variations(
-        "CMS_scale_met_clustered_13TeV", "metJetEn", DifferentPipeline)
-    for variation in met_unclustered_variations + met_clustered_variations:
+    # NOTE: Clustered MET not used anymore in the uncertainty model
+    #met_clustered_variations = create_systematic_variations(
+    #    "CMS_scale_met_clustered_13TeV", "metJetEn", DifferentPipeline)
+    for variation in met_unclustered_variations:# + met_clustered_variations:
         for process_nick in [
                 "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VVT", "VVJ", "EWKZ"
         ] + signal_nicks:
