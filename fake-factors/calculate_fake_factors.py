@@ -237,7 +237,7 @@ def apply_fake_factors(config):
     for x in suffix[channel]:
         output_buffer["nom_%i" % x] = numpy.zeros(1, dtype=float)
         output_tree.Branch("ff%i_nom" % x, output_buffer["nom_%i" % x],
-                           "d0_1_calib/D")
+                           "ff%i_nom/D" % x)
         for syst in unc_shifts[channel]:
             for shift in ["up", "down"]:
                 output_buffer["%s_%s_%i" % (syst, shift, x)] = numpy.zeros(
@@ -245,7 +245,7 @@ def apply_fake_factors(config):
                 output_tree.Branch("ff%i_%s_%s" % (x, syst, shift),
                                    output_buffer["%s_%s_%i" %
                                                  (syst, shift,
-                                                  x)], "d0_1_calib/D")
+                                                  x)], "ff%i_%s_%s/D" % (x, syst, shift))
 
     #fill tree
     for event in input_tree:
