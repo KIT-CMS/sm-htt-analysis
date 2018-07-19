@@ -123,7 +123,10 @@ def parse_arguments():
     parser.add_argument(
         "--tag", default="ERA_CHANNEL", type=str, help="Tag of output files.")
     parser.add_argument(
-        "--skip-systematic-variations", default=False, type=str, help="Do not produce the systematic variations.")
+        "--skip-systematic-variations",
+        default=False,
+        type=str,
+        help="Do not produce the systematic variations.")
     return parser.parse_args()
 
 
@@ -131,7 +134,9 @@ def main(args):
     # Container for all distributions to be drawn
     logger.info("Set up shape variations.")
     systematics = Systematics(
-        "{}_shapes.root".format(args.tag), num_threads=args.num_threads, skip_systematic_variations=args.skip_systematic_variations)
+        "{}_shapes.root".format(args.tag),
+        num_threads=args.num_threads,
+        skip_systematic_variations=args.skip_systematic_variations)
 
     # Era selection
     if "2016" in args.era:
@@ -597,7 +602,7 @@ def main(args):
     # NOTE: Clustered MET not used anymore in the uncertainty model
     #met_clustered_variations = create_systematic_variations(
     #    "CMS_scale_met_clustered_13TeV", "metJetEn", DifferentPipeline)
-    for variation in met_unclustered_variations:# + met_clustered_variations:
+    for variation in met_unclustered_variations:  # + met_clustered_variations:
         for process_nick in [
                 "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VVT", "VVJ", "EWKZ"
         ] + signal_nicks:
@@ -954,38 +959,45 @@ def main(args):
                         era=era,
                         variation=Relabel("CMS_htt_emb_ttbar", "Up"),
                         mass="125"))
+
     # Fake factor uncertainties
     fake_factor_variations_et = []
     fake_factor_variations_mt = []
     for systematic_shift in [
-            "ff_qcd{ch}_syst{shift}", "ff_qcd_dm0_njet0{ch}_stat{shift}",
-            "ff_qcd_dm0_njet1{ch}_stat{shift}",
-            "ff_qcd_dm1_njet0{ch}_stat{shift}",
-            "ff_qcd_dm1_njet1{ch}_stat{shift}", "ff_w_syst{shift}",
-            "ff_w_dm0_njet0{ch}_stat{shift}", "ff_w_dm0_njet1{ch}_stat{shift}",
-            "ff_w_dm1_njet0{ch}_stat{shift}", "ff_w_dm1_njet1{ch}_stat{shift}",
-            "ff_tt_syst{shift}", "ff_tt_dm0_njet0_stat{shift}",
-            "ff_tt_dm0_njet1_stat{shift}", "ff_tt_dm1_njet0_stat{shift}",
-            "ff_tt_dm1_njet1_stat{shift}"
+            "ff_qcd{ch}_syst_13TeV{shift}",
+            "ff_qcd_dm0_njet0{ch}_stat_13TeV{shift}",
+            "ff_qcd_dm0_njet1{ch}_stat_13TeV{shift}",
+            "ff_qcd_dm1_njet0{ch}_stat_13TeV{shift}",
+            "ff_qcd_dm1_njet1{ch}_stat_13TeV{shift}", "ff_w_syst_13TeV{shift}",
+            "ff_w_dm0_njet0{ch}_stat_13TeV{shift}",
+            "ff_w_dm0_njet1{ch}_stat_13TeV{shift}",
+            "ff_w_dm1_njet0{ch}_stat_13TeV{shift}",
+            "ff_w_dm1_njet1{ch}_stat_13TeV{shift}", "ff_tt_syst_13TeV{shift}",
+            "ff_tt_dm0_njet0_stat_13TeV{shift}",
+            "ff_tt_dm0_njet1_stat_13TeV{shift}",
+            "ff_tt_dm1_njet0_stat_13TeV{shift}",
+            "ff_tt_dm1_njet1_stat_13TeV{shift}"
     ]:
         for shift_direction in ["Up", "Down"]:
             fake_factor_variations_et.append(
                 ReplaceWeight(
-                    "norm_%s" % (systematic_shift.format(ch='_et', shift="")),
+                    "CMS_%s" % (systematic_shift.format(ch='_et', shift="")),
                     "fake_factor",
                     Weight(
                         "ff2_{syst}".format(
                             syst=systematic_shift.format(
-                                ch="", shift="_%s" % shift_direction.lower())),
+                                ch="", shift="_%s" % shift_direction.lower())
+                            .replace("_13TeV", "")),
                         "fake_factor"), shift_direction))
             fake_factor_variations_mt.append(
                 ReplaceWeight(
-                    "norm_%s" % (systematic_shift.format(ch='_mt', shift="")),
+                    "CMS_%s" % (systematic_shift.format(ch='_mt', shift="")),
                     "fake_factor",
                     Weight(
                         "ff2_{syst}".format(
                             syst=systematic_shift.format(
-                                ch="", shift="_%s" % shift_direction.lower())),
+                                ch="", shift="_%s" % shift_direction.lower())
+                            .replace("_13TeV", "")),
                         "fake_factor"), shift_direction))
     if "et" in [args.gof_channel] + args.channels:
         for variation in fake_factor_variations_et:
@@ -1003,23 +1015,27 @@ def main(args):
                 era=era)
     fake_factor_variations_tt = []
     for systematic_shift in [
-            "ff_qcd{ch}_syst{shift}", "ff_qcd_dm0_njet0{ch}_stat{shift}",
-            "ff_qcd_dm0_njet1{ch}_stat{shift}",
-            "ff_qcd_dm1_njet0{ch}_stat{shift}",
-            "ff_qcd_dm1_njet1{ch}_stat{shift}", "ff_w{ch}_syst{shift}",
-            "ff_tt{ch}_syst{shift}", "ff_w_frac{ch}_syst{shift}",
-            "ff_tt_frac{ch}_syst{shift}", "ff_dy_frac{ch}_syst{shift}"
+            "ff_qcd{ch}_syst_13TeV{shift}",
+            "ff_qcd_dm0_njet0{ch}_stat_13TeV{shift}",
+            "ff_qcd_dm0_njet1{ch}_stat_13TeV{shift}",
+            "ff_qcd_dm1_njet0{ch}_stat_13TeV{shift}",
+            "ff_qcd_dm1_njet1{ch}_stat_13TeV{shift}",
+            "ff_w{ch}_syst_13TeV{shift}", "ff_tt{ch}_syst_13TeV{shift}",
+            "ff_w_frac{ch}_syst_13TeV{shift}",
+            "ff_tt_frac{ch}_syst_13TeV{shift}",
+            "ff_dy_frac{ch}_syst_13TeV{shift}"
     ]:
         for shift_direction in ["Up", "Down"]:
             fake_factor_variations_tt.append(
                 ReplaceWeight(
-                    "norm_%s" % (systematic_shift.format(ch='_tt', shift="")),
+                    "CMS_%s" % (systematic_shift.format(ch='_tt', shift="")),
                     "fake_factor",
                     Weight(
                         "(0.5*ff1_{syst}*(byTightIsolationMVArun2v1DBoldDMwLT_1<0.5)+0.5*ff2_{syst}*(byTightIsolationMVArun2v1DBoldDMwLT_2<0.5))".
                         format(
                             syst=systematic_shift.format(
-                                ch="", shift="_%s" % shift_direction.lower())),
+                                ch="", shift="_%s" % shift_direction.lower())
+                            .replace("_13TeV", "")),
                         "fake_factor"), shift_direction))
     if "tt" in [args.gof_channel] + args.channels:
         for variation in fake_factor_variations_tt:
