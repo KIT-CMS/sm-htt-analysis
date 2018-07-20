@@ -88,10 +88,7 @@ def main(args):
                 channel_categories[channel] += ["1", "2"]
         elif args.stxs_categories == 1:
             for channel in ["et", "mt", "tt"]:
-                channel_categories[channel] += [
-                    "3", "4", "5", "6",
-                    "7", "8"
-                ]
+                channel_categories[channel] += ["1", "2"]
         else:
             logger.critical("Selected unkown STXS categorization {}",
                             args.stxs_categories)
@@ -109,13 +106,9 @@ def main(args):
     else:
         category_dict = {
             "1": "ggH",
-            "3": "ggH, 0 jet",
-            "4": "ggH, 1 jet",
-            "5": "ggH, >= 2 jets",
             "2": "VBF",
-            "6": "VBF, < 2 jets",
-            "7": "VBF, 2 jets",
-            "8": "VBF, > 2 jets",
+            "3": "ggH, unrolled",
+            "4": "VBF, unrolled",
             "12": "Z#rightarrow#tau#tau",
             "15": "Z#rightarrowll",
             "11": "W+jets",
@@ -133,7 +126,11 @@ def main(args):
             split_value = 101
 
     split_dict = {c: split_value for c in ["et", "mt", "tt"]}
-    bkg_processes = ["EWKZ", "VVT", "TTT", "jetFakes", "ZL", "ZTT"] if args.fake_factor else ["EWKZ", "QCD", "VVT", "VVJ", "W", "TTT", "TTJ", "ZJ", "ZL", "ZTT"]
+    bkg_processes = ["EWKZ", "VVT", "TTT", "jetFakes", "ZL",
+                     "ZTT"] if args.fake_factor else [
+                         "EWKZ", "QCD", "VVT", "VVJ", "W", "TTT", "TTJ", "ZJ",
+                         "ZL", "ZTT"
+                     ]
     legend_bkg_processes = copy.deepcopy(bkg_processes)
     legend_bkg_processes.reverse()
 
@@ -143,11 +140,16 @@ def main(args):
     for channel in args.channels:
         for category in channel_categories[channel]:
             # create plot
+            width = 600
+            if args.stxs_categories == 1:
+                if category in ["1", "2"]:
+                    width = 1200
             if args.linear == True:
-                plot = plot = dd.Plot(
-                    [0.3, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14)
+                plot = dd.Plot(
+                    [0.3, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14, width=width)
             else:
-                plot = dd.Plot([0.5, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14)
+                plot = dd.Plot(
+                    [0.5, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14, width=width)
 
             # get background histograms
             for process in bkg_processes:
@@ -312,8 +314,14 @@ def main(args):
             else:
                 logger.critical("Era {} is not implemented.".format(args.era))
                 raise Exception
+
+            posChannelCategoryLabelLeft = None
+            if args.stxs_categories == 1:
+                if category in ["1", "2"]:
+                    posChannelCategoryLabelLeft = 0.075
             plot.DrawChannelCategoryLabel(
-                "%s, %s" % (channel_dict[channel], category_dict[category]))
+                "%s, %s" % (channel_dict[channel], category_dict[category]),
+                begin_left=posChannelCategoryLabelLeft)
 
             # save plot
             postfix = "prefit" if "prefit" in args.input else "postfit" if "postfit" in args.input else "undefined"

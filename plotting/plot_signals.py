@@ -77,10 +77,7 @@ def main(args):
             channel_categories[channel] += ["1", "2"]
     elif args.stxs_categories == 1:
         for channel in ["et", "mt", "tt"]:
-            channel_categories[channel] += [
-                "3", "4", "5", "6",
-                "7", "8"
-            ]
+            channel_categories[channel] += ["1", "2"]
     else:
         logger.critical("Selected unkown STXS categorization {}",
                         args.stxs_categories)
@@ -91,12 +88,11 @@ def main(args):
         signal_linestlyes = [1, 1]
     elif args.stxs_signals == 1:
         signals = [
-            "qqH_VBFTOPO_JET3VETO", "qqH_VBFTOPO_JET3",
-            "qqH_REST", "qqH_PTJET1_GT200", "qqH_VH2JET", "ggH_0J",
-            "ggH_1J_PTH_0_60", "ggH_1J_PTH_60_120", "ggH_1J_PTH_120_200",
-            "ggH_1J_PTH_GT200", "ggH_GE2J_PTH_0_60", "ggH_GE2J_PTH_60_120",
-            "ggH_GE2J_PTH_120_200", "ggH_GE2J_PTH_GT200", "ggH_VBFTOPO_JET3VETO",
-            "ggH_VBFTOPO_JET3"
+            "qqH_VBFTOPO_JET3VETO", "qqH_VBFTOPO_JET3", "qqH_REST",
+            "qqH_PTJET1_GT200", "qqH_VH2JET", "ggH_0J", "ggH_1J_PTH_0_60",
+            "ggH_1J_PTH_60_120", "ggH_1J_PTH_120_200", "ggH_1J_PTH_GT200",
+            "ggH_GE2J_PTH_0_60", "ggH_GE2J_PTH_60_120", "ggH_GE2J_PTH_120_200",
+            "ggH_GE2J_PTH_GT200", "ggH_VBFTOPO_JET3VETO", "ggH_VBFTOPO_JET3"
         ]
         signal_linestlyes = [1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     else:
@@ -115,13 +111,7 @@ def main(args):
 
     category_dict = {
         "1": "ggH",
-        "3": "ggH, 0 jet",
-        "4": "ggH, 1 jet",
-        "5": "ggH, >= 2 jets",
         "2": "VBF",
-        "6": "VBF, < 2 jets",
-        "7": "VBF, 2 jets",
-        "8": "VBF, > 2 jets",
         "12": "Z#rightarrow#tau#tau",
         "15": "Z#rightarrowll",
         "11": "W+jets",
@@ -137,7 +127,11 @@ def main(args):
     for channel in args.channels:
         for category in channel_categories[channel]:
             # Create plot
-            plot = dd.Plot([], "ModTDR", r=0.04, l=0.14)
+            width = 600
+            if args.stxs_categories == 1:
+                if category in ["1", "2"]:
+                    width = 1200
+            plot = dd.Plot([], "ModTDR", r=0.04, l=0.14, width=width)
 
             # Plot signals
             for i, (signal, name) in enumerate(zip(signals, signal_names)):
@@ -176,8 +170,14 @@ def main(args):
             else:
                 logger.critical("Era {} is not implemented.".format(args.era))
                 raise Exception
+
+            posChannelCategoryLabelLeft = None
+            if args.stxs_categories == 1:
+                if category in ["1", "2"]:
+                    posChannelCategoryLabelLeft = 0.075
             plot.DrawChannelCategoryLabel(
-                "%s, %s" % (channel_dict[channel], category_dict[category]))
+                "%s, %s" % (channel_dict[channel], category_dict[category]),
+                begin_left=posChannelCategoryLabelLeft)
 
             # Create legends
             plot.add_legend(width=0.40, height=0.30)
