@@ -2,12 +2,16 @@
 
 BINNING=shapes/binning.yaml
 ERA=$1
-CHANNELS=${@:2}
+EMBEDDING=$2
+CHANNELS=${@:3}
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
+if [ "$EMBEDDING" -eq "1" ] ; then
+source utils/setup_samples_embedding.sh $ERA
+else
 source utils/setup_samples.sh $ERA
-
+fi
 # Produce shapes
 for CHANNEL in $CHANNELS
 do
@@ -21,6 +25,7 @@ do
         --binning $BINNING \
         --channels $CHANNEL \
         --era $ERA \
+        --embedding $EMBEDDING \
         --tag ${ERA}_${CHANNEL} \
         --num-threads 16 # & # NOTE: We are at the file descriptor limit.
     python fake-factors/normalize_shifts.py -i ${ERA}_${CHANNEL}_shapes.root

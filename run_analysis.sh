@@ -16,19 +16,20 @@ done
 # Parse arguments
 ERA=$1               # options: 2016
 CHANNELS=${@:2}      # options: et, mt, tt
-
-# Create shapes of systematics
-./shapes/produce_shapes.sh $ERA $CHANNELS
-
-# Apply blinding strategy
-#./shapes/apply_blinding.sh $ERA
-
-# Write datacard
 STXS_SIGNALS=0       # options: 0, 1
 STXS_CATEGORIES=0    # options: 0, 1
 STXS_FIT="inclusive" # options: 0, 1, inclusive
 JETFAKES=0           # options: 0, 1
 EMBEDDING=0          # options: 0, 1
+
+# Create shapes of systematics
+./shapes/produce_shapes.sh $ERA $EMBEDDING $CHANNELS
+
+# Apply blinding strategy
+#./shapes/apply_blinding.sh $ERA
+
+# Write datacard
+
 ./datacards/produce_datacard.sh $ERA $STXS_SIGNALS $STXS_CATEGORIES $STXS_FIT $JETFAKES $EMBEDDING $CHANNELS
 
 # Run statistical inference

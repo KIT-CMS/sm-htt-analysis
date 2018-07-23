@@ -117,8 +117,8 @@ def parse_arguments():
         help="Backend. Use classic or tdf.")
     parser.add_argument(
         "--embedding",
-        action="store_true",
-        default=False,
+        default="0",
+        choices=["0", "1"],
         help="Use mu->tau embedded samples as ZTT background estimation.")
     parser.add_argument(
         "--tag", default="ERA_CHANNEL", type=str, help="Tag of output files.")
@@ -149,6 +149,7 @@ def main(args):
 
     # Channels and processes
     # yapf: disable
+    useEmbedded = True if args.embedding=="1" else False
     directory = args.directory
     et_friend_directory = args.et_friend_directory
     mt_friend_directory = args.mt_friend_directory
@@ -158,7 +159,7 @@ def main(args):
     if args.QCD_extrap_fit:
         mt.cuts.remove("muon_iso")
         mt.cuts.add(Cut("(iso_1<0.5)*(iso_1>=0.15)", "muon_iso_loose"))
-    if args.embedding:
+    if useEmbedded:
         mt.cuts.remove("trg_singlemuoncross")
         mt.cuts.add(Cut("(trg_singlemuon==1 && pt_1>23 && pt_2>30)", "trg_singlemuon"))
     mt_processes = {
@@ -194,7 +195,7 @@ def main(args):
         "EWKZ"  : Process("EWKZ",     EWKZEstimation  (era, directory, mt, friend_directory=mt_friend_directory)),
         "FAKES" : Process("jetFakes",    FakeEstimationLT(era, directory, mt, friend_directory=[mt_friend_directory, ff_friend_directory]))
         }
-    if args.embedding:
+    if useEmbedded:
         mt_processes["ZTT"] = Process("ZTT", ZTTEmbeddedEstimation(era, directory, mt, friend_directory=mt_friend_directory))
         mt_processes["TTT"] = Process("TTT", TTLEstimationMT (era, directory, mt, friend_directory=mt_friend_directory))
     mt_processes["QCD"] = Process("QCD", QCDEstimationMT(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VVT", "VVJ", "EWKZ"]], mt_processes["data"], extrapolation_factor=1.17))
@@ -235,7 +236,7 @@ def main(args):
         "EWKZ"  : Process("EWKZ",     EWKZEstimation  (era, directory, et, friend_directory=et_friend_directory)),
         "FAKES" : Process("jetFakes",    FakeEstimationLT(era, directory, et, friend_directory=[et_friend_directory, ff_friend_directory]))
         }
-    if args.embedding:
+    if useEmbedded:
         et_processes["ZTT"] = Process("ZTT", ZTTEmbeddedEstimation(era, directory, et, friend_directory=et_friend_directory))
         et_processes["TTT"] = Process("TTT", TTLEstimationET (era, directory, et, friend_directory=et_friend_directory))
     et_processes["QCD"] = Process("QCD", QCDEstimationET(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VVT", "VVJ", "EWKZ"]], et_processes["data"], extrapolation_factor=1.16))
@@ -244,6 +245,9 @@ def main(args):
         tt.cuts.get("os").invert()
     if args.HIG16043:
         tt.cuts.remove("pt_h")
+    if useEmbedded:
+        tt.cuts.remove("trg_doubletau")
+        tt.cuts.add(Cut("(pt_1>50 && pt_2>40)*(generatorWeight<1.0)+(pt_1>50 && pt_2>40 && trg_doubletau==1)*(generatorWeight>=1)", "trg_doubletau_emb"))
     tt_processes = {
         "data"  : Process("data_obs", DataEstimation  (era, directory, tt, friend_directory=tt_friend_directory)),
         "HTT"   : Process("HTT",      HTTEstimation   (era, directory, tt, friend_directory=tt_friend_directory)),
@@ -277,7 +281,7 @@ def main(args):
         "EWKZ"  : Process("EWKZ",     EWKZEstimation  (era, directory, tt, friend_directory=tt_friend_directory)),
         "FAKES" : Process("jetFakes",    FakeEstimationTT(era, directory, tt, friend_directory=[tt_friend_directory, ff_friend_directory]))
         }
-    if args.embedding:
+    if useEmbedded:
         tt_processes["ZTT"] = Process("ZTT", ZTTEmbeddedEstimation(era, directory, tt, friend_directory=tt_friend_directory))
         tt_processes["TTT"] = Process("TTT", TTLEstimationTT (era, directory, tt, friend_directory=tt_friend_directory))
 
@@ -574,7 +578,7 @@ def main(args):
         for process_nick in [
                 "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VVT", "VVJ", "EWKZ"
         ] + signal_nicks:
-            if args.embedding and process_nick == 'ZTT':
+            if useEmbedded and process_nick == 'ZTT':
                 continue
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -606,7 +610,7 @@ def main(args):
         for process_nick in [
                 "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VVT", "VVJ", "EWKZ"
         ] + signal_nicks:
-            if args.embedding and process_nick == 'ZTT':
+            if useEmbedded and process_nick == 'ZTT':
                 continue
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -632,7 +636,7 @@ def main(args):
         "CMS_htt_dyShape_13TeV", "zPtReweightWeight", SquareAndRemoveWeight)
     for variation in zpt_variations:
         for process_nick in ["ZTT", "ZL", "ZJ"]:
-            if args.embedding and process_nick == 'ZTT':
+            if useEmbedded and process_nick == 'ZTT':
                 continue
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -817,7 +821,7 @@ def main(args):
         for process_nick in [
                 "ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "VVT", "VVJ", "EWKZ"
         ] + signal_nicks:
-            if args.embedding and process_nick == 'ZTT':
+            if useEmbedded and process_nick == 'ZTT':
                 continue
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -837,9 +841,84 @@ def main(args):
                     process=tt_processes[process_nick],
                     channel=tt,
                     era=era)
-    if args.embedding:
+    if useEmbedded:
         # Embedded event specifics
-
+        # Hadronic tau tracking efficiency scale factors
+        mt_decayMode_variations = []
+        mt_decayMode_variations.append(
+            ReplaceWeight("CMS_3ProngEff", "decayMode_SF",
+                          Weight("embeddedDecayModeWeight_effUp_pi0Nom",
+                                 "decayMode_SF"), "Up"))
+        mt_decayMode_variations.append(
+            ReplaceWeight("CMS_3ProngEff", "decayMode_SF",
+                          Weight("embeddedDecayModeWeight_effDown_pi0Nom",
+                                 "decayMode_SF"), "Down"))
+        mt_decayMode_variations.append(
+            ReplaceWeight("CMS_1ProngPi0Eff", "decayMode_SF",
+                          Weight("embeddedDecayModeWeight_effNom_pi0Up",
+                                 "decayMode_SF"), "Up"))
+        mt_decayMode_variations.append(
+            ReplaceWeight("CMS_1ProngPi0Eff", "decayMode_SF",
+                          Weight("embeddedDecayModeWeight_effNom_pi0Down",
+                                 "decayMode_SF"), "Down"))
+        for variation in mt_decayMode_variations:
+            for process_nick in ["ZTT"]:
+                if "mt" in args.channels:
+                    systematics.add_systematic_variation(
+                        variation=variation,
+                        process=mt_processes[process_nick],
+                        channel=mt,
+                        era=era)
+        et_decayMode_variations = []
+        et_decayMode_variations.append(
+            ReplaceWeight("CMS_3ProngEff", "decayMode_SF",
+                          Weight("embeddedDecayModeWeight_effUp_pi0Nom",
+                                 "decayMode_SF"), "Up"))
+        et_decayMode_variations.append(
+            ReplaceWeight("CMS_3ProngEff", "decayMode_SF",
+                          Weight("embeddedDecayModeWeight_effDown_pi0Nom",
+                                 "decayMode_SF"), "Down"))
+        et_decayMode_variations.append(
+            ReplaceWeight("CMS_1ProngPi0Eff", "decayMode_SF",
+                          Weight("embeddedDecayModeWeight_effNom_pi0Up",
+                                 "decayMode_SF"), "Up"))
+        et_decayMode_variations.append(
+            ReplaceWeight("CMS_1ProngPi0Eff", "decayMode_SF",
+                          Weight("embeddedDecayModeWeight_effNom_pi0Down",
+                                 "decayMode_SF"), "Down"))
+        for variation in et_decayMode_variations:
+            for process_nick in ["ZTT"]:
+                if "et" in args.channels:
+                    systematics.add_systematic_variation(
+                        variation=variation,
+                        process=et_processes[process_nick],
+                        channel=et,
+                        era=era)
+        tt_decayMode_variations = []
+        tt_decayMode_variations.append(
+            ReplaceWeight("CMS_3ProngEff", "decayMode_SF",
+                          Weight("embeddedDecayModeWeight_effUp_pi0Nom",
+                                 "decayMode_SF"), "Up"))
+        tt_decayMode_variations.append(
+            ReplaceWeight("CMS_3ProngEff", "decayMode_SF",
+                          Weight("embeddedDecayModeWeight_effDown_pi0Nom",
+                                 "decayMode_SF"), "Down"))
+        tt_decayMode_variations.append(
+            ReplaceWeight("CMS_1ProngPi0Eff", "decayMode_SF",
+                          Weight("embeddedDecayModeWeight_effNom_pi0Up",
+                                 "decayMode_SF"), "Up"))
+        tt_decayMode_variations.append(
+            ReplaceWeight("CMS_1ProngPi0Eff", "decayMode_SF",
+                          Weight("embeddedDecayModeWeight_effNom_pi0Down",
+                                 "decayMode_SF"), "Down"))
+        for variation in tt_decayMode_variations:
+            for process_nick in ["ZTT"]:
+                if "tt" in args.channels:
+                    systematics.add_systematic_variation(
+                        variation=variation,
+                        process=tt_processes[process_nick],
+                        channel=tt,
+                        era=era)
         # 10% removed events in ttbar simulation (ttbar -> real tau tau events) will be added/subtracted to ZTT shape to use as systematic
         tttautau_process_mt = Process(
             "TTTT",
@@ -884,18 +963,6 @@ def main(args):
                         era=era,
                         variation=Relabel("CMS_htt_emb_ttbar", "Up"),
                         mass="125"))
-
-                #Muon ES uncertainty (needed for smearing due to initial reconstruction)
-                muon_es_variations = create_systematic_variations(
-                    "CMS_scale_muonES", "muonES", DifferentPipeline)
-                for variation in muon_es_variations:
-                    for process_nick in ["ZTT"]:
-                        if "mt" in [args.gof_channel] + args.channels:
-                            systematics.add_systematic_variation(
-                                variation=variation,
-                                process=mt_processes[process_nick],
-                                channel=mt,
-                                era=era)
 
         if 'et' in [args.gof_channel] + args.channels:
             for category in et_categories:
@@ -1044,7 +1111,6 @@ def main(args):
                 process=tt_processes["FAKES"],
                 channel=tt,
                 era=era)
-
     # Produce histograms
     logger.info("Start producing shapes.")
     systematics.produce()
@@ -1054,9 +1120,4 @@ def main(args):
 if __name__ == "__main__":
     args = parse_arguments()
     setup_logging("{}_produce_shapes.log".format(args.tag), logging.INFO)
-    if ('tt' in args.channels or 'em' in args.channels) and args.embedding:
-        logger.fatal(
-            "Channels tt and em not yet considered for embedded background estimation."
-        )
-        raise Exception
     main(args)
