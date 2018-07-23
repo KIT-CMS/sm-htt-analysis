@@ -17,7 +17,7 @@ cd ../..
 
 # Clone CombineHarvester
 # NOTE: stwunsch/CombineHarvester:SMHTT2017-dev is synced with the official repository cms-analysis/CombineHarvester:SMHTT2017-dev
-git clone https://github.com/stwunsch/CombineHarvester CombineHarvester -b SMHTT2017-dev
+git clone https://github.com/KIT-CMS/CombineHarvester CombineHarvester -b SMHTT2017-dev
 mkdir -p CombineHarvester/HTTSM2017/shapes
 
 # Build
