@@ -16,10 +16,10 @@ then
     exit
 fi
 
+EMBEDDING_ARG=""
 if [ $EMBEDDING == 1 ]
 then
-    echo "[ERROR] Plotting for embedding ist not yet implemented."
-    exit
+    EMBEDDING_ARG="--embedding"
 fi
 
 JETFAKES_ARG=""
@@ -33,6 +33,6 @@ for FILE in "${ERA}_datacard_shapes_prefit.root" "${ERA}_datacard_shapes_postfit
 do
     for OPTION in "" "--png"
     do
-        ./plotting/plot_shapes.py -i $FILE -c $CHANNELS -e $ERA $OPTION --stxs-categories $STXS_CATEGORIES $JETFAKES_ARG
+        ./plotting/plot_shapes.py -i $FILE -c $CHANNELS -e $ERA $OPTION --stxs-categories $STXS_CATEGORIES $JETFAKES_ARG $EMBEDDING_ARG
     done
 done
