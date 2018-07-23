@@ -54,6 +54,14 @@ def parse_arguments():
         "--fake-factor",
         action="store_true",
         help="Fake factor estimation method used")
+    parser.add_argument(
+        "--embedding",
+        action="store_true",
+        help="Fake factor estimation method used")
+    parser.add_argument(
+        "--chi2test",
+        action="store_true",
+        help="Print chi2/ndf result in upper-right of subplot")
 
     return parser.parse_args()
 
@@ -126,11 +134,19 @@ def main(args):
             split_value = 101
 
     split_dict = {c: split_value for c in ["et", "mt", "tt"]}
-    bkg_processes = ["EWKZ", "VVT", "TTT", "jetFakes", "ZL",
-                     "ZTT"] if args.fake_factor else [
-                         "EWKZ", "QCD", "VVT", "VVJ", "W", "TTT", "TTJ", "ZJ",
-                         "ZL", "ZTT"
-                     ]
+
+    bkg_processes = [
+        "EWKZ", "QCD", "VVT", "VVJ", "W", "TTT", "TTJ", "ZJ", "ZL", "ZTT"
+    ]
+
+    if args.embedding:
+        bkg_processes = [b for b in bkg_processes
+                         if b not in ["ZTT", "TTT"]] + ["EMB", "TTL"]
+    if args.fake_factor:
+        bkg_processes = [
+            b for b in bkg_processes if b not in ["QCD", "VVJ", "TTJ", "W"]
+        ] + ["jetFakes"]
+    all_bkg_processes = [b for b in bkg_processes]
     legend_bkg_processes = copy.deepcopy(bkg_processes)
     legend_bkg_processes.reverse()
 
@@ -138,6 +154,18 @@ def main(args):
 
     plots = []
     for channel in args.channels:
+        if channel == "tt":
+            if args.embedding:
+                bkg_processes = [
+                    b for b in all_bkg_processes if b is not "TTL"
+                ]
+            else:
+                bkg_processes = [b for b in all_bkg_processes]
+        else:
+            bkg_processes = [b for b in all_bkg_processes]
+        legend_bkg_processes = copy.deepcopy(bkg_processes)
+        legend_bkg_processes.reverse()
+
         for category in channel_categories[channel]:
             # create plot
             width = 600
@@ -278,6 +306,7 @@ def main(args):
             # create legends
             suffix = ["", "_top"]
             for i in range(2):
+
                 plot.add_legend(width=0.48, height=0.15)
                 for process in legend_bkg_processes:
                     plot.legend(i).add_entry(
@@ -290,6 +319,18 @@ def main(args):
             plot.legend(0).Draw()
             plot.legend(1).setAlpha(0.0)
             plot.legend(1).Draw()
+
+            if args.chi2test:
+                f = r.TFile(args.input, "read")
+                background = f.Get("{}_{}_{}/TotalBkg".format(
+                    channel, category, "prefit"
+                    if "prefit" in args.input else "postfit"))
+                data = f.Get("{}_{}_{}/data_obs".format(
+                    channel, category, "prefit"
+                    if "prefit" in args.input else "postfit"))
+                chi2 = data.Chi2Test(background, "UW CHI2/NDF")
+                plot.DrawText(0.7, 0.3,
+                              "\chi^{2}/ndf = " + str(round(chi2, 3)))
 
             for i in range(2):
                 plot.add_legend(
