@@ -144,7 +144,7 @@ def main(args):
                          if b not in ["ZTT", "TTT"]] + ["EMB", "TTL"]
     if args.fake_factor:
         bkg_processes = [
-            b for b in bkg_processes if b not in ["QCD", "VVJ", "TTJ", "W"]
+            b for b in bkg_processes if b not in ["QCD", "VVJ", "TTJ", "W", "ZJ"]
         ] + ["jetFakes"]
     all_bkg_processes = [b for b in bkg_processes]
     legend_bkg_processes = copy.deepcopy(bkg_processes)
