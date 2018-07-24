@@ -30,11 +30,6 @@ def parse_arguments():
         "--database", required=True, help="Path to Kappa datasets database")
     parser.add_argument("--channel", required=True, help="Analysis channel")
     parser.add_argument("--output", required=True, help="Output filelist")
-    parser.add_argument(
-        "--embedding",
-        action="store_true",
-        default=False,
-        help="Use mu->tau embedded samples as ZTT background estimation.")
     return parser.parse_args()
 
 

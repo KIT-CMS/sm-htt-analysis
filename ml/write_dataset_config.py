@@ -48,11 +48,6 @@ def parse_arguments():
         "--output-config", required=True, help="Output dataset config file")
     parser.add_argument(
         "--database", required=True, help="Kappa datsets database.")
-    parser.add_argument(
-        "--embedding",
-        action="store_true",
-        default=False,
-        help="Use mu->tau embedded samples as ZTT background estimation.")
     return parser.parse_args()
 
 
