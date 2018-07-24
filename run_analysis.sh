@@ -23,6 +23,9 @@ CHANNELS=${@:2}      # options: et, mt, tt
 # Apply blinding strategy
 #./shapes/apply_blinding.sh $ERA
 
+# Convert shapes to synced format
+./shapes/convert_to_synced_shapes.sh $ERA
+
 # Write datacard
 STXS_SIGNALS=0       # options: 0, 1
 STXS_CATEGORIES=0    # options: 0, 1

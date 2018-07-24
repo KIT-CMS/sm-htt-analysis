@@ -29,6 +29,3 @@ done
 wait
 
 hadd -f ${ERA}_shapes.root ${ERA}_*_shapes.root
-
-# Convert shapes to synced format
-python shapes/convert_to_synced_shapes.py ${ERA}_shapes.root .
