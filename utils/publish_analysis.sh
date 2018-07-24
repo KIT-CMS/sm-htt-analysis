@@ -16,6 +16,8 @@ do
 
     cp ml/${ERA}_${CHANNEL}/*.png ${OUTPUT_PATH}/${ERA}_${CHANNEL}/
     cp ml/${ERA}_${CHANNEL}/*.txt ${OUTPUT_PATH}/${ERA}_${CHANNEL}/
+    cp ml/${ERA}_${CHANNEL}/*.h5 ${OUTPUT_PATH}/${ERA}_${CHANNEL}/
+    cp ml/${ERA}_${CHANNEL}/*.pickle ${OUTPUT_PATH}/${ERA}_${CHANNEL}/
 done
 
 # Logs
