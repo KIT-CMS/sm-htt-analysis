@@ -321,11 +321,12 @@ def main(args):
             plot.legend(1).Draw()
 
             if args.chi2test:
+                import ROOT as r
                 f = r.TFile(args.input, "read")
-                background = f.Get("{}_{}_{}/TotalBkg".format(
+                background = f.Get("htt_{}_{}_13TeV_{}/TotalBkg".format(
                     channel, category, "prefit"
                     if "prefit" in args.input else "postfit"))
-                data = f.Get("{}_{}_{}/data_obs".format(
+                data = f.Get("htt_{}_{}_13TeV_{}/data_obs".format(
                     channel, category, "prefit"
                     if "prefit" in args.input else "postfit"))
                 chi2 = data.Chi2Test(background, "UW CHI2/NDF")
