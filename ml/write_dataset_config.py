@@ -96,9 +96,11 @@ def main(args):
             "ggH": "ggh",
             "qqH": "qqh",
             "ZTT": "ztt",
+            "EMB": "ztt",
             "ZL": "zll",
             "ZJ": "zll",
             "TTT": "tt",
+            "TTL": "tt",
             "TTJ": "tt",
             "W": "w",
             "EWKWp": "w",
@@ -110,14 +112,12 @@ def main(args):
         for estimation in [
                 ggHEstimation(era, args.base_path, channel),
                 qqHEstimation(era, args.base_path, channel),
-                ZTTEstimation(era, args.base_path, channel)
-                if not args.embedding else ZTTEmbeddedEstimation(
-                    era, args.base_path, channel),
+                ZTTEstimation(era, args.base_path, channel),
+                ZTTEmbeddedEstimation(era, args.base_path, channel),
                 ZLEstimationMTSM(era, args.base_path, channel),
                 ZJEstimationMT(era, args.base_path, channel),
-                TTTEstimationMT(era, args.base_path, channel)
-                if not args.embedding else TTTNoTauTauEstimationMT(
-                    era, args.base_path, channel),
+                TTTEstimationMT(era, args.base_path, channel),
+                TTLEstimationMT(era, args.base_path, channel),
                 TTJEstimationMT(era, args.base_path, channel),
                 WEstimationRaw(era, args.base_path, channel),
                 EWKWpEstimation(era, args.base_path, channel),
@@ -177,9 +177,11 @@ def main(args):
             "ggH": "ggh",
             "qqH": "qqh",
             "ZTT": "ztt",
+            "EMB": "ztt",
             "ZL": "zll",
             "ZJ": "zll",
             "TTT": "tt",
+            "TTL": "tt",
             "TTJ": "tt",
             "W": "w",
             "EWKWp": "w",
@@ -191,14 +193,12 @@ def main(args):
         for estimation in [
                 ggHEstimation(era, args.base_path, channel),
                 qqHEstimation(era, args.base_path, channel),
-                ZTTEstimation(era, args.base_path, channel)
-                if not args.embedding else ZTTEmbeddedEstimation(
-                    era, args.base_path, channel),
+                ZTTEstimation(era, args.base_path, channel),
+                ZTTEmbeddedEstimation(era, args.base_path, channel),
                 ZLEstimationETSM(era, args.base_path, channel),
                 ZJEstimationET(era, args.base_path, channel),
-                TTTEstimationET(era, args.base_path, channel)
-                if not args.embedding else TTTNoTauTauEstimationET(
-                    era, args.base_path, channel),
+                TTTEstimationET(era, args.base_path, channel),
+                TTLEstimationET(era, args.base_path, channel),
                 TTJEstimationET(era, args.base_path, channel),
                 WEstimationRaw(era, args.base_path, channel),
                 EWKWpEstimation(era, args.base_path, channel),
@@ -258,9 +258,11 @@ def main(args):
             "ggH": "ggh",
             "qqH": "qqh",
             "ZTT": "ztt",
+            "EMB": "ztt",
             "ZL": "misc",
             "ZJ": "misc",
             "TTT": "misc",
+            "TTL": "misc",
             "TTJ": "misc",
             "W": "misc",
             "EWKWp": "misc",
@@ -272,14 +274,12 @@ def main(args):
         for estimation in [
                 ggHEstimation(era, args.base_path, channel),
                 qqHEstimation(era, args.base_path, channel),
-                ZTTEstimationTT(era, args.base_path, channel)
-                if not args.embedding else ZTTEmbeddedEstimation(
-                    era, args.base_path, channel),
+                ZTTEstimationTT(era, args.base_path, channel),
+                ZTTEmbeddedEstimation(era, args.base_path, channel),
                 ZLEstimationTT(era, args.base_path, channel),
                 ZJEstimationTT(era, args.base_path, channel),
-                TTTEstimationTT(era, args.base_path, channel)
-                if not args.embedding else TTTNoTauTauEstimationTT(
-                    era, args.base_path, channel),
+                TTTEstimationTT(era, args.base_path, channel),
+                TTLEstimationTT(era, args.base_path, channel),
                 TTJEstimationTT(era, args.base_path, channel),
                 WEstimationRaw(era, args.base_path, channel),
                 EWKWpEstimation(era, args.base_path, channel),
