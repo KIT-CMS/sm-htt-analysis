@@ -1,48 +1,79 @@
+# Declare binnings that will be reused
+ggh_full_unrolling: &ggh_full_unrolling
+    [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0,
+          1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8,
+          1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6,
+          2.7, 2.8, 2.9, 3.0, 3.1, 3.2, 3.3, 3.4,
+          3.5, 3.6, 3.7, 3.8, 3.9, 4.0, 4.1, 4.2,
+          4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 5.0,
+          5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8,
+          5.9, 6.0, 6.1, 6.2, 6.3, 6.4, 6.5, 6.6]
+
+qqh_full_unrolling: &qqh_full_unrolling
+    [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0,
+          1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8,
+          1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6,
+          2.7, 2.8, 2.9, 3.0, 3.1, 3.2, 3.3, 3.4]
+
+standard_binning: &standard_binning
+    [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+
+# Define binning
 analysis:
   et:
-    ggh:  [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    qqh:  [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    ztt:  [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    zll:  [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    w:    [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    tt:   [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    ss:   [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    misc: [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+    ggh:          *standard_binning
+    qqh:          *standard_binning
+    ztt:          *standard_binning
+    zll:          *standard_binning
+    w:            *standard_binning
+    tt:           *standard_binning
+    ss:           *standard_binning
+    misc:         *standard_binning
+    ggh_unrolled: *ggh_full_unrolling
+    qqh_unrolled: *qqh_full_unrolling
   mt:
-    ggh:  [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    qqh:  [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    ztt:  [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    zll:  [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    w:    [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    tt:   [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    ss:   [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    misc: [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+    ggh:          *standard_binning
+    qqh:          *standard_binning
+    ztt:          *standard_binning
+    zll:          *standard_binning
+    w:            *standard_binning
+    tt:           *standard_binning
+    ss:           *standard_binning
+    misc:         *standard_binning
+    ggh_unrolled: *ggh_full_unrolling
+    qqh_unrolled: *qqh_full_unrolling
   tt:
-    ggh:    [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    qqh:    [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    ztt:    [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    noniso: [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    misc:   [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+    ggh:          *standard_binning
+    qqh:          *standard_binning
+    ztt:          *standard_binning
+    noniso:       *standard_binning
+    misc:         *standard_binning
+    ggh_unrolled: *ggh_full_unrolling
+    qqh_unrolled: *qqh_full_unrolling
+
+# Define STXS stage 1 cuts for unrolling
 stxs_stage1:
     ggh:
         - "(njets==0)"
-        - "(njets==1)"
-        - "(njets>=2)"
-          #- "(njets==1)*(pt_tt>0)*(pt_tt<60)"
-          #- "(njets==1)*(pt_tt>60)*(pt_tt<120)"
-          #- "(njets==1)*(pt_tt>120)*(pt_tt<200)"
-          #- "(njets==1)*(pt_tt>200)"
-          #- "(njets>=2)*(pt_tt>0)*(pt_tt<60)"
-          #- "(njets>=2)*(pt_tt>60)*(pt_tt<120)"
-          #- "(njets>=2)*(pt_tt>120)*(pt_tt<200)"
+          #- "(njets==1)"
+          #- "(njets>=2)"
+        - "(njets==1)*(pt_tt>0)*(pt_tt<60)"
+        - "(njets==1)*(pt_tt>60)*(pt_tt<120)"
+        - "(njets==1)*(pt_tt>120)*(pt_tt<200)"
+        - "(njets==1)*(pt_tt>200)"
+        - "(njets>=2)*(pt_tt>0)*(pt_tt<60)"
+        - "(njets>=2)*(pt_tt>60)*(pt_tt<120)"
+        - "(njets>=2)*(pt_tt>120)*(pt_tt<200)"
     qqh:
-        - "(njets<2)"
-        - "(njets==2)"
-        - "(njets>2)"
-        #- "(jpt_1>0)*(jpt_1<200)*(njets>=2)*(mjj>400)*(jdeta<2.8)"
-        #- "(jpt_1>0)*(jpt_1<200)*(njets>=2)*(mjj>60)*(mjj<120)"
-        #- "(jpt_1>0)*(jpt_1<200)*(njets<2)"
-        #- "(jpt_1>200)"
+        #- "(njets<2)"
+          #- "(njets==2)"
+          #- "(njets>2)"
+        - "(jpt_1>0)*(jpt_1<200)*(njets>2)"
+        - "(jpt_1>0)*(jpt_1<200)*(njets==2)"
+        - "(jpt_1>0)*(jpt_1<200)*(njets<2)"
+        - "(jpt_1>200)"
+
+# Goodness of fit binnings
 gof:
   mt:
     m_vis:

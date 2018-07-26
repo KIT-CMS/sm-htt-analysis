@@ -310,18 +310,15 @@ def main(args):
                         Cut("et_max_index=={index}".format(index=i), "exclusive_score")),
                     variable=score))
             if label in ["ggh", "qqh"]:
-                binning_unrolled = [binning["analysis"]["et"][label][0]]
                 expression = ""
                 for i_e, e in enumerate(binning["stxs_stage1"][label]):
                     offset = (binning["analysis"]["et"][label][-1]-binning["analysis"]["et"][label][0])*i_e
                     expression += "{STXSBIN}*(et_max_score+{OFFSET})".format(STXSBIN=e, OFFSET=offset)
                     if not e is binning["stxs_stage1"][label][-1]:
                         expression += " + "
-                    for b in binning["analysis"]["et"][label][1:]:
-                        binning_unrolled.append(b+offset)
                 score_unrolled = Variable(
                     "et_max_score_unrolled",
-                     VariableBinning(binning_unrolled),
+                     VariableBinning(binning["analysis"]["et"][label+"_unrolled"]),
                      expression=expression)
                 et_categories.append(
                     Category(
@@ -379,18 +376,15 @@ def main(args):
                         Cut("mt_max_index=={index}".format(index=i), "exclusive_score")),
                     variable=score))
             if label in ["ggh", "qqh"]:
-                binning_unrolled = [binning["analysis"]["mt"][label][0]]
                 expression = ""
                 for i_e, e in enumerate(binning["stxs_stage1"][label]):
                     offset = (binning["analysis"]["mt"][label][-1]-binning["analysis"]["mt"][label][0])*i_e
                     expression += "{STXSBIN}*(mt_max_score+{OFFSET})".format(STXSBIN=e, OFFSET=offset)
                     if not e is binning["stxs_stage1"][label][-1]:
                         expression += " + "
-                    for b in binning["analysis"]["mt"][label][1:]:
-                        binning_unrolled.append(b+offset)
                 score_unrolled = Variable(
                     "mt_max_score_unrolled",
-                     VariableBinning(binning_unrolled),
+                     VariableBinning(binning["analysis"]["mt"][label+"_unrolled"]),
                      expression=expression)
                 mt_categories.append(
                     Category(
@@ -448,18 +442,15 @@ def main(args):
                         Cut("tt_max_index=={index}".format(index=i), "exclusive_score")),
                     variable=score))
             if label in ["ggh", "qqh"]:
-                binning_unrolled = [binning["analysis"]["tt"][label][0]]
                 expression = ""
                 for i_e, e in enumerate(binning["stxs_stage1"][label]):
                     offset = (binning["analysis"]["tt"][label][-1]-binning["analysis"]["tt"][label][0])*i_e
                     expression += "{STXSBIN}*(tt_max_score+{OFFSET})".format(STXSBIN=e, OFFSET=offset)
                     if not e is binning["stxs_stage1"][label][-1]:
                         expression += " + "
-                    for b in binning["analysis"]["tt"][label][1:]:
-                        binning_unrolled.append(b+offset)
                 score_unrolled = Variable(
                     "tt_max_score_unrolled",
-                     VariableBinning(binning_unrolled),
+                     VariableBinning(binning["analysis"]["tt"][label+"_unrolled"]),
                      expression=expression)
                 tt_categories.append(
                     Category(
