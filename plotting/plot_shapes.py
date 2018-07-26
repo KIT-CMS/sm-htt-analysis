@@ -138,14 +138,18 @@ def main(args):
     bkg_processes = [
         "EWKZ", "QCD", "VVT", "VVJ", "W", "TTT", "TTJ", "ZJ", "ZL", "ZTT"
     ]
-
-    if args.embedding:
-        bkg_processes = [b for b in bkg_processes
-                         if b not in ["ZTT", "TTT"]] + ["EMB", "TTL"]
     if args.fake_factor:
         bkg_processes = [
             b for b in bkg_processes if b not in ["QCD", "VVJ", "TTJ", "W", "ZJ"]
         ] + ["jetFakes"]
+    if args.embedding:
+        bkg_processes = [b for b in bkg_processes
+                         if b not in ["ZTT", "TTT"]] + ["TTL", "EMB"]
+    else: #keep ordering consistent
+        bkg_processes.remove("ZTT")
+        bkg_processes.remove("TTT")
+        bkg_processes.append("TTT")
+        bkg_processes.append("ZTT")
     all_bkg_processes = [b for b in bkg_processes]
     legend_bkg_processes = copy.deepcopy(bkg_processes)
     legend_bkg_processes.reverse()
@@ -307,7 +311,7 @@ def main(args):
             suffix = ["", "_top"]
             for i in range(2):
 
-                plot.add_legend(width=0.48, height=0.15)
+                plot.add_legend(width=0.6, height=0.15)
                 for process in legend_bkg_processes:
                     plot.legend(i).add_entry(
                         0, process, styles.legend_label_dict[process], 'f')
