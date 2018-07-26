@@ -818,21 +818,25 @@ def main(args):
     # Embedded event specifics
     mt_decayMode_variations = []
     mt_decayMode_variations.append(
-        ReplaceWeight("CMS_3ProngEff_13TeV", "decayMode_SF",
-                      Weight("embeddedDecayModeWeight_effUp_pi0Nom",
-                             "decayMode_SF"), "Up"))
+        ReplaceWeight(
+            "CMS_3ProngEff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effUp_pi0Nom", "decayMode_SF"),
+            "Up"))
     mt_decayMode_variations.append(
-        ReplaceWeight("CMS_3ProngEff_13TeV", "decayMode_SF",
-                      Weight("embeddedDecayModeWeight_effDown_pi0Nom",
-                             "decayMode_SF"), "Down"))
+        ReplaceWeight(
+            "CMS_3ProngEff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effDown_pi0Nom", "decayMode_SF"),
+            "Down"))
     mt_decayMode_variations.append(
-        ReplaceWeight("CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
-                      Weight("embeddedDecayModeWeight_effNom_pi0Up",
-                             "decayMode_SF"), "Up"))
+        ReplaceWeight(
+            "CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effNom_pi0Up", "decayMode_SF"),
+            "Up"))
     mt_decayMode_variations.append(
-        ReplaceWeight("CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
-                      Weight("embeddedDecayModeWeight_effNom_pi0Down",
-                             "decayMode_SF"), "Down"))
+        ReplaceWeight(
+            "CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effNom_pi0Down", "decayMode_SF"),
+            "Down"))
     for variation in mt_decayMode_variations:
         for process_nick in ["EMB"]:
             if "mt" in args.channels:
@@ -843,21 +847,25 @@ def main(args):
                     era=era)
     et_decayMode_variations = []
     et_decayMode_variations.append(
-        ReplaceWeight("CMS_3ProngEff_13TeV", "decayMode_SF",
-                      Weight("embeddedDecayModeWeight_effUp_pi0Nom",
-                             "decayMode_SF"), "Up"))
+        ReplaceWeight(
+            "CMS_3ProngEff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effUp_pi0Nom", "decayMode_SF"),
+            "Up"))
     et_decayMode_variations.append(
-        ReplaceWeight("CMS_3ProngEff_13TeV", "decayMode_SF",
-                      Weight("embeddedDecayModeWeight_effDown_pi0Nom",
-                             "decayMode_SF"), "Down"))
+        ReplaceWeight(
+            "CMS_3ProngEff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effDown_pi0Nom", "decayMode_SF"),
+            "Down"))
     et_decayMode_variations.append(
-        ReplaceWeight("CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
-                      Weight("embeddedDecayModeWeight_effNom_pi0Up",
-                             "decayMode_SF"), "Up"))
+        ReplaceWeight(
+            "CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effNom_pi0Up", "decayMode_SF"),
+            "Up"))
     et_decayMode_variations.append(
-        ReplaceWeight("CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
-                      Weight("embeddedDecayModeWeight_effNom_pi0Down",
-                             "decayMode_SF"), "Down"))
+        ReplaceWeight(
+            "CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effNom_pi0Down", "decayMode_SF"),
+            "Down"))
     for variation in et_decayMode_variations:
         for process_nick in ["EMB"]:
             if "et" in args.channels:
@@ -868,21 +876,25 @@ def main(args):
                     era=era)
     tt_decayMode_variations = []
     tt_decayMode_variations.append(
-        ReplaceWeight("CMS_3ProngEff_13TeV", "decayMode_SF",
-                      Weight("embeddedDecayModeWeight_effUp_pi0Nom",
-                             "decayMode_SF"), "Up"))
+        ReplaceWeight(
+            "CMS_3ProngEff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effUp_pi0Nom", "decayMode_SF"),
+            "Up"))
     tt_decayMode_variations.append(
-        ReplaceWeight("CMS_3ProngEff_13TeV", "decayMode_SF",
-                      Weight("embeddedDecayModeWeight_effDown_pi0Nom",
-                             "decayMode_SF"), "Down"))
+        ReplaceWeight(
+            "CMS_3ProngEff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effDown_pi0Nom", "decayMode_SF"),
+            "Down"))
     tt_decayMode_variations.append(
-        ReplaceWeight("CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
-                      Weight("embeddedDecayModeWeight_effNom_pi0Up",
-                             "decayMode_SF"), "Up"))
+        ReplaceWeight(
+            "CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effNom_pi0Up", "decayMode_SF"),
+            "Up"))
     tt_decayMode_variations.append(
-        ReplaceWeight("CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
-                      Weight("embeddedDecayModeWeight_effNom_pi0Down",
-                             "decayMode_SF"), "Down"))
+        ReplaceWeight(
+            "CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effNom_pi0Down", "decayMode_SF"),
+            "Down"))
     for variation in tt_decayMode_variations:
         for process_nick in ["EMB"]:
             if "tt" in args.channels:
@@ -892,24 +904,18 @@ def main(args):
                     channel=tt,
                     era=era)
     # 10% removed events in ttbar simulation (ttbar -> real tau tau events) will be added/subtracted to ZTT shape to use as systematic
-    tttautau_process_mt = Process("TTTT",
-                                  TTTTEstimationMT(
-                                      era,
-                                      directory,
-                                      mt,
-                                      friend_directory=mt_friend_directory))
-    tttautau_process_et = Process("TTTT",
-                                  TTTTEstimationET(
-                                      era,
-                                      directory,
-                                      et,
-                                      friend_directory=et_friend_directory))
-    tttautau_process_tt = Process("TTTT",
-                                  TTTEstimationTT(
-                                      era,
-                                      directory,
-                                      tt,
-                                      friend_directory=tt_friend_directory))
+    tttautau_process_mt = Process(
+        "TTTT",
+        TTTTEstimationMT(
+            era, directory, mt, friend_directory=mt_friend_directory))
+    tttautau_process_et = Process(
+        "TTTT",
+        TTTTEstimationET(
+            era, directory, et, friend_directory=et_friend_directory))
+    tttautau_process_tt = Process(
+        "TTTT",
+        TTTEstimationTT(
+            era, directory, tt, friend_directory=tt_friend_directory))
     if 'mt' in [args.gof_channel] + args.channels:
         for category in mt_categories:
             mt_processes['ZTTpTTTauTauDown'] = Process(
@@ -1083,6 +1089,42 @@ def main(args):
                 process=tt_processes["FAKES"],
                 channel=tt,
                 era=era)
+
+    # Gluon-fusion WG1 uncertainty scheme
+    ggh_variations = []
+    for unc in [
+            "THU_ggH_Mig01", "THU_ggH_Mig12", "THU_ggH_Mu", "THU_ggH_PT120",
+            "THU_ggH_PT60", "THU_ggH_Res", "THU_ggH_VBF2j", "THU_ggH_VBF3j",
+            "THU_ggH_qmtop"
+    ]:
+        ggh_variations.append(
+            AddWeight("{}_13TeV".format(unc), "{}_weight".format(unc),
+                      Weight("({})".format(unc), "{}_weight".format(unc)),
+                      "Up"))
+        ggh_variations.append(
+            AddWeight("{}_13TeV".format(unc), "{}_weight".format(unc),
+                      Weight("(1.0/{})".format(unc), "{}_weight".format(unc)),
+                      "Down"))
+    for variation in ggh_variations:
+        for process_nick in [nick for nick in signal_nicks if "ggH" in nick]:
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+            if "tt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
 
     # Produce histograms
     logger.info("Start producing shapes.")

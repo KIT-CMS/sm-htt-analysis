@@ -22,7 +22,7 @@ do
         --channels $CHANNEL \
         --era $ERA \
         --tag ${ERA}_${CHANNEL} \
-        --num-threads 16 # & # NOTE: We are at the file descriptor limit.
+        --num-threads 12 # & # NOTE: We are at the file descriptor limit.
     python fake-factors/normalize_shifts.py -i ${ERA}_${CHANNEL}_shapes.root
 done
 
