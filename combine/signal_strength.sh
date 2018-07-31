@@ -14,7 +14,9 @@ fi
 
 if [ $STXS_FIT == 0 ] || [ $STXS_FIT == 1 ]
 then
-    combineTool.py -M MultiDimFit -m 125 -d ${ERA}_workspace.root --algo singles \
+    combineTool.py -M MultiDimFit -m 125 -d ${ERA}_workspace.root \
+        --algo singles -t -1 --expectSignal 1 \
+        --X-rtd FITTER_NEW_CROSSING_ALGO --X-rtd FITTER_NEVER_GIVE_UP \
         --robustFit 1 -n $ERA \
         --minimizerAlgoForMinos=Minuit2,Migrad
 fi
