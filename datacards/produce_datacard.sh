@@ -74,7 +74,7 @@ if [ -n "$USE_COMBINEHARVESTER" ]; then
             --PO '"map=^.*/qqH_VBFTOPO_JET3VETO.?$:r_qqH_VBFTOPO_JET3VETO[1,-30,30]"' \
             --PO '"map=^.*/qqH_VBFTOPO_JET3.?$:r_qqH_VBFTOPO_JET3[1,-30,30]"' \
             --PO '"map=^.*/qqH_REST.?$:r_qqH_REST[1,-30,30]"' \
-            --PO '"map=^.*/qqH_VH2JET.?$:r_qqH_VH2JET[1,-30,30]"' \
+            --PO '"map=^.*/qqH_VH2JET.?$:r_qqH_VH2JET[1,-100,100]"' \
             --PO '"map=^.*/qqH_PTJET1_GT200.?$:r_qqH_PTJET1_GT200[1,-30,30]"'
     fi
     cp $DATACARD_PATH/workspace.root ${ERA}_workspace.root
