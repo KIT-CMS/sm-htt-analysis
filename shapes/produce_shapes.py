@@ -324,7 +324,8 @@ def main(args):
                     Category(
                         "{}_unrolled".format(label),
                         et,
-                        Cuts(Cut("et_max_index=={index}".format(index=i), "exclusive_score")),
+                        Cuts(Cut("et_max_index=={index}".format(index=i), "exclusive_score"),
+                             Cut("et_max_index>0.2", "protect_unrolling")),
                         variable=score_unrolled))
     # Goodness of fit shapes
     elif "et" == args.gof_channel:
@@ -390,7 +391,8 @@ def main(args):
                     Category(
                         "{}_unrolled".format(label),
                         mt,
-                        Cuts(Cut("mt_max_index=={index}".format(index=i), "exclusive_score")),
+                        Cuts(Cut("mt_max_index=={index}".format(index=i), "exclusive_score"),
+                             Cut("mt_max_index>0.2", "protect_unrolling")),
                         variable=score_unrolled))
     # Goodness of fit shapes
     elif args.gof_channel == "mt":
@@ -456,7 +458,8 @@ def main(args):
                     Category(
                         "{}_unrolled".format(label),
                         tt,
-                        Cuts(Cut("tt_max_index=={index}".format(index=i), "exclusive_score")),
+                        Cuts(Cut("tt_max_index=={index}".format(index=i), "exclusive_score"),
+                             Cut("tt_max_index>0.2", "protect_unrolling")),
                         variable=score_unrolled))
     # Goodness of fit shapes
     elif args.gof_channel == "tt":
