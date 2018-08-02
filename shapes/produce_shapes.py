@@ -551,8 +551,23 @@ def main(args):
                     era=era)
 
     # Jet energy scale
-    jet_es_variations = create_systematic_variations(
+
+    # Inclusive JES shapes
+    jet_es_variations = []
+    jet_es_variations += create_systematic_variations(
         "CMS_scale_j_13TeV", "jecUnc", DifferentPipeline)
+
+    # Splitted JES shapes
+    jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_eta0to3_13TeV", "jecUncEta0to3", DifferentPipeline)
+    jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_eta0to5_13TeV", "jecUncEta0to5", DifferentPipeline)
+    jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_eta3to5_13TeV", "jecUncEta3to5", DifferentPipeline)
+    jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_RelativeBal_13TeV", "jecUncRelativeBal",
+        DifferentPipeline)
+
     for variation in jet_es_variations:
         for process_nick in [
                 "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVT", "VVJ",
