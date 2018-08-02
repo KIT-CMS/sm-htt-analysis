@@ -10,7 +10,7 @@ m_vis:
         expression: "m_vis"
         binning: [0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200]
 NN_score:
-    outputdir: "/storage/c/wunsch/Artus_2018-07-17/fake_factor_friends_NN_score"
+    outputdir: "/storage/c/wunsch/Artus_2018-07-26/fake_factor_friends_NN_score"
     et:
         expression: "et_max_score"
         binning: [0.2, 0.4, 0.6, 1.0]

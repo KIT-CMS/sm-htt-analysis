@@ -3,17 +3,11 @@
 ERA=$1
 
 # Samples Run2016
-ARTUS_OUTPUTS_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-07-17/merged
-ARTUS_FRIENDS_ET_2016=/storage/c/wunsch/Artus_2018-07-17/et_keras_1
-ARTUS_FRIENDS_MT_2016=/storage/c/wunsch/Artus_2018-07-17/mt_keras_1
-ARTUS_FRIENDS_TT_2016=/storage/c/wunsch/Artus_2018-07-17/tt_keras_1
-ARTUS_FRIENDS_FAKE_FACTOR=/storage/c/wunsch/Artus_2018-07-17/fake_factor_friends_NN_score
-
-#ARTUS_OUTPUTS_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-04-26/merged
-#ARTUS_FRIENDS_ET_2016=/storage/c/wunsch/Artus_2018-04-26/et_keras_5
-#ARTUS_FRIENDS_MT_2016=/storage/c/wunsch/Artus_2018-04-26/mt_keras_5
-#ARTUS_FRIENDS_TT_2016=/storage/c/wunsch/Artus_2018-04-26/tt_keras_5
-#ARTUS_FRIENDS_FAKE_FACTOR=/storage/c/swozniewski/SM_Htautau/fake_factor_friends
+ARTUS_OUTPUTS_2016=/storage/c/wunsch/Artus_2018-07-26/merged
+ARTUS_FRIENDS_ET_2016=/storage/c/wunsch/Artus_2018-07-26/et_keras_1
+ARTUS_FRIENDS_MT_2016=/storage/c/wunsch/Artus_2018-07-26/mt_keras_1
+ARTUS_FRIENDS_TT_2016=/storage/c/wunsch/Artus_2018-07-26/tt_keras_1
+ARTUS_FRIENDS_FAKE_FACTOR=/storage/c/wunsch/Artus_2018-07-26/fake_factor_friends_NN_score
 
 # Error-handling
 if [[ $ERA == *"2016"* ]]
@@ -28,4 +22,4 @@ else
 fi
 
 # Kappa database
-KAPPA_DATABASE=/storage/c/wunsch/kappa_database/datasets_2018-05-03.json
+KAPPA_DATABASE=/storage/c/wunsch/kappa_database/datasets_2018-08-01.json
