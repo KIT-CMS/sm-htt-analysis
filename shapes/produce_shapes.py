@@ -298,7 +298,8 @@ def main(args):
                     variable=variable))
     # Analysis shapes
     elif "et" in args.channels:
-        for i, label in enumerate(["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]):
+        classes_et = ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]
+        for i, label in enumerate(classes_et):
             score = Variable(
                 "et_max_score",
                  VariableBinning(binning["analysis"]["et"][label]))
@@ -325,7 +326,7 @@ def main(args):
                         "{}_unrolled".format(label),
                         et,
                         Cuts(Cut("et_max_index=={index}".format(index=i), "exclusive_score"),
-                             Cut("et_max_score>0.2", "protect_unrolling")),
+                             Cut("et_max_score>{}".format(1.0/len(classes_et)), "protect_unrolling")),
                         variable=score_unrolled))
     # Goodness of fit shapes
     elif "et" == args.gof_channel:
@@ -365,7 +366,8 @@ def main(args):
                     variable=variable))
     # Analysis shapes
     elif "mt" in args.channels:
-        for i, label in enumerate(["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]):
+        classes_mt = ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]
+        for i, label in enumerate(classes_mt):
             score = Variable(
                 "mt_max_score",
                  VariableBinning(binning["analysis"]["mt"][label]))
@@ -392,7 +394,7 @@ def main(args):
                         "{}_unrolled".format(label),
                         mt,
                         Cuts(Cut("mt_max_index=={index}".format(index=i), "exclusive_score"),
-                             Cut("mt_max_score>0.2", "protect_unrolling")),
+                             Cut("mt_max_score>{}".format(1.0/len(classes_mt)), "protect_unrolling")),
                         variable=score_unrolled))
     # Goodness of fit shapes
     elif args.gof_channel == "mt":
@@ -432,7 +434,8 @@ def main(args):
                     variable=variable))
     # Analysis shapes
     elif "tt" in args.channels:
-        for i, label in enumerate(["ggh", "qqh", "ztt", "noniso", "misc"]):
+        classes_tt = ["ggh", "qqh", "ztt", "noniso", "misc"]
+        for i, label in enumerate(classes_tt):
             score = Variable(
                 "tt_max_score",
                  VariableBinning(binning["analysis"]["tt"][label]))
@@ -459,7 +462,7 @@ def main(args):
                         "{}_unrolled".format(label),
                         tt,
                         Cuts(Cut("tt_max_index=={index}".format(index=i), "exclusive_score"),
-                             Cut("tt_max_score>0.2", "protect_unrolling")),
+                             Cut("tt_max_score>{}".format(1.0/len(classes_tt)), "protect_unrolling")),
                         variable=score_unrolled))
     # Goodness of fit shapes
     elif args.gof_channel == "tt":

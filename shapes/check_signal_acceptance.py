@@ -102,11 +102,13 @@ def main(args):
             y = h.Integral()
             a = y / yields[signal]
             if a > 1e-1:
-                logger.warning("Acceptance of signal %s in folder %s: %g",
-                               signal, dirname, a)
+                logger.warning(
+                    "Acceptance (and yield) of signal %s in folder %s: %g (%g)",
+                    signal, dirname, a, y)
             else:
-                logger.info("Acceptance of signal %s in folder %s: %g", signal,
-                            dirname, a)
+                logger.info(
+                    "Acceptance (and yield) of signal %s in folder %s: %g (%g)",
+                    signal, dirname, a, y)
 
     # Clean-up
     file_.Close()
