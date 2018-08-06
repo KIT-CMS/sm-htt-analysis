@@ -40,10 +40,10 @@ qqh_full_unrolling_8classes: &qqh_full_unrolling_8classes
             3.900, 4.100, 4.300, 4.400, 4.500] # 205
 
 standard_binning_5classes: &standard_binning_5classes
-    [0.2, 0.4, 0.6, 0.8, 1.0]
+    [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0]
 
 standard_binning_8classes: &standard_binning_8classes
-    [0.125, 0.4, 0.6, 0.8, 1.0]
+    [0.125, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0]
 
 # Define binning
 analysis:
