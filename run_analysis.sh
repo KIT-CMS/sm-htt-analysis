@@ -36,7 +36,7 @@ EMBEDDING=1          # options: 0, 1
 
 # Run statistical inference
 #./combine/significance.sh $ERA | tee ${ERA}_significance.log
-./combine/signal_strength.sh $ERA $STXS_FIT | tee ${ERA}_signal_strength.log
+./combine/signal_strength.sh $ERA $STXS_FIT | tee ${ERA}_signal_strength_${STXS_FIT}.log
 ./combine/diff_nuisances.sh $ERA
 #./combine/nuisance_impacts.sh $ERA
 
