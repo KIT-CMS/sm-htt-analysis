@@ -20,7 +20,7 @@ python shapes/produce_shapes.py \
     --channels $CHANNELS \
     --era $ERA \
     --tag $ERA \
-    --num-threads 32 # & # NOTE: We are at the file descriptor limit.
+    --num-threads 32
 
 # Normalize fake-factor shapes to nominal
-python fake-factors/normalize_shifts.py -i ${ERA}_shapes.root
+python fake-factors/normalize_shifts.py ${ERA}_shapes.root
