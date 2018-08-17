@@ -263,7 +263,7 @@ def main(args):
                     split_dict[channel] * 2))
 
             plot.subplot(2).setYlims(0.75, 1.45)
-            if int(category) < 10:
+            if category in ["2"]:
                 plot.subplot(2).setYlims(0.55, 2.05)
             if args.linear != True:
                 plot.subplot(1).setYlims(0.1, split_dict[channel])
