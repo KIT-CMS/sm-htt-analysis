@@ -296,7 +296,7 @@ def main(args):
             #plot.subplot(2).setNYdivisions(3, 5)
 
             if args.stxs_categories == 1:
-                plot.subplot(2)._changexlabels = [" ", "0.25", " ", "0.50", " ", "0.75", " ", " "]
+                plot.subplot(2).changeXLabels([" ", "0.25", " ", "0.50", " ", "0.75", " ", " "])
                 if category in ["1"]:
                     plot.setNXdivisions(7, 0, 0, False)
                     plot.scaleXLabelSize(0.5)
