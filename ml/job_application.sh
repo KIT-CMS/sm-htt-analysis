@@ -2,7 +2,7 @@
 
 DATASET_CONFIG=$1
 TRAINING_CONFIG=$2
-ANALYSIS_CONFIG=$3
+APPLICATION_CONFIG=$3
 FILE=$4
 FOLDERS=${@:5}
 
@@ -11,7 +11,7 @@ do
 python htt-ml/application/keras_application_friend.py \
     $DATASET_CONFIG \
     $TRAINING_CONFIG \
-    $ANALYSIS_CONFIG \
+    $APPLICATION_CONFIG \
     $FILE \
     $FOLDER/ntuple
 done
