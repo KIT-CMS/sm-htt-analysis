@@ -109,10 +109,10 @@ def parse_arguments():
 
 def main(args):
     # Container for all distributions to be drawn
-    systematics_mt = Systematics("shapes_mt.root", num_threads=args.num_threads)
-    systematics_et = Systematics("shapes_et.root", num_threads=args.num_threads)
-    systematics_tt = Systematics("shapes_tt.root", num_threads=args.num_threads)
-    systematics_em = Systematics("shapes_em.root", num_threads=args.num_threads)
+    systematics_mt = Systematics("shapes_mt.root", num_threads=args.num_threads, find_unique_objects=True)
+    systematics_et = Systematics("shapes_et.root", num_threads=args.num_threads, find_unique_objects=True)
+    systematics_tt = Systematics("shapes_tt.root", num_threads=args.num_threads, find_unique_objects=True)
+    systematics_em = Systematics("shapes_em.root", num_threads=args.num_threads, find_unique_objects=True)
 
     # Era
     era = Run2017ReReco31Mar(args.datasets)
