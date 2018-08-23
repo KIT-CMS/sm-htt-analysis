@@ -126,10 +126,13 @@ def main(args):
     mt_processes = {
         "data"  : Process("data_obs", DataEstimation  (era, directory, mt, friend_directory=[])),
         "ZTT"   : Process("ZTT",      ZTTEstimation   (era, directory, mt, friend_directory=[])),
+        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation   (era, directory, mt, friend_directory=[])),
         "ZLL"   : Process("ZLL",      ZLLEstimation   (era, directory, mt, friend_directory=[])),
     #    "W"     : Process("W",        WEstimation     (era, directory, mt, friend_directory=[])),
         "TT"    : Process("TT",       TTEstimation    (era, directory, mt, friend_directory=[])),
+        "TTL"    : Process("TTL",       TTLEstimation    (era, directory, mt, friend_directory=[])),
         "VV"    : Process("VV",       VVEstimation    (era, directory, mt, friend_directory=[])),
+        "VVL"    : Process("VVL",       VVLEstimation    (era, directory, mt, friend_directory=[])),
         "EWK"   : Process("EWK",      EWKEstimation   (era, directory, mt, friend_directory=[])),
         "HTT"   : Process("HTT",      HTTEstimation   (era, directory, mt, friend_directory=[])),
         }
@@ -145,10 +148,13 @@ def main(args):
     em_processes = {
         "data"  : Process("data_obs", DataEstimation  (era, directory, em, friend_directory=[])),
         "ZTT"   : Process("ZTT",      ZTTEstimation   (era, directory, em, friend_directory=[])),
+        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation   (era, directory, em, friend_directory=[])),
         "ZLL"   : Process("ZLL",      ZLLEstimation   (era, directory, em, friend_directory=[])),
         "W"     : Process("W",        WEstimation     (era, directory, em, friend_directory=[])),
         "TT"    : Process("TT",       TTEstimation    (era, directory, em, friend_directory=[])),
+        "TTL"    : Process("TTL",       TTLEstimation    (era, directory, em, friend_directory=[])),
         "VV"    : Process("VV",       VVEstimation    (era, directory, em, friend_directory=[])),
+        "VVL"    : Process("VVL",       VVLEstimation    (era, directory, em, friend_directory=[])),
         "EWK"   : Process("EWK",      EWKEstimation   (era, directory, em, friend_directory=[])),
         "HTT"   : Process("HTT",      HTTEstimation   (era, directory, em, friend_directory=[])),
         }
@@ -161,10 +167,13 @@ def main(args):
     et_processes = {
         "data"  : Process("data_obs", DataEstimation  (era, directory, et, friend_directory=[])),
         "ZTT"   : Process("ZTT",      ZTTEstimation   (era, directory, et, friend_directory=[])),
+        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation   (era, directory, et, friend_directory=[])),
         "ZLL"   : Process("ZLL",      ZLLEstimation   (era, directory, et, friend_directory=[])),
     #    "W"     : Process("W",        WEstimation     (era, directory, et, friend_directory=[])),
         "TT"    : Process("TT",       TTEstimation    (era, directory, et, friend_directory=[])),
+        "TTL"    : Process("TTL",       TTLEstimation    (era, directory, et, friend_directory=[])),
         "VV"    : Process("VV",       VVEstimation    (era, directory, et, friend_directory=[])),
+        "VVL"    : Process("VVL",       VVLEstimation    (era, directory, et, friend_directory=[])),
         "EWK"   : Process("EWK",      EWKEstimation   (era, directory, et, friend_directory=[])),
         "HTT"   : Process("HTT",      HTTEstimation   (era, directory, et, friend_directory=[])),
         }
@@ -180,10 +189,13 @@ def main(args):
     tt_processes = {
         "data"  : Process("data_obs", DataEstimation (era, directory, tt, friend_directory=[])),
         "ZTT"   : Process("ZTT",      ZTTEstimation  (era, directory, tt, friend_directory=[])),
+        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation   (era, directory, tt, friend_directory=[])),
         "ZLL"   : Process("ZLL",      ZLLEstimation  (era, directory, tt, friend_directory=[])),
         "W"     : Process("W",        WEstimation    (era, directory, tt, friend_directory=[])),
         "TT"    : Process("TT",       TTEstimation   (era, directory, tt, friend_directory=[])),
+        "TTL"    : Process("TTL",       TTLEstimation    (era, directory, tt, friend_directory=[])),
         "VV"    : Process("VV",       VVEstimation   (era, directory, tt, friend_directory=[])),
+        "VVL"    : Process("VVL",       VVLEstimation    (era, directory, tt, friend_directory=[])),
         "EWK"   : Process("EWK",      EWKEstimation  (era, directory, tt, friend_directory=[])),
         "HTT"   : Process("HTT",      HTTEstimation   (era, directory, tt, friend_directory=[])),
         }
@@ -202,8 +214,8 @@ def main(args):
     tt_categories = []
     em_categories = []
 
-    variable_names = ["mt_1","mt_2", "pt_1","pt_2", "eta_1", "eta_2", "m_vis", "ptvis", "npv", "njets", "nbtag", "jpt_1", "jpt_2", "jeta_1", "jeta_2", "met", "mjj", "dijetpt", "pZetaMissVis", "m_1", "m_2", "decayMode_1", "decayMode_2", "iso_1", "iso_2", "rho", "mt_tot", "m_N"]
-
+    variable_names = ["mt_1","mt_2", "pt_1","pt_2", "eta_1", "eta_2", "m_vis", "ptvis", "npv", "njets", "nbtag", "jpt_1", "jpt_2", "jeta_1", "jeta_2", "met", "mjj", "dijetpt", "pZetaMissVis", "m_1", "m_2", "decayMode_1", "decayMode_2", "iso_1", "iso_2", "rho", "mt_tot", "d0_1", "d0_2", "dZ_1", "dZ_2"]
+    
     if "mt" in args.channels:
         variables = [Variable(v,VariableBinning(binning["control"]["mt"][v]["bins"]), expression=binning["control"]["mt"][v]["expression"]) for v in variable_names]
         for name, var in zip(variable_names, variables):
@@ -322,8 +334,5 @@ def main(args):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    if ('tt' in args.channels or 'em' in args.channels) and args.emb:
-        print "Channels tt and em not yet considered for embedded background estimation."
-        exit()
     setup_logging("produce_shapes.log", logging.DEBUG)
     main(args)
