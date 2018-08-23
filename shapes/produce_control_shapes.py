@@ -99,11 +99,6 @@ def parse_arguments():
         choices=["classic", "tdf"],
         type=str,
         help="Backend. Use classic or tdf.")
-    parser.add_argument(
-        "--emb",
-        action="store_true",
-        default=False,
-        help="Use mu->tau embedded samples as ZTT background estimation.")
     return parser.parse_args()
 
 
