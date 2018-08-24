@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import ROOT
+ROOT.PyConfig.IgnoreCommandLineOptions = True  # disable ROOT internal argument parser
+ROOT.gErrorIgnoreLevel = ROOT.kError
 
 from shape_producer.cutstring import Cut, Cuts
 from shape_producer.systematics import Systematics, Systematic
