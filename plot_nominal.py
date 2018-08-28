@@ -113,12 +113,12 @@ logvars = []
 
 
 def main(args):
-	'''
+    
     if args.emb:
         bkg_processes_names = [
-         "emb", "zll","ttl", "tt", "vv","w", "qcd"
+         "emb", "zll","ttl", "vv","w", "qcd"
         ]
-        bkg_processes = ["EMB", "ZLL", "TT", "VV", "W", "QCD"]  # names in ROOT file
+        bkg_processes = ["EMB", "ZLL", "TTL", "VV", "W", "QCD"]  # names in ROOT file
 
     else:
         bkg_processes_names = [
@@ -126,6 +126,7 @@ def main(args):
         ]  # enforced by HarryPlotter
         bkg_processes = ["ZTT", "ZLL", "TT", "VV", "EWK", "W", "QCD"]  # names in ROOT file
     '''
+    ### Use this for fake-factor shapes
     if args.emb:
         bkg_processes_names = [
          "emb", "zl","zj", "ttl", "ttj", "vvl", "vvj","w", "qcd"
@@ -138,11 +139,11 @@ def main(args):
         ]  # enforced by HarryPlotter
         bkg_processes = ["ZTT", "ZL", "ZJ", "TTT", "TTJ", "VVT", "VVJ", "EWK", "W", "QCD"]  # names in ROOT file
     if args.ff:
-		bkg_processes = [x for x in bkg_processes if x not in ["ZJ","TTJ","VVJ","W","QCD"]]
-		bkg_processes_names = [x for x in bkg_processes_names if x not in ["zj","ttj","vvj","w","qcd"]]
-		bkg_processes.append("jetFakes")
-		bkg_processes_names.append("fakes")
-	
+        bkg_processes = [x for x in bkg_processes if x not in ["ZJ","TTJ","VVJ","W","QCD"]]
+        bkg_processes_names = [x for x in bkg_processes_names if x not in ["zj","ttj","vvj","w","qcd"]]
+        bkg_processes.append("jetFakes")
+        bkg_processes_names.append("fakes")
+    '''
     qcd_scale_factors = {"mt": 1.0, "et": 1.0, "tt": 1.0, "em": 1.0}
     channels = args.channels
     analysis = args.analysis
@@ -204,7 +205,7 @@ def main(args):
                 config["filename"] = "_".join(
                     [channel, category, analysis, "Run2017ReReco31Mar", variable, mass,"emb"])
             if args.ff:
-				config["filename"] = config["filename"]+"_ff"
+                config["filename"] = config["filename"]+"_ff"
             if not args.x_label == None:
                 config["x_label"] = args.x_label
             else:
