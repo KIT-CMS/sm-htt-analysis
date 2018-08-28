@@ -113,7 +113,8 @@ logvars = []
 
 
 def main(args):
-    
+    '''
+    ### Use this for inclusive background process labels (probably obsolete)
     if args.emb:
         bkg_processes_names = [
          "emb", "zll","ttl", "vv","w", "qcd"
@@ -143,7 +144,7 @@ def main(args):
         bkg_processes_names = [x for x in bkg_processes_names if x not in ["zj","ttj","vvj","w","qcd"]]
         bkg_processes.append("jetFakes")
         bkg_processes_names.append("fakes")
-    '''
+    
     qcd_scale_factors = {"mt": 1.0, "et": 1.0, "tt": 1.0, "em": 1.0}
     channels = args.channels
     analysis = args.analysis
