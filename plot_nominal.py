@@ -16,6 +16,7 @@ def parse_arguments():
         "Plot categories using HarryPlotter from shapes produced by shape-producer module."
     )
     parser.add_argument("--emb", action="store_true", help="Embedded prefix")
+    parser.add_argument("--ff", action="store_true", help="Use fake-factors")
     parser.add_argument(
         "-v",
         "--variables",
@@ -112,18 +113,36 @@ logvars = []
 
 
 def main(args):
-    
+	'''
     if args.emb:
         bkg_processes_names = [
-         "emb", "zl", "tt","vv",  "w", "qcd"
+         "emb", "zll","ttl", "tt", "vv","w", "qcd"
         ]
-        bkg_processes = ["EMB", "ZLL", "TTL", "VVL", "W", "QCD"]  # names in ROOT file
+        bkg_processes = ["EMB", "ZLL", "TT", "VV", "W", "QCD"]  # names in ROOT file
 
     else:
         bkg_processes_names = [
-            "ztt", "zl", "tt","vv",  "ewk", "w", "qcd"
+            "ztt", "zll", "tt", "vv", "ewk", "w", "qcd"
         ]  # enforced by HarryPlotter
         bkg_processes = ["ZTT", "ZLL", "TT", "VV", "EWK", "W", "QCD"]  # names in ROOT file
+    '''
+    if args.emb:
+        bkg_processes_names = [
+         "emb", "zl","zj", "ttl", "ttj", "vvl", "vvj","w", "qcd"
+        ]
+        bkg_processes = ["EMB", "ZL", "ZJ", "TTL", "TTJ", "VVL", "VVJ", "W", "QCD"]  # names in ROOT file
+
+    else:
+        bkg_processes_names = [
+            "ztt", "zl","zj", "ttt", "ttj", "vvt", "vvj", "ewk", "w", "qcd"
+        ]  # enforced by HarryPlotter
+        bkg_processes = ["ZTT", "ZL", "ZJ", "TTT", "TTJ", "VVT", "VVJ", "EWK", "W", "QCD"]  # names in ROOT file
+    if args.ff:
+		bkg_processes = [x for x in bkg_processes if x not in ["ZJ","TTJ","VVJ","W","QCD"]]
+		bkg_processes_names = [x for x in bkg_processes_names if x not in ["zj","ttj","vvj","w","qcd"]]
+		bkg_processes.append("jetFakes")
+		bkg_processes_names.append("fakes")
+	
     qcd_scale_factors = {"mt": 1.0, "et": 1.0, "tt": 1.0, "em": 1.0}
     channels = args.channels
     analysis = args.analysis
@@ -136,7 +155,11 @@ def main(args):
         args.categories = [channels[0]+"_"+v for v in variables]
     categories = [c for c in args.categories]
     #~ categories = [args.categories[0].replace("m_vis", v) for v in variables]
+    if "all" in variables:
+        variables = ["mt_1","mt_2", "pt_1","pt_2", "eta_1", "eta_2", "m_vis", "ptvis", "npv", "njets", "nbtag", "jpt_1", "jpt_2", "jeta_1", "jeta_2", "met", "mjj", "dijetpt", "pZetaMissVis", "m_1", "m_2", "decayMode_1", "decayMode_2", "iso_1", "iso_2", "rho", "mt_tot", "d0_1", "d0_2", "dZ_1", "dZ_2"]
 
+    args.categories = [channels[0]+"_"+v for v in variables]
+    categories = [c for c in args.categories]
 
     configs = []
     for channel in channels:
@@ -180,6 +203,8 @@ def main(args):
             else:
                 config["filename"] = "_".join(
                     [channel, category, analysis, "Run2017ReReco31Mar", variable, mass,"emb"])
+            if args.ff:
+				config["filename"] = config["filename"]+"_ff"
             if not args.x_label == None:
                 config["x_label"] = args.x_label
             else:
