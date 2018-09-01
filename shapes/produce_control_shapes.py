@@ -134,19 +134,24 @@ def main(args):
         "ZTT"   : Process("ZTT",      ZTTEstimation   (era, directory, mt, friend_directory=[])),
         "EMB"   : Process("EMB",      ZTTEmbeddedEstimation   (era, directory, mt, friend_directory=[])),
         "ZLL"   : Process("ZLL",      ZLLEstimation   (era, directory, mt, friend_directory=[])),
+        "ZJ"    : Process("ZJ",       ZJEstimation  (era, directory, mt, friend_directory=[])),
     #    "W"     : Process("W",        WEstimation     (era, directory, mt, friend_directory=[])),
-        "TT"    : Process("TT",       TTEstimation    (era, directory, mt, friend_directory=[])),
+        "TT"   : Process("TT",      TTEstimation (era, directory, mt, friend_directory=[])),
         "TTL"    : Process("TTL",       TTLEstimation    (era, directory, mt, friend_directory=[])),
+        "TTT"   : Process("TTT",      TTTEstimation (era, directory, mt, friend_directory=[])),
+        "TTJ"   : Process("TTJ",      TTJEstimation (era, directory, mt, friend_directory=[])),
         "VV"    : Process("VV",       VVEstimation    (era, directory, mt, friend_directory=[])),
+        "VVT"   : Process("VVT",      VVTEstimation (era, directory, mt, friend_directory=[])),
+        "VVJ"   : Process("VVJ",      VVJEstimation (era, directory, mt, friend_directory=[])),
         "VVL"    : Process("VVL",       VVLEstimation    (era, directory, mt, friend_directory=[])),
         "EWK"   : Process("EWK",      EWKEstimation   (era, directory, mt, friend_directory=[])),
-        "FAKES" : Process("jetFakes",    FakeEstimationLT(era, directory, mt, friend_directory=[ff_friend_directory])),
+    #    "FAKES" : Process("jetFakes",    FakeEstimationLT(era, directory, mt, friend_directory=[ff_friend_directory])),
         "HTT"   : Process("HTT",      HTTEstimation   (era, directory, mt, friend_directory=[])),
         }
     wjets_mc_mt = Process("WMC",        WEstimation     (era, directory, mt, friend_directory=[]))
     #mt_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZLL", "W", "TT", "VV", "EWK"]], mt_processes["data"], friend_directory=[], extrapolation_factor=1.1))
-    mt_processes["W"] = Process("W", WEstimationWithQCD(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZLL", "TT", "VV", "EWK"]], mt_processes["data"], wjets_mc_mt, friend_directory=[], qcd_ss_to_os_extrapolation_factor=1.1))
-    mt_processes["QCD"] = Process("QCD", QCDEstimationWithW(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZLL", "TT", "VV", "EWK"]], mt_processes["data"], wjets_mc_mt, friend_directory=[], qcd_ss_to_os_extrapolation_factor=1.1))
+    mt_processes["W"] = Process("W", WEstimationWithQCD(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZLL", "ZJ", "TT", "VV", "EWK"]], mt_processes["data"], wjets_mc_mt, friend_directory=[], qcd_ss_to_os_extrapolation_factor=1.1))
+    mt_processes["QCD"] = Process("QCD", QCDEstimationWithW(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZLL", "ZJ", "TT", "VV", "EWK"]], mt_processes["data"], wjets_mc_mt, friend_directory=[], qcd_ss_to_os_extrapolation_factor=1.1))
     for m in susy_masses:
         mt_processes["ggH_"+m] = Process("ggH_"+m, SUSYggHEstimation(era, directory, mt, m, friend_directory=[]))
         mt_processes["bbH_"+m] = Process("bbH_"+m, SUSYbbHEstimation(era, directory, mt, m, friend_directory=[]))
@@ -159,8 +164,10 @@ def main(args):
         "ZLL"   : Process("ZLL",      ZLLEstimation   (era, directory, em, friend_directory=[])),
         "W"     : Process("W",        WEstimation     (era, directory, em, friend_directory=[])),
         "TT"    : Process("TT",       TTEstimation    (era, directory, em, friend_directory=[])),
+        "TTT"    : Process("TTT",       TTTEstimation    (era, directory, em, friend_directory=[])),
         "TTL"    : Process("TTL",       TTLEstimation    (era, directory, em, friend_directory=[])),
         "VV"    : Process("VV",       VVEstimation    (era, directory, em, friend_directory=[])),
+        "VVT"    : Process("VVT",       VVTEstimation    (era, directory, em, friend_directory=[])),
         "VVL"    : Process("VVL",       VVLEstimation    (era, directory, em, friend_directory=[])),
         "EWK"   : Process("EWK",      EWKEstimation   (era, directory, em, friend_directory=[])),
         "HTT"   : Process("HTT",      HTTEstimation   (era, directory, em, friend_directory=[])),
@@ -175,23 +182,25 @@ def main(args):
         "data"  : Process("data_obs", DataEstimation  (era, directory, et, friend_directory=[])),
         "ZTT"   : Process("ZTT",      ZTTEstimation   (era, directory, et, friend_directory=[])),
         "EMB"   : Process("EMB",      ZTTEmbeddedEstimation   (era, directory, et, friend_directory=[])),
-        "ZL"    : Process("ZL",       ZLEstimationLT(era, directory, et, friend_directory=[])),
-        "ZJ"    : Process("ZJ",       ZJEstimationLT  (era, directory, et, friend_directory=[])),
+        "ZLL"    : Process("ZLL",     ZLLEstimation (era, directory, et, friend_directory=[])),
+        "ZJ"    : Process("ZJ",       ZJEstimation  (era, directory, et, friend_directory=[])),
     #    "W"     : Process("W",        WEstimation     (era, directory, et, friend_directory=[])),
-        "TTT"   : Process("TTT",      TTTEstimationLT (era, directory, et, friend_directory=[])),
-        "TTJ"   : Process("TTJ",      TTJEstimationLT (era, directory, et, friend_directory=[])),
-        "VVT"   : Process("VVT",      VVTEstimationLT (era, directory, et, friend_directory=[])),
-        "VVJ"   : Process("VVJ",      VVJEstimationLT (era, directory, et, friend_directory=[])),
+        "TT"   : Process("TT",      TTEstimation (era, directory, et, friend_directory=[])),
         "TTL"    : Process("TTL",       TTLEstimation    (era, directory, et, friend_directory=[])),
+        "TTT"   : Process("TTT",      TTTEstimation (era, directory, et, friend_directory=[])),
+        "TTJ"   : Process("TTJ",      TTJEstimation (era, directory, et, friend_directory=[])),
+        "VV"    : Process("VV",       VVEstimation    (era, directory, et, friend_directory=[])),
+        "VVT"   : Process("VVT",      VVTEstimation (era, directory, et, friend_directory=[])),
+        "VVJ"   : Process("VVJ",      VVJEstimation (era, directory, et, friend_directory=[])),
         "VVL"    : Process("VVL",       VVLEstimation    (era, directory, et, friend_directory=[])),
         "EWK"   : Process("EWK",      EWKEstimation   (era, directory, et, friend_directory=[])),
-        "FAKES" : Process("jetFakes",    FakeEstimationLT(era, directory, et, friend_directory=[ff_friend_directory])),
+    #    "FAKES" : Process("jetFakes",    FakeEstimationLT(era, directory, et, friend_directory=[ff_friend_directory])),
         "HTT"   : Process("HTT",      HTTEstimation   (era, directory, et, friend_directory=[])),
         }
     wjets_mc_et = Process("WMC",        WEstimation     (era, directory, et, friend_directory=[]))
     #et_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, et, [et_processes[process] for process in ["ZTT", "ZLL", "W", "TT", "VV", "EWK"]], et_processes["data"], friend_directory=[], extrapolation_factor=1.09))
-    et_processes["W"] = Process("W", WEstimationWithQCD(era, directory, et, [et_processes[process] for process in ["ZTT", "ZL", "ZJ", "TTT", "TTJ", "VVT", "VVJ", "EWK"]], et_processes["data"], wjets_mc_et, friend_directory=[], qcd_ss_to_os_extrapolation_factor=1.09))
-    et_processes["QCD"] = Process("QCD", QCDEstimationWithW(era, directory, et, [et_processes[process] for process in ["ZTT", "ZL", "ZJ", "TTT", "TTJ", "VVT", "VVJ", "EWK"]], et_processes["data"], wjets_mc_et, friend_directory=[], qcd_ss_to_os_extrapolation_factor=1.09))
+    et_processes["W"] = Process("W", WEstimationWithQCD(era, directory, et, [et_processes[process] for process in ["ZTT", "ZLL", "ZJ", "TT", "VV", "EWK"]], et_processes["data"], wjets_mc_et, friend_directory=[], qcd_ss_to_os_extrapolation_factor=1.09))
+    et_processes["QCD"] = Process("QCD", QCDEstimationWithW(era, directory, et, [et_processes[process] for process in ["ZTT", "ZLL", "ZJ", "TT", "VV", "EWK"]], et_processes["data"], wjets_mc_et, friend_directory=[], qcd_ss_to_os_extrapolation_factor=1.09))
     for m in susy_masses:
         et_processes["ggH_"+m] = Process("ggH_"+m, SUSYggHEstimation(era, directory, et, m, friend_directory=[]))
         et_processes["bbH_"+m] = Process("bbH_"+m, SUSYbbHEstimation(era, directory, et, m, friend_directory=[]))
@@ -201,20 +210,22 @@ def main(args):
         "data"  : Process("data_obs", DataEstimation (era, directory, tt, friend_directory=[])),
         "ZTT"   : Process("ZTT",      ZTTEstimation  (era, directory, tt, friend_directory=[])),
         "EMB"   : Process("EMB",      ZTTEmbeddedEstimation   (era, directory, tt, friend_directory=[])),
-        "ZL"    : Process("ZL",       ZLEstimationTT (era, directory, tt, friend_directory=[])),
-        "ZJ"    : Process("ZJ",       ZJEstimationTT (era, directory, tt, friend_directory=[])),
+        "ZLL"    : Process("ZLL",       ZLLEstimation (era, directory, tt, friend_directory=[])),
+        "ZJ"    : Process("ZJ",       ZJEstimation (era, directory, tt, friend_directory=[])),
         "W"     : Process("W",        WEstimation    (era, directory, tt, friend_directory=[])),
-        "TTT"   : Process("TTT",      TTTEstimationTT(era, directory, tt, friend_directory=[])),
-        "TTJ"   : Process("TTJ",      TTJEstimationTT(era, directory, tt, friend_directory=[])),
+        "TT"   : Process("TT",      TTEstimation(era, directory, tt, friend_directory=[])),
+        "TTT"   : Process("TTT",      TTTEstimation(era, directory, tt, friend_directory=[])),
+        "TTJ"   : Process("TTJ",      TTJEstimation(era, directory, tt, friend_directory=[])),
         "TTL"    : Process("TTL",       TTLEstimation    (era, directory, tt, friend_directory=[])),
-        "VVT"   : Process("VVT",      VVTEstimationTT(era, directory, tt, friend_directory=[])),
-        "VVJ"   : Process("VVJ",      VVJEstimationTT(era, directory, tt, friend_directory=[])),
+        "VV"   : Process("VV",      VVEstimation (era, directory, tt, friend_directory=[])),
+        "VVT"   : Process("VVT",      VVTEstimation(era, directory, tt, friend_directory=[])),
+        "VVJ"   : Process("VVJ",      VVJEstimation(era, directory, tt, friend_directory=[])),
         "VVL"    : Process("VVL",       VVLEstimation    (era, directory, tt, friend_directory=[])),
         "EWK"   : Process("EWK",      EWKEstimation  (era, directory, tt, friend_directory=[])),
         "FAKES" : Process("jetFakes",    FakeEstimationTT(era, directory, tt, friend_directory=[ff_friend_directory])),
         "HTT"   : Process("HTT",      HTTEstimation   (era, directory, tt, friend_directory=[]))
         }
-    tt_processes["QCD"] = Process("QCD", QCDEstimation_ABCD_TT_ISO2(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZL", "ZJ", "TTT", "TTJ", "VVT", "VVJ", "EWK"]], tt_processes["data"], friend_directory=[]))
+    tt_processes["QCD"] = Process("QCD", QCDEstimation_ABCD_TT_ISO2(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZLL", "ZJ", "TT", "VV", "EWK", "W"]], tt_processes["data"], friend_directory=[]))
     #tt_processes["QCD"] = Process("QCD", QCDEstimation_ABCD_TT_ISO2_TRANSPOSED(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZLL", "W", "TT", "VV", "EWK"]], tt_processes["data"], friend_directory=[]))
     #tt_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZLL", "W", "TT", "VV", "EWK"]], tt_processes["data"], friend_directory=[], extrapolation_factor=1.0))
     for m in susy_masses:

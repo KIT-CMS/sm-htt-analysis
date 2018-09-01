@@ -13,7 +13,7 @@ python shapes/produce_control_shapes.py \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
     --channels mt  \
-    --fake-factor-friend-directory /storage/c/jbechtel/SM_Htautau/ntuples/Artus_2018-08-24/fake_factor_friends \
+    --fake-factor-friend-directory /storage/b/akhmet/SM_Htautau/ntuples/Artus_2018-09-01/fake_factor_friends/ \
     --num-threads 15
 
 # Produce shapes
@@ -22,19 +22,19 @@ python shapes/produce_control_shapes.py \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
     --channels et \
-    --fake-factor-friend-directory /storage/c/jbechtel/SM_Htautau/ntuples/Artus_2018-08-24/fake_factor_friends \
+    --fake-factor-friend-directory /storage/b/akhmet/SM_Htautau/ntuples/Artus_2018-09-01/fake_factor_friends/ \
     --num-threads 15
-    
-    # Produce shapes
+
+# Produce shapes
 python shapes/produce_control_shapes.py \
     --directory $ARTUS_OUTPUTS \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
     --channels tt \
-    --fake-factor-friend-directory /storage/c/jbechtel/SM_Htautau/ntuples/Artus_2018-08-24/fake_factor_friends \
+    --fake-factor-friend-directory /storage/b/akhmet/SM_Htautau/ntuples/Artus_2018-09-01/fake_factor_friends/ \
     --num-threads 15
     
-    #~ # Produce shapes
+# Produce shapes
 python shapes/produce_control_shapes.py \
     --directory $ARTUS_OUTPUTS \
     --datasets $KAPPA_DATABASE \

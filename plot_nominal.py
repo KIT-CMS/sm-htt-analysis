@@ -103,10 +103,10 @@ config_template = {
     "nicks_blacklist": ["noplot"],
     "analysis_modules": ["Ratio"],
     "ratio_result_nicks": ["ratio_Bkg", "ratio_Data"],
-    "y_subplot_lims": [0.8, 1.2],
+    "y_subplot_lims": [0.7, 1.3],
     "y_label": "N_{evts}",
     "y_subplot_label": "#scale[0.8]{Ratio to Bkg.}",
-    "subplot_lines": [0.9, 1.0, 1.1]
+    "subplot_lines": [0.8, 1.0, 1.2]
 }
 
 logvars = []
@@ -128,22 +128,26 @@ def main(args):
         bkg_processes = ["ZTT", "ZLL", "TT", "VV", "EWK", "W", "QCD"]  # names in ROOT file
     '''
     ### Use this for fake-factor shapes
-    if args.emb:
+    if args.emb and args.ff:
         bkg_processes_names = [
-         "emb", "zl","zj", "ttl", "ttj", "vvl", "vvj","w", "qcd"
+         "emb", "zll", "ttl", "vvl", "fakes"
         ]
-        bkg_processes = ["EMB", "ZL", "ZJ", "TTL", "TTJ", "VVL", "VVJ", "W", "QCD"]  # names in ROOT file
-
+        bkg_processes = ["EMB", "ZLL", "TTL", "VVL", "jetFakes"]  # names in ROOT file
+    elif args.emb:
+        bkg_processes_names = [
+         "emb", "zll","zj", "ttl", "ttj", "vvl", "vvj", "w", "qcd"
+        ]
+        bkg_processes = ["EMB", "ZLL", "ZJ", "TTL", "TTJ", "VVL", "VVJ", "W", "QCD"]  # names in ROOT file
+    elif args.ff:
+        bkg_processes_names = [
+            "ztt", "zll", "ttt", "ttl", "vvt", "vvl", "ewk", "fakes"
+        ]  # enforced by HarryPlotter
+        bkg_processes = ["ZTT", "ZLL", "TTT", "TTL", "VVT", "VVL", "EWK", "jetFakes"]  # names in ROOT file
     else:
         bkg_processes_names = [
-            "ztt", "zl","zj", "ttt", "ttj", "vvt", "vvj", "ewk", "w", "qcd"
+            "ztt", "zll","zj", "tt", "vv", "ewk", "w", "qcd"
         ]  # enforced by HarryPlotter
-        bkg_processes = ["ZTT", "ZL", "ZJ", "TTT", "TTJ", "VVT", "VVJ", "EWK", "W", "QCD"]  # names in ROOT file
-    if args.ff:
-        bkg_processes = [x for x in bkg_processes if x not in ["ZJ","TTJ","VVJ","W","QCD"]]
-        bkg_processes_names = [x for x in bkg_processes_names if x not in ["zj","ttj","vvj","w","qcd"]]
-        bkg_processes.append("jetFakes")
-        bkg_processes_names.append("fakes")
+        bkg_processes = ["ZTT", "ZLL", "ZJ", "TT", "VV", "EWK", "W", "QCD"]  # names in ROOT file
     
     qcd_scale_factors = {"mt": 1.0, "et": 1.0, "tt": 1.0, "em": 1.0}
     channels = args.channels
@@ -165,6 +169,9 @@ def main(args):
 
     configs = []
     for channel in channels:
+        if "em" in channel:
+            bkg_processes = [p for p in bkg_processes if p not in ["ZJ", "TTJ", "VVJ"]]
+            bkg_processes_names = [p for p in bkg_processes_names if p not in ["zj", "ttj", "vvj"]]
         for variable, category in zip(variables, categories):
             config = deepcopy(config_template)
 
@@ -180,7 +187,7 @@ def main(args):
             config["lumis"] = [args.lumi]
             config["output_dir"] = output_dir+"/"+channel
             config["y_log"] = True if (variable in logvars) else False
-            config["y_rel_lims"] = [0.9, 50] if y_log else [0.9, 1.3]
+            config["y_rel_lims"] = [0.9, 50] if y_log else [0.9, 1.5]
             #~ config["y_lims"] = [10.,2e11]
             config["markers"] = ["HIST"] * len(bkg_processes_names) + ["P"] + config["markers"]
             config["legend_markers"] = ["F"] * (len(bkg_processes_names))  + ["ELP"] + config["legend_markers"]
