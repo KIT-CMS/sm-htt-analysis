@@ -296,13 +296,18 @@ def main(args):
             #plot.subplot(2).setNYdivisions(3, 5)
 
             if args.stxs_categories == 1:
-                plot.subplot(2).changeXLabels([" ", "0.25", " ", "0.50", " ", "0.75", " ", " "])
+                if not channel == "tt":
+                    plot.subplot(2).changeXLabels([" ", "0.25", " ", "0.50", " ", "0.75", " ", " "])
                 if category in ["1"]:
-                    plot.setNXdivisions(7, 0, 0, False)
+                    if not channel == "tt":
+                        plot.setNXdivisions(7, 0, 0, False)
+                    else:
+                        plot.setNXdivisions(4, 0, 0, False)
                     plot.scaleXLabelSize(0.5)
                     plot.unroll(["VBFTOPO_JET3VETO", "VBFTOPO_JET3", "0J", "1J_PTH_0_60", "1J_PTH_60_120", "1J_PTH_120_200", "1J_PTH_GT200", "GE2J_PTH_0_60", "GE2J_PTH_60_120", "GE2J_PTH_120_200", "GE2J_PTH_GT200"], ur_label_size = 0.5, pads_to_print_labels=[0])
                 if category in ["2"]:
-                    plot.setNXdivisions(7, 0, 4, False)
+                    if not channel == "tt":
+                        plot.setNXdivisions(7, 0, 4, False)
                     plot.unroll(["VBFTOPO_JET3", "VBFTOPO_JET3VETO", "VH2JET", "REST", "PTJET1_GT200"], ur_label_size = 0.9, pads_to_print_labels=[0])
 
             # draw subplots. Argument contains names of objects to be drawn in corresponding order.
