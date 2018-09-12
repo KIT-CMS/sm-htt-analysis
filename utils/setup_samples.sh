@@ -7,7 +7,14 @@ ARTUS_OUTPUTS_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-08-21/me
 ARTUS_FRIENDS_ET_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-08-21/et_keras_1
 ARTUS_FRIENDS_MT_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-08-21/mt_keras_1
 ARTUS_FRIENDS_TT_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-08-21/tt_keras_1
-ARTUS_FRIENDS_FAKE_FACTOR=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-08-21/fake_factor_friends_NN_score
+ARTUS_FRIENDS_FAKE_FACTOR_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-08-21/fake_factor_friends_NN_score
+
+# Samples Run2017
+ARTUS_OUTPUTS_2017=/storage/c/wunsch/21_08_2018_Run2MSSMAnalysis/merged
+ARTUS_FRIENDS_ET_2017=/storage/c/wunsch/21_08_2018_Run2MSSMAnalysis/et_keras_1
+ARTUS_FRIENDS_MT_2017=/storage/c/wunsch/21_08_2018_Run2MSSMAnalysis/mt_keras_1
+ARTUS_FRIENDS_TT_2017=/storage/c/wunsch/21_08_2018_Run2MSSMAnalysis/tt_keras_1
+ARTUS_FRIENDS_FAKE_FACTOR_2017=TODO
 
 # Error-handling
 if [[ $ERA == *"2016"* ]]
@@ -16,6 +23,14 @@ then
     ARTUS_FRIENDS_ET=$ARTUS_FRIENDS_ET_2016
     ARTUS_FRIENDS_MT=$ARTUS_FRIENDS_MT_2016
     ARTUS_FRIENDS_TT=$ARTUS_FRIENDS_TT_2016
+    ARTUS_FRIENDS_FAKE_FACTOR=$ARTUS_FRIENDS_FAKE_FACTOR_2016
+elif [[ $ERA == *"2017"* ]]
+then
+    ARTUS_OUTPUTS=$ARTUS_OUTPUTS_2017
+    ARTUS_FRIENDS_ET=$ARTUS_FRIENDS_ET_2017
+    ARTUS_FRIENDS_MT=$ARTUS_FRIENDS_MT_2017
+    ARTUS_FRIENDS_TT=$ARTUS_FRIENDS_TT_2017
+    ARTUS_FRIENDS_FAKE_FACTOR=$ARTUS_FRIENDS_FAKE_FACTOR_2017
 else
     echo "[ERROR] Era $ERA is not implemented." 1>&2
     read -p "Press any key to continue... " -n1 -s
