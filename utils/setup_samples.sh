@@ -11,9 +11,9 @@ ARTUS_FRIENDS_FAKE_FACTOR_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2
 
 # Samples Run2017
 ARTUS_OUTPUTS_2017=/storage/c/wunsch/01_09_2018_correctedZptWeights_newBTaggingEffs_postsync/merged
-ARTUS_FRIENDS_ET_2017=TODO
-ARTUS_FRIENDS_MT_2017=TODO
-ARTUS_FRIENDS_TT_2017=TODO
+ARTUS_FRIENDS_ET_2017=/storage/c/wunsch/01_09_2018_correctedZptWeights_newBTaggingEffs_postsync/et_keras_1
+ARTUS_FRIENDS_MT_2017=/storage/c/wunsch/01_09_2018_correctedZptWeights_newBTaggingEffs_postsync/mt_keras_1
+ARTUS_FRIENDS_TT_2017=/storage/c/wunsch/01_09_2018_correctedZptWeights_newBTaggingEffs_postsync/tt_keras_1
 ARTUS_FRIENDS_FAKE_FACTOR_2017=TODO
 
 # Error-handling

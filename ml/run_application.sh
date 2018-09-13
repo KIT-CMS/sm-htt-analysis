@@ -11,6 +11,7 @@ python ml/write_application_filelist.py \
     --directory $ARTUS_OUTPUTS \
     --database $KAPPA_DATABASE \
     --channel ${CHANNEL} \
+    --era ${ERA} \
     --output ml/${ERA}_${CHANNEL}/application_filelist.yaml
 
 export KERAS_BACKEND=tensorflow
