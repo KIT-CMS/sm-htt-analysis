@@ -1,0 +1,70 @@
+# Training datasets for different folds
+datasets:
+    - ml/2017_mt/fold0_training_dataset.root
+    - ml/2017_mt/fold1_training_dataset.root
+
+# Base path for all output files
+output_path: ml/2017_mt
+
+# Define classes based on tree names in dataset file
+classes:
+    - ggh
+    - qqh
+    - ztt
+    - zll
+    - w
+    - tt
+    - ss
+    - misc
+
+# Set class weights
+class_weights:
+    ggh: 495.5
+    qqh: 5073.94
+    ztt: 3.32
+    zll: 26.1
+    w: 3.1
+    tt: 10.3
+    ss: 4.4
+    misc: 125.6
+
+# Define global scale factor, which is multiplied to all event weights
+global_weight_scale: 1.0
+
+# Set event weight variable
+event_weights: training_weight
+
+# Define list of variables to be used for training
+variables:
+    - m_vis
+    - ptvis
+    - pt_1
+    - pt_2
+    - jpt_2
+    - jm_1
+    - jm_2
+    - njets
+    - nbtag
+    - mt_1
+    - mt_2
+    - pt_tt
+    - mjj
+    - dijetpt
+    - met
+
+# Split of dataset in training and validation (in TMVA called training and testing)
+train_test_split: 0.75
+
+# Define preprocessing
+preprocessing: standard_scaler
+
+# Set random seed for initialization of parameters and dataset splits
+seed: 1234
+
+# Define the model parameter
+model:
+    name: smhtt_dropout_tanh
+    batch_size: 100
+    epochs: 100000
+    early_stopping: 50
+    save_best_only: true
