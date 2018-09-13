@@ -125,7 +125,7 @@ def main(args):
 
     # Era selection
     if "2017" in args.era:
-        from shape_producer.estimation_methods_Fall17 import DataEstimation, HTTEstimation, ZTTEstimation, ZLLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation
+        from shape_producer.estimation_methods_Fall17 import DataEstimation, HTTEstimation, ZTTEstimation, ZLLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, QCDEstimation_ABCD_TT_ISO2
 
         from shape_producer.era import Run2017ReReco31Mar as Run2017
         era = Run2017(args.datasets)
@@ -158,6 +158,7 @@ def main(args):
         "ggH"   : Process("ggH125",   ggHEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         "qqH"   : Process("qqH125",   qqHEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         }
+    # TODO: QCD
 
     et = ETMSSM2017()
     et_processes = {
@@ -175,6 +176,7 @@ def main(args):
         "ggH"   : Process("ggH125",   ggHEstimation       (era, directory, et, friend_directory=et_friend_directory)),
         "qqH"   : Process("qqH125",   qqHEstimation       (era, directory, et, friend_directory=et_friend_directory)),
         }
+    # TODO: QCD
 
     tt = TTMSSM2017()
     tt_processes = {
@@ -192,6 +194,7 @@ def main(args):
         "ggH"   : Process("ggH125",   ggHEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
         "qqH"   : Process("qqH125",   qqHEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
         }
+    tt_processes["QCD"] = Process("QCD", QCDEstimation_ABCD_TT_ISO2(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZLL", "ZJ", "ZLL", "VVJ", "VVT", "W"]], tt_processes["data"], friend_directory=tt_friend_directory))
 
     # Variables and categories
     binning = yaml.load(open(args.binning))
