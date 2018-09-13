@@ -125,7 +125,7 @@ def main(args):
 
     # Era selection
     if "2017" in args.era:
-        from shape_producer.estimation_methods_Fall17 import DataEstimation, HTTEstimation, ZTTEstimation, ZLLEstimation, ZJEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation
+        from shape_producer.estimation_methods_Fall17 import DataEstimation, HTTEstimation, ZTTEstimation, ZLLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation
 
         from shape_producer.era import Run2017ReReco31Mar as Run2017
         era = Run2017(args.datasets)
@@ -151,6 +151,7 @@ def main(args):
         "ZJ"    : Process("ZJ",       ZJEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
         "TTT"   : Process("TTT",      TTTEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         "TTJ"   : Process("TTJ",      TTJEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
+        "TTL"   : Process("TTL",      TTLEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         "VVT"   : Process("VVT",      VVTEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         "VVJ"   : Process("VVJ",      VVJEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         "W"     : Process("W",        WEstimation         (era, directory, mt, friend_directory=mt_friend_directory)),
@@ -167,6 +168,7 @@ def main(args):
         "ZJ"    : Process("ZJ",       ZJEstimation        (era, directory, et, friend_directory=et_friend_directory)),
         "TTT"   : Process("TTT",      TTTEstimation       (era, directory, et, friend_directory=et_friend_directory)),
         "TTJ"   : Process("TTJ",      TTJEstimation       (era, directory, et, friend_directory=et_friend_directory)),
+        "TTL"   : Process("TTL",      TTLEstimation       (era, directory, et, friend_directory=et_friend_directory)),
         "VVT"   : Process("VVT",      VVTEstimation       (era, directory, et, friend_directory=et_friend_directory)),
         "VVJ"   : Process("VVJ",      VVJEstimation       (era, directory, et, friend_directory=et_friend_directory)),
         "W"     : Process("W",        WEstimation         (era, directory, et, friend_directory=et_friend_directory)),
@@ -183,6 +185,7 @@ def main(args):
         "ZJ"    : Process("ZJ",       ZJEstimation        (era, directory, tt, friend_directory=tt_friend_directory)),
         "TTT"   : Process("TTT",      TTTEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
         "TTJ"   : Process("TTJ",      TTJEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
+        "TTL"   : Process("TTL",      TTLEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
         "VVT"   : Process("VVT",      VVTEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
         "VVJ"   : Process("VVJ",      VVJEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
         "W"     : Process("W",        WEstimation         (era, directory, tt, friend_directory=tt_friend_directory)),
