@@ -105,8 +105,7 @@ def main(args):
     if "2017" in args.era and args.channel == "mt":
         channel = MTMSSM2017()
         for estimation in [
-                ggHEstimation(era, args.directory, channel),
-                qqHEstimation(era, args.directory, channel),
+                HTTEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
                 ZLLEstimation(era, args.directory, channel),
                 ZJEstimation(era, args.directory, channel),
@@ -114,6 +113,8 @@ def main(args):
                 TTJEstimation(era, args.directory, channel),
                 TTLEstimation(era, args.directory, channel),
                 WEstimation(era, args.directory, channel),
+                VVJEstimation(era, args.directory, channel),
+                VVTEstimation(era, args.directory, channel),
                 DataEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method
@@ -186,8 +187,7 @@ def main(args):
     if "2017" in args.era and args.channel == "et":
         channel = ETMSSM2017()
         for estimation in [
-                ggHEstimation(era, args.directory, channel),
-                qqHEstimation(era, args.directory, channel),
+                HTTEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
                 ZLLEstimation(era, args.directory, channel),
                 ZJEstimation(era, args.directory, channel),
@@ -195,6 +195,8 @@ def main(args):
                 TTJEstimation(era, args.directory, channel),
                 TTLEstimation(era, args.directory, channel),
                 WEstimation(era, args.directory, channel),
+                VVJEstimation(era, args.directory, channel),
+                VVTEstimation(era, args.directory, channel),
                 DataEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method
@@ -267,8 +269,7 @@ def main(args):
     if "2017" in args.era and args.channel == "tt":
         channel = TTMSSM2017()
         for estimation in [
-                ggHEstimation(era, args.directory, channel),
-                qqHEstimation(era, args.directory, channel),
+                HTTEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
                 ZLLEstimation(era, args.directory, channel),
                 ZJEstimation(era, args.directory, channel),
@@ -276,6 +277,8 @@ def main(args):
                 TTJEstimation(era, args.directory, channel),
                 TTLEstimation(era, args.directory, channel),
                 WEstimation(era, args.directory, channel),
+                VVJEstimation(era, args.directory, channel),
+                VVTEstimation(era, args.directory, channel),
                 DataEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method

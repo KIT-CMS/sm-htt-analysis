@@ -1,0 +1,18 @@
+# Classifier configs of both folds.
+# The first entry is used for the even event numbers (N%2==0) and
+# the second for the odd event numbers (N%2==1)
+# NOTE: To be indepedent, the classifier trained on fold 1 needs to be
+# booked first and vice versa.
+classifiers:
+    - ml/2017_et/fold1_keras_model.h5
+    - ml/2017_et/fold0_keras_model.h5
+
+preprocessing:
+    - ml/2017_et/fold1_keras_preprocessing.pickle
+    - ml/2017_et/fold0_keras_preprocessing.pickle
+
+# Branch prefix
+branch_prefix: et_
+
+# Output directory
+output_directory: /storage/c/wunsch/01_09_2018_correctedZptWeights_newBTaggingEffs_postsync/et_keras_1
