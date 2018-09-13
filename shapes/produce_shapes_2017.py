@@ -138,9 +138,9 @@ def main(args):
     # yapf: disable
     directory = args.directory
     # TODO: Remove dummies
-    et_friend_directory = []#args.et_friend_directory
-    mt_friend_directory = []#args.mt_friend_directory
-    tt_friend_directory = []#args.tt_friend_directory
+    et_friend_directory = args.et_friend_directory
+    mt_friend_directory = args.mt_friend_directory
+    tt_friend_directory = args.tt_friend_directory
     ff_friend_directory = []#args.fake_factor_friend_directory
     mt = MTMSSM2017()
     mt_processes = {
@@ -199,44 +199,50 @@ def main(args):
     et_categories = []
     # Analysis shapes
     if "et" in args.channels:
-        label = "m_vis"
-        score = Variable(
-            label,
-             VariableBinning(binning["gof"]["et"][label]["bins"]))
-        et_categories.append(
-            Category(
-                label,
-                et,
-                Cuts(),
-                variable=score))
+        classes_et = ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]
+        for i, label in enumerate(classes_et):
+            score = Variable(
+                "et_max_score",
+                 VariableBinning(binning["analysis"]["et"][label]))
+            et_categories.append(
+                Category(
+                    label,
+                    et,
+                    Cuts(
+                        Cut("et_max_index=={index}".format(index=i), "exclusive_score")),
+                    variable=score))
 
     mt_categories = []
     # Analysis shapes
     if "mt" in args.channels:
-        label = "m_vis"
-        score = Variable(
-            label,
-             VariableBinning(binning["gof"]["mt"][label]["bins"]))
-        mt_categories.append(
-            Category(
-                label,
-                mt,
-                Cuts(),
-                variable=score))
+        classes_mt = ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]
+        for i, label in enumerate(classes_mt):
+            score = Variable(
+                "mt_max_score",
+                 VariableBinning(binning["analysis"]["mt"][label]))
+            mt_categories.append(
+                Category(
+                    label,
+                    mt,
+                    Cuts(
+                        Cut("mt_max_index=={index}".format(index=i), "exclusive_score")),
+                    variable=score))
 
     tt_categories = []
     # Analysis shapes
     if "tt" in args.channels:
-        label = "m_vis"
-        score = Variable(
-            label,
-             VariableBinning(binning["gof"]["tt"][label]["bins"]))
-        tt_categories.append(
-            Category(
-                label,
-                tt,
-                Cuts(),
-                variable=score))
+        classes_tt = ["ggh", "qqh", "ztt", "noniso", "misc"]
+        for i, label in enumerate(classes_tt):
+            score = Variable(
+                "tt_max_score",
+                 VariableBinning(binning["analysis"]["tt"][label]))
+            tt_categories.append(
+                Category(
+                    label,
+                    tt,
+                    Cuts(
+                        Cut("tt_max_index=={index}".format(index=i), "exclusive_score")),
+                    variable=score))
 
     # Nominal histograms
     # yapf: enable
