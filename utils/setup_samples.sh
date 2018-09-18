@@ -10,10 +10,10 @@ ARTUS_FRIENDS_TT_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-08-21
 ARTUS_FRIENDS_FAKE_FACTOR_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-08-21/fake_factor_friends_NN_score
 
 # Samples Run2017
-ARTUS_OUTPUTS_2017=/storage/c/wunsch/01_09_2018_correctedZptWeights_newBTaggingEffs_postsync/merged
-ARTUS_FRIENDS_ET_2017=/storage/c/wunsch/01_09_2018_correctedZptWeights_newBTaggingEffs_postsync/et_keras_1
-ARTUS_FRIENDS_MT_2017=/storage/c/wunsch/01_09_2018_correctedZptWeights_newBTaggingEffs_postsync/mt_keras_1
-ARTUS_FRIENDS_TT_2017=/storage/c/wunsch/01_09_2018_correctedZptWeights_newBTaggingEffs_postsync/tt_keras_1
+ARTUS_OUTPUTS_2017=/storage/c/swozniewski/SM_Htautau/ntuples/Artus17_2018-09-11/merged
+ARTUS_FRIENDS_ET_2017=/storage/c/wunsch/Artus17_2018-09-11/et_keras_1
+ARTUS_FRIENDS_MT_2017=/storage/c/wunsch/Artus17_2018-09-11/mt_keras_1
+ARTUS_FRIENDS_TT_2017=/storage/c/wunsch/Artus17_2018-09-11/tt_keras_1
 ARTUS_FRIENDS_FAKE_FACTOR_2017=TODO
 
 # Error-handling
