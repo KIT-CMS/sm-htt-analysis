@@ -154,7 +154,7 @@ def main(args):
     legend_bkg_processes = copy.deepcopy(bkg_processes)
     legend_bkg_processes.reverse()
 
-    rootfile = rootfile_parser.Rootfile_parser(args.input)
+    rootfile = rootfile_parser.Rootfile_parser(args.input, "standard")
 
     plots = []
     for channel in args.channels:
@@ -193,13 +193,13 @@ def main(args):
             # get signal histograms
             for i in range(2):
                 plot.subplot(i + 1).add_hist(
-                    rootfile.get(channel, category, "ggH"), "ggH")
+                    rootfile.get(channel, category, "ggH125"), "ggH")
                 plot.subplot(i + 1).add_hist(
-                    rootfile.get(channel, category, "ggH"), "ggH_top")
+                    rootfile.get(channel, category, "ggH125"), "ggH_top")
                 plot.subplot(i + 1).add_hist(
-                    rootfile.get(channel, category, "qqH"), "qqH")
+                    rootfile.get(channel, category, "qqH125"), "qqH")
                 plot.subplot(i + 1).add_hist(
-                    rootfile.get(channel, category, "qqH"), "qqH_top")
+                    rootfile.get(channel, category, "qqH125"), "qqH_top")
 
             # get observed data and total background histograms
             plot.add_hist(
@@ -308,7 +308,7 @@ def main(args):
                 if category in ["2"]:
                     if not channel == "tt":
                         plot.setNXdivisions(7, 0, 4, False)
-                    plot.unroll(["VBFTOPO_JET3", "VBFTOPO_JET3VETO", "VH2JET", "REST", "PTJET1_GT200"], ur_label_size = 0.9, pads_to_print_labels=[0])
+                    plot.unroll(["VBFTOPO_JET3VETO", "VBFTOPO_JET3", "VH2JET", "REST", "PTJET1_GT200"], ur_label_size = 0.9, pads_to_print_labels=[0])
 
             # draw subplots. Argument contains names of objects to be drawn in corresponding order.
             plot.subplot(0).Draw(["stack", "total_bkg", "data_obs"])
