@@ -154,7 +154,7 @@ def main(args):
     legend_bkg_processes = copy.deepcopy(bkg_processes)
     legend_bkg_processes.reverse()
 
-    rootfile = rootfile_parser.Rootfile_parser(args.input, "standard")
+    rootfile = rootfile_parser.Rootfile_parser(args.input)
 
     plots = []
     for channel in args.channels:
@@ -193,13 +193,13 @@ def main(args):
             # get signal histograms
             for i in range(2):
                 plot.subplot(i + 1).add_hist(
-                    rootfile.get(channel, category, "ggH125"), "ggH")
+                    rootfile.get(channel, category, "ggH"), "ggH")
                 plot.subplot(i + 1).add_hist(
-                    rootfile.get(channel, category, "ggH125"), "ggH_top")
+                    rootfile.get(channel, category, "ggH"), "ggH_top")
                 plot.subplot(i + 1).add_hist(
-                    rootfile.get(channel, category, "qqH125"), "qqH")
+                    rootfile.get(channel, category, "qqH"), "qqH")
                 plot.subplot(i + 1).add_hist(
-                    rootfile.get(channel, category, "qqH125"), "qqH_top")
+                    rootfile.get(channel, category, "qqH"), "qqH_top")
 
             # get observed data and total background histograms
             plot.add_hist(
