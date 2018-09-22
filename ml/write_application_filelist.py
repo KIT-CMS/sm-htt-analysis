@@ -44,7 +44,7 @@ def main(args):
         from shape_producer.era import Run2016
         era = Run2016(args.database)
     elif "2017" in args.era:
-        from shape_producer.estimation_methods_Fall17 import DataEstimation, HTTEstimation, ZTTEstimation, ZLLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation
+        from shape_producer.estimation_methods_Fall17 import DataEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, EWKZEstimation
 
         from shape_producer.era import Run2017ReReco31Mar as Run2017
         era = Run2017(args.database)
@@ -105,9 +105,10 @@ def main(args):
     if "2017" in args.era and args.channel == "mt":
         channel = MTMSSM2017()
         for estimation in [
-                HTTEstimation(era, args.directory, channel),
+                ggHEstimation(era, args.directory, channel),
+                qqHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
-                ZLLEstimation(era, args.directory, channel),
+                ZLEstimation(era, args.directory, channel),
                 ZJEstimation(era, args.directory, channel),
                 TTTEstimation(era, args.directory, channel),
                 TTJEstimation(era, args.directory, channel),
@@ -115,6 +116,7 @@ def main(args):
                 WEstimation(era, args.directory, channel),
                 VVJEstimation(era, args.directory, channel),
                 VVTEstimation(era, args.directory, channel),
+                EWKZEstimation(era, args.directory, channel),
                 DataEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method
@@ -187,9 +189,10 @@ def main(args):
     if "2017" in args.era and args.channel == "et":
         channel = ETMSSM2017()
         for estimation in [
-                HTTEstimation(era, args.directory, channel),
+                ggHEstimation(era, args.directory, channel),
+                qqHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
-                ZLLEstimation(era, args.directory, channel),
+                ZLEstimation(era, args.directory, channel),
                 ZJEstimation(era, args.directory, channel),
                 TTTEstimation(era, args.directory, channel),
                 TTJEstimation(era, args.directory, channel),
@@ -197,6 +200,7 @@ def main(args):
                 WEstimation(era, args.directory, channel),
                 VVJEstimation(era, args.directory, channel),
                 VVTEstimation(era, args.directory, channel),
+                EWKZEstimation(era, args.directory, channel),
                 DataEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method
@@ -269,9 +273,10 @@ def main(args):
     if "2017" in args.era and args.channel == "tt":
         channel = TTMSSM2017()
         for estimation in [
-                HTTEstimation(era, args.directory, channel),
+                ggHEstimation(era, args.directory, channel),
+                qqHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
-                ZLLEstimation(era, args.directory, channel),
+                ZLEstimation(era, args.directory, channel),
                 ZJEstimation(era, args.directory, channel),
                 TTTEstimation(era, args.directory, channel),
                 TTJEstimation(era, args.directory, channel),
@@ -279,6 +284,7 @@ def main(args):
                 WEstimation(era, args.directory, channel),
                 VVJEstimation(era, args.directory, channel),
                 VVTEstimation(era, args.directory, channel),
+                EWKZEstimation(era, args.directory, channel),
                 DataEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method

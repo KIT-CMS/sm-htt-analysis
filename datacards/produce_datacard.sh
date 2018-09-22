@@ -44,6 +44,7 @@ if [ -n "$USE_COMBINEHARVESTER" ]; then
         --auto_rebin=true \
         --stxs_signals=$STXS_SIGNALS \
         --stxs_categories=$STXS_CATEGORIES \
+        --era=$ERA \
         --output="${ERA}_smhtt"
 
     # Merge datacards to workspace and define signals to be fitted
