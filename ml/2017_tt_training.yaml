@@ -30,6 +30,7 @@ event_weights: training_weight
 
 # Define list of variables to be used for training
 variables:
+    - m_sv
     - m_vis
     - ptvis
     - pt_1
