@@ -308,6 +308,11 @@ def main(args):
                         variable=score_unrolled))
 
     # Nominal histograms
+
+    signal_nicks = [
+        "ggH", "qqH"
+    ]
+
     # yapf: enable
     if "et" in [args.gof_channel] + args.channels:
         for process, category in product(et_processes.values(), et_categories):
@@ -342,7 +347,165 @@ def main(args):
                     mass="125"))
 
     # Shapes variations
+
+    # Tau energy scale
+    tau_es_3prong_variations = create_systematic_variations(
+        "CMS_scale_t_3prong_13TeV", "tauEsThreeProng", DifferentPipeline)
+    tau_es_1prong_variations = create_systematic_variations(
+        "CMS_scale_t_1prong_13TeV", "tauEsOneProng", DifferentPipeline)
+    tau_es_1prong1pizero_variations = create_systematic_variations(
+        "CMS_scale_t_1prong1pizero_13TeV", "tauEsOneProngOnePiZero",
+        DifferentPipeline)
+    for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
+        for process_nick in ["ZTT", "TTT", "TTL", "VVT", "EWKZ"
+                             ] + signal_nicks:
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+            if "tt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
+
+    # Jet energy scale
+
+    # Inclusive JES shapes
+    jet_es_variations = []
+    jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_13TeV", "jecUnc", DifferentPipeline)
+
+    # Splitted JES shapes
+    jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_eta0to3_13TeV", "jecUncEta0to3", DifferentPipeline)
+    jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_eta0to5_13TeV", "jecUncEta0to5", DifferentPipeline)
+    jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_eta3to5_13TeV", "jecUncEta3to5", DifferentPipeline)
+    jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_RelativeBal_13TeV", "jecUncRelativeBal",
+        DifferentPipeline)
+    jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_RelativeSample_13TeV", "jecUncRelativeSample",
+        DifferentPipeline)
+
+    for variation in jet_es_variations:
+        for process_nick in [
+                "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVT", "VVJ",
+                "EWKZ"
+        ] + signal_nicks:
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+            if "tt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
+
+    # MET energy scale
     # TODO
+
+    # Z pt reweighting
+    zpt_variations = create_systematic_variations(
+        "CMS_htt_dyShape_13TeV", "zPtReweightWeight", SquareAndRemoveWeight)
+    for variation in zpt_variations:
+        for process_nick in ["ZTT", "ZL", "ZJ"]:
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+            if "tt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
+
+    # top pt reweighting
+    # TODO
+
+    # jet to tau fake efficiency
+    # TODO
+
+    # ZL fakes energy scale
+    # TODO
+
+    # Zll reweighting
+    # TODO
+
+    # b tagging
+    # TODO
+
+    # embedding
+    # TODO
+
+    # jetfakes
+    # TODO
+
+    # Gluon-fusion WG1 uncertainty scheme
+    ggh_variations = []
+    for unc in [
+            "THU_ggH_Mig01", "THU_ggH_Mig12", "THU_ggH_Mu", "THU_ggH_PT120",
+            "THU_ggH_PT60", "THU_ggH_Res", "THU_ggH_VBF2j", "THU_ggH_VBF3j",
+            "THU_ggH_qmtop"
+    ]:
+        ggh_variations.append(
+            AddWeight("{}_13TeV".format(unc), "{}_weight".format(unc),
+                      Weight("({})".format(unc), "{}_weight".format(unc)),
+                      "Up"))
+        ggh_variations.append(
+            AddWeight("{}_13TeV".format(unc), "{}_weight".format(unc),
+                      Weight("(1.0/{})".format(unc), "{}_weight".format(unc)),
+                      "Down"))
+    for variation in ggh_variations:
+        for process_nick in [nick for nick in signal_nicks if "ggH" in nick]:
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+            if "tt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
 
     # Produce histograms
     logger.info("Start producing shapes.")
