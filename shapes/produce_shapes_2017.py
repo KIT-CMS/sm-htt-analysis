@@ -39,7 +39,7 @@ def setup_logging(output_file, level=logging.DEBUG):
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
-        description="Produce shapes for 2016 Standard Model analysis.")
+        description="Produce shapes for 2017 Standard Model analysis.")
 
     parser.add_argument(
         "--directory",
@@ -125,7 +125,7 @@ def main(args):
 
     # Era selection
     if "2017" in args.era:
-        from shape_producer.estimation_methods_Fall17 import DataEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, ggHEstimation_0J, ggHEstimation_1J_PTH_0_60, ggHEstimation_1J_PTH_60_120, ggHEstimation_1J_PTH_120_200, ggHEstimation_1J_PTH_GT200, ggHEstimation_GE2J_PTH_0_60, ggHEstimation_GE2J_PTH_60_120, ggHEstimation_GE2J_PTH_120_200, ggHEstimation_GE2J_PTH_GT200, ggHEstimation_VBFTOPO_JET3, ggHEstimation_VBFTOPO_JET3VETO, qqHEstimation, qqHEstimation_VBFTOPO_JET3VETO, qqHEstimation_VBFTOPO_JET3, qqHEstimation_REST, qqHEstimation_VH2JET, qqHEstimation_PTJET1_GT200, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, EWKZEstimation
+        from shape_producer.estimation_methods_Fall17 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, ggHEstimation_0J, ggHEstimation_1J_PTH_0_60, ggHEstimation_1J_PTH_60_120, ggHEstimation_1J_PTH_120_200, ggHEstimation_1J_PTH_GT200, ggHEstimation_GE2J_PTH_0_60, ggHEstimation_GE2J_PTH_60_120, ggHEstimation_GE2J_PTH_120_200, ggHEstimation_GE2J_PTH_GT200, ggHEstimation_VBFTOPO_JET3, ggHEstimation_VBFTOPO_JET3VETO, qqHEstimation, qqHEstimation_VBFTOPO_JET3VETO, qqHEstimation_VBFTOPO_JET3, qqHEstimation_REST, qqHEstimation_VH2JET, qqHEstimation_PTJET1_GT200, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, EWKZEstimation
 
         from shape_producer.era import Run2017ReReco31Mar as Run2017
         era = Run2017(args.datasets)
@@ -146,6 +146,7 @@ def main(args):
     mt_processes = {
         "data"  : Process("data_obs", DataEstimation      (era, directory, mt, friend_directory=mt_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
+        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation  (era, directory, mt, friend_directory=mt_friend_directory)),
         "ZJ"    : Process("ZJ",       ZJEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
         "TTT"   : Process("TTT",      TTTEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
@@ -182,6 +183,7 @@ def main(args):
     et_processes = {
         "data"  : Process("data_obs", DataEstimation      (era, directory, et, friend_directory=et_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, et, friend_directory=et_friend_directory)),
+        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation  (era, directory, et, friend_directory=et_friend_directory)),
         "ZJ"    : Process("ZJ",       ZJEstimation        (era, directory, et, friend_directory=et_friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimation        (era, directory, et, friend_directory=et_friend_directory)),
         "TTT"   : Process("TTT",      TTTEstimation       (era, directory, et, friend_directory=et_friend_directory)),
@@ -218,6 +220,7 @@ def main(args):
     tt_processes = {
         "data"  : Process("data_obs", DataEstimation      (era, directory, tt, friend_directory=tt_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
+        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation  (era, directory, tt, friend_directory=tt_friend_directory)),
         "ZJ"    : Process("ZJ",       ZJEstimation        (era, directory, tt, friend_directory=tt_friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimation        (era, directory, tt, friend_directory=tt_friend_directory)),
         "TTT"   : Process("TTT",      TTTEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
@@ -386,6 +389,7 @@ def main(args):
                         Cuts(Cut("tt_max_index=={index}".format(index=i), "exclusive_score"),
                              Cut("tt_max_score>{}".format(1.0/len(classes_tt)), "protect_unrolling")),
                         variable=score_unrolled))
+
     # Goodness of fit shapes
     elif args.gof_channel == "tt":
         score = Variable(
@@ -404,7 +408,6 @@ def main(args):
                 variable=score))
 
     # Nominal histograms
-
     signal_nicks = [
         "ggH", "qqH", "qqH_VBFTOPO_JET3VETO", "qqH_VBFTOPO_JET3",
         "qqH_REST", "qqH_PTJET1_GT200", "qqH_VH2JET", "ggH_0J",
@@ -425,7 +428,6 @@ def main(args):
                     era=era,
                     variation=Nominal(),
                     mass="125"))
-
     if "mt" in [args.gof_channel] + args.channels:
         for process, category in product(mt_processes.values(), mt_categories):
             systematics.add(
@@ -458,7 +460,7 @@ def main(args):
         "CMS_scale_t_1prong1pizero_13TeV", "tauEsOneProngOnePiZero",
         DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
-        for process_nick in ["ZTT", "TTT", "TTL", "VVT", "EWKZ"
+        for process_nick in ["ZTT", "TTT", "TTL", "VVT", "EWKZ", "EMB"
                              ] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -566,8 +568,196 @@ def main(args):
     # b tagging
     # TODO
 
-    # embedding
-    # TODO
+    # Embedded event specifics
+    mt_decayMode_variations = []
+    mt_decayMode_variations.append(
+        ReplaceWeight(
+            "CMS_3ProngEff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effUp_pi0Nom", "decayMode_SF"),
+            "Up"))
+    mt_decayMode_variations.append(
+        ReplaceWeight(
+            "CMS_3ProngEff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effDown_pi0Nom", "decayMode_SF"),
+            "Down"))
+    mt_decayMode_variations.append(
+        ReplaceWeight(
+            "CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effNom_pi0Up", "decayMode_SF"),
+            "Up"))
+    mt_decayMode_variations.append(
+        ReplaceWeight(
+            "CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effNom_pi0Down", "decayMode_SF"),
+            "Down"))
+    for variation in mt_decayMode_variations:
+        for process_nick in ["EMB"]:
+            if "mt" in args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+    et_decayMode_variations = []
+    et_decayMode_variations.append(
+        ReplaceWeight(
+            "CMS_3ProngEff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effUp_pi0Nom", "decayMode_SF"),
+            "Up"))
+    et_decayMode_variations.append(
+        ReplaceWeight(
+            "CMS_3ProngEff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effDown_pi0Nom", "decayMode_SF"),
+            "Down"))
+    et_decayMode_variations.append(
+        ReplaceWeight(
+            "CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effNom_pi0Up", "decayMode_SF"),
+            "Up"))
+    et_decayMode_variations.append(
+        ReplaceWeight(
+            "CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effNom_pi0Down", "decayMode_SF"),
+            "Down"))
+    for variation in et_decayMode_variations:
+        for process_nick in ["EMB"]:
+            if "et" in args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+    tt_decayMode_variations = []
+    tt_decayMode_variations.append(
+        ReplaceWeight(
+            "CMS_3ProngEff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effUp_pi0Nom", "decayMode_SF"),
+            "Up"))
+    tt_decayMode_variations.append(
+        ReplaceWeight(
+            "CMS_3ProngEff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effDown_pi0Nom", "decayMode_SF"),
+            "Down"))
+    tt_decayMode_variations.append(
+        ReplaceWeight(
+            "CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effNom_pi0Up", "decayMode_SF"),
+            "Up"))
+    tt_decayMode_variations.append(
+        ReplaceWeight(
+            "CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
+            Weight("embeddedDecayModeWeight_effNom_pi0Down", "decayMode_SF"),
+            "Down"))
+    for variation in tt_decayMode_variations:
+        for process_nick in ["EMB"]:
+            if "tt" in args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
+    # 10% removed events in ttbar simulation (ttbar -> real tau tau events) will be added/subtracted to ZTT shape to use as systematic
+    tttautau_process_mt = Process(
+        "TTT",
+        TTTEstimation(
+            era, directory, mt, friend_directory=mt_friend_directory))
+    tttautau_process_et = Process(
+        "TTT",
+        TTTEstimation(
+            era, directory, et, friend_directory=et_friend_directory))
+    tttautau_process_tt = Process(
+        "TTT",
+        TTTEstimation(
+            era, directory, tt, friend_directory=tt_friend_directory))
+    if 'mt' in args.channels:
+        for category in mt_categories:
+            mt_processes['ZTTpTTTauTauDown'] = Process(
+                "ZTTpTTTauTauDown",
+                AddHistogramEstimationMethod(
+                    "AddHistogram", "nominal", era, directory, mt,
+                    [mt_processes["EMB"], tttautau_process_mt], [1.0, -0.1]))
+            systematics.add(
+                Systematic(
+                    category=category,
+                    process=mt_processes['ZTTpTTTauTauDown'],
+                    analysis="smhtt",
+                    era=era,
+                    variation=Relabel("CMS_htt_emb_ttbar_13TeV", "Down"),
+                    mass="125"))
+
+            mt_processes['ZTTpTTTauTauUp'] = Process(
+                "ZTTpTTTauTauUp",
+                AddHistogramEstimationMethod(
+                    "AddHistogram", "nominal", era, directory, mt,
+                    [mt_processes["EMB"], tttautau_process_mt], [1.0, 0.1]))
+            systematics.add(
+                Systematic(
+                    category=category,
+                    process=mt_processes['ZTTpTTTauTauUp'],
+                    analysis="smhtt",
+                    era=era,
+                    variation=Relabel("CMS_htt_emb_ttbar_13TeV", "Up"),
+                    mass="125"))
+
+    if 'et' in args.channels:
+        for category in et_categories:
+            et_processes['ZTTpTTTauTauDown'] = Process(
+                "ZTTpTTTauTauDown",
+                AddHistogramEstimationMethod(
+                    "AddHistogram", "nominal", era, directory, et,
+                    [et_processes["EMB"], tttautau_process_et], [1.0, -0.1]))
+            systematics.add(
+                Systematic(
+                    category=category,
+                    process=et_processes['ZTTpTTTauTauDown'],
+                    analysis="smhtt",
+                    era=era,
+                    variation=Relabel("CMS_htt_emb_ttbar_13TeV", "Down"),
+                    mass="125"))
+
+            et_processes['ZTTpTTTauTauUp'] = Process(
+                "ZTTpTTTauTauUp",
+                AddHistogramEstimationMethod(
+                    "AddHistogram", "nominal", era, directory, et,
+                    [et_processes["EMB"], tttautau_process_et], [1.0, 0.1]))
+            systematics.add(
+                Systematic(
+                    category=category,
+                    process=et_processes['ZTTpTTTauTauUp'],
+                    analysis="smhtt",
+                    era=era,
+                    variation=Relabel("CMS_htt_emb_ttbar_13TeV", "Up"),
+                    mass="125"))
+    if 'tt' in args.channels:
+        for category in tt_categories:
+            tt_processes['ZTTpTTTauTauDown'] = Process(
+                "ZTTpTTTauTauDown",
+                AddHistogramEstimationMethod(
+                    "AddHistogram", "EMB", era, directory, tt,
+                    [tt_processes["EMB"], tttautau_process_tt], [1.0, -0.1]))
+            systematics.add(
+                Systematic(
+                    category=category,
+                    process=tt_processes['ZTTpTTTauTauDown'],
+                    analysis="smhtt",
+                    era=era,
+                    variation=Relabel("CMS_htt_emb_ttbar_13TeV", "Down"),
+                    mass="125"))
+
+            tt_processes['ZTTpTTTauTauUp'] = Process(
+                "ZTTpTTTauTauUp",
+                AddHistogramEstimationMethod(
+                    "AddHistogram", "nominal", era, directory, tt,
+                    [tt_processes["EMB"], tttautau_process_tt], [1.0, 0.1]))
+            systematics.add(
+                Systematic(
+                    category=category,
+                    process=tt_processes['ZTTpTTTauTauUp'],
+                    analysis="smhtt",
+                    era=era,
+                    variation=Relabel("CMS_htt_emb_ttbar_13TeV", "Up"),
+                    mass="125"))
+ 
 
     # jetfakes
     # TODO
