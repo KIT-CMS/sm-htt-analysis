@@ -42,10 +42,10 @@ def parse_arguments():
     parser.add_argument(
         "--png", action="store_true", help="Save plots in png format")
     parser.add_argument(
-        "--stxs-categories",
-        type=int,
+        "--categories",
+        type=str,
         required=True,
-        help="Select STXS categorization.")
+        help="Select categorization.")
     parser.add_argument(
         "--normalize-by-bin-width",
         action="store_true",
@@ -81,7 +81,11 @@ def setup_logging(output_file, level=logging.DEBUG):
 
 def main(args):
     if args.gof_variable != None:
-        channel_categories = {c: [args.gof_variable] for c in args.channels}
+        channel_categories = {
+            "et": ["100"],
+            "mt": ["100"],
+            "tt": ["100"],
+        }
     else:
         channel_categories = {
             #"et": ["ztt", "zll", "w", "tt", "ss", "misc"],
@@ -91,15 +95,15 @@ def main(args):
             #"tt": ["ztt", "noniso", "misc"]
             "tt": ["12", "17", "16"]
         }
-        if args.stxs_categories == 0:
+        if args.categories == "stxs_stage0":
             for channel in ["et", "mt", "tt"]:
                 channel_categories[channel] += ["1", "2"]
-        elif args.stxs_categories == 1:
+        elif args.categories == "stxs_stage1":
             for channel in ["et", "mt", "tt"]:
                 channel_categories[channel] += ["1", "2"]
         else:
             logger.critical("Selected unkown STXS categorization {}",
-                            args.stxs_categories)
+                            args.categories)
             raise Exception
     channel_dict = {
         "ee": "ee",
@@ -110,7 +114,7 @@ def main(args):
         "tt": "#tau_{h}#tau_{h}"
     }
     if args.gof_variable != None:
-        category_dict = {args.gof_variable: "inclusive"}
+        category_dict = {"100": "inclusive"}
     else:
         category_dict = {
             "1": "ggH",
@@ -173,7 +177,7 @@ def main(args):
         for category in channel_categories[channel]:
             # create plot
             width = 600
-            if args.stxs_categories == 1:
+            if args.categories == "stxs_stage1":
                 if category in ["1", "2"]:
                     width = 1200
             if args.linear == True:
@@ -295,7 +299,7 @@ def main(args):
 
             #plot.subplot(2).setNYdivisions(3, 5)
 
-            if args.stxs_categories == 1:
+            if args.categories == "stxs_stage1":
                 if not channel == "tt":
                     plot.subplot(2).changeXLabels([" ", "0.25", " ", "0.50", " ", "0.75", " ", " "])
                 if category in ["1"]:
@@ -326,7 +330,7 @@ def main(args):
             suffix = ["", "_top"]
             for i in range(2):
 
-                plot.add_legend(width=0.3 if args.stxs_categories and category in ["1", "2"] else 0.6, height=0.15)
+                plot.add_legend(width=0.3 if args.categories == "stxs_stage1" and category in ["1", "2"] else 0.6, height=0.15)
                 for process in legend_bkg_processes:
                     plot.legend(i).add_entry(
                         0, process, styles.legend_label_dict[process], 'f')
@@ -371,13 +375,13 @@ def main(args):
             if "2016" in args.era:
                 plot.DrawLumi("35.9 fb^{-1} (2016, 13 TeV)")
             elif "2017" in args.era:
-                plot.DrawLumi("41.3 fb^{-1} (2017, 13 TeV)")
+                plot.DrawLumi("41.5 fb^{-1} (2017, 13 TeV)")
             else:
                 logger.critical("Era {} is not implemented.".format(args.era))
                 raise Exception
 
             posChannelCategoryLabelLeft = None
-            if args.stxs_categories == 1:
+            if args.categories == "stxs_stage1":
                 if category in ["1", "2"]:
                     posChannelCategoryLabelLeft = 0.075
             plot.DrawChannelCategoryLabel(

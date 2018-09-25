@@ -21,14 +21,16 @@ then
 fi
 
 # Produce shapes
-python shapes/produce_shapes.py \
+python shapes/produce_shapes_$ERA.py \
     --directory $ARTUS_OUTPUTS \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
     --gof-channel $CHANNEL \
     --gof-variable $VARIABLE \
+    --et-friend-directory $ARTUS_FRIENDS_ET \
+    --mt-friend-directory $ARTUS_FRIENDS_MT \
+    --tt-friend-directory $ARTUS_FRIENDS_TT \
+    --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR \
     --era $ERA \
+    --tag $ERA \
     --num-threads 1
-
-# Apply blinding strategy
-./shapes/apply_blinding.sh $ERA
