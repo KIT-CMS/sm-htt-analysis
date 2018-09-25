@@ -286,6 +286,22 @@ def main(args):
                         Cuts(Cut("et_max_index=={index}".format(index=i), "exclusive_score"),
                              Cut("et_max_score>{}".format(1.0/len(classes_et)), "protect_unrolling")),
                         variable=score_unrolled))
+    # Goodness of fit shapes
+    elif args.gof_channel == "et":
+        score = Variable(
+                args.gof_variable,
+                VariableBinning(binning["gof"]["et"][args.gof_variable]["bins"]),
+                expression=binning["gof"]["et"][args.gof_variable]["expression"])
+        if "cut" in binning["gof"]["et"][args.gof_variable].keys():
+            cuts=Cuts(Cut(binning["gof"]["et"][args.gof_variable]["cut"], "binning"))
+        else:
+            cuts=Cuts()
+        et_categories.append(
+            Category(
+                args.gof_variable,
+                et,
+                cuts,
+                variable=score))
 
     mt_categories = []
     # Analysis shapes
@@ -320,6 +336,22 @@ def main(args):
                         Cuts(Cut("mt_max_index=={index}".format(index=i), "exclusive_score"),
                              Cut("mt_max_score>{}".format(1.0/len(classes_mt)), "protect_unrolling")),
                         variable=score_unrolled))
+    # Goodness of fit shapes
+    elif args.gof_channel == "mt":
+        score = Variable(
+                args.gof_variable,
+                VariableBinning(binning["gof"]["mt"][args.gof_variable]["bins"]),
+                expression=binning["gof"]["mt"][args.gof_variable]["expression"])
+        if "cut" in binning["gof"]["mt"][args.gof_variable].keys():
+            cuts=Cuts(Cut(binning["gof"]["mt"][args.gof_variable]["cut"], "binning"))
+        else:
+            cuts=Cuts()
+        mt_categories.append(
+            Category(
+                args.gof_variable,
+                mt,
+                cuts,
+                variable=score))
 
     tt_categories = []
     # Analysis shapes
@@ -354,6 +386,22 @@ def main(args):
                         Cuts(Cut("tt_max_index=={index}".format(index=i), "exclusive_score"),
                              Cut("tt_max_score>{}".format(1.0/len(classes_tt)), "protect_unrolling")),
                         variable=score_unrolled))
+    # Goodness of fit shapes
+    elif args.gof_channel == "tt":
+        score = Variable(
+                args.gof_variable,
+                VariableBinning(binning["gof"]["tt"][args.gof_variable]["bins"]),
+                expression=binning["gof"]["tt"][args.gof_variable]["expression"])
+        if "cut" in binning["gof"]["tt"][args.gof_variable].keys():
+            cuts=Cuts(Cut(binning["gof"]["tt"][args.gof_variable]["cut"], "binning"))
+        else:
+            cuts=Cuts()
+        tt_categories.append(
+            Category(
+                args.gof_variable,
+                tt,
+                cuts,
+                variable=score))
 
     # Nominal histograms
 

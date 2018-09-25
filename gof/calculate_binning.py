@@ -5,7 +5,7 @@ import ROOT
 ROOT.PyConfig.IgnoreCommandLineOptions = True  # disable ROOT internal argument parser
 
 from shape_producer.cutstring import Cut, Cuts
-from shape_producer.channel import ETSM, MTSM, TTSM
+from shape_producer.channel import ETSM, MTSM, TTSM, ETMSSM2017, MTMSSM2017, TTMSSM2017
 from shape_producer.process import Process
 
 import argparse
@@ -56,6 +56,8 @@ def get_properties(dict_, era, channel, directory, additional_cuts):
     # Get data estimation method
     if "2016" in era.name:
         from shape_producer.estimation_methods_2016 import DataEstimation
+    elif "2017" in era.name:
+        from shape_producer.estimation_methods_Fall17 import DataEstimation
     else:
         logger.fatal(
             "Can not import data estimation because era {} is not implemented.".
@@ -176,6 +178,9 @@ def main(args):
     if "2016" in args.era:
         from shape_producer.era import Run2016
         era = Run2016(args.datasets)
+    elif "2017" in args.era:
+        from shape_producer.era import Run2017ReReco31Mar as Run2017
+        era = Run2017(args.datasets)
     else:
         logger.fatal("Era {} is not implemented.".format(args.era))
         raise Exception
@@ -194,7 +199,10 @@ def main(args):
     # Channel: ET
     if "et" in channels:
         # Get properties
-        channel = ETSM()
+        if "2016" in args.era:
+            channel = ETSM()
+        elif "2017" in args.era:
+            channel = ETMSSM2017()
         logger.info("Channel: et")
         dict_ = {}
         additional_cuts = Cuts()
@@ -220,7 +228,10 @@ def main(args):
     # Channel: MT
     if "mt" in channels:
         # Get properties
-        channel = MTSM()
+        if "2016" in args.era:
+            channel = MTSM()
+        elif "2017" in args.era:
+            channel = MTMSSM2017()
         logger.info("Channel: mt")
         dict_ = {}
         additional_cuts = Cuts()
@@ -246,7 +257,10 @@ def main(args):
     # Channel: TT
     if "tt" in channels:
         # Get properties
-        channel = TTSM()
+        if "2016" in args.era:
+            channel = TTSM()
+        elif "2017" in args.era:
+            channel = TTMSSM2017()
         logger.info("Channel: tt")
         dict_ = {}
         additional_cuts = Cuts()
