@@ -8,11 +8,11 @@ import argparse
 def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--output", type=str, required=True, help="Output path")
+        "era", type=str, help="Experiment era.")
     parser.add_argument(
-        "--era", type=str, required=True, help="Experiment era.")
+        "output", type=str, help="Output path")
     parser.add_argument(
-        "--binning", type=str, required=True, help="Binning config.")
+        "binning", type=str, help="Binning config.")
     return parser.parse_args()
 
 
@@ -34,7 +34,6 @@ def main(args):
     jobs.arguments = arguments
 
     # The job requires lots of CPU resources
-    # NOTE: This selects the sg machines.
     jobs.requirements = '(Target.ProvidesCPU == True) && (Target.ProvidesEKPResources == True)'
     jobs.job_folder = args.output
     jobs.WriteJDL()
