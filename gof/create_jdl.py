@@ -17,7 +17,7 @@ def parse_arguments():
 
 
 def main(args):
-    jobs = JDLCreator("ekpsupermachines")
+    jobs = JDLCreator("condocker")
 
     jobs.executable = "gof/job.sh"
     jobs.wall_time = 1 * 60 * 60

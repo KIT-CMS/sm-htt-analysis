@@ -14,7 +14,7 @@ echo "Variable:" $VARIABLE
 OUTPUT_DIR=/storage/c/wunsch/jobs_gof/${ERA}_${CHANNEL}_${VARIABLE}
 echo "Output directory:" $OUTPUT_DIR
 
-BASE_PATH=/portal/ekpbms1/home/wunsch/sm-htt-analysis-gof
+BASE_PATH=/portal/ekpbms2/home/wunsch/workspace/sm-htt-analysis
 echo "Base repository path:" $BASE_PATH
 
 echo "Hostname:" `hostname`

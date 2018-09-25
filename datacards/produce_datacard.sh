@@ -31,11 +31,11 @@ if [ -n "$USE_COMBINEHARVESTER" ]; then
     rm -rf output/ ${ERA}_workspace.root
 
     # Create datacards
-    INPUT_FOLDER="../../../../.."
     $CMSSW_BASE/bin/slc6_amd64_gcc491/MorphingSM2017 \
-        --input_folder_mt=$INPUT_FOLDER \
-        --input_folder_et=$INPUT_FOLDER \
-        --input_folder_tt=$INPUT_FOLDER \
+        --base_path=$PWD \
+        --input_folder_mt="/" \
+        --input_folder_et="/" \
+        --input_folder_tt="/" \
         --real_data=false \
         --jetfakes=$JETFAKES \
         --embedding=$EMBEDDING \
