@@ -35,12 +35,12 @@ def parse_arguments():
     parser.add_argument(
         "--png", action="store_true", help="Save plots in png format")
     parser.add_argument(
-        "--stxs-categories",
-        type=int,
+        "--categories",
+        type=str,
         required=True,
-        help="Select STXS categorization.")
+        help="Select categorization.")
     parser.add_argument(
-        "--stxs-signals", type=int, required=True, help="Select STXS signals.")
+        "--stxs-signals", type=str, required=True, help="Select STXS signals.")
     parser.add_argument(
         "--normalize-by-bin-width",
         action="store_true",
@@ -72,21 +72,21 @@ def main(args):
         "tt": ["12", "17", "16"]
     }
 
-    if args.stxs_categories == 0:
+    if args.categories == "stxs_stage0":
         for channel in ["et", "mt", "tt"]:
             channel_categories[channel] += ["1", "2"]
-    elif args.stxs_categories == 1:
+    elif args.categories == "stxs_stage1":
         for channel in ["et", "mt", "tt"]:
             channel_categories[channel] += ["1", "2"]
     else:
         logger.critical("Selected unkown STXS categorization {}",
-                        args.stxs_categories)
+                        args.categories)
         raise Exception
 
-    if args.stxs_signals == 0:
+    if args.stxs_signals == "stxs_stage0":
         signals = ["ggH", "qqH"]
         signal_linestlyes = [1, 1]
-    elif args.stxs_signals == 1:
+    elif args.stxs_signals == "stxs_stage1":
         signals = [
             "qqH_VBFTOPO_JET3VETO", "qqH_VBFTOPO_JET3", "qqH_REST",
             "qqH_PTJET1_GT200", "qqH_VH2JET", "ggH_0J", "ggH_1J_PTH_0_60",
@@ -128,7 +128,7 @@ def main(args):
         for category in channel_categories[channel]:
             # Create plot
             width = 600
-            if args.stxs_categories == 1:
+            if args.categories == "stxs_stage1":
                 if category in ["1", "2"]:
                     width = 1200
             plot = dd.Plot([], "ModTDR", r=0.04, l=0.14, width=width)
@@ -164,15 +164,15 @@ def main(args):
             # Draw additional labels
             plot.DrawCMS()
             if "2016" in args.era:
-                plot.DrawLumi("35.9 fb^{-1} (13 TeV)")
+                plot.DrawLumi("35.9 fb^{-1} (2016, 13 TeV)")
             elif "2017" in args.era:
-                plot.DrawLumi("41.3 fb^{-1} (13 TeV)")
+                plot.DrawLumi("41.5 fb^{-1} (2017, 13 TeV)")
             else:
                 logger.critical("Era {} is not implemented.".format(args.era))
                 raise Exception
 
             posChannelCategoryLabelLeft = None
-            if args.stxs_categories == 1:
+            if args.categories == "stxs_stage1":
                 if category in ["1", "2"]:
                     posChannelCategoryLabelLeft = 0.075
             plot.DrawChannelCategoryLabel(
@@ -187,7 +187,7 @@ def main(args):
             plot.legend(0).Draw()
 
             # Save plot
-            postfix = "stxsSignals{}".format(args.stxs_signals)
+            postfix = "signals_{}".format(args.stxs_signals)
             plot.save("plots/%s_%s_%s_%s.%s" % (args.era, channel, category,
                                                 postfix, "png"
                                                 if args.png else "pdf"))

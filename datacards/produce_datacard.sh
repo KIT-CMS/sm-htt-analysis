@@ -5,7 +5,7 @@ source utils/setup_python.sh
 
 ERA=$1
 STXS_SIGNALS=$2
-STXS_CATEGORIES=$3
+CATEGORIES=$3
 STXS_FIT=$4
 JETFAKES=$5
 EMBEDDING=$6
@@ -19,7 +19,7 @@ if [ -n "$USE_DATACARDPRODUCER" ]; then
         --era $ERA \
         --channels $CHANNELS \
         --stxs-signals $STXS_SIGNALS \
-        --stxs-categories $STXS_CATEGORIES \
+        --stxs-categories $CATEGORIES \
         --shapes ${ERA}_shapes.root
 
     combineTool.py -M T2W -o ${ERA}_workspace.root -i ${ERA}_datacard.txt -m 125.0 --parallel $NUM_THREADS
@@ -43,7 +43,7 @@ if [ -n "$USE_COMBINEHARVESTER" ]; then
         --channel="${CHANNELS}" \
         --auto_rebin=true \
         --stxs_signals=$STXS_SIGNALS \
-        --stxs_categories=$STXS_CATEGORIES \
+        --categories=$CATEGORIES \
         --era=$ERA \
         --output="${ERA}_smhtt"
 
@@ -52,13 +52,13 @@ if [ -n "$USE_COMBINEHARVESTER" ]; then
     if [ $STXS_FIT == "inclusive" ]; then
         combineTool.py -M T2W -o workspace.root -i ${DATACARD_PATH} --parallel $NUM_THREADS
     fi
-    if [ $STXS_FIT == 0 ]; then
+    if [ $STXS_FIT == "stxs_stage0" ]; then
         combineTool.py -M T2W -o workspace.root -i ${DATACARD_PATH} --parallel $NUM_THREADS \
             -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel \
             --PO '"map=^.*/ggH.?$:r_ggH[1,-5,5]"' \
             --PO '"map=^.*/qqH.?$:r_qqH[1,-5,5]"'
     fi
-    if [ $STXS_FIT == 1 ]; then
+    if [ $STXS_FIT == "stxs_stage1" ]; then
         combineTool.py -M T2W -o workspace.root -i ${DATACARD_PATH} --parallel $NUM_THREADS \
             -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel \
             --PO '"map=^.*/ggH_0J.?$:r_ggH_0J[1,-30,30]"' \

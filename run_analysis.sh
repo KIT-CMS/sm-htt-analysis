@@ -27,12 +27,12 @@ CHANNELS=${@:2}      # options: et, mt, tt
 ./shapes/convert_to_synced_shapes.sh $ERA
 
 # Write datacard
-STXS_SIGNALS=0       # options: 0, 1
-STXS_CATEGORIES=1    # options: 0, 1
-STXS_FIT="inclusive" # options: 0, 1, inclusive
-JETFAKES=1           # options: 0, 1
-EMBEDDING=1          # options: 0, 1
-./datacards/produce_datacard.sh $ERA $STXS_SIGNALS $STXS_CATEGORIES $STXS_FIT $JETFAKES $EMBEDDING $CHANNELS
+STXS_SIGNALS="stxs_stage0"  # options: stxs_stage0, stxs_stage1
+CATEGORIES="stxs_stage1"    # options: stxs_stage0, stxs_stage1
+STXS_FIT="inclusive"        # options: stxs_stage0, stxs_stage1, inclusive
+JETFAKES=1                  # options: 0, 1
+EMBEDDING=1                 # options: 0, 1
+./datacards/produce_datacard.sh $ERA $STXS_SIGNALS $CATEGORIES $STXS_FIT $JETFAKES $EMBEDDING $CHANNELS
 
 # Run statistical inference
 #./combine/significance.sh $ERA | tee ${ERA}_significance.log
@@ -42,5 +42,5 @@ EMBEDDING=1          # options: 0, 1
 
 # Make prefit and postfit shapes
 ./combine/prefit_postfit_shapes.sh $ERA
-./plotting/plot_shapes.sh $ERA $STXS_SIGNALS $STXS_CATEGORIES $JETFAKES $EMBEDDING $CHANNELS
-./plotting/plot_signals.sh $ERA $STXS_SIGNALS $STXS_CATEGORIES $CHANNELS
+./plotting/plot_shapes.sh $ERA $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING $CHANNELS
+./plotting/plot_signals.sh $ERA $STXS_SIGNALS $CATEGORIES $CHANNELS

@@ -20,13 +20,21 @@ done
 # Produce shapes
 ./gof/produce_shapes.sh $ERA $CHANNEL $VARIABLE
 
+# Apply blinding strategy
+./shapes/apply_blinding.sh $ERA
+
+# Convert shapes to synced format
+./shapes/convert_to_synced_shapes.sh $ERA
+
 # Create datacard
-./gof/produce_datacard.sh $ERA $CHANNEL $VARIABLE
+JETFAKES=1
+EMBEDDING=1
+./gof/produce_datacard.sh $ERA $CHANNEL $VARIABLE $JETFAKES $EMBEDDING
 
 # Run goodness of fit test
 ./gof/gof.sh $ERA
 
 # Plot prefit and postfit shapes
-./combine/signal_strength.sh $ERA
+./combine/signal_strength.sh $ERA "inclusive"
 ./combine/prefit_postfit_shapes.sh $ERA
-./gof/plot_shapes.sh $ERA $CHANNEL $VARIABLE
+./gof/plot_shapes.sh $ERA $CHANNEL $VARIABLE $JETFAKES $EMBEDDING

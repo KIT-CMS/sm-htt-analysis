@@ -3,7 +3,7 @@
 source utils/setup_cmssw.sh
 
 ERA=$1
-DATACARD=${ERA}_datacard.txt
+DATACARD=${ERA}_workspace.root
 SEED=1234
 MASS=125
 NUM_TOYS=300
