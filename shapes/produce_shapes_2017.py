@@ -592,7 +592,7 @@ def main(args):
             "Down"))
     for variation in mt_decayMode_variations:
         for process_nick in ["EMB"]:
-            if "mt" in args.channels:
+            if "mt" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
                     process=mt_processes[process_nick],
@@ -621,7 +621,7 @@ def main(args):
             "Down"))
     for variation in et_decayMode_variations:
         for process_nick in ["EMB"]:
-            if "et" in args.channels:
+            if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
                     process=et_processes[process_nick],
@@ -650,7 +650,7 @@ def main(args):
             "Down"))
     for variation in tt_decayMode_variations:
         for process_nick in ["EMB"]:
-            if "tt" in args.channels:
+            if "tt" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
                     process=tt_processes[process_nick],
@@ -669,7 +669,7 @@ def main(args):
         "TTT",
         TTTEstimation(
             era, directory, tt, friend_directory=tt_friend_directory))
-    if 'mt' in args.channels:
+    if 'mt' in [args.gof_channel] + args.channels:
         for category in mt_categories:
             mt_processes['ZTTpTTTauTauDown'] = Process(
                 "ZTTpTTTauTauDown",
@@ -699,7 +699,7 @@ def main(args):
                     variation=Relabel("CMS_htt_emb_ttbar_13TeV", "Up"),
                     mass="125"))
 
-    if 'et' in args.channels:
+    if 'et' in [args.gof_channel] + args.channels:
         for category in et_categories:
             et_processes['ZTTpTTTauTauDown'] = Process(
                 "ZTTpTTTauTauDown",
@@ -728,7 +728,7 @@ def main(args):
                     era=era,
                     variation=Relabel("CMS_htt_emb_ttbar_13TeV", "Up"),
                     mass="125"))
-    if 'tt' in args.channels:
+    if 'tt' in [args.gof_channel] + args.channels:
         for category in tt_categories:
             tt_processes['ZTTpTTTauTauDown'] = Process(
                 "ZTTpTTTauTauDown",
