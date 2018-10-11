@@ -468,7 +468,7 @@ def main(args):
         "CMS_scale_t_1prong1pizero_13TeV", "tauEsOneProngOnePiZero",
         DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
-        for process_nick in ["ZTT", "TTT", "VVT", "EWKT", "EMB"
+        for process_nick in ["ZTT", "TTT", "TTL", "VVT", "EWKT", "EMB"
                              ] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
