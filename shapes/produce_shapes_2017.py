@@ -125,7 +125,7 @@ def main(args):
 
     # Era selection
     if "2017" in args.era:
-        from shape_producer.estimation_methods_Fall17 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, ggHEstimation_0J, ggHEstimation_1J_PTH_0_60, ggHEstimation_1J_PTH_60_120, ggHEstimation_1J_PTH_120_200, ggHEstimation_1J_PTH_GT200, ggHEstimation_GE2J_PTH_0_60, ggHEstimation_GE2J_PTH_60_120, ggHEstimation_GE2J_PTH_120_200, ggHEstimation_GE2J_PTH_GT200, ggHEstimation_VBFTOPO_JET3, ggHEstimation_VBFTOPO_JET3VETO, qqHEstimation, qqHEstimation_VBFTOPO_JET3VETO, qqHEstimation_VBFTOPO_JET3, qqHEstimation_REST, qqHEstimation_VH2JET, qqHEstimation_PTJET1_GT200, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, EWKTEstimation, EWKJEstimation, EWKTEstimation
+        from shape_producer.estimation_methods_Fall17 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, ggHEstimation_0J, ggHEstimation_1J_PTH_0_60, ggHEstimation_1J_PTH_60_120, ggHEstimation_1J_PTH_120_200, ggHEstimation_1J_PTH_GT200, ggHEstimation_GE2J_PTH_0_60, ggHEstimation_GE2J_PTH_60_120, ggHEstimation_GE2J_PTH_120_200, ggHEstimation_GE2J_PTH_GT200, ggHEstimation_VBFTOPO_JET3, ggHEstimation_VBFTOPO_JET3VETO, qqHEstimation, qqHEstimation_VBFTOPO_JET3VETO, qqHEstimation_VBFTOPO_JET3, qqHEstimation_REST, qqHEstimation_VH2JET, qqHEstimation_PTJET1_GT200, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, EWKTEstimation, EWKJEstimation, EWKLEstimation
 
         from shape_producer.era import Run2017ReReco31Mar as Run2017
         era = Run2017(args.datasets)
@@ -493,8 +493,8 @@ def main(args):
 
     # Inclusive JES shapes
     jet_es_variations = []
-    jet_es_variations += create_systematic_variations(
-        "CMS_scale_j_13TeV", "jecUnc", DifferentPipeline)
+    '''jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_13TeV", "jecUnc", DifferentPipeline)'''
 
     # Splitted JES shapes
     jet_es_variations += create_systematic_variations(
@@ -535,7 +535,32 @@ def main(args):
                     era=era)
 
     # MET energy scale
-    # TODO
+    met_unclustered_variations = create_systematic_variations(
+        "CMS_scale_met_unclustered_13TeV", "metUnclusteredEn",
+        DifferentPipeline)
+    for variation in met_unclustered_variations:  # + met_clustered_variations:
+        for process_nick in [
+                "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVT", "VVJ",
+                "VVL", "EWKT", "EWKL", "EWKJ"
+        ] + signal_nicks:
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+            if "tt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
 
     # Z pt reweighting
     zpt_variations = create_systematic_variations(
@@ -562,19 +587,189 @@ def main(args):
                     era=era)
 
     # top pt reweighting
-    # TODO
+    top_pt_variations = create_systematic_variations(
+        "CMS_htt_ttbarShape_13TeV", "topPtReweightWeight",
+        SquareAndRemoveWeight)
+    for variation in top_pt_variations:
+        for process_nick in ["TTT", "TTL", "TTJ"]:
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+            if "tt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
 
     # jet to tau fake efficiency
-    # TODO
+    jet_to_tau_fake_variations = []
+    jet_to_tau_fake_variations.append(
+        AddWeight("CMS_htt_jetToTauFake_13TeV", "jetToTauFake_weight",
+                  Weight("(1.0+pt_2*0.002)", "jetToTauFake_weight"), "Up"))
+    jet_to_tau_fake_variations.append(
+        AddWeight("CMS_htt_jetToTauFake_13TeV", "jetToTauFake_weight",
+                  Weight("(1.0-pt_2*0.002)", "jetToTauFake_weight"), "Down"))
+    for variation in jet_to_tau_fake_variations:
+        for process_nick in ["ZJ", "TTJ", "W", "VVJ", "EWKJ"]:
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+            if "tt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
 
     # ZL fakes energy scale
-    # TODO
+    ele_fake_es_1prong_variations = create_systematic_variations(
+        "CMS_ZLShape_et_1prong_13TeV", "tauEleFakeEsOneProng",
+        DifferentPipeline)
+    ele_fake_es_1prong1pizero_variations = create_systematic_variations(
+        "CMS_ZLShape_et_1prong1pizero_13TeV", "tauEleFakeEsOneProngPiZeros",
+        DifferentPipeline)
+
+    if "et" in [args.gof_channel] + args.channels:
+        for process_nick in ["ZL"]:
+            for variation in ele_fake_es_1prong_variations + ele_fake_es_1prong1pizero_variations:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+
+    mu_fake_es_1prong_variations = create_systematic_variations(
+        "CMS_ZLShape_mt_1prong_13TeV", "tauMuFakeEsOneProng",
+        DifferentPipeline)
+    mu_fake_es_1prong1pizero_variations = create_systematic_variations(
+        "CMS_ZLShape_mt_1prong1pizero_13TeV", "tauMuFakeEsOneProngPiZeros",
+        DifferentPipeline)
+
+    if "mt" in [args.gof_channel] + args.channels:
+        for process_nick in ["ZL"]:
+            for variation in mu_fake_es_1prong_variations + mu_fake_es_1prong1pizero_variations:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
 
     # Zll reweighting
     # TODO
+    zll_et_weight_variations = []
+    zll_et_weight_variations.append(
+        ReplaceWeight(
+            "CMS_eFakeTau_1prong_13TeV", "decay_mode_reweight",
+            Weight(
+                "(((decayMode_2 == 0)*0.98*1.12) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.2) + ((decayMode_2 == 10)*1.0))",
+                "decay_mode_reweight"), "Up"))
+    zll_et_weight_variations.append(
+        ReplaceWeight(
+            "CMS_eFakeTau_1prong_13TeV", "decay_mode_reweight",
+            Weight(
+                "(((decayMode_2 == 0)*0.98*0.88) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.2) + ((decayMode_2 == 10)*1.0))",
+                "decay_mode_reweight"), "Down"))
+    zll_et_weight_variations.append(
+        ReplaceWeight(
+            "CMS_eFakeTau_1prong1pizero_13TeV", "decay_mode_reweight",
+            Weight(
+                "(((decayMode_2 == 0)*0.98) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.2*1.12) + ((decayMode_2 == 10)*1.0))",
+                "decay_mode_reweight"), "Up"))
+    zll_et_weight_variations.append(
+        ReplaceWeight(
+            "CMS_eFakeTau_1prong1pizero_13TeV", "decay_mode_reweight",
+            Weight(
+                "(((decayMode_2 == 0)*0.98) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.2*0.88) + ((decayMode_2 == 10)*1.0))",
+                "decay_mode_reweight"), "Down"))
+    for variation in zll_et_weight_variations:
+        for process_nick in ["ZL"]:
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+    zll_mt_weight_variations = []
+    zll_mt_weight_variations.append(
+        ReplaceWeight(
+            "CMS_mFakeTau_1prong_13TeV", "decay_mode_reweight",
+            Weight(
+                "(((decayMode_2 == 0)*0.75*1.25) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.0) + ((decayMode_2 == 10)*1.0))",
+                "decay_mode_reweight"), "Up"))
+    zll_mt_weight_variations.append(
+        ReplaceWeight(
+            "CMS_mFakeTau_1prong_13TeV", "decay_mode_reweight",
+            Weight(
+                "(((decayMode_2 == 0)*0.75*0.75) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.0) + ((decayMode_2 == 10)*1.0))",
+                "decay_mode_reweight"), "Down"))
+    zll_mt_weight_variations.append(
+        ReplaceWeight(
+            "CMS_mFakeTau_1prong1pizero_13TeV", "decay_mode_reweight",
+            Weight(
+                "(((decayMode_2 == 0)*0.75) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.25) + ((decayMode_2 == 10)*1.0))",
+                "decay_mode_reweight"), "Up"))
+    zll_mt_weight_variations.append(
+        ReplaceWeight(
+            "CMS_mFakeTau_1prong1pizero_13TeV", "decay_mode_reweight",
+            Weight(
+                "(((decayMode_2 == 0)*0.75) + ((decayMode_2 == 1 || decayMode_2 == 2)*0.75) + ((decayMode_2 == 10)*1.0))",
+                "decay_mode_reweight"), "Down"))
+    for variation in zll_mt_weight_variations:
+        for process_nick in ["ZL"]:
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
 
     # b tagging
-    # TODO
+    btag_eff_variations = create_systematic_variations(
+        "CMS_htt_eff_b_13TeV", "btagEff", DifferentPipeline)
+    mistag_eff_variations = create_systematic_variations(
+        "CMS_htt_mistag_b_13TeV", "btagMistag", DifferentPipeline)
+    for variation in btag_eff_variations + mistag_eff_variations:
+        for process_nick in [
+                "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVT", "VVJ",
+                "VVL", "EWKT", "EWKL", "EWKJ"
+        ] + signal_nicks:
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+            if "tt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
 
     # Embedded event specifics
     mt_decayMode_variations = []
