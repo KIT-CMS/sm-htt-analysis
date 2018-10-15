@@ -13,7 +13,7 @@ from shape_producer.variable import Variable
 from shape_producer.systematic_variations import Nominal, DifferentPipeline, SquareAndRemoveWeight, create_systematic_variations, AddWeight, ReplaceWeight, Relabel
 from shape_producer.process import Process
 from shape_producer.estimation_methods import AddHistogramEstimationMethod
-from shape_producer.channel import ETMSSM2017, MTMSSM2017, TTMSSM2017
+from shape_producer.channel import ETSM2017, MTSM2017, TTSM2017
 
 from itertools import product
 
@@ -142,7 +142,7 @@ def main(args):
     mt_friend_directory = args.mt_friend_directory
     tt_friend_directory = args.tt_friend_directory
     ff_friend_directory = []#args.fake_factor_friend_directory
-    mt = MTMSSM2017()
+    mt = MTSM2017()
     mt_processes = {
         "data"  : Process("data_obs", DataEstimation      (era, directory, mt, friend_directory=mt_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
@@ -182,7 +182,7 @@ def main(args):
             [mt_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL", "EWKT", "EWKL", "EWKJ"]],
             mt_processes["data"], friend_directory=mt_friend_directory, extrapolation_factor=1.00))
 
-    et = ETMSSM2017()
+    et = ETSM2017()
     et_processes = {
         "data"  : Process("data_obs", DataEstimation      (era, directory, et, friend_directory=et_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, et, friend_directory=et_friend_directory)),
@@ -222,7 +222,7 @@ def main(args):
             [et_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL", "EWKT", "EWKL", "EWKJ"]],
             et_processes["data"], friend_directory=et_friend_directory, extrapolation_factor=1.00))
 
-    tt = TTMSSM2017()
+    tt = TTSM2017()
     tt_processes = {
         "data"  : Process("data_obs", DataEstimation      (era, directory, tt, friend_directory=tt_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),

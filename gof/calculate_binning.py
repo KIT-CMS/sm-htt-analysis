@@ -5,7 +5,7 @@ import ROOT
 ROOT.PyConfig.IgnoreCommandLineOptions = True  # disable ROOT internal argument parser
 
 from shape_producer.cutstring import Cut, Cuts
-from shape_producer.channel import ETSM2016, MTSM2016, TTSM2016, ETMSSM2017, MTMSSM2017, TTMSSM2017
+from shape_producer.channel import ETSM2016, MTSM2016, TTSM2016, ETSM2017, MTSM2017, TTSM2017
 from shape_producer.process import Process
 
 import argparse
@@ -202,7 +202,7 @@ def main(args):
         if "2016" in args.era:
             channel = ETSM2016()
         elif "2017" in args.era:
-            channel = ETMSSM2017()
+            channel = ETSM2017()
         logger.info("Channel: et")
         dict_ = {}
         additional_cuts = Cuts()
@@ -231,7 +231,7 @@ def main(args):
         if "2016" in args.era:
             channel = MTSM2016()
         elif "2017" in args.era:
-            channel = MTMSSM2017()
+            channel = MTSM2017()
         logger.info("Channel: mt")
         dict_ = {}
         additional_cuts = Cuts()
@@ -260,7 +260,7 @@ def main(args):
         if "2016" in args.era:
             channel = TTSM2016()
         elif "2017" in args.era:
-            channel = TTMSSM2017()
+            channel = TTSM2017()
         logger.info("Channel: tt")
         dict_ = {}
         additional_cuts = Cuts()
