@@ -125,7 +125,7 @@ def main(args):
 
     # Era selection
     if "2017" in args.era:
-        from shape_producer.estimation_methods_Fall17 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, ggHEstimation_0J, ggHEstimation_1J_PTH_0_60, ggHEstimation_1J_PTH_60_120, ggHEstimation_1J_PTH_120_200, ggHEstimation_1J_PTH_GT200, ggHEstimation_GE2J_PTH_0_60, ggHEstimation_GE2J_PTH_60_120, ggHEstimation_GE2J_PTH_120_200, ggHEstimation_GE2J_PTH_GT200, ggHEstimation_VBFTOPO_JET3, ggHEstimation_VBFTOPO_JET3VETO, qqHEstimation, qqHEstimation_VBFTOPO_JET3VETO, qqHEstimation_VBFTOPO_JET3, qqHEstimation_REST, qqHEstimation_VH2JET, qqHEstimation_PTJET1_GT200, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, EWKTEstimation, EWKJEstimation, EWKLEstimation
+        from shape_producer.estimation_methods_Fall17 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, ggHEstimation_0J, ggHEstimation_1J_PTH_0_60, ggHEstimation_1J_PTH_60_120, ggHEstimation_1J_PTH_120_200, ggHEstimation_1J_PTH_GT200, ggHEstimation_GE2J_PTH_0_60, ggHEstimation_GE2J_PTH_60_120, ggHEstimation_GE2J_PTH_120_200, ggHEstimation_GE2J_PTH_GT200, ggHEstimation_VBFTOPO_JET3, ggHEstimation_VBFTOPO_JET3VETO, qqHEstimation, qqHEstimation_VBFTOPO_JET3VETO, qqHEstimation_VBFTOPO_JET3, qqHEstimation_REST, qqHEstimation_VH2JET, qqHEstimation_PTJET1_GT200, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, EWKTEstimation, EWKJEstimation, EWKLEstimation, FakeEstimationLT, FakeEstimationTT
 
         from shape_producer.era import Run2017
         era = Run2017(args.datasets)
@@ -159,6 +159,7 @@ def main(args):
         "EWKT"  : Process("EWKT",     EWKTEstimation      (era, directory, mt, friend_directory=mt_friend_directory)),
         "EWKJ"  : Process("EWKJ",     EWKJEstimation      (era, directory, mt, friend_directory=mt_friend_directory)),
         "EWKL"  : Process("EWKL",     EWKLEstimation      (era, directory, mt, friend_directory=mt_friend_directory)),
+        "FAKES" : Process("jetFakes", FakeEstimationLT    (era, directory, mt, friend_directory=[mt_friend_directory, ff_friend_directory])),
         "ggH"   : Process("ggH125",   ggHEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         "qqH"   : Process("qqH125",   qqHEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         "ggH_0J"               : Process("ggH_0J125",               ggHEstimation_0J              (era, directory, mt, friend_directory=mt_friend_directory)),
@@ -199,6 +200,7 @@ def main(args):
         "EWKT"  : Process("EWKT",     EWKTEstimation      (era, directory, et, friend_directory=et_friend_directory)),
         "EWKJ"  : Process("EWKJ",     EWKJEstimation      (era, directory, et, friend_directory=et_friend_directory)),
         "EWKL"  : Process("EWKL",     EWKLEstimation      (era, directory, et, friend_directory=et_friend_directory)),
+        "FAKES" : Process("jetFakes", FakeEstimationLT    (era, directory, et, friend_directory=[et_friend_directory, ff_friend_directory])),
         "ggH"   : Process("ggH125",   ggHEstimation       (era, directory, et, friend_directory=et_friend_directory)),
         "qqH"   : Process("qqH125",   qqHEstimation       (era, directory, et, friend_directory=et_friend_directory)),
         "ggH_0J"               : Process("ggH_0J125",               ggHEstimation_0J              (era, directory, et, friend_directory=et_friend_directory)),
@@ -239,6 +241,7 @@ def main(args):
         "EWKT"  : Process("EWKT",     EWKTEstimation      (era, directory, tt, friend_directory=tt_friend_directory)),
         "EWKJ"  : Process("EWKJ",     EWKJEstimation      (era, directory, tt, friend_directory=tt_friend_directory)),
         "EWKL"  : Process("EWKL",     EWKLEstimation      (era, directory, tt, friend_directory=tt_friend_directory)),
+        "FAKES" : Process("jetFakes", FakeEstimationTT    (era, directory, tt, friend_directory=[tt_friend_directory, ff_friend_directory])),
         "ggH"   : Process("ggH125",   ggHEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
         "qqH"   : Process("qqH125",   qqHEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
         "ggH_0J"               : Process("ggH_0J125",               ggHEstimation_0J              (era, directory, tt, friend_directory=tt_friend_directory)),

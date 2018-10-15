@@ -89,6 +89,10 @@ def parse_arguments():
 
 def determine_fractions(args, categories):
     hist_file = ROOT.TFile("fake-factors/%s_ff_yields.root" % args.era)
+    era_labels = {
+        "2016" : "Run2016",
+        "2017" : "Run2017ReReco31Mar"
+            }
     composition = {
         "mt": {
             "data": ["data_obs"],
@@ -106,10 +110,9 @@ def determine_fractions(args, categories):
         },
         "tt": {
             "data": ["data_obs"],
-            "W": ["W", "VVJ"],
+            "W": ["W", "VVJ", "ZJ"],
             "TT": ["TTJ"],
             "QCD": ["QCD"],
-            "DY": ["ZJ"],
             "real": ["ZTT", "ZL", "TTT", "VVT"]
         }
     }
@@ -121,11 +124,11 @@ def determine_fractions(args, categories):
             for fraction in composition[channel].keys():
                 subsubdict[fraction] = copy.deepcopy(
                     hist_file.Get(
-                        "#{ch}#{ch}_{cat}#data_obs#smhtt#Run{era}#{expr}#125#".
+                        "#{ch}#{ch}_{cat}#data_obs#smhtt#{era}#{expr}#125#".
                         format(
                             ch=channel,
                             cat=category,
-                            era=args.era,
+                            era=era_labels[args.era],
                             expr=args.config[channel]["expression"])))
                 subsubdict[fraction].Reset()
             for fraction in composition[channel].keys():
@@ -134,12 +137,12 @@ def determine_fractions(args, categories):
                 for process in composition[channel][fraction]:
                     subsubdict[fraction].Add(
                         hist_file.Get(
-                            "#{ch}#{ch}_{cat}#{proc}#smhtt#Run{era}#{expr}#125#".
+                            "#{ch}#{ch}_{cat}#{proc}#smhtt#{era}#{expr}#125#".
                             format(
                                 ch=channel,
                                 cat=category,
                                 proc=process,
-                                era=args.era,
+                                era=era_labels[args.era],
                                 expr=args.config[channel]["expression"])))
                 if fraction == "data":
                     subsubdict["QCD"].Add(subsubdict[fraction], 1.0)
@@ -191,8 +194,7 @@ def apply_fake_factors(config):
         "tt": [
             "ff_qcd_syst", "ff_qcd_dm0_njet0_stat", "ff_qcd_dm0_njet1_stat",
             "ff_qcd_dm1_njet0_stat", "ff_qcd_dm1_njet1_stat", "ff_w_syst",
-            "ff_tt_syst", "ff_w_frac_syst", "ff_tt_frac_syst",
-            "ff_dy_frac_syst"
+            "ff_tt_syst", "ff_w_frac_syst", "ff_tt_frac_syst"
         ]
     }
 
@@ -263,8 +265,7 @@ def apply_fake_factors(config):
                     getattr(event, "decayMode_%i" % x), event.njets,
                     event.m_vis, cat_fractions["QCD"].GetBinContent(bin_index),
                     cat_fractions["W"].GetBinContent(bin_index),
-                    cat_fractions["TT"].GetBinContent(bin_index),
-                    cat_fractions["DY"].GetBinContent(bin_index)
+                    cat_fractions["TT"].GetBinContent(bin_index)
                 ]
             else:
                 inputs = [

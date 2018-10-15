@@ -7,7 +7,7 @@ source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
 source utils/setup_samples.sh $ERA
 
-python fake-factors/produce_shapes.py \
+python fake-factors/produce_shapes_${ERA}.py \
         --directory $ARTUS_OUTPUTS \
         --et-friend-directory $ARTUS_FRIENDS_ET \
         --mt-friend-directory $ARTUS_FRIENDS_MT \
