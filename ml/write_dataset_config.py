@@ -71,7 +71,7 @@ def main(args):
     elif "2017" in args.era:
         from shape_producer.estimation_methods_Fall17 import DataEstimation, ZTTEstimation, ZLLEstimation, ZJEstimation, ZLEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, VVLEstimation, WEstimation, ggHEstimation, qqHEstimation, EWKTEstimation, EWKJEstimation, EWKLEstimation
 
-        from shape_producer.era import Run2017ReReco31Mar as Run2017
+        from shape_producer.era import Run2017
         era = Run2017(args.database)
     else:
         logger.fatal("Era {} is not implemented.".format(args.era))
