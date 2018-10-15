@@ -10,7 +10,7 @@ ARTUS_FRIENDS_TT_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-08-21
 ARTUS_FRIENDS_FAKE_FACTOR_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-08-21/fake_factor_friends_NN_score
 
 # Samples Run2017
-ARTUS_OUTPUTS_2017=/storage/c/swozniewski/SM_Htautau/ntuples/Artus17_2018-10-01tt/merged
+ARTUS_OUTPUTS_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_2018-10-01/merged
 ARTUS_FRIENDS_ET_2017=/storage/c/wunsch/Artus17_2018-09-11/et_keras_3
 ARTUS_FRIENDS_MT_2017=/storage/c/wunsch/Artus17_2018-09-11/mt_keras_3
 ARTUS_FRIENDS_TT_2017=/storage/c/wunsch/Artus17_2018-10-01tt/tt_keras_3
