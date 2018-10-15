@@ -13,7 +13,7 @@ from shape_producer.variable import Variable
 from shape_producer.systematic_variations import Nominal, DifferentPipeline, SquareAndRemoveWeight, create_systematic_variations, AddWeight, ReplaceWeight, Relabel
 from shape_producer.process import Process
 from shape_producer.estimation_methods import AddHistogramEstimationMethod
-from shape_producer.channel import ETSM, MTSM, TTSM
+from shape_producer.channel import ETSM2016, MTSM2016, TTSM2016
 
 from itertools import product
 
@@ -149,7 +149,7 @@ def main(args):
     mt_friend_directory = args.mt_friend_directory
     tt_friend_directory = args.tt_friend_directory
     ff_friend_directory = args.fake_factor_friend_directory
-    mt = MTSM()
+    mt = MTSM2016()
     if args.QCD_extrap_fit:
         mt.cuts.remove("muon_iso")
         mt.cuts.add(Cut("(iso_1<0.5)*(iso_1>=0.15)", "muon_iso_loose"))
@@ -190,7 +190,7 @@ def main(args):
         }
 
     mt_processes["QCD"] = Process("QCD", QCDEstimationMT(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VVT", "VVJ", "EWKZ"]], mt_processes["data"], extrapolation_factor=1.17))
-    et = ETSM()
+    et = ETSM2016()
     if args.QCD_extrap_fit:
         et.cuts.remove("ele_iso")
         et.cuts.add(Cut("(iso_1<0.5)*(iso_1>=0.1)", "ele_iso_loose"))
@@ -231,7 +231,7 @@ def main(args):
         }
 
     et_processes["QCD"] = Process("QCD", QCDEstimationET(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VVT", "VVJ", "EWKZ"]], et_processes["data"], extrapolation_factor=1.16))
-    tt = TTSM()
+    tt = TTSM2016()
     if args.QCD_extrap_fit:
         tt.cuts.get("os").invert()
     if args.HIG16043:

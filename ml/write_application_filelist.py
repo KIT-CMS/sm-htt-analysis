@@ -59,7 +59,7 @@ def main(args):
 
     # Era: 2016, Channel: mt
     if "2016" in args.era and args.channel == "mt":
-        channel = MTSM()
+        channel = MTSM2016()
         for estimation in [
                 ggHEstimation(era, args.directory, channel),
                 qqHEstimation(era, args.directory, channel),
@@ -147,7 +147,7 @@ def main(args):
 
     # Era: 2016, Channel: et
     if "2016" in args.era and args.channel == "et":
-        channel = ETSM()
+        channel = ETSM2016()
         for estimation in [
                 ggHEstimation(era, args.directory, channel),
                 qqHEstimation(era, args.directory, channel),
@@ -235,7 +235,7 @@ def main(args):
 
     # Era: 2016, Channel: tt
     if "2016" in args.era and args.channel == "tt":
-        channel = TTSM()
+        channel = TTSM2016()
         for estimation in [
                 ggHEstimation(era, args.directory, channel),
                 qqHEstimation(era, args.directory, channel),

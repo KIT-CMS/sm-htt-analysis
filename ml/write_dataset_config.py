@@ -81,7 +81,7 @@ def main(args):
 
     # Era: 2016, Channel: mt
     if "2016" in args.era and args.channel == "mt":
-        channel = MTSM()
+        channel = MTSM2016()
 
         # Set up `processes` part of config
         output_config["processes"] = {}
@@ -243,7 +243,7 @@ def main(args):
 
     # Era: 2016, Channel: et
     if "2016" in args.era and args.channel == "et":
-        channel = ETSM()
+        channel = ETSM2016()
 
         # Set up `processes` part of config
         output_config["processes"] = {}
@@ -405,7 +405,7 @@ def main(args):
 
     # Era: 2016, Channel: tt
     if "2016" in args.era and args.channel == "tt":
-        channel = TTSM()
+        channel = TTSM2016()
 
         # Set up `processes` part of config
         output_config["processes"] = {}

@@ -13,7 +13,7 @@ from shape_producer.variable import Variable
 from shape_producer.systematic_variations import Nominal, DifferentPipeline, SquareAndRemoveWeight, create_systematic_variations, AddWeight, ReplaceWeight, Relabel
 from shape_producer.process import Process
 from shape_producer.estimation_methods import AddHistogramEstimationMethod
-from shape_producer.channel import ETSM, MTSM, TTSM
+from shape_producer.channel import ETSM2016, MTSM2016, TTSM2016
 
 from itertools import product
 
@@ -116,7 +116,7 @@ def main(args):
     mt_friend_directory = args.mt_friend_directory
     tt_friend_directory = args.tt_friend_directory
 
-    mt = MTSM()
+    mt = MTSM2016()
     mt.cuts.remove("tau_iso")
     mt.cuts.add(Cut("(byTightIsolationMVArun2v1DBoldDMwLT_2<0.5&&byVLooseIsolationMVArun2v1DBoldDMwLT_2>0.5)", "tau_anti_iso"))
     mt_processes = {
@@ -132,7 +132,7 @@ def main(args):
         #"EWKZ"  : Process("EWKZ",     EWKZEstimation  (era, directory, mt, friend_directory=mt_friend_directory))
         }
 
-    et = ETSM()
+    et = ETSM2016()
     et.cuts.remove("tau_iso")
     et.cuts.add(Cut("(byTightIsolationMVArun2v1DBoldDMwLT_2<0.5&&byVLooseIsolationMVArun2v1DBoldDMwLT_2>0.5)", "tau_anti_iso"))
     et_processes = {
@@ -149,7 +149,7 @@ def main(args):
         }
 
     #in tt two 'channels' are needed: antiisolated region for each tau respectively
-    tt1 = TTSM()
+    tt1 = TTSM2016()
     tt1.cuts.remove("tau_1_iso")
     tt1.cuts.add(Cut("(byTightIsolationMVArun2v1DBoldDMwLT_1<0.5&&byVLooseIsolationMVArun2v1DBoldDMwLT_1>0.5)", "tau_1_anti_iso"))
     tt1_processes = {
@@ -164,7 +164,7 @@ def main(args):
         "VVJ"   : Process("VVJ",      VVJEstimationTT(era, directory, tt1, friend_directory=tt_friend_directory))
         #"EWKZ"  : Process("EWKZ",     EWKZEstimation (era, directory, tt1, friend_directory=tt_friend_directory)),
         }
-    tt2 = TTSM()
+    tt2 = TTSM2016()
     tt2.cuts.remove("tau_2_iso")
     tt2.cuts.add(Cut("(byTightIsolationMVArun2v1DBoldDMwLT_2<0.5&&byVLooseIsolationMVArun2v1DBoldDMwLT_2>0.5)", "tau_2_anti_iso"))
     tt2_processes = {
