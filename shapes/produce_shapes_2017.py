@@ -644,6 +644,8 @@ def main(args):
                     era=era)
 
     # ZL fakes energy scale
+    # TODO
+    """
     ele_fake_es_1prong_variations = create_systematic_variations(
         "CMS_ZLShape_et_1prong_13TeV", "tauEleFakeEsOneProng",
         DifferentPipeline)
@@ -675,9 +677,11 @@ def main(args):
                     process=mt_processes[process_nick],
                     channel=mt,
                     era=era)
+    """
 
     # Zll reweighting
     # TODO
+    """
     zll_et_weight_variations = []
     zll_et_weight_variations.append(
         ReplaceWeight(
@@ -744,6 +748,7 @@ def main(args):
                     process=mt_processes[process_nick],
                     channel=mt,
                     era=era)
+    """
 
     # b tagging
     btag_eff_variations = create_systematic_variations(
