@@ -1088,8 +1088,7 @@ def main(args):
             "ff_qcd_dm1_njet1{ch}_stat_13TeV{shift}",
             "ff_w{ch}_syst_13TeV{shift}", "ff_tt{ch}_syst_13TeV{shift}",
             "ff_w_frac{ch}_syst_13TeV{shift}",
-            "ff_tt_frac{ch}_syst_13TeV{shift}",
-            "ff_dy_frac{ch}_syst_13TeV{shift}"
+            "ff_tt_frac{ch}_syst_13TeV{shift}"
     ]:
         for shift_direction in ["Up", "Down"]:
             fake_factor_variations_tt.append(
