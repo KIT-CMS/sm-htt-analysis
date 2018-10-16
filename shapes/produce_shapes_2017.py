@@ -137,11 +137,10 @@ def main(args):
     # Channels and processes
     # yapf: disable
     directory = args.directory
-    # TODO: Remove dummies
     et_friend_directory = args.et_friend_directory
     mt_friend_directory = args.mt_friend_directory
     tt_friend_directory = args.tt_friend_directory
-    ff_friend_directory = []#args.fake_factor_friend_directory
+    ff_friend_directory = args.fake_factor_friend_directory
     mt = MTSM2017()
     mt_processes = {
         "data"  : Process("data_obs", DataEstimation      (era, directory, mt, friend_directory=mt_friend_directory)),
