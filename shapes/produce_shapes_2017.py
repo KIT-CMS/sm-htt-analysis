@@ -178,9 +178,11 @@ def main(args):
         "qqH_VH2JET"           : Process("qqH_VH2JET125",           qqHEstimation_VH2JET          (era, directory, mt, friend_directory=mt_friend_directory)),
         "qqH_PTJET1_GT200"     : Process("qqH_PTJET1_GT200125",     qqHEstimation_PTJET1_GT200    (era, directory, mt, friend_directory=mt_friend_directory)),
         }
+    """
     mt_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, mt,
             [mt_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL", "EWKT", "EWKL", "EWKJ"]],
             mt_processes["data"], friend_directory=mt_friend_directory, extrapolation_factor=1.00))
+    """
 
     et = ETSM2017()
     et_processes = {
@@ -219,9 +221,11 @@ def main(args):
         "qqH_VH2JET"           : Process("qqH_VH2JET125",           qqHEstimation_VH2JET          (era, directory, et, friend_directory=et_friend_directory)),
         "qqH_PTJET1_GT200"     : Process("qqH_PTJET1_GT200125",     qqHEstimation_PTJET1_GT200    (era, directory, et, friend_directory=et_friend_directory)),
         }
+    """
     et_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, et,
             [et_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL", "EWKT", "EWKL", "EWKJ"]],
             et_processes["data"], friend_directory=et_friend_directory, extrapolation_factor=1.00))
+    """
 
     tt = TTSM2017()
     tt_processes = {
@@ -260,9 +264,11 @@ def main(args):
         "qqH_VH2JET"           : Process("qqH_VH2JET125",           qqHEstimation_VH2JET          (era, directory, tt, friend_directory=tt_friend_directory)),
         "qqH_PTJET1_GT200"     : Process("qqH_PTJET1_GT200125",     qqHEstimation_PTJET1_GT200    (era, directory, tt, friend_directory=tt_friend_directory)),
         }
+    """
     tt_processes["QCD"] = Process("QCD", QCDEstimation_ABCD_TT_ISO2(era, directory, tt,
             [tt_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL", "EWKT", "EWKL", "EWKJ"]],
             tt_processes["data"], friend_directory=tt_friend_directory))
+    """
 
     # Variables and categories
     binning = yaml.load(open(args.binning))
@@ -967,7 +973,6 @@ def main(args):
                     era=era,
                     variation=Relabel("CMS_htt_emb_ttbar_13TeV", "Up"),
                     mass="125"))
- 
 
     # jetfakes
     fake_factor_variations_et = []
