@@ -966,7 +966,88 @@ def main(args):
  
 
     # jetfakes
-    # TODO
+    fake_factor_variations_et = []
+    fake_factor_variations_mt = []
+    for systematic_shift in [
+            "ff_qcd{ch}_syst_13TeV{shift}",
+            "ff_qcd_dm0_njet0{ch}_stat_13TeV{shift}",
+            "ff_qcd_dm0_njet1{ch}_stat_13TeV{shift}",
+            "ff_qcd_dm1_njet0{ch}_stat_13TeV{shift}",
+            "ff_qcd_dm1_njet1{ch}_stat_13TeV{shift}", "ff_w_syst_13TeV{shift}",
+            "ff_w_dm0_njet0{ch}_stat_13TeV{shift}",
+            "ff_w_dm0_njet1{ch}_stat_13TeV{shift}",
+            "ff_w_dm1_njet0{ch}_stat_13TeV{shift}",
+            "ff_w_dm1_njet1{ch}_stat_13TeV{shift}", "ff_tt_syst_13TeV{shift}",
+            "ff_tt_dm0_njet0_stat_13TeV{shift}",
+            "ff_tt_dm0_njet1_stat_13TeV{shift}",
+            "ff_tt_dm1_njet0_stat_13TeV{shift}",
+            "ff_tt_dm1_njet1_stat_13TeV{shift}"
+    ]:
+        for shift_direction in ["Up", "Down"]:
+            fake_factor_variations_et.append(
+                ReplaceWeight(
+                    "CMS_%s" % (systematic_shift.format(ch='_et', shift="")),
+                    "fake_factor",
+                    Weight(
+                        "ff2_{syst}".format(
+                            syst=systematic_shift.format(
+                                ch="", shift="_%s" % shift_direction.lower())
+                            .replace("_13TeV", "")),
+                        "fake_factor"), shift_direction))
+            fake_factor_variations_mt.append(
+                ReplaceWeight(
+                    "CMS_%s" % (systematic_shift.format(ch='_mt', shift="")),
+                    "fake_factor",
+                    Weight(
+                        "ff2_{syst}".format(
+                            syst=systematic_shift.format(
+                                ch="", shift="_%s" % shift_direction.lower())
+                            .replace("_13TeV", "")),
+                        "fake_factor"), shift_direction))
+    if "et" in [args.gof_channel] + args.channels:
+        for variation in fake_factor_variations_et:
+            systematics.add_systematic_variation(
+                variation=variation,
+                process=et_processes["FAKES"],
+                channel=et,
+                era=era)
+    if "mt" in [args.gof_channel] + args.channels:
+        for variation in fake_factor_variations_mt:
+            systematics.add_systematic_variation(
+                variation=variation,
+                process=mt_processes["FAKES"],
+                channel=mt,
+                era=era)
+    fake_factor_variations_tt = []
+    for systematic_shift in [
+            "ff_qcd{ch}_syst_13TeV{shift}",
+            "ff_qcd_dm0_njet0{ch}_stat_13TeV{shift}",
+            "ff_qcd_dm0_njet1{ch}_stat_13TeV{shift}",
+            "ff_qcd_dm1_njet0{ch}_stat_13TeV{shift}",
+            "ff_qcd_dm1_njet1{ch}_stat_13TeV{shift}",
+            "ff_w{ch}_syst_13TeV{shift}", "ff_tt{ch}_syst_13TeV{shift}",
+            "ff_w_frac{ch}_syst_13TeV{shift}",
+            "ff_tt_frac{ch}_syst_13TeV{shift}"
+    ]:
+        for shift_direction in ["Up", "Down"]:
+            fake_factor_variations_tt.append(
+                ReplaceWeight(
+                    "CMS_%s" % (systematic_shift.format(ch='_tt', shift="")),
+                    "fake_factor",
+                    Weight(
+                        "(0.5*ff1_{syst}*(byTightIsolationMVArun2v1DBoldDMwLT_1<0.5)+0.5*ff2_{syst}*(byTightIsolationMVArun2v1DBoldDMwLT_2<0.5))".
+                        format(
+                            syst=systematic_shift.format(
+                                ch="", shift="_%s" % shift_direction.lower())
+                            .replace("_13TeV", "")),
+                        "fake_factor"), shift_direction))
+    if "tt" in [args.gof_channel] + args.channels:
+        for variation in fake_factor_variations_tt:
+            systematics.add_systematic_variation(
+                variation=variation,
+                process=tt_processes["FAKES"],
+                channel=tt,
+                era=era)
 
     # Gluon-fusion WG1 uncertainty scheme
     ggh_variations = []
