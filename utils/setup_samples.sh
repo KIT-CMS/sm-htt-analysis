@@ -14,7 +14,7 @@ ARTUS_OUTPUTS_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_2018-10-01/merge
 ARTUS_FRIENDS_ET_2017=/ceph/wunsch/Artus17_2018-10-01/et_keras_1
 ARTUS_FRIENDS_MT_2017=/ceph/wunsch/Artus17_2018-10-01/mt_keras_1
 ARTUS_FRIENDS_TT_2017=/ceph/wunsch/Artus17_2018-10-01/tt_keras_1
-ARTUS_FRIENDS_FAKE_FACTOR_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_2018-10-01/fake_factor_friends_NN_score
+ARTUS_FRIENDS_FAKE_FACTOR_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_2018-10-01/fake_factor_friends_njets_mvis #fake_factor_friends_njets_mvis_incl for GOF
 
 # Error-handling
 if [[ $ERA == *"2016"* ]]
