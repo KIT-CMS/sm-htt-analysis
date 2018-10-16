@@ -84,6 +84,8 @@ def parse_arguments():
         default=32,
         type=int,
         help="Number of threads to be used.")
+    parser.add_argument(
+        "--category-mode", type=str, help="Category mode. If 'inclusive' fake factors are calculated inclusively, otherwise depending on NN categories")
     return parser.parse_args()
 
 
@@ -129,7 +131,7 @@ def determine_fractions(args, categories):
                             ch=channel,
                             cat=category,
                             era=era_labels[args.era],
-                            expr=args.config[channel]["expression"])))
+                            expr=args.config)))
                 subsubdict[fraction].Reset()
             for fraction in composition[channel].keys():
                 if fraction == "QCD":
@@ -143,7 +145,7 @@ def determine_fractions(args, categories):
                                 cat=category,
                                 proc=process,
                                 era=era_labels[args.era],
-                                expr=args.config[channel]["expression"])))
+                                expr=args.config)))
                 if fraction == "data":
                     subsubdict["QCD"].Add(subsubdict[fraction], 1.0)
                 else:
@@ -253,11 +255,17 @@ def apply_fake_factors(config):
     for event in input_tree:
         for x in suffix[channel]:
             inputs = []
-            cat_fractions = fractions[channel][categories[channel][int(
+            cat_index = -1 if args.category_mode=="inclusive" else int(
                 getattr(event, "%s_max_index" % channel) +
                 (0.5 * len(categories[channel])
-                 if channel == "tt" and x == 2 else 0.0))]]
-            bin_index = cat_fractions["data"].GetXaxis().FindBin(getattr(event, args.config[channel]["expression"]))
+                 if channel == "tt" and x == 2 else 0.0))
+            cat_fractions = fractions[channel][categories[channel][cat_index]]
+            varvalue = 0.0
+            if args.config=="njets_mvis":
+                varvalue = 300.0*min(event.njets, 2.0) + min(290.0, event.m_vis)
+            else:
+                varvalue = getattr(event, args.configdict[channel]["expression"])
+            bin_index = cat_fractions["data"].GetXaxis().FindBin(varvalue)
             if channel == "tt":
                 inputs = [
                     getattr(event, "pt_%i" % x),
@@ -309,14 +317,16 @@ def main(args):
     if not args.config in config.keys():
         logger.critical("Requested config key %s not available in fake-factors/config.yaml!" % args.config)
         raise Exception
-    args.config = config[args.config]
-    args.output_directory = args.config["outputdir"]
+    if args.category_mode=="inclusive":
+        logger.warning("Option to calculate fake factors inclusively has been set. No categorization applied!")
+    args.configdict = config[args.config]
+    args.output_directory = args.configdict["outputdir"]
     categories = {
-        "et": ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"],
-        "mt": ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"],
+        "et": ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc", "inclusive"], # be careful with ordering as NN categories are accessed via index!!!
+        "mt": ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc", "inclusive"],
         "tt": [
-            "tt1_ggh", "tt1_qqh", "tt1_ztt", "tt1_noniso", "tt1_misc",
-            "tt2_ggh", "tt2_qqh", "tt2_ztt", "tt2_noniso", "tt2_misc"
+            "tt1_ggh", "tt1_qqh", "tt1_ztt", "tt1_noniso", "tt1_misc", "tt1_inclusive",
+            "tt2_ggh", "tt2_qqh", "tt2_ztt", "tt2_noniso", "tt2_misc", "tt2_inclusive"
         ]
     }
     fractions = determine_fractions(args, categories)

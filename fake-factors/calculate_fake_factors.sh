@@ -2,6 +2,7 @@
 
 ERA=$1
 CONFIGKEY=$2
+CATEGORYMODE=$3
 
 source utils/setup_cmssw_for_ff.sh
 source utils/setup_python.sh
@@ -28,4 +29,5 @@ python fake-factors/calculate_fake_factors.py --era $ERA \
         --et-fake-factor-directory $FF_database_ET \
         --mt-fake-factor-directory $FF_database_MT \
         --tt-fake-factor-directory $FF_database_TT \
-        --num-threads 12
+        --num-threads 12 \
+        --category-mode $CATEGORYMODE

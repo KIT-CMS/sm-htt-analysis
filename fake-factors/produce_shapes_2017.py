@@ -193,7 +193,13 @@ def main(args):
     config = config[args.config]
 
     et_categories = []
-    # Analysis shapes
+    # et
+    et_categories.append(
+        Category(
+            "inclusive",
+            et,
+            Cuts(),
+            variable=Variable(args.config, VariableBinning(config["et"]["binning"]), config["et"]["expression"])))
     for i, label in enumerate(["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]):
         et_categories.append(
             Category(
@@ -201,9 +207,15 @@ def main(args):
                 et,
                 Cuts(
                     Cut("et_max_index=={index}".format(index=i), "exclusive_score")),
-                variable=Variable(config["et"]["expression"], VariableBinning(config["et"]["binning"]))))
+                variable=Variable(args.config, VariableBinning(config["et"]["binning"]), config["et"]["expression"])))
     mt_categories = []
-    # Analysis shapes
+    # mt
+    mt_categories.append(
+        Category(
+            "inclusive",
+            mt,
+            Cuts(),
+            variable=Variable(args.config, VariableBinning(config["mt"]["binning"]), config["mt"]["expression"])))
     for i, label in enumerate(["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]):
         mt_categories.append(
             Category(
@@ -211,10 +223,22 @@ def main(args):
                 mt,
                 Cuts(
                     Cut("mt_max_index=={index}".format(index=i), "exclusive_score")),
-                variable=Variable(config["mt"]["expression"], VariableBinning(config["mt"]["binning"]))))
+                variable=Variable(args.config, VariableBinning(config["mt"]["binning"]), config["mt"]["expression"])))
     tt1_categories = []
     tt2_categories = []
-    # Analysis shapes
+    # tt
+    tt1_categories.append(
+        Category(
+            "tt1_inclusive",
+            tt1,
+            Cuts(),
+            variable=Variable(args.config, VariableBinning(config["tt"]["binning"]), config["tt"]["expression"])))
+    tt2_categories.append(
+        Category(
+            "tt2_inclusive",
+            tt2,
+            Cuts(),
+            variable=Variable(args.config, VariableBinning(config["tt"]["binning"]), config["tt"]["expression"])))
     for i, label in enumerate(["ggh", "qqh", "ztt", "noniso", "misc"]):
         tt1_categories.append(
             Category(
@@ -222,14 +246,14 @@ def main(args):
                 tt1,
                 Cuts(
                     Cut("tt_max_index=={index}".format(index=i), "exclusive_score")),
-                variable=Variable(config["tt"]["expression"], VariableBinning(config["tt"]["binning"]))))
+                variable=Variable(args.config, VariableBinning(config["tt"]["binning"]), config["tt"]["expression"])))
         tt2_categories.append(
             Category(
                 "tt2_"+label,
                 tt2,
                 Cuts(
                     Cut("tt_max_index=={index}".format(index=i), "exclusive_score")),
-                variable=Variable(config["tt"]["expression"], VariableBinning(config["tt"]["binning"]))))
+                variable=Variable(args.config, VariableBinning(config["tt"]["binning"]), config["tt"]["expression"])))
 
     # Nominal histograms
     # yapf: enable
