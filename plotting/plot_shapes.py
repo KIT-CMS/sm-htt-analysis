@@ -140,15 +140,15 @@ def main(args):
     split_dict = {c: split_value for c in ["et", "mt", "tt"]}
 
     bkg_processes = [
-        "EWKT", "EWKL", "EWKJ", "QCD", "VVT", "VVJ", "W", "TTT", "TTJ", "ZJ", "ZL", "ZTT"
+        "QCD", "VVT", "VVJ", "W", "TTT", "TTJ", "ZJ", "ZL", "ZTT"
     ]
     if args.fake_factor:
         bkg_processes = [
-            b for b in bkg_processes if b not in ["QCD", "VVJ", "TTJ", "W", "ZJ", "EWKJ"]
+            b for b in bkg_processes if b not in ["QCD", "VVJ", "TTJ", "W", "ZJ"]
         ] + ["jetFakes"]
     if args.embedding:
         bkg_processes = [b for b in bkg_processes
-                         if b not in ["ZTT", "TTT", "EWKT"]] + ["TTL", "EMB"]
+                         if b not in ["ZTT", "TTT"]] + ["TTL", "EMB"]
     else: #keep ordering consistent
         bkg_processes.remove("ZTT")
         bkg_processes.remove("TTT")
