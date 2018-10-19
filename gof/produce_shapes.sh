@@ -3,6 +3,7 @@
 ERA=$1
 CHANNEL=$2
 VARIABLE=$3
+NUM_THREADS=$4
 BINNING=gof/${ERA}_binning.yaml
 
 source utils/setup_cvmfs_sft.sh
@@ -33,4 +34,4 @@ python shapes/produce_shapes_$ERA.py \
     --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR_INCL \
     --era $ERA \
     --tag $ERA \
-    --num-threads 1
+    --num-threads $NUM_THREADS

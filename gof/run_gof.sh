@@ -18,7 +18,8 @@ done
 ./utils/clean.sh
 
 # Produce shapes
-./gof/produce_shapes.sh $ERA $CHANNEL $VARIABLE
+NUM_THREADS=1
+./gof/produce_shapes.sh $ERA $CHANNEL $VARIABLE $NUM_THREADS
 
 # Apply blinding strategy
 ./shapes/apply_blinding.sh $ERA
