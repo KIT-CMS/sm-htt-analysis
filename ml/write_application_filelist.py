@@ -44,7 +44,7 @@ def main(args):
         from shape_producer.era import Run2016
         era = Run2016(args.database)
     elif "2017" in args.era:
-        from shape_producer.estimation_methods_Fall17 import DataEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, VVLEstimation, WEstimation, ggHEstimation, qqHEstimation, EWKTEstimation, EWKJEstimation, EWKLEstimation, ZTTEmbeddedEstimation
+        from shape_producer.estimation_methods_Fall17 import DataEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, VVLEstimation, WEstimation, ggHEstimation, qqHEstimation, EWKZEstimation, ZTTEmbeddedEstimation
 
         from shape_producer.era import Run2017
         era = Run2017(args.database)
@@ -118,9 +118,7 @@ def main(args):
                 VVJEstimation(era, args.directory, channel),
                 VVTEstimation(era, args.directory, channel),
                 VVLEstimation(era, args.directory, channel),
-                EWKTEstimation(era, args.directory, channel),
-                EWKJEstimation(era, args.directory, channel),
-                EWKLEstimation(era, args.directory, channel),
+                EWKZEstimation(era, args.directory, channel),
                 DataEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method
@@ -206,9 +204,7 @@ def main(args):
                 VVJEstimation(era, args.directory, channel),
                 VVTEstimation(era, args.directory, channel),
                 VVLEstimation(era, args.directory, channel),
-                EWKTEstimation(era, args.directory, channel),
-                EWKJEstimation(era, args.directory, channel),
-                EWKLEstimation(era, args.directory, channel),
+                EWKZEstimation(era, args.directory, channel),
                 DataEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method
@@ -294,9 +290,7 @@ def main(args):
                 VVJEstimation(era, args.directory, channel),
                 VVTEstimation(era, args.directory, channel),
                 VVLEstimation(era, args.directory, channel),
-                EWKTEstimation(era, args.directory, channel),
-                EWKJEstimation(era, args.directory, channel),
-                EWKLEstimation(era, args.directory, channel),
+                EWKZEstimation(era, args.directory, channel),
                 DataEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method

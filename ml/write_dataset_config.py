@@ -69,7 +69,7 @@ def main(args):
         from shape_producer.era import Run2016
         era = Run2016(args.database)
     elif "2017" in args.era:
-        from shape_producer.estimation_methods_Fall17 import DataEstimation, ZTTEstimation, ZLLEstimation, ZJEstimation, ZLEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, VVLEstimation, WEstimation, ggHEstimation, qqHEstimation, EWKTEstimation, EWKJEstimation, EWKLEstimation
+        from shape_producer.estimation_methods_Fall17 import DataEstimation, ZTTEstimation, ZLLEstimation, ZJEstimation, ZLEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, VVLEstimation, WEstimation, ggHEstimation, qqHEstimation, EWKZEstimation
 
         from shape_producer.era import Run2017
         era = Run2017(args.database)
@@ -187,9 +187,7 @@ def main(args):
             "VVJ": "misc",
             "VVT": "misc",
             "VVL": "misc",
-            "EWKT": "misc",
-            "EWKJ": "misc",
-            "EWKL": "misc"
+            "EWKZ": "misc"
         }
         for estimation in [
                 ggHEstimation(era, args.base_path, channel),
@@ -204,9 +202,7 @@ def main(args):
                 VVJEstimation(era, args.base_path, channel),
                 VVTEstimation(era, args.base_path, channel),
                 VVLEstimation(era, args.base_path, channel),
-                EWKJEstimation(era, args.base_path, channel),
-                EWKTEstimation(era, args.base_path, channel),
-                EWKLEstimation(era, args.base_path, channel),
+                EWKZEstimation(era, args.base_path, channel),
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
@@ -349,9 +345,7 @@ def main(args):
             "VVJ": "misc",
             "VVT": "misc",
             "VVL": "misc",
-            "EWKT": "misc",
-            "EWKJ": "misc",
-            "EWKL": "misc"
+            "EWKZ": "misc"
         }
         for estimation in [
                 ggHEstimation(era, args.base_path, channel),
@@ -366,9 +360,7 @@ def main(args):
                 VVJEstimation(era, args.base_path, channel),
                 VVTEstimation(era, args.base_path, channel),
                 VVLEstimation(era, args.base_path, channel),
-                EWKJEstimation(era, args.base_path, channel),
-                EWKTEstimation(era, args.base_path, channel),
-                EWKLEstimation(era, args.base_path, channel),
+                EWKZEstimation(era, args.base_path, channel),
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
@@ -516,9 +508,7 @@ def main(args):
             "VVT": "misc",
             "VVJ": "misc",
             "VVL": "misc",
-            "EWKT": "misc",
-            "EWKJ": "misc",
-            "EWKL": "misc"
+            "EWKZ": "misc"
         }
         for estimation in [
                 ggHEstimation(era, args.base_path, channel),
@@ -533,9 +523,7 @@ def main(args):
                 VVJEstimation(era, args.base_path, channel),
                 VVTEstimation(era, args.base_path, channel),
                 VVLEstimation(era, args.base_path, channel),
-                EWKJEstimation(era, args.base_path, channel),
-                EWKTEstimation(era, args.base_path, channel),
-                EWKLEstimation(era, args.base_path, channel),
+                EWKZEstimation(era, args.base_path, channel),
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
