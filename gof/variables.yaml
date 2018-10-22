@@ -35,6 +35,7 @@ variables:
   - mt_2
   - ptvis
   - pt_tt
+  - pt_ttjj
   - mjj
   - jdeta
 # - H_pt
