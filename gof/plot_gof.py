@@ -28,7 +28,8 @@ def parse_arguments():
         "variables", help="Considered variables in goodness of fit test")
     parser.add_argument(
         "path", help="Path to directory with goodness of fit results")
-    parser.add_argument("channel", help="Select channel to be plotted")
+    parser.add_argument("channel", type=str, help="Select channel to be plotted")
+    parser.add_argument("era", type=str, help="Select era to be plotted")
     return parser.parse_args()
 
 
@@ -99,11 +100,11 @@ def plot_1d(variables, results, filename):
     plt.savefig(filename, bbox_inches="tight")
 
 
-def search_results_1d(path, channel, variables):
+def search_results_1d(path, channel, era, variables):
     results = []
     missing = []
     for variable in variables:
-        filename = os.path.join(path, "{}_{}".format(channel, variable),
+        filename = os.path.join(path, "{}_{}_{}".format(era, channel, variable),
                                 "gof.json")
         if not os.path.exists(filename):
             missing.append(variable)
@@ -119,14 +120,14 @@ def search_results_1d(path, channel, variables):
     return missing, results
 
 
-def search_results_2d(path, channel, variables):
+def search_results_2d(path, channel, era, variables):
     missing = []
     results = np.ones((len(variables), len(variables))) * (-1.0)
     for i1, v1 in enumerate(variables):
         for i2, v2 in enumerate(variables):
             if i2 <= i1:
                 continue
-            filename = os.path.join(path, "{}_{}_{}".format(channel, v1, v2),
+            filename = os.path.join(path, "{}_{}_{}_{}".format(era, channel, v1, v2),
                                     "gof.json")
             if not os.path.exists(filename):
                 missing.append("{}_{}".format(v1, v2))
@@ -151,22 +152,22 @@ def main(args):
 
     # Plot 1D gof results
     variables = yaml.load(open(args.variables))["variables"]
-    missing_1d, results_1d = search_results_1d(args.path, args.channel,
+    missing_1d, results_1d = search_results_1d(args.path, args.channel, args.era,
                                                variables)
     logger.debug("Missing variables for 1D plot in channel %s:", args.channel)
     for variable in missing_1d:
-        print("{} {}".format(args.channel, variable))
+        print("{} {} {}".format(args.era, args.channel, variable))
 
-    plot_1d(variables, results_1d, "{}_gof_1d.png".format(args.channel))
+    plot_1d(variables, results_1d, "{}_{}_gof_1d.png".format(args.era, args.channel))
 
     # Plot 2D gof results
-    missing_2d, results_2d = search_results_2d(args.path, args.channel,
+    missing_2d, results_2d = search_results_2d(args.path, args.channel, args.era,
                                                variables)
     logger.debug("Missing variables for 2D plot in channel %s:", args.channel)
     for variable in missing_2d:
-        print("{} {}".format(args.channel, variable))
+        print("{} {} {}".format(args.era, args.channel, variable))
 
-    plot_2d(variables, results_2d, "{}_gof_2d.png".format(args.channel))
+    plot_2d(variables, results_2d, "{}_{}_gof_2d.png".format(args.era, args.channel))
 
     # Apply selection criterica
     variables_selected = []
@@ -183,13 +184,13 @@ def main(args):
     ]
 
     plot_1d(variables_selected, results_1d_selected,
-            "{}_gof_1d_selected.png".format(args.channel))
+            "{}_{}_gof_1d_selected.png".format(args.era, args.channel))
 
     # Plot 2D gof results for reduced variable set
     missing_2d_selected, results_2d_selected = search_results_2d(
-        args.path, args.channel, variables_selected)
+        args.path, args.channel, args.era, variables_selected)
     plot_2d(variables_selected, results_2d_selected,
-            "{}_gof_2d_selected.png".format(args.channel))
+            "{}_{}_gof_2d_selected.png".format(args.era, args.channel))
 
 
 if __name__ == "__main__":
