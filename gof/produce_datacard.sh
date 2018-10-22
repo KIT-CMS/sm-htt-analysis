@@ -48,7 +48,7 @@ if [ -n "$USE_COMBINEHARVESTER" ]; then
         --output="${ERA}_smhtt"
 
     # Merge datacards to workspace and define signals to be fitted
-    DATACARD_PATH=output/${ERA}_smhtt/cmb/125
+    DATACARD_PATH=${PWD}/output/${ERA}_smhtt/cmb/125
     combineTool.py -M T2W -o workspace.root -i ${DATACARD_PATH} --parallel $NUM_THREADS
     cp $DATACARD_PATH/workspace.root ${ERA}_workspace.root
 fi
