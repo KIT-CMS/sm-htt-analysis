@@ -138,37 +138,34 @@ def main(args):
             split_value = 101
 
     split_dict = {c: split_value for c in ["et", "mt", "tt"]}
-
+    
     bkg_processes = [
-        "QCD", "VVT", "VVJ", "W", "TTT", "TTJ", "ZJ", "ZL", "ZTT"
+        "VVL", "TTL", "ZL", "jetFakes", "EMB"
     ]
-    if args.fake_factor:
+    if not args.fake_factor and args.embedding:
         bkg_processes = [
-            b for b in bkg_processes if b not in ["QCD", "VVJ", "TTJ", "W", "ZJ"]
-        ] + ["jetFakes"]
-    if args.embedding:
-        bkg_processes = [b for b in bkg_processes
-                         if b not in ["ZTT", "TTT"]] + ["TTL", "EMB"]
-    else: #keep ordering consistent
-        bkg_processes.remove("ZTT")
-        bkg_processes.remove("TTT")
-        bkg_processes.append("TTT")
-        bkg_processes.append("ZTT")
+            "QCD", "VVT", "VVJ", "W", "TTT", "TTJ", "ZJ", "ZL", "EMB"
+        ]
+    if not args.embedding and args.fake_factor:
+        bkg_processes = [
+            "VVT", "VVJ", "TTT", "TTJ", "ZJ", "ZL", "jetFakes", "ZTT"
+        ]
+    if not args.embedding and not args.fake_factor:
+        bkg_processes = [
+            "QCD", "VVT", "VVL", "VVJ", "W", "TTT", "TTL", "TTJ", "ZJ", "ZL", "ZTT"
+        ]
     all_bkg_processes = [b for b in bkg_processes]
     legend_bkg_processes = copy.deepcopy(bkg_processes)
     legend_bkg_processes.reverse()
 
     rootfile = rootfile_parser.Rootfile_parser(args.input)
-
+    
     plots = []
     for channel in args.channels:
         if channel == "tt":
-            if args.embedding:
                 bkg_processes = [
-                    b for b in all_bkg_processes if b is not "TTL"
-                ]
-            else:
-                bkg_processes = [b for b in all_bkg_processes]
+                    b for b in all_bkg_processes if b not in ["TTL"]
+                ]          
         else:
             bkg_processes = [b for b in all_bkg_processes]
         legend_bkg_processes = copy.deepcopy(bkg_processes)
