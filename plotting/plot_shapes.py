@@ -162,16 +162,15 @@ def main(args):
     
     plots = []
     for channel in args.channels:
-        if channel == "tt":
-                bkg_processes = [
-                    b for b in all_bkg_processes if b not in ["TTL"]
-                ]          
-        else:
-            bkg_processes = [b for b in all_bkg_processes]
-        legend_bkg_processes = copy.deepcopy(bkg_processes)
-        legend_bkg_processes.reverse()
-
         for category in channel_categories[channel]:
+            if channel == "tt" and category=="2":
+                    bkg_processes = [
+                        b for b in all_bkg_processes if b not in ["TTL"]
+                    ]          
+            else:
+                bkg_processes = [b for b in all_bkg_processes]
+            legend_bkg_processes = copy.deepcopy(bkg_processes)
+            legend_bkg_processes.reverse()
             # create plot
             width = 600
             if args.categories == "stxs_stage1":
