@@ -64,7 +64,7 @@ def main(args):
 
     # Define era
     if "2016" in args.era:
-        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, qqHEstimation, VHEstimation, ZTTEstimation, ZTTEstimationTT, ZLEstimationMTSM, ZLEstimationETSM, ZLEstimationTT, ZJEstimationMT, ZJEstimationET, ZJEstimationTT, WEstimationRaw, TTTEstimationMT, TTTEstimationET, TTTEstimationTT, TTJEstimationMT, TTJEstimationET, TTJEstimationTT, VVEstimation, QCDEstimationMT, QCDEstimationET, QCDEstimationTT, ZTTEmbeddedEstimation, TTLEstimationMT, TTLEstimationET, TTLEstimationTT, TTTTEstimationMT, TTTTEstimationET, EWKWpEstimation, EWKWmEstimation, EWKZllEstimation, EWKZnnEstimation
+        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, qqHEstimation, VHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimationRaw, TTTEstimation, TTJEstimation, VVEstimation, QCDEstimationMT, QCDEstimationET, QCDEstimationTT, ZTTEmbeddedEstimation, TTLEstimation, EWKWpEstimation, EWKWmEstimation, EWKZEstimation
 
         from shape_producer.era import Run2016
         era = Run2016(args.database)
@@ -107,25 +107,22 @@ def main(args):
             "EWKWp": "w",
             "EWKWm": "w",
             "VV": "misc",
-            "EWKZll": "misc",
-            "EWKZnn": "misc"
+            "EWKZ": "misc",
         }
         for estimation in [
                 ggHEstimation(era, args.base_path, channel),
                 qqHEstimation(era, args.base_path, channel),
                 ZTTEstimation(era, args.base_path, channel),
-                #ZTTEmbeddedEstimation(era, args.base_path, channel),
-                ZLEstimationMTSM(era, args.base_path, channel),
-                ZJEstimationMT(era, args.base_path, channel),
-                TTTEstimationMT(era, args.base_path, channel),
-                #TTLEstimationMT(era, args.base_path, channel),
-                TTJEstimationMT(era, args.base_path, channel),
+                ZLEstimation(era, args.base_path, channel),
+                ZJEstimation(era, args.base_path, channel),
+                TTTEstimation(era, args.base_path, channel),
+                #TTLEstimation(era, args.base_path, channel),
+                TTJEstimation(era, args.base_path, channel),
                 WEstimationRaw(era, args.base_path, channel),
                 EWKWpEstimation(era, args.base_path, channel),
                 EWKWmEstimation(era, args.base_path, channel),
                 VVEstimation(era, args.base_path, channel),
-                EWKZllEstimation(era, args.base_path, channel),
-                #EWKZnnEstimation(era, args.base_path, channel)
+                EWKZEstimation(era, args.base_path, channel),
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
@@ -265,25 +262,22 @@ def main(args):
             "EWKWp": "w",
             "EWKWm": "w",
             "VV": "misc",
-            "EWKZll": "misc",
-            "EWKZnn": "misc"
+            "EWKZ": "misc"
         }
         for estimation in [
                 ggHEstimation(era, args.base_path, channel),
                 qqHEstimation(era, args.base_path, channel),
                 ZTTEstimation(era, args.base_path, channel),
-                #ZTTEmbeddedEstimation(era, args.base_path, channel),
-                ZLEstimationETSM(era, args.base_path, channel),
-                ZJEstimationET(era, args.base_path, channel),
-                TTTEstimationET(era, args.base_path, channel),
-                #TTLEstimationET(era, args.base_path, channel),
-                TTJEstimationET(era, args.base_path, channel),
+                ZLEstimation(era, args.base_path, channel),
+                ZJEstimation(era, args.base_path, channel),
+                TTTEstimation(era, args.base_path, channel),
+                #TTLEstimation(era, args.base_path, channel),
+                TTJEstimation(era, args.base_path, channel),
                 WEstimationRaw(era, args.base_path, channel),
                 EWKWpEstimation(era, args.base_path, channel),
                 EWKWmEstimation(era, args.base_path, channel),
                 VVEstimation(era, args.base_path, channel),
-                EWKZllEstimation(era, args.base_path, channel),
-                #EWKZnnEstimation(era, args.base_path, channel)
+                EWKZEstimation(era, args.base_path, channel),
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
@@ -423,25 +417,22 @@ def main(args):
             "EWKWp": "misc",
             "EWKWm": "misc",
             "VV": "misc",
-            "EWKZll": "misc",
-            "EWKZnn": "misc"
+            "EWKZ": "misc"
         }
         for estimation in [
                 ggHEstimation(era, args.base_path, channel),
                 qqHEstimation(era, args.base_path, channel),
-                ZTTEstimationTT(era, args.base_path, channel),
-                #ZTTEmbeddedEstimation(era, args.base_path, channel),
-                ZLEstimationTT(era, args.base_path, channel),
-                ZJEstimationTT(era, args.base_path, channel),
-                TTTEstimationTT(era, args.base_path, channel),
+                ZTTEstimation(era, args.base_path, channel),
+                ZLEstimation(era, args.base_path, channel),
+                ZJEstimation(era, args.base_path, channel),
+                TTTEstimation(era, args.base_path, channel),
                 #TTLEstimationTT(era, args.base_path, channel),
-                TTJEstimationTT(era, args.base_path, channel),
+                TTJEstimation(era, args.base_path, channel),
                 WEstimationRaw(era, args.base_path, channel),
                 EWKWpEstimation(era, args.base_path, channel),
                 EWKWmEstimation(era, args.base_path, channel),
                 VVEstimation(era, args.base_path, channel),
-                EWKZllEstimation(era, args.base_path, channel),
-                #EWKZnnEstimation(era, args.base_path, channel)
+                EWKZEstimation(era, args.base_path, channel),
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [

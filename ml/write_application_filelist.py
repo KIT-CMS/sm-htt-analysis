@@ -39,7 +39,7 @@ def main(args):
 
     # Define era
     if "2016" in args.era:
-        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, qqHEstimation, VHEstimation, ZTTEstimation, ZTTEstimationTT, ZLEstimationMTSM, ZLEstimationETSM, ZLEstimationTT, ZJEstimationMT, ZJEstimationET, ZJEstimationTT, WEstimationRaw, TTTEstimationMT, TTTEstimationET, TTTEstimationTT, TTJEstimationMT, TTJEstimationET, TTJEstimationTT, VVEstimation, QCDEstimationMT, QCDEstimationET, QCDEstimationTT, ZTTEmbeddedEstimation, TTLEstimationMT, TTLEstimationET, TTLEstimationTT, TTTTEstimationMT, TTTTEstimationET, EWKWpEstimation, EWKWmEstimation, EWKZllEstimation, EWKZnnEstimation
+        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, qqHEstimation, VHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimationRaw, TTTEstimation, TTJEstimation, VVEstimation, QCDEstimationMT, QCDEstimationET, QCDEstimationTT, ZTTEmbeddedEstimation, TTLEstimation, EWKZEstimation, EWKWpEstimation, EWKWmEstimation
 
         from shape_producer.era import Run2016
         era = Run2016(args.database)
@@ -66,17 +66,16 @@ def main(args):
                 VHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
                 ZTTEmbeddedEstimation(era, args.directory, channel),
-                ZLEstimationMTSM(era, args.directory, channel),
-                ZJEstimationMT(era, args.directory, channel),
-                TTTEstimationMT(era, args.directory, channel),
-                TTLEstimationMT(era, args.directory, channel),
-                TTJEstimationMT(era, args.directory, channel),
+                ZLEstimation(era, args.directory, channel),
+                ZJEstimation(era, args.directory, channel),
+                TTTEstimation(era, args.directory, channel),
+                TTLEstimation(era, args.directory, channel),
+                TTJEstimation(era, args.directory, channel),
                 WEstimationRaw(era, args.directory, channel),
+                VVEstimation(era, args.directory, channel),
+                EWKZEstimation(era, args.directory, channel),
                 EWKWpEstimation(era, args.directory, channel),
                 EWKWmEstimation(era, args.directory, channel),
-                VVEstimation(era, args.directory, channel),
-                EWKZllEstimation(era, args.directory, channel),
-                EWKZnnEstimation(era, args.directory, channel),
                 DataEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method
@@ -152,17 +151,16 @@ def main(args):
                 VHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
                 ZTTEmbeddedEstimation(era, args.directory, channel),
-                ZLEstimationETSM(era, args.directory, channel),
-                ZJEstimationET(era, args.directory, channel),
-                TTTEstimationET(era, args.directory, channel),
-                TTLEstimationET(era, args.directory, channel),
-                TTJEstimationET(era, args.directory, channel),
+                ZLEstimation(era, args.directory, channel),
+                ZJEstimation(era, args.directory, channel),
+                TTTEstimation(era, args.directory, channel),
+                TTLEstimation(era, args.directory, channel),
+                TTJEstimation(era, args.directory, channel),
                 WEstimationRaw(era, args.directory, channel),
+                VVEstimation(era, args.directory, channel),
+                EWKZEstimation(era, args.directory, channel),
                 EWKWpEstimation(era, args.directory, channel),
                 EWKWmEstimation(era, args.directory, channel),
-                VVEstimation(era, args.directory, channel),
-                EWKZllEstimation(era, args.directory, channel),
-                EWKZnnEstimation(era, args.directory, channel),
                 DataEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method
@@ -238,17 +236,16 @@ def main(args):
                 VHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
                 ZTTEmbeddedEstimation(era, args.directory, channel),
-                ZLEstimationTT(era, args.directory, channel),
-                ZJEstimationTT(era, args.directory, channel),
-                TTTEstimationTT(era, args.directory, channel),
-                TTLEstimationTT(era, args.directory, channel),
-                TTJEstimationTT(era, args.directory, channel),
+                ZLEstimation(era, args.directory, channel),
+                ZJEstimation(era, args.directory, channel),
+                TTTEstimation(era, args.directory, channel),
+                TTLEstimation(era, args.directory, channel),
+                TTJEstimation(era, args.directory, channel),
                 WEstimationRaw(era, args.directory, channel),
+                VVEstimation(era, args.directory, channel),
+                EWKZEstimation(era, args.directory, channel),
                 EWKWpEstimation(era, args.directory, channel),
                 EWKWmEstimation(era, args.directory, channel),
-                VVEstimation(era, args.directory, channel),
-                EWKZllEstimation(era, args.directory, channel),
-                EWKZnnEstimation(era, args.directory, channel),
                 DataEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method
