@@ -7,8 +7,8 @@ ARTUS_OUTPUTS_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-08-21/me
 ARTUS_FRIENDS_ET_2016=/ceph/wunsch/Artus_2018-08-21/et_keras_2
 ARTUS_FRIENDS_MT_2016=/ceph/wunsch/Artus_2018-08-21/mt_keras_2
 ARTUS_FRIENDS_TT_2016=/ceph/wunsch/Artus_2018-08-21/tt_keras_2
-ARTUS_FRIENDS_FAKE_FACTOR_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-08-21/fake_factor_friends_NN_score
-ARTUS_FRIENDS_FAKE_FACTOR_INCL_2016=TODO
+ARTUS_FRIENDS_FAKE_FACTOR_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-08-21/fake_factor_friends_njets_mvis
+ARTUS_FRIENDS_FAKE_FACTOR_INCL_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-08-21/fake_factor_friends_njets_mvis_incl
 
 # Samples Run2017
 ARTUS_OUTPUTS_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_2018-10-01/merged
