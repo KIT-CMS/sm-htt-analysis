@@ -738,32 +738,20 @@ def main(args):
                     channel=mt,
                     era=era)
 
-    # Zll reweighting
-    zll_et_weight_variations = []
+    # Zll reweighting !!! replaced by log normal uncertainties: CMS_eFakeTau_13TeV 15.7%; CMS_mFakeTau_13TeV 27.2%
+    '''zll_et_weight_variations = []
     zll_et_weight_variations.append(
-        ReplaceWeight(
-            "CMS_eFakeTau_1prong_13TeV", "decay_mode_reweight",
+        AddWeight(
+            "CMS_eFakeTau_13TeV", "eFakeTau_reweight",
             Weight(
-                "(((decayMode_2 == 0)*0.98*1.12) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.2) + ((decayMode_2 == 10)*1.0))",
-                "decay_mode_reweight"), "Up"))
+                "(((abs(eta_1) < 1.46)*1.52/1.4) + ((abs(eta_1) >= 1.46 && abs(eta_1) < 1.558)*1.12) + ((abs(eta_1) >= 1.558)*2.2/1.9))",
+                "eFakeTau_reweight"), "Up"))
     zll_et_weight_variations.append(
-        ReplaceWeight(
-            "CMS_eFakeTau_1prong_13TeV", "decay_mode_reweight",
+        AddWeight(
+            "CMS_eFakeTau_13TeV", "eFakeTau_reweight",
             Weight(
-                "(((decayMode_2 == 0)*0.98*0.88) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.2) + ((decayMode_2 == 10)*1.0))",
-                "decay_mode_reweight"), "Down"))
-    zll_et_weight_variations.append(
-        ReplaceWeight(
-            "CMS_eFakeTau_1prong1pizero_13TeV", "decay_mode_reweight",
-            Weight(
-                "(((decayMode_2 == 0)*0.98) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.2*1.12) + ((decayMode_2 == 10)*1.0))",
-                "decay_mode_reweight"), "Up"))
-    zll_et_weight_variations.append(
-        ReplaceWeight(
-            "CMS_eFakeTau_1prong1pizero_13TeV", "decay_mode_reweight",
-            Weight(
-                "(((decayMode_2 == 0)*0.98) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.2*0.88) + ((decayMode_2 == 10)*1.0))",
-                "decay_mode_reweight"), "Down"))
+                "(((abs(eta_1) < 1.46)*1.28/1.4) + ((abs(eta_1) >= 1.46 && abs(eta_1) < 1.558)*0.88) + ((abs(eta_1) >= 1.558)*1.6/1.9))",
+                "eFakeTau_reweight"), "Down"))
     for variation in zll_et_weight_variations:
         for process_nick in ["ZL"]:
             if "et" in [args.gof_channel] + args.channels:
@@ -774,29 +762,17 @@ def main(args):
                     era=era)
     zll_mt_weight_variations = []
     zll_mt_weight_variations.append(
-        ReplaceWeight(
-            "CMS_mFakeTau_1prong_13TeV", "decay_mode_reweight",
+        AddWeight(
+            "CMS_mFakeTau_13TeV", "mFakeTau_reweight",
             Weight(
-                "(((decayMode_2 == 0)*0.75*1.25) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.0) + ((decayMode_2 == 10)*1.0))",
-                "decay_mode_reweight"), "Up"))
+                "(((abs(eta_1) < 0.4)*1.63/1.47) + ((abs(eta_1) >= 0.4 && abs(eta_1) < 0.8)*1.85/1.55) + ((abs(eta_1) >= 0.8 && abs(eta_1) < 1.2)*1.38/1.33) + ((abs(eta_1) >= 1.2 && abs(eta_1) < 1.7)*2.26/1.72) + ((abs(eta_1) >= 1.7 && abs(eta_1) < 2.3)*3.13/2.5) + (abs(eta_1) >= 2.3))",
+                "mFakeTau_reweight"), "Up"))
     zll_mt_weight_variations.append(
-        ReplaceWeight(
-            "CMS_mFakeTau_1prong_13TeV", "decay_mode_reweight",
+        AddWeight(
+            "CMS_mFakeTau_13TeV", "mFakeTau_reweight",
             Weight(
-                "(((decayMode_2 == 0)*0.75*0.75) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.0) + ((decayMode_2 == 10)*1.0))",
-                "decay_mode_reweight"), "Down"))
-    zll_mt_weight_variations.append(
-        ReplaceWeight(
-            "CMS_mFakeTau_1prong1pizero_13TeV", "decay_mode_reweight",
-            Weight(
-                "(((decayMode_2 == 0)*0.75) + ((decayMode_2 == 1 || decayMode_2 == 2)*1.25) + ((decayMode_2 == 10)*1.0))",
-                "decay_mode_reweight"), "Up"))
-    zll_mt_weight_variations.append(
-        ReplaceWeight(
-            "CMS_mFakeTau_1prong1pizero_13TeV", "decay_mode_reweight",
-            Weight(
-                "(((decayMode_2 == 0)*0.75) + ((decayMode_2 == 1 || decayMode_2 == 2)*0.75) + ((decayMode_2 == 10)*1.0))",
-                "decay_mode_reweight"), "Down"))
+                "(((abs(eta_1) < 0.4)*1.31/1.47) + ((abs(eta_1) >= 0.4 && abs(eta_1) < 0.8)*1.25/1.55) + ((abs(eta_1) >= 0.8 && abs(eta_1) < 1.2)*1.28/1.33) + ((abs(eta_1) >= 1.2 && abs(eta_1) < 1.7)*1.18/1.72) + ((abs(eta_1) >= 1.7 && abs(eta_1) < 2.3)*1.87/2.5) + (abs(eta_1) >= 2.3))",
+                "mFakeTau_reweight"), "Down"))
     for variation in zll_mt_weight_variations:
         for process_nick in ["ZL"]:
             if "mt" in [args.gof_channel] + args.channels:
@@ -804,7 +780,7 @@ def main(args):
                     variation=variation,
                     process=mt_processes[process_nick],
                     channel=mt,
-                    era=era)
+                    era=era)'''
 
     # b tagging
     btag_eff_variations = create_systematic_variations(
