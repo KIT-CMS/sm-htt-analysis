@@ -680,10 +680,10 @@ def main(args):
     jet_to_tau_fake_variations = []
     jet_to_tau_fake_variations.append(
         AddWeight("CMS_htt_jetToTauFake_13TeV", "jetToTauFake_weight",
-                  Weight("(1.0+pt_2*0.002)", "jetToTauFake_weight"), "Up"))
+                  Weight("max(1.0-pt_2*0.002, 0.6)", "jetToTauFake_weight"), "Up"))
     jet_to_tau_fake_variations.append(
         AddWeight("CMS_htt_jetToTauFake_13TeV", "jetToTauFake_weight",
-                  Weight("(1.0-pt_2*0.002)", "jetToTauFake_weight"), "Down"))
+                  Weight("min(1.0+pt_2*0.002, 1.4)", "jetToTauFake_weight"), "Down"))
     for variation in jet_to_tau_fake_variations:
         for process_nick in ["ZJ", "TTJ", "W", "VVJ"]:
             if "et" in [args.gof_channel] + args.channels:
