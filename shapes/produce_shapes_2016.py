@@ -738,7 +738,7 @@ def main(args):
                     channel=mt,
                     era=era)
 
-    # Zll reweighting !!! replaced by log normal uncertainties: CMS_eFakeTau_13TeV 15.7%; CMS_mFakeTau_13TeV 27.2%
+    # Zll reweighting !!! replaced by log normal uncertainties: CMS_eFakeTau_13TeV 15.5%; CMS_mFakeTau_13TeV 27.2%
     '''zll_et_weight_variations = []
     zll_et_weight_variations.append(
         AddWeight(
