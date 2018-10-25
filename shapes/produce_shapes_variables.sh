@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BINNING=plotting/custom_binning.yaml #shapes/binning.yaml
+BINNING=shapes/binning.yaml
 ERA=$1
 CHANNELS=$2
 VARIABLE=$3
@@ -17,8 +17,7 @@ source utils/setup_samples.sh $ERA
 
 # Produce shapes
 
-
-python shapes/produce_shapes.py \
+python shapes/produce_shapes_${ERA}.py \
     --directory $ARTUS_OUTPUTS \
     --et-friend-directory $ARTUS_FRIENDS_ET \
     --mt-friend-directory $ARTUS_FRIENDS_MT \
@@ -29,4 +28,6 @@ python shapes/produce_shapes.py \
     --gof-channel $CHANNELS \
     --gof-variable $VARIABLE \
     --era $ERA \
-    --tag ${ERA}_${CHANNELS}
+    --tag ${ERA}_${CHANNELS}_${VARIABLE} \
+    --num-threads 38
+
