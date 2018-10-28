@@ -15,4 +15,4 @@ preprocessing:
 branch_prefix: mt_
 
 # Output directory
-output_directory: /ceph/wunsch/Artus_2018-08-21/mt_keras_2
+output_directory: /ceph/wunsch/Artus_2018-08-21/mt_keras_3
