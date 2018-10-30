@@ -101,21 +101,21 @@ def determine_fractions(args, categories):
             "W": ["W", "VVJ", "ZJ"],
             "TT": ["TTJ"],
             "QCD": ["QCD"],
-            "real": ["ZTT", "ZL", "TTT", "VVT"]
+            "real": ["ZTT", "ZL", "TTT", "TTL", "VVT", "VVL"]
         },
         "et": {
             "data": ["data_obs"],
             "W": ["W", "VVJ", "ZJ"],
             "TT": ["TTJ"],
             "QCD": ["QCD"],
-            "real": ["ZTT", "ZL", "TTT", "VVT"]
+            "real": ["ZTT", "ZL", "TTT", "TTL", "VVT", "VVL"]
         },
         "tt": {
             "data": ["data_obs"],
             "W": ["W", "VVJ", "ZJ"],
             "TT": ["TTJ"],
             "QCD": ["QCD"],
-            "real": ["ZTT", "ZL", "TTT", "VVT"]
+            "real": ["ZTT", "ZL", "TTT", "TTL", "VVT", "VVL"]
         }
     }
     fractions = {}

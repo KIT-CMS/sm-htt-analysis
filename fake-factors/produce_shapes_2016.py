@@ -102,7 +102,7 @@ def main(args):
 
     # Era selection
     if "2016" in args.era:
-        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, qqHEstimation, VHEstimation, ZTTEstimation, ZTTEstimationTT, ZLEstimationMTSM, ZLEstimationETSM, ZLEstimationTT, ZJEstimationMT, ZJEstimationET, ZJEstimationTT, WEstimation, TTTEstimationMT, TTTEstimationET, TTTEstimationTT, TTJEstimationMT, TTJEstimationET, TTJEstimationTT, VVTEstimationLT, VVJEstimationLT, VVTEstimationTT, VVJEstimationTT, EWKZEstimation, QCDEstimationMT, QCDEstimationET, QCDEstimationTT, ZTTEmbeddedEstimation, TTLEstimationMT, TTLEstimationET, TTLEstimationTT, TTTTEstimationMT, TTTTEstimationET
+        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, qqHEstimation, VHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimation, TTTEstimation, TTJEstimation, TTLEstimation, VVTEstimation, VVJEstimation, VVLEstimation, ZTTEmbeddedEstimation
         from shape_producer.era import Run2016
         era = Run2016(args.datasets)
     else:
@@ -122,15 +122,15 @@ def main(args):
     mt_processes = {
         "data"  : Process("data_obs", DataEstimation  (era, directory, mt, friend_directory=mt_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation   (era, directory, mt, friend_directory=mt_friend_directory)),
-        "ZL"    : Process("ZL",       ZLEstimationMTSM(era, directory, mt, friend_directory=mt_friend_directory)),
-        "ZJ"    : Process("ZJ",       ZJEstimationMT  (era, directory, mt, friend_directory=mt_friend_directory)),
+        "ZL"    : Process("ZL",       ZLEstimation    (era, directory, mt, friend_directory=mt_friend_directory)),
+        "ZJ"    : Process("ZJ",       ZJEstimation    (era, directory, mt, friend_directory=mt_friend_directory)),
         "W"     : Process("W",        WEstimation     (era, directory, mt, friend_directory=mt_friend_directory)),
-        "TTT"   : Process("TTT",      TTTEstimationMT (era, directory, mt, friend_directory=mt_friend_directory)),
-        "TTL"   : Process("TTL",      TTLEstimationMT (era, directory, mt, friend_directory=mt_friend_directory)),
-        "TTJ"   : Process("TTJ",      TTJEstimationMT (era, directory, mt, friend_directory=mt_friend_directory)),
-        "VVT"   : Process("VVT",      VVTEstimationLT (era, directory, mt, friend_directory=mt_friend_directory)),
-        "VVL"   : Process("VVL",      VVLEstimationLT (era, directory, mt, friend_directory=mt_friend_directory)),
-        "VVJ"   : Process("VVJ",      VVJEstimationLT (era, directory, mt, friend_directory=mt_friend_directory))
+        "TTT"   : Process("TTT",      TTTEstimation   (era, directory, mt, friend_directory=mt_friend_directory)),
+        "TTL"   : Process("TTL",      TTLEstimation   (era, directory, mt, friend_directory=mt_friend_directory)),
+        "TTJ"   : Process("TTJ",      TTJEstimation   (era, directory, mt, friend_directory=mt_friend_directory)),
+        "VVT"   : Process("VVT",      VVTEstimation   (era, directory, mt, friend_directory=mt_friend_directory)),
+        "VVL"   : Process("VVL",      VVLEstimation   (era, directory, mt, friend_directory=mt_friend_directory)),
+        "VVJ"   : Process("VVJ",      VVJEstimation   (era, directory, mt, friend_directory=mt_friend_directory))
         #"EWKZ"  : Process("EWKZ",     EWKZEstimation  (era, directory, mt, friend_directory=mt_friend_directory))
         }
 
@@ -140,15 +140,15 @@ def main(args):
     et_processes = {
         "data"  : Process("data_obs", DataEstimation  (era, directory, et, friend_directory=et_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation   (era, directory, et, friend_directory=et_friend_directory)),
-        "ZL"    : Process("ZL",       ZLEstimationETSM(era, directory, et, friend_directory=et_friend_directory)),
-        "ZJ"    : Process("ZJ",       ZJEstimationET  (era, directory, et, friend_directory=et_friend_directory)),
+        "ZL"    : Process("ZL",       ZLEstimation    (era, directory, et, friend_directory=et_friend_directory)),
+        "ZJ"    : Process("ZJ",       ZJEstimation    (era, directory, et, friend_directory=et_friend_directory)),
         "W"     : Process("W",        WEstimation     (era, directory, et, friend_directory=et_friend_directory)),
-        "TTT"   : Process("TTT",      TTTEstimationET (era, directory, et, friend_directory=et_friend_directory)),
-        "TTL"   : Process("TTL",      TTLEstimationET (era, directory, et, friend_directory=et_friend_directory)),
-        "TTJ"   : Process("TTJ",      TTJEstimationET (era, directory, et, friend_directory=et_friend_directory)),
-        "VVT"   : Process("VVT",      VVTEstimationLT (era, directory, et, friend_directory=et_friend_directory)),
-        "VVL"   : Process("VVL",      VVLEstimationLT (era, directory, et, friend_directory=et_friend_directory)),
-        "VVJ"   : Process("VVJ",      VVJEstimationLT (era, directory, et, friend_directory=et_friend_directory))
+        "TTT"   : Process("TTT",      TTTEstimation   (era, directory, et, friend_directory=et_friend_directory)),
+        "TTL"   : Process("TTL",      TTLEstimation   (era, directory, et, friend_directory=et_friend_directory)),
+        "TTJ"   : Process("TTJ",      TTJEstimation   (era, directory, et, friend_directory=et_friend_directory)),
+        "VVT"   : Process("VVT",      VVTEstimation   (era, directory, et, friend_directory=et_friend_directory)),
+        "VVL"   : Process("VVL",      VVLEstimation   (era, directory, et, friend_directory=et_friend_directory)),
+        "VVJ"   : Process("VVJ",      VVJEstimation   (era, directory, et, friend_directory=et_friend_directory))
         #"EWKZ"  : Process("EWKZ",     EWKZEstimation  (era, directory, et, friend_directory=et_friend_directory))
         }
 
@@ -158,16 +158,16 @@ def main(args):
     tt1.cuts.add(Cut("(byTightIsolationMVArun2v1DBoldDMwLT_1<0.5&&byVLooseIsolationMVArun2v1DBoldDMwLT_1>0.5)", "tau_1_anti_iso"))
     tt1_processes = {
         "data"  : Process("data_obs", DataEstimation (era, directory, tt1, friend_directory=tt_friend_directory)),
-        "ZTT"   : Process("ZTT",      ZTTEstimationTT(era, directory, tt1, friend_directory=tt_friend_directory)),
-        "ZL"    : Process("ZL",       ZLEstimationTT (era, directory, tt1, friend_directory=tt_friend_directory)),
-        "ZJ"    : Process("ZJ",       ZJEstimationTT (era, directory, tt1, friend_directory=tt_friend_directory)),
+        "ZTT"   : Process("ZTT",      ZTTEstimation  (era, directory, tt1, friend_directory=tt_friend_directory)),
+        "ZL"    : Process("ZL",       ZLEstimation   (era, directory, tt1, friend_directory=tt_friend_directory)),
+        "ZJ"    : Process("ZJ",       ZJEstimation   (era, directory, tt1, friend_directory=tt_friend_directory)),
         "W"     : Process("W",        WEstimation    (era, directory, tt1, friend_directory=tt_friend_directory)),
-        "TTT"   : Process("TTT",      TTTEstimationTT(era, directory, tt1, friend_directory=tt_friend_directory)),
-        "TTL"   : Process("TTL",      TTLEstimationTT(era, directory, tt1, friend_directory=tt_friend_directory)),
-        "TTJ"   : Process("TTJ",      TTJEstimationTT(era, directory, tt1, friend_directory=tt_friend_directory)),
-        "VVT"   : Process("VVT",      VVTEstimationTT(era, directory, tt1, friend_directory=tt_friend_directory)),
-        "VVL"   : Process("VVL",      VVLEstimationTT(era, directory, tt1, friend_directory=tt_friend_directory)),
-        "VVJ"   : Process("VVJ",      VVJEstimationTT(era, directory, tt1, friend_directory=tt_friend_directory))
+        "TTT"   : Process("TTT",      TTTEstimation  (era, directory, tt1, friend_directory=tt_friend_directory)),
+        "TTL"   : Process("TTL",      TTLEstimation  (era, directory, tt1, friend_directory=tt_friend_directory)),
+        "TTJ"   : Process("TTJ",      TTJEstimation  (era, directory, tt1, friend_directory=tt_friend_directory)),
+        "VVT"   : Process("VVT",      VVTEstimation  (era, directory, tt1, friend_directory=tt_friend_directory)),
+        "VVL"   : Process("VVL",      VVLEstimation  (era, directory, tt1, friend_directory=tt_friend_directory)),
+        "VVJ"   : Process("VVJ",      VVJEstimation  (era, directory, tt1, friend_directory=tt_friend_directory))
         #"EWKZ"  : Process("EWKZ",     EWKZEstimation (era, directory, tt1, friend_directory=tt_friend_directory)),
         }
     tt2 = TTSM2016()
@@ -175,16 +175,16 @@ def main(args):
     tt2.cuts.add(Cut("(byTightIsolationMVArun2v1DBoldDMwLT_2<0.5&&byVLooseIsolationMVArun2v1DBoldDMwLT_2>0.5)", "tau_2_anti_iso"))
     tt2_processes = {
         "data"  : Process("data_obs", DataEstimation (era, directory, tt2, friend_directory=tt_friend_directory)),
-        "ZTT"   : Process("ZTT",      ZTTEstimationTT(era, directory, tt2, friend_directory=tt_friend_directory)),
-        "ZL"    : Process("ZL",       ZLEstimationTT (era, directory, tt2, friend_directory=tt_friend_directory)),
-        "ZJ"    : Process("ZJ",       ZJEstimationTT (era, directory, tt2, friend_directory=tt_friend_directory)),
+        "ZTT"   : Process("ZTT",      ZTTEstimation  (era, directory, tt2, friend_directory=tt_friend_directory)),
+        "ZL"    : Process("ZL",       ZLEstimation   (era, directory, tt2, friend_directory=tt_friend_directory)),
+        "ZJ"    : Process("ZJ",       ZJEstimation   (era, directory, tt2, friend_directory=tt_friend_directory)),
         "W"     : Process("W",        WEstimation    (era, directory, tt2, friend_directory=tt_friend_directory)),
-        "TTT"   : Process("TTT",      TTTEstimationTT(era, directory, tt2, friend_directory=tt_friend_directory)),
-        "TTL"   : Process("TTL",      TTLEstimationTT(era, directory, tt2, friend_directory=tt_friend_directory)),
-        "TTJ"   : Process("TTJ",      TTJEstimationTT(era, directory, tt2, friend_directory=tt_friend_directory)),
-        "VVT"   : Process("VVT",      VVTEstimationTT(era, directory, tt2, friend_directory=tt_friend_directory)),
-        "VVL"   : Process("VVL",      VVLEstimationTT(era, directory, tt2, friend_directory=tt_friend_directory)),
-        "VVJ"   : Process("VVJ",      VVJEstimationTT(era, directory, tt2, friend_directory=tt_friend_directory))
+        "TTT"   : Process("TTT",      TTTEstimation  (era, directory, tt2, friend_directory=tt_friend_directory)),
+        "TTL"   : Process("TTL",      TTLEstimation  (era, directory, tt2, friend_directory=tt_friend_directory)),
+        "TTJ"   : Process("TTJ",      TTJEstimation  (era, directory, tt2, friend_directory=tt_friend_directory)),
+        "VVT"   : Process("VVT",      VVTEstimation  (era, directory, tt2, friend_directory=tt_friend_directory)),
+        "VVL"   : Process("VVL",      VVLEstimation  (era, directory, tt2, friend_directory=tt_friend_directory)),
+        "VVJ"   : Process("VVJ",      VVJEstimation  (era, directory, tt2, friend_directory=tt_friend_directory))
         #"EWKZ"  : Process("EWKZ",     EWKZEstimation (era, directory, tt2, friend_directory=tt_friend_directory)),
         }
 
@@ -197,6 +197,12 @@ def main(args):
 
     et_categories = []
     # Analysis shapes
+    et_categories.append(
+        Category(
+            "inclusive",
+            et,
+            Cuts(),
+            variable=Variable(args.config, VariableBinning(config["et"]["binning"]), config["et"]["expression"])))
     for i, label in enumerate(["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]):
         et_categories.append(
             Category(
@@ -204,9 +210,15 @@ def main(args):
                 et,
                 Cuts(
                     Cut("et_max_index=={index}".format(index=i), "exclusive_score")),
-                variable=Variable(config["et"]["expression"], VariableBinning(config["et"]["binning"]))))
+                variable=Variable(args.config, VariableBinning(config["et"]["binning"]), config["et"]["expression"])))
     mt_categories = []
     # Analysis shapes
+    mt_categories.append(
+        Category(
+            "inclusive",
+            mt,
+            Cuts(),
+            variable=Variable(args.config, VariableBinning(config["mt"]["binning"]), config["mt"]["expression"])))
     for i, label in enumerate(["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]):
         mt_categories.append(
             Category(
@@ -214,10 +226,22 @@ def main(args):
                 mt,
                 Cuts(
                     Cut("mt_max_index=={index}".format(index=i), "exclusive_score")),
-                variable=Variable(config["mt"]["expression"], VariableBinning(config["mt"]["binning"]))))
+                variable=Variable(args.config, VariableBinning(config["mt"]["binning"]), config["mt"]["expression"])))
     tt1_categories = []
     tt2_categories = []
     # Analysis shapes
+    tt1_categories.append(
+        Category(
+            "tt1_inclusive",
+            tt1,
+            Cuts(),
+            variable=Variable(args.config, VariableBinning(config["tt"]["binning"]), config["tt"]["expression"])))
+    tt2_categories.append(
+        Category(
+            "tt2_inclusive",
+            tt2,
+            Cuts(),
+            variable=Variable(args.config, VariableBinning(config["tt"]["binning"]), config["tt"]["expression"])))
     for i, label in enumerate(["ggh", "qqh", "ztt", "noniso", "misc"]):
         tt1_categories.append(
             Category(
@@ -225,14 +249,14 @@ def main(args):
                 tt1,
                 Cuts(
                     Cut("tt_max_index=={index}".format(index=i), "exclusive_score")),
-                variable=Variable(config["tt"]["expression"], VariableBinning(config["tt"]["binning"]))))
+                variable=Variable(args.config, VariableBinning(config["tt"]["binning"]), config["tt"]["expression"])))
         tt2_categories.append(
             Category(
                 "tt2_"+label,
                 tt2,
                 Cuts(
                     Cut("tt_max_index=={index}".format(index=i), "exclusive_score")),
-                variable=Variable(config["tt"]["expression"], VariableBinning(config["tt"]["binning"]))))
+                variable=Variable(args.config, VariableBinning(config["tt"]["binning"]), config["tt"]["expression"])))
 
     # Nominal histograms
     # yapf: enable
