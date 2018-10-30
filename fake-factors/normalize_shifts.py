@@ -63,7 +63,7 @@ def main(args):
                 raise Exception
 
             nominal = "#" + "#".join(split[:-1]) + "#"
-            h_nominal = file_.Get(name)
+            h_nominal = file_.Get(nominal)
             if h_nominal == None:
                 logger.critical("Failed to get nominal histogram %s.", nominal)
                 raise Exception
