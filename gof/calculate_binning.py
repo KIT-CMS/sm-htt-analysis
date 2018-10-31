@@ -127,6 +127,8 @@ def get_1d_binning(channel, chain, variables, percentile_min, percentile_max,
     for i, v in enumerate(variables):
         binning[v] = {}
         min_max = np.percentile(values[i], [percentile_min, percentile_max])
+        min_max[0] += -0.01 # epsilon offset for integer variables, does not effect the floating ones
+        min_max[1] += 0.01
         binning[v]["bins"] = [
             float(x) for x in np.linspace(min_max[0], min_max[1], num_bins)
         ]
