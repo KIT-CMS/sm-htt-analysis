@@ -415,14 +415,17 @@ def main(args):
                 variable=score))
 
     # Nominal histograms
-    signal_nicks = [
-        "ggH", "qqH", "qqH_VBFTOPO_JET3VETO", "qqH_VBFTOPO_JET3",
-        "qqH_REST", "qqH_PTJET1_GT200", "qqH_VH2JET", "ggH_0J",
-        "ggH_1J_PTH_0_60", "ggH_1J_PTH_60_120", "ggH_1J_PTH_120_200",
-        "ggH_1J_PTH_GT200", "ggH_GE2J_PTH_0_60", "ggH_GE2J_PTH_60_120",
-        "ggH_GE2J_PTH_120_200", "ggH_GE2J_PTH_GT200", "ggH_VBFTOPO_JET3VETO",
-        "ggH_VBFTOPO_JET3"
-    ]
+    if args.gof_channel == None:
+        signal_nicks = [
+            "HTT", "VH", "ggH", "qqH", "qqH_VBFTOPO_JET3VETO", "qqH_VBFTOPO_JET3",
+            "qqH_REST", "qqH_PTJET1_GT200", "qqH_VH2JET", "ggH_0J",
+            "ggH_1J_PTH_0_60", "ggH_1J_PTH_60_120", "ggH_1J_PTH_120_200",
+            "ggH_1J_PTH_GT200", "ggH_GE2J_PTH_0_60", "ggH_GE2J_PTH_60_120",
+            "ggH_GE2J_PTH_120_200", "ggH_GE2J_PTH_GT200", "ggH_VBFTOPO_JET3VETO",
+            "ggH_VBFTOPO_JET3"
+        ]
+    else:
+        signal_nicks = ["ggH", "qqH"]
 
     # yapf: enable
     if "et" in [args.gof_channel] + args.channels:
