@@ -41,6 +41,10 @@ def make_cmap(colors, position):
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Produce confusion matrice")
     parser.add_argument(
+        "era",
+        type=str,
+        help="Experiment era.")
+    parser.add_argument(
         "taylor_ranking",
         type=str,
         help=
@@ -92,7 +96,7 @@ def main(args):
     # Search for gof results in directory
     gof_variables = []
     for v in variables:
-        dir_name = "{}_{}".format(args.channel, v)
+        dir_name = "{}_{}_{}".format(args.era, args.channel, v)
         path = os.path.join(args.gof_results, dir_name)
         if not os.path.exists(path):
             logger.warning(
@@ -118,10 +122,10 @@ def main(args):
             gof_variable_pairs.append(np.nan)
             continue
 
-        path_1 = os.path.join(args.gof_results, "{}_{}".format(
-            args.channel, "_".join(v)))
-        path_2 = os.path.join(args.gof_results, "{}_{}".format(
-            args.channel, "_".join(reversed(v))))
+        path_1 = os.path.join(args.gof_results, "{}_{}_{}".format(
+            args.era, args.channel, "_".join(v)))
+        path_2 = os.path.join(args.gof_results, "{}_{}_{}".format(
+            args.era, args.channel, "_".join(reversed(v))))
         if not (os.path.exists(path_1) or os.path.exists(path_2)):
             logger.warning(
                 "Failed to find goodness of fit directory for channel {} and variable pair {}.".

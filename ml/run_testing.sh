@@ -56,6 +56,7 @@ fi
 if [ -n "$TEST_PLOT_COMBINED_GOF_TAYLOR" ]; then
     for IFOLD in 0 1; do
         python ml/plot_combined_taylor_gof.py \
+            ${ERA} \
             ml/${ERA}_${CHANNEL}/fold${IFOLD}_keras_taylor_ranking.yaml \
             /path/to/gof/result/dir/ \
             ${CHANNEL} \
