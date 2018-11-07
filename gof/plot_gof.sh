@@ -3,8 +3,8 @@
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
 
-OUTPUTS=$1
-ERA=$2
+ERA=$1
+OUTPUTS=$2
 VARIABLES=gof/variables.yaml
 
 for CHANNEL in et mt tt

@@ -13,6 +13,8 @@ def parse_arguments():
         "output", type=str, help="Output path")
     parser.add_argument(
         "binning", type=str, help="Binning config.")
+    parser.add_argument(
+        "variables", type=str, help="Variables config.")
     return parser.parse_args()
 
 
@@ -27,10 +29,24 @@ def main(args):
 
     # Build list of arguments
     arguments = []
-    config = yaml.load(open(args.binning))
-    for channel in config["gof"]:
-        for variable in config["gof"][channel]:
+    binning = yaml.load(open(args.binning))
+    variables = yaml.load(open(args.variables))
+
+    # 1D fits
+    for channel in binning["gof"]:
+        for variable in variables["variables"]:
             arguments.append("{} {} {}".format(args.era, channel, variable))
+
+    # 2D fits
+    for channel in binning["gof"]:
+        selected_2d_fits = []
+        for var1 in variables["selected_variables"][int(args.era)][channel]:
+            for var2 in variables["selected_variables"][int(args.era)][channel]:
+                selected_2d_fits.append("{}_{}".format(var1, var2))
+        for variable in selected_2d_fits:
+            if variable in binning["gof"][channel]:
+                arguments.append("{} {} {}".format(args.era, channel, variable))
+
     jobs.arguments = arguments
 
     # The job requires lots of CPU resources

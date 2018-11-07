@@ -169,13 +169,11 @@ def main(args):
 
     plot_2d(variables, results_2d, "{}_{}_gof_2d.png".format(args.era, args.channel))
 
-    # Apply selection criterica
-    variables_selected = []
-    logger.info("Find well described variables for channel %s:", args.channel)
+    # Plot results for selected variables
+    variables_selected = yaml.load(open(args.variables))["selected_variables"][int(args.era)][args.channel]
+    logger.info("Use well described variables for channel %s:", args.channel)
     for i, v in enumerate(variables):
-        if results_1d[i] > 0.05:
-            variables_selected.append(v)
-            print("- {}".format(v))
+        print("- {}".format(v))
 
     # Plot 1D gof results for reduced variable set
     results_1d_selected = [
