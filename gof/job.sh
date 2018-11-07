@@ -13,10 +13,10 @@ echo "Channel:" $CHANNEL
 VARIABLE=$3
 echo "Variable:" $VARIABLE
 
-OUTPUT_DIR=/ceph/wunsch/jobs_gof/${ERA}_${CHANNEL}_${VARIABLE}
+OUTPUT_DIR=/ceph/wunsch/jobs_gof_2016_2018-11-07/${ERA}_${CHANNEL}_${VARIABLE}
 echo "Output directory:" $OUTPUT_DIR
 
-BASE_PATH=/portal/ekpbms2/home/wunsch/workspace/sm-htt-analysis
+BASE_PATH=/portal/ekpbms2/home/wunsch/workspace/sm-htt-analysis-gof
 echo "Base repository path:" $BASE_PATH
 
 echo "Hostname:" `hostname`
