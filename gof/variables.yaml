@@ -35,7 +35,7 @@ variables:
   - mt_2
   - ptvis
   - pt_tt
-  - pt_ttjj
+# - pt_ttjj
   - mjj
   - jdeta
 # - H_pt
@@ -46,13 +46,13 @@ variables:
   - m_vis
   - dijetphi
   - dijetpt
-  - m_2
+# - m_2
   - met
-  - metcov00
-  - metcov11
+# - metcov00
+# - metcov11
   - metphi
 # - diLepMass
-  - d0_1
-  - d0_2
-  - dZ_1
-  - dZ_2
+# - d0_1
+# - d0_2
+# - dZ_1
+# - dZ_2
