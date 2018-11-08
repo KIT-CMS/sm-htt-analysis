@@ -813,6 +813,37 @@ def main(args):
                     channel=tt,
                     era=era)
     # Embedded event specifics
+    
+    
+    # Tau energy scale
+    tau_es_3prong_variations = create_systematic_variations(
+        "CMS_scale_emb_t_3prong_13TeV", "tauEsThreeProng", DifferentPipeline)
+    tau_es_1prong_variations = create_systematic_variations(
+        "CMS_scale_emb_t_1prong_13TeV", "tauEsOneProng", DifferentPipeline)
+    tau_es_1prong1pizero_variations = create_systematic_variations(
+        "CMS_scale_emb_t_1prong1pizero_13TeV", "tauEsOneProngPiZeros",
+        DifferentPipeline)
+    for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
+        for process_nick in ["EMB"]:
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+            if "tt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
+                    
     mt_decayMode_variations = []
     mt_decayMode_variations.append(
         ReplaceWeight(
