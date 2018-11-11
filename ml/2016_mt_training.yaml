@@ -35,35 +35,37 @@ global_weight_scale: 1.0
 event_weights: training_weight
 
 # Define list of variables to be used for training
+# NOTE: Outcommented lines passing the GoF test but are rejected due
+# to minor sensitivity
 variables:
+    - pt_1
     - pt_2
-    - iso_1
+#   - phi_2
     - jpt_1
     - jpt_2
-    - jeta_1
-    - jeta_2
-    - jphi_1
-    - jphi_2
-    - jcsv_2
+#   - jeta_1
+#   - jeta_2
+#   - jphi_1
+#   - jphi_2
     - jm_1
     - jm_2
+#   - jmva_2
     - bpt_1
     - bpt_2
-    - beta_1
-    - beta_2
-    - bphi_1
-    - bphi_2
+#   - beta_1
+#   - beta_2
+#   - bphi_1
+#   - bphi_2
     - bcsv_1
-    - bcsv_2
+#   - bcsv_2
     - njets
-    - nbtag
-    - ptvis
+#   - nbtag
     - m_sv
+    - ptvis
     - pt_tt
-    - pt_ttjj
     - mjj
     - m_vis
-    - dijetphi
+#   - dijetphi
     - dijetpt
     - met
 
