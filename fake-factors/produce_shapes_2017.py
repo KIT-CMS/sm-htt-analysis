@@ -119,7 +119,7 @@ def main(args):
 
     mt = MTSM2017()
     mt.cuts.remove("tau_iso")
-    mt.cuts.add(Cut("(byTightIsolationMVArun2v1DBoldDMwLT_2<0.5&&byVLooseIsolationMVArun2v1DBoldDMwLT_2>0.5)", "tau_anti_iso"))
+    mt.cuts.add(Cut("(byTightIsolationMVArun2017v2DBoldDMwLT2017_2<0.5&&byVLooseIsolationMVArun2017v2DBoldDMwLT2017_2>0.5)", "tau_anti_iso"))
     mt_processes = {
         "data"  : Process("data_obs", DataEstimation      (era, directory, mt, friend_directory=mt_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
@@ -136,7 +136,7 @@ def main(args):
 
     et = ETSM2017()
     et.cuts.remove("tau_iso")
-    et.cuts.add(Cut("(byTightIsolationMVArun2v1DBoldDMwLT_2<0.5&&byVLooseIsolationMVArun2v1DBoldDMwLT_2>0.5)", "tau_anti_iso"))
+    et.cuts.add(Cut("(byTightIsolationMVArun2017v2DBoldDMwLT2017_2<0.5&&byVLooseIsolationMVArun2017v2DBoldDMwLT2017_2>0.5)", "tau_anti_iso"))
     et_processes = {
         "data"  : Process("data_obs", DataEstimation      (era, directory, et, friend_directory=et_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, et, friend_directory=et_friend_directory)),
@@ -154,7 +154,7 @@ def main(args):
     #in tt two 'channels' are needed: antiisolated region for each tau respectively
     tt1 = TTSM2017()
     tt1.cuts.remove("tau_1_iso")
-    tt1.cuts.add(Cut("(byTightIsolationMVArun2v1DBoldDMwLT_1<0.5&&byVLooseIsolationMVArun2v1DBoldDMwLT_1>0.5)", "tau_1_anti_iso"))
+    tt1.cuts.add(Cut("(byTightIsolationMVArun2017v2DBoldDMwLT2017_1<0.5&&byVLooseIsolationMVArun2017v2DBoldDMwLT2017_1>0.5)", "tau_1_anti_iso"))
     tt1_processes = {
         "data"  : Process("data_obs", DataEstimation	  (era, directory, tt1, friend_directory=tt_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation	  (era, directory, tt1, friend_directory=tt_friend_directory)),
@@ -170,7 +170,7 @@ def main(args):
         }
     tt2 = TTSM2017()
     tt2.cuts.remove("tau_2_iso")
-    tt2.cuts.add(Cut("(byTightIsolationMVArun2v1DBoldDMwLT_2<0.5&&byVLooseIsolationMVArun2v1DBoldDMwLT_2>0.5)", "tau_2_anti_iso"))
+    tt2.cuts.add(Cut("(byTightIsolationMVArun2017v2DBoldDMwLT2017_2<0.5&&byVLooseIsolationMVArun2017v2DBoldDMwLT2017_2>0.5)", "tau_2_anti_iso"))
     tt2_processes = {
         "data"  : Process("data_obs", DataEstimation      (era, directory, tt2, friend_directory=tt_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, tt2, friend_directory=tt_friend_directory)),
