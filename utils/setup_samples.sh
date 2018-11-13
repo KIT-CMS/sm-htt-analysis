@@ -3,12 +3,12 @@
 ERA=$1
 
 # Samples Run2016
-ARTUS_OUTPUTS_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-08-21/merged
-ARTUS_FRIENDS_ET_2016=/ceph/wunsch/Artus_2018-08-21/et_keras_3
-ARTUS_FRIENDS_MT_2016=/ceph/wunsch/Artus_2018-08-21/mt_keras_3
-ARTUS_FRIENDS_TT_2016=/ceph/wunsch/Artus_2018-08-21/tt_keras_3
-ARTUS_FRIENDS_FAKE_FACTOR_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-08-21/fake_factor_friends_njets_mvis
-ARTUS_FRIENDS_FAKE_FACTOR_INCL_2016=/storage/c/swozniewski/SM_Htautau/ntuples/Artus_2018-08-21/fake_factor_friends_njets_mvis_incl
+ARTUS_OUTPUTS_2016=/ceph/wunsch/Artus_2018-08-21/merged
+ARTUS_FRIENDS_ET_2016=/ceph/wunsch/Artus_2018-08-21/et_keras_11
+ARTUS_FRIENDS_MT_2016=/ceph/wunsch/Artus_2018-08-21/mt_keras_11
+ARTUS_FRIENDS_TT_2016=/ceph/wunsch/Artus_2018-08-21/tt_keras_11
+ARTUS_FRIENDS_FAKE_FACTOR_2016=/ceph/wunsch/Artus_2018-08-21/fake_factor_friends_njets_mvis
+ARTUS_FRIENDS_FAKE_FACTOR_INCL_2016=/ceph/wunsch/Artus_2018-08-21/fake_factor_friends_njets_mvis_incl
 
 # Samples Run2017
 ARTUS_OUTPUTS_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_2018-10-01/merged
