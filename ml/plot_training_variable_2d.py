@@ -37,7 +37,7 @@ def parse_arguments():
 
 def main(args):
     # Open file
-    path_dataset = "ml/{}_{}/fold0_training_dataset.root".format(args.era, args.channel)
+    path_dataset = "ml/{}_{}/combined_training_dataset.root".format(args.era, args.channel)
     if not os.path.exists(path_dataset):
         logger.fatal("Failed to open {}.".format(path_dataset))
         raise Exception
@@ -94,8 +94,8 @@ def main(args):
             bkg_weight += weights[process]
 
     # Calculate plotting ranges with percentiles of the signal value ranges
-    range_var1 = np.percentile(sig_var1, [5, 95])
-    range_var2 = np.percentile(sig_var2, [5, 95])
+    range_var1 = np.percentile(sig_var1+bkg_var1, [5, 95])
+    range_var2 = np.percentile(sig_var2+bkg_var2, [5, 95])
 
     # Plot
     plt.figure(figsize=(7,7))
