@@ -53,6 +53,12 @@ def main(args):
             backgrounds.append(name)
     logger.info("Selected background processes: {}".format(backgrounds))
 
+    # Load class weights
+    path_config = "ml/{}_{}_training.yaml".format(args.era, args.channel)
+    logger.info("Load training config: {}".format(path_config))
+    config = yaml.load(open(path_config))
+    class_weights = config["class_weights"]
+
     # Fill lists with variables
     logger.info("Aggregate values and weights for variables {} and {}.".format(args.var1, args.var2))
     values_var1 = {}
@@ -67,7 +73,7 @@ def main(args):
         for event in f.Get(process):
             v1 = getattr(event, args.var1)
             v2 = getattr(event, args.var2)
-            w = getattr(event, args.weight_branch)
+            w = getattr(event, args.weight_branch)*class_weights[process]
             if v1 in vetoed_values:
                 continue
             if v2 in vetoed_values:
@@ -96,13 +102,15 @@ def main(args):
     # Calculate plotting ranges with percentiles of the signal value ranges
     range_var1 = np.percentile(sig_var1+bkg_var1, [5, 95])
     range_var2 = np.percentile(sig_var2+bkg_var2, [5, 95])
+    #range_var1[1] = 50
+    #range_var2[1] = 50
 
     # Plot
     plt.figure(figsize=(7,7))
     plt.xlabel(args.var1)
     plt.ylabel(args.var2)
     range_ = ((range_var1[0], range_var1[-1]), (range_var2[0], range_var2[-1]))
-    for var1, var2, weights, cmap in zip([bkg_var1, sig_var1], [bkg_var2, sig_var2], [bkg_weight, sig_weight], [plt.cm.Blues, plt.cm.Reds]):
+    for var1, var2, weights, cmap, label, color in zip([bkg_var1, sig_var1], [bkg_var2, sig_var2], [bkg_weight, sig_weight], [plt.cm.Blues, plt.cm.Reds], ["All other classes", args.target_process], ["blue", "red"]):
         counts, xbins, ybins, image = plt.hist2d(
             var1,
             var2,
@@ -121,6 +129,10 @@ def main(args):
            linewidths=3,
            cmap=cmap,
            alpha=0.8)
+        plt.plot([-999], [-999], color=color, label=label, lw=3)
+    ax = plt.gca()
+    handles, labels = ax.get_legend_handles_labels()
+    ax.legend(reversed(handles), reversed(labels))
     plt.savefig("plot_training_variable_{}_{}_{}_{}_{}.png".format(args.era, args.channel, args.target_process, args.var1, args.var2), bbox_inches="tight")
 
     # Clean-up
