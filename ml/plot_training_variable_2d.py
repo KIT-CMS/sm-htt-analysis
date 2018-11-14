@@ -110,7 +110,7 @@ def main(args):
     plt.xlabel(args.var1)
     plt.ylabel(args.var2)
     range_ = ((range_var1[0], range_var1[-1]), (range_var2[0], range_var2[-1]))
-    for var1, var2, weights, cmap, label, color in zip([bkg_var1, sig_var1], [bkg_var2, sig_var2], [bkg_weight, sig_weight], [plt.cm.Blues, plt.cm.Reds], ["All other classes", args.target_process], ["blue", "red"]):
+    for var1, var2, weights, cmap, label, color in zip([bkg_var1, sig_var1], [bkg_var2, sig_var2], [bkg_weight, sig_weight], [plt.cm.Blues, plt.cm.Reds], ["Other classes", args.target_process], ["blue", "red"]):
         counts, xbins, ybins, image = plt.hist2d(
             var1,
             var2,
@@ -128,7 +128,7 @@ def main(args):
            ybins.max()],
            linewidths=3,
            cmap=cmap,
-           alpha=0.8)
+           alpha=1.0)
         plt.plot([-999], [-999], color=color, label=label, lw=3)
     ax = plt.gca()
     handles, labels = ax.get_legend_handles_labels()
