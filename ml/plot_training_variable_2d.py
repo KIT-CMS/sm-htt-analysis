@@ -130,9 +130,11 @@ def main(args):
            cmap=cmap,
            alpha=1.0)
         plt.plot([-999], [-999], color=color, label=label, lw=3)
+    """
     ax = plt.gca()
     handles, labels = ax.get_legend_handles_labels()
     ax.legend(reversed(handles), reversed(labels))
+    """
     plt.savefig("plot_training_variable_{}_{}_{}_{}_{}.png".format(args.era, args.channel, args.target_process, args.var1, args.var2), bbox_inches="tight")
 
     # Clean-up
