@@ -73,7 +73,7 @@ def main(args):
         for event in f.Get(process):
             v1 = getattr(event, args.var1)
             v2 = getattr(event, args.var2)
-            w = getattr(event, args.weight_branch)*class_weights[process]
+            w = getattr(event, args.weight_branch)#*class_weights[process]
             if v1 in vetoed_values:
                 continue
             if v2 in vetoed_values:
