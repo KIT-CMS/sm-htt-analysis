@@ -86,6 +86,15 @@ def parse_arguments():
         help="Number of threads to be used.")
     parser.add_argument(
         "--category-mode", type=str, help="Category mode. If 'inclusive' fake factors are calculated inclusively, otherwise depending on NN categories")
+    parser.add_argument(
+        "-w",
+        "--fractions-from-worspace",
+        action="store_true",
+        default=False,
+        help="Use fractions from workspace."
+    )
+    parser.add_argument(
+        "--workspace", type=str, help="Path to workspace for fractions if -w option is set")
     return parser.parse_args()
 
 
@@ -259,29 +268,44 @@ def apply_fake_factors(config):
                 getattr(event, "%s_max_index" % channel) +
                 (0.5 * len(categories[channel])
                  if channel == "tt" and x == 2 else 0.0))
-            cat_fractions = fractions[channel][categories[channel][cat_index]]
-            varvalue = 0.0
-            if args.config=="njets_mvis":
-                varvalue = 300.0*min(event.njets, 2.0) + min(290.0, event.m_vis)
+            qcd_fraction = 0.0
+            w_fraction = 0.0            
+            tt_fraction = 0.0
+            if args.fractions_from_worspace:
+                #TODO add NN categories
+                fractions.var("m_vis").setVal(event.m_vis)
+                fractions.var("njets").setVal(event.njets)
+                fractions.var("aiso").setVal(x)
+                qcd_fraction = fractions.function("%s_frac_qcd"%channel[0]).getVal()
+                w_fraction = fractions.function("%s_frac_w"%channel[0]).getVal()
+                tt_fraction = fractions.function("%s_frac_tt"%channel[0]).getVal()
             else:
-                varvalue = getattr(event, args.configdict[channel]["expression"])
-            bin_index = cat_fractions["data"].GetXaxis().FindBin(varvalue)
+                varvalue = 0.0
+                if args.config=="njets_mvis":
+                    varvalue = 300.0*min(event.njets, 2.0) + min(290.0, event.m_vis)
+                else:
+                    varvalue = getattr(event, args.configdict[channel]["expression"])
+                cat_fractions = fractions[channel][categories[channel][cat_index]]
+                bin_index = cat_fractions["data"].GetXaxis().FindBin(varvalue)
+                qcd_fraction = cat_fractions["QCD"].GetBinContent(bin_index)
+                w_fraction = cat_fractions["W"].GetBinContent(bin_index)
+                tt_fraction = cat_fractions["TT"].GetBinContent(bin_index)
             if channel == "tt":
                 inputs = [
                     getattr(event, "pt_%i" % x),
                     getattr(event, "pt_%i" % (3 - x)),
                     getattr(event, "decayMode_%i" % x), event.njets,
-                    event.m_vis, cat_fractions["QCD"].GetBinContent(bin_index),
-                    cat_fractions["W"].GetBinContent(bin_index),
-                    cat_fractions["TT"].GetBinContent(bin_index)
+                    event.m_vis, qcd_fraction,
+                    w_fraction,
+                    tt_fraction
                 ]
             else:
                 inputs = [
                     event.pt_2, event.decayMode_2, event.njets, event.m_vis,
                     event.mt_1, event.iso_1,
-                    cat_fractions["QCD"].GetBinContent(bin_index),
-                    cat_fractions["W"].GetBinContent(bin_index),
-                    cat_fractions["TT"].GetBinContent(bin_index)
+                    qcd_fraction,
+                    w_fraction,
+                    tt_fraction
                 ]
             output_buffer["nom_%i" % x][0] = ff.value(
                 len(inputs), array('d', inputs))
@@ -329,7 +353,13 @@ def main(args):
             "tt2_ggh", "tt2_qqh", "tt2_ztt", "tt2_noniso", "tt2_misc", "tt2_inclusive"
         ]
     }
-    fractions = determine_fractions(args, categories)
+    fractions = None
+    if args.fractions_from_worspace:
+        f = ROOT.TFile(args.workspace)
+        fractions = f.Get("w")
+        f.Close()
+    else:
+        fractions = determine_fractions(args, categories)
 
     #find paths to data files the fake factors are appended
     datafiles = []
