@@ -10,9 +10,9 @@ source utils/setup_samples.sh $ERA
 
 if [[ $ERA == *"2016"* ]]
 then
-    FF_database_ET=CMSSW_8_0_4/src/HTTutilities/Jet2TauFakes/data_2016/SM2016_ML/tight/et/fakeFactors_20180831_tight.root
-    FF_database_MT=CMSSW_8_0_4/src/HTTutilities/Jet2TauFakes/data_2016/SM2016_ML/tight/mt/fakeFactors_20180831_tight.root
-    FF_database_TT=CMSSW_8_0_4/src/HTTutilities/Jet2TauFakes/data_2016/SM2016_ML/tight/tt/fakeFactors_tt_inclusive.root
+    FF_database_ET=CMSSW_8_0_4/src/HTTutilities/Jet2TauFakes/data_2016/SM2016_ML/tight/et/fakeFactors_tight.root
+    FF_database_MT=CMSSW_8_0_4/src/HTTutilities/Jet2TauFakes/data_2016/SM2016_ML/tight/mt/fakeFactors_tight.root
+    FF_database_TT=CMSSW_8_0_4/src/HTTutilities/Jet2TauFakes/data_2016/SM2016_ML/tight/tt/fakeFactors_tight.root
 elif [[ $ERA == *"2017"* ]]
 then
     FF_database_ET=CMSSW_8_0_4/src/HTTutilities/Jet2TauFakes/data_2017/SM2017/tight/vloose/et/fakeFactors.root
