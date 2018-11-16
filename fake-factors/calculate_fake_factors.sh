@@ -21,7 +21,7 @@ then
     FF_database_MT=CMSSW_8_0_4/src/HTTutilities/Jet2TauFakes/data_2017/SM2017/tight/vloose/mt/fakeFactors.root
     FF_database_TT=CMSSW_8_0_4/src/HTTutilities/Jet2TauFakes/data_2017/SM2017/tight/vloose/tt/fakeFactors.root
     FF_workspce=""
-    USE_WORKSPACE=""
+    USE_WORKSPACE="dummy"
 fi
 
 python fake-factors/calculate_fake_factors.py --era $ERA \
