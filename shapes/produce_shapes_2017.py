@@ -564,6 +564,37 @@ def main(args):
                     channel=tt,
                     era=era)
 
+    # Recoil correction unc
+    recoil_resolution_variations = create_systematic_variations(
+        "CMS_htt_boson_reso_met_13TeV", "metRecoilResolution",
+        DifferentPipeline)
+    recoil_response_variations = create_systematic_variations(
+        "CMS_htt_boson_scale_met_13TeV", "metRecoilResponse",
+        DifferentPipeline)
+    for variation in recoil_resolution_variations + recoil_response_variations:
+        for process_nick in [
+                "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVT", "VVJ",
+                "VVL"
+        ] + signal_nicks:
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+            if "tt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
+
     # Z pt reweighting
     zpt_variations = create_systematic_variations(
         "CMS_htt_dyShape_13TeV", "zPtReweightWeight", SquareAndRemoveWeight)
