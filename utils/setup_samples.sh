@@ -8,7 +8,7 @@ ARTUS_FRIENDS_ET_2016=/ceph/wunsch/Artus16_Nov/et_keras_13
 ARTUS_FRIENDS_MT_2016=/ceph/wunsch/Artus16_Nov/mt_keras_13
 ARTUS_FRIENDS_TT_2016=/ceph/wunsch/Artus16_Nov/tt_keras_13
 ARTUS_FRIENDS_FAKE_FACTOR_2016=/ceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016/fake_factor_friends_njets_mvis
-ARTUS_FRIENDS_FAKE_FACTOR_INCL_2016=/ceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016/fake_factor_friends_njets_mvis_incl
+ARTUS_FRIENDS_FAKE_FACTOR_INCL_2016=/ceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016/fake_factor_friends_njets_mvis_EMB_incl
 
 # Samples Run2017
 ARTUS_OUTPUTS_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_2018-10-01/merged
