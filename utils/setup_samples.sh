@@ -41,4 +41,4 @@ else
 fi
 
 # Kappa database
-KAPPA_DATABASE=/storage/c/wunsch/kappa_database/datasets_2018-08-01.json
+KAPPA_DATABASE=/ceph/akhmet/kappa_database/datasets_2018_11_20.json
