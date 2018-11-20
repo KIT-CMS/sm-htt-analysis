@@ -47,7 +47,7 @@ def main(args):
         properties = [x for x in name.split("#") if not x == ""]
 
         # Get category name (and remove CHANNEL_ from category name)
-        category = properties[1].replace(properties[0] + "_", "")
+        category = properties[1].replace(properties[0] + "_", "", 1)
 
         # Get other properties
         channel = properties[0]
