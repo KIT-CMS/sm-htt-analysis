@@ -639,8 +639,7 @@ def main(args):
         DifferentPipeline)
     for variation in recoil_resolution_variations + recoil_response_variations:
         for process_nick in [
-                "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVL", "VVT", "VVJ"
-        ] + signal_nicks:
+                "ZTT", "ZL", "ZJ", "W"] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
