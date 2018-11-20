@@ -35,7 +35,6 @@ EMBEDDING=1
 # Run goodness of fit test
 ./gof/gof.sh $ERA
 
-# Plot prefit and postfit shapes
-./combine/signal_strength.sh $ERA "inclusive"
-./combine/prefit_postfit_shapes.sh $ERA
+# Plot prefit shapes
+./gof/prefit_postfit_shapes.sh $ERA
 ./gof/plot_shapes.sh $ERA $CHANNEL $VARIABLE $JETFAKES $EMBEDDING
