@@ -161,6 +161,7 @@ def main(args):
     plot_1d(variables, results_1d, "{}_{}_gof_1d.png".format(args.era, args.channel))
 
     # Plot 2D gof results
+    """
     missing_2d, results_2d = search_results_2d(args.path, args.channel, args.era,
                                                variables)
     logger.debug("Missing variables for 2D plot in channel %s:", args.channel)
@@ -168,6 +169,7 @@ def main(args):
         print("{} {} {}".format(args.era, args.channel, variable))
 
     plot_2d(variables, results_2d, "{}_{}_gof_2d.png".format(args.era, args.channel))
+    """
 
     # Plot results for selected variables
     variables_selected = yaml.load(open(args.variables))["selected_variables"][int(args.era)][args.channel]
@@ -190,6 +192,9 @@ def main(args):
     plot_2d(variables_selected, results_2d_selected,
             "{}_{}_gof_2d_selected.png".format(args.era, args.channel))
 
+    logger.debug("Missing variables for 2D plot in channel %s:", args.channel)
+    for variable in missing_2d_selected:
+        print("{} {} {}".format(args.era, args.channel, variable))
 
 if __name__ == "__main__":
     args = parse_arguments()
