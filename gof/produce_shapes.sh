@@ -35,3 +35,6 @@ python shapes/produce_shapes_$ERA.py \
     --era $ERA \
     --tag $ERA \
     --num-threads $NUM_THREADS
+
+# Normalize fake-factor shapes to nominal
+python fake-factors/normalize_shifts.py ${ERA}_shapes.root
