@@ -131,7 +131,7 @@ def get_1d_binning(channel, chain, variables, percentiles):
         binning[v]["bins"] = borders
         binning[v]["expression"] = v
         binning[v]["cut"] = "({VAR}>{MIN})&&({VAR}<{MAX})".format(
-            VAR=v, MIN=borders[0], MAX=borders[1])
+            VAR=v, MIN=borders[0], MAX=borders[-1])
         logger.debug("Binning for variable %s: %s", v, binning[v]["bins"])
 
     return binning
