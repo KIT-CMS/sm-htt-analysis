@@ -127,8 +127,8 @@ def get_1d_binning(channel, chain, variables, percentiles):
         binning[v] = {}
         borders = [float(x) for x in np.percentile(values[i], percentiles)]
         borders = list(set(borders)) # remove duplicates in bins for integer binning
-        borders[0] += -0.01 # epsilon offset for integer variables, does not effect the floating ones
-        borders[-1] += 0.01
+        borders = [b - 0.01 for b in borders] # epsilon offset for integer variables to make it more stable
+        borders[-1] += 0.02 # stretch last one to include the last border in case it is an integer
         binning[v]["bins"] = borders
         binning[v]["expression"] = v
         binning[v]["cut"] = "({VAR}>{MIN})&&({VAR}<{MAX})".format(
