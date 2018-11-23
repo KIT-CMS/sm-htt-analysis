@@ -126,7 +126,7 @@ def get_1d_binning(channel, chain, variables, percentiles):
     for i, v in enumerate(variables):
         binning[v] = {}
         borders = [float(x) for x in np.percentile(values[i], percentiles)]
-        borders = list(set(borders)) # remove duplicates in bins for integer binning
+        borders = sorted(list(set(borders))) # remove duplicates in bins for integer binning
         borders = [b - 0.01 for b in borders] # epsilon offset for integer variables to make it more stable
         borders[-1] += 0.02 # stretch last one to include the last border in case it is an integer
         binning[v]["bins"] = borders
