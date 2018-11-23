@@ -112,8 +112,7 @@ def build_chain(dict_):
     return chain_skimmed
 
 
-def get_1d_binning(channel, chain, variables, percentile_min, percentile_max,
-                   num_bins):
+def get_1d_binning(channel, chain, variables, percentiles):
     # Collect values
     values = [[] for v in variables]
     for event in chain:
@@ -126,15 +125,13 @@ def get_1d_binning(channel, chain, variables, percentile_min, percentile_max,
     binning = {}
     for i, v in enumerate(variables):
         binning[v] = {}
-        min_max = np.percentile(values[i], [percentile_min, percentile_max])
-        min_max[0] += -0.01 # epsilon offset for integer variables, does not effect the floating ones
-        min_max[1] += 0.01
-        binning[v]["bins"] = [
-            float(x) for x in np.linspace(min_max[0], min_max[1], num_bins)
-        ]
+        borders = [float(x) for x in np.percentile(values[i], percentiles)]
+        borders[0] += -0.01 # epsilon offset for integer variables, does not effect the floating ones
+        borders[-1] += 0.01
+        binning[v]["bins"] = borders
         binning[v]["expression"] = v
         binning[v]["cut"] = "({VAR}>{MIN})&&({VAR}<{MAX})".format(
-            VAR=v, MIN=min_max[0], MAX=min_max[1])
+            VAR=v, MIN=borders[0], MAX=borders[1])
         logger.debug("Binning for variable %s: %s", v, binning[v]["bins"])
 
     return binning
@@ -149,11 +146,8 @@ def add_2d_unrolled_binning(variables, binning):
             bins1 = binning[v1]["bins"]
             bins2 = binning[v2]["bins"]
             range_ = max(bins1) - min(bins1)
-            bins = np.linspace(
-                min(bins1),
-                min(bins1) + range_ * (len(bins2) - 1),
-                (len(bins1) - 1) * (len(bins2) - 1) + 1)
 
+            bins = [bins1[0]]
             expression = ""
             for b in range(len(bins2) - 1):
                 expression += "({OFFSET}+{VAR1})*({VAR2}>{MIN})*({VAR2}<={MAX})".format(
@@ -164,10 +158,12 @@ def add_2d_unrolled_binning(variables, binning):
                     OFFSET=b * range_)
                 if b != len(bins2) - 2:
                     expression += "+"
+                for c in range(len(bins1)-1):
+                    bins.append(b * range_ + bins1[c+1])
 
             name = "{}_{}".format(v1, v2)
             binning[name] = {}
-            binning[name]["bins"] = [float(x) for x in bins]
+            binning[name]["bins"] = bins
             binning[name]["expression"] = expression
             binning[name]["cut"] = "({VAR}>{MIN})&&({VAR}<{MAX})".format(
                 VAR=v1, MIN=bins1[0], MAX=bins1[-1])
@@ -192,9 +188,7 @@ def main(args):
 
     # Define bins and range of binning for variables in enabled channels
     channels = ["et", "mt", "tt"]
-    num_borders = 9
-    min_percentile = 1.0
-    max_percentile = 99.0
+    percentiles = [1.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 99.0]
 
     config = {"gof": {}}
 
@@ -218,8 +212,7 @@ def main(args):
         chain = build_chain(dict_)
 
         # Get percentiles and calculate 1d binning
-        binning = get_1d_binning("et", chain, variables, min_percentile,
-                                 max_percentile, num_borders)
+        binning = get_1d_binning("et", chain, variables, percentiles)
 
         # Add binning for unrolled 2d distributions
         binning = add_2d_unrolled_binning(variables, binning)
@@ -247,8 +240,7 @@ def main(args):
         chain = build_chain(dict_)
 
         # Get percentiles
-        binning = get_1d_binning("mt", chain, variables, min_percentile,
-                                 max_percentile, num_borders)
+        binning = get_1d_binning("mt", chain, variables, percentiles)
 
         # Add binning for unrolled 2d distributions
         binning = add_2d_unrolled_binning(variables, binning)
@@ -276,8 +268,7 @@ def main(args):
         chain = build_chain(dict_)
 
         # Get percentiles
-        binning = get_1d_binning("tt", chain, variables, min_percentile,
-                                 max_percentile, num_borders)
+        binning = get_1d_binning("tt", chain, variables, percentiles)
 
         # Add binning for unrolled 2d distributions
         binning = add_2d_unrolled_binning(variables, binning)
