@@ -465,7 +465,7 @@ def main(args):
     tau_es_3prong_variations = create_systematic_variations(
         "CMS_scale_mc_t_3prong_13TeV", "tauEsThreeProng", DifferentPipeline)
     tau_es_1prong_variations = create_systematic_variations(
-        "CMS_scale_mc_ t_1prong_13TeV", "tauEsOneProng", DifferentPipeline)
+        "CMS_scale_mc_t_1prong_13TeV", "tauEsOneProng", DifferentPipeline)
     tau_es_1prong1pizero_variations = create_systematic_variations(
         "CMS_scale_mc_t_1prong1pizero_13TeV", "tauEsOneProngOnePiZero",
         DifferentPipeline)
