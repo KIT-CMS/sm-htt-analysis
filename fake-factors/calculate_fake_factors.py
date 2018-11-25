@@ -110,21 +110,21 @@ def determine_fractions(args, categories):
             "W": ["W", "VVJ", "ZJ"],
             "TT": ["TTJ"],
             "QCD": ["QCD"],
-            "real": ["ZTT", "ZL", "TTT", "TTL", "VVT", "VVL"]
+            "real": ["EMB", "ZL", "TTL", "VVL"] #["ZTT", "ZL", "TTT", "TTL", "VVT", "VVL"]
         },
         "et": {
             "data": ["data_obs"],
             "W": ["W", "VVJ", "ZJ"],
             "TT": ["TTJ"],
             "QCD": ["QCD"],
-            "real": ["ZTT", "ZL", "TTT", "TTL", "VVT", "VVL"]
+            "real": ["EMB", "ZL", "TTL", "VVL"] #["ZTT", "ZL", "TTT", "TTL", "VVT", "VVL"]
         },
         "tt": {
             "data": ["data_obs"],
             "W": ["W", "VVJ", "ZJ"],
             "TT": ["TTJ"],
             "QCD": ["QCD"],
-            "real": ["ZTT", "ZL", "TTT", "TTL", "VVT", "VVL"]
+            "real": ["EMB", "ZL", "TTL", "VVL"] #["ZTT", "ZL", "TTT", "TTL", "VVT", "VVL"]
         }
     }
     fractions = {}
@@ -272,7 +272,7 @@ def apply_fake_factors(config):
             w_fraction = 0.0            
             tt_fraction = 0.0
             if args.fractions_from_worspace:
-                #TODO add NN categories
+                fractions.var("cat").setVal(-1 if args.category_mode=="inclusive" else getattr(event, "%s_max_index" % channel))
                 fractions.var("m_vis").setVal(event.m_vis)
                 fractions.var("njets").setVal(event.njets)
                 fractions.var("aiso").setVal(x)
@@ -355,6 +355,7 @@ def main(args):
     }
     fractions = None
     if args.fractions_from_worspace:
+        logger.info("Loading workspace from %s"%args.workspace)
         f = ROOT.TFile(args.workspace)
         fractions = f.Get("w")
         f.Close()
