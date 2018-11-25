@@ -29,14 +29,17 @@ CHANNELS=${@:2}      # options: et, mt, tt
 # Write datacard
 STXS_SIGNALS="stxs_stage0"  # options: stxs_stage0, stxs_stage1
 CATEGORIES="stxs_stage1"    # options: stxs_stage0, stxs_stage1
-STXS_FIT="inclusive"        # options: stxs_stage0, stxs_stage1, inclusive
 JETFAKES=1                  # options: 0, 1
 EMBEDDING=1                 # options: 0, 1
-./datacards/produce_datacard.sh $ERA $STXS_SIGNALS $CATEGORIES $STXS_FIT $JETFAKES $EMBEDDING $CHANNELS
+./datacards/produce_datacard.sh $ERA $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING $CHANNELS
+
+# Build workspace
+STXS_FIT="inclusive"        # options: stxs_stage0, stxs_stage1, inclusive
+./datacards/produce_workspace.sh $STXS_FIT $ERA | tee ${ERA}_produce_workspace_${STXS_FIT}.log
 
 # Run statistical inference
 #./combine/significance.sh $ERA | tee ${ERA}_significance.log
-./combine/signal_strength.sh $ERA $STXS_FIT | tee ${ERA}_signal_strength_${STXS_FIT}.log
+./combine/signal_strength.sh $STXS_FIT $ERA | tee ${ERA}_signal_strength_${STXS_FIT}.log
 ./combine/diff_nuisances.sh $ERA
 #./combine/nuisance_impacts.sh $ERA
 
