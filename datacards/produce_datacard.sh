@@ -28,7 +28,7 @@ fi
 USE_COMBINEHARVESTER=1
 if [ -n "$USE_COMBINEHARVESTER" ]; then
     # Remove output directory
-    rm -rf output/ ${ERA}_workspace.root
+    rm -rf output/${ERA}_output ${ERA}_workspace.root
 
     # Create datacards
     $CMSSW_BASE/bin/slc6_amd64_gcc491/MorphingSM2017 \
