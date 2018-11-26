@@ -29,9 +29,9 @@ def parse_arguments():
         description="Convert shapes from the shape producer to the sync format."
     )
 
-    parser.add_argument(
-        "input", type=str, help="Path to single input ROOT file.")
-    parser.add_argument("output", help="Path to output directory.")
+    parser.add_argument("era", type=str, help="Experiment era.")
+    parser.add_argument("input", type=str, help="Path to single input ROOT file.")
+    parser.add_argument("output", type=str, help="Path to output directory.")
     return parser.parse_args()
 
 
@@ -75,7 +75,7 @@ def main(args):
     for channel in hist_map:
         filename_output = os.path.join(
             args.output,
-            "htt_{CHANNEL}.inputs-sm-13TeV-ML.root").format(CHANNEL=channel)
+            "htt_{CHANNEL}.inputs-sm-Run{ERA}-ML.root").format(CHANNEL=channel, ERA=args.era)
         if not os.path.exists(args.output):
             os.mkdir(args.output)
         file_output = ROOT.TFile(filename_output, "RECREATE")
