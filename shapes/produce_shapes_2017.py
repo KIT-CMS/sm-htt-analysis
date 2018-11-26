@@ -474,7 +474,7 @@ def main(args):
         "CMS_scale_mc_t_1prong1pizero_Run2017", "tauEsOneProngOnePiZero",
         DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
-        for process_nick in ["ZTT", "TTT", "TTL", "VVL", "VVT"
+        for process_nick in ["ZTT", "TTT", "TTL", "VVL", "VVT", "FAKES"
                              ] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -504,7 +504,7 @@ def main(args):
         "CMS_scale_t_1prong1pizero_Run2017", "tauEsOneProngOnePiZero",
         DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
-        for process_nick in ["ZTT", "TTT", "TTL", "VVT", "VVL", "EMB"
+        for process_nick in ["ZTT", "TTT", "TTL", "VVT", "VVL", "EMB", "FAKES"
                              ] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -821,35 +821,7 @@ def main(args):
         "CMS_scale_emb_t_1prong1pizero_Run2017", "tauEsOneProngOnePiZero",
         DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
-        for process_nick in ["EMB"]:
-            if "et" in [args.gof_channel] + args.channels:
-                systematics.add_systematic_variation(
-                    variation=variation,
-                    process=et_processes[process_nick],
-                    channel=et,
-                    era=era)
-            if "mt" in [args.gof_channel] + args.channels:
-                systematics.add_systematic_variation(
-                    variation=variation,
-                    process=mt_processes[process_nick],
-                    channel=mt,
-                    era=era)
-            if "tt" in [args.gof_channel] + args.channels:
-                systematics.add_systematic_variation(
-                    variation=variation,
-                    process=tt_processes[process_nick],
-                    channel=tt,
-                    era=era)
-
-    tau_es_3prong_variations = create_systematic_variations(
-        "CMS_scale_emb_t_3prong_Run2017", "tauEsThreeProng", DifferentPipeline)
-    tau_es_1prong_variations = create_systematic_variations(
-        "CMS_scale_emb_t_1prong_Run2017", "tauEsOneProng", DifferentPipeline)
-    tau_es_1prong1pizero_variations = create_systematic_variations(
-        "CMS_scale_emb_t_1prong1pizero_Run2017", "tauEsOneProngOnePiZero",
-        DifferentPipeline)
-    for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
-        for process_nick in ["EMB"]:
+        for process_nick in ["EMB", "FAKES"]:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
