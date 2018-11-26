@@ -1,13 +1,7 @@
 #!/bin/bash
 
-ERAS=${@:1}
-
-TAG=""
-for ERA in ${ERAS}
-do
-    TAG="${TAG}${ERA}_"
-done
+ERA=$1
 
 source utils/setup_cmssw.sh
 
-python $CMSSW_BASE/src/HiggsAnalysis/CombinedLimit/test/diffNuisances.py -a -f html mlfit${TAG}.root > ${TAG}diff_nuisances.html
+python $CMSSW_BASE/src/HiggsAnalysis/CombinedLimit/test/diffNuisances.py -a -f html mlfit${ERA}.root > ${ERA}_diff_nuisances.html
