@@ -1063,21 +1063,21 @@ def main(args):
             "ff_qcd{ch}_syst_13TeV{shift}",
             "ff_qcd_dm0_njet0{ch}_stat_13TeV{shift}",
             "ff_qcd_dm0_njet1{ch}_stat_13TeV{shift}",
-            "ff_qcd_dm1_njet0{ch}_stat_13TeV{shift}",
-            "ff_qcd_dm1_njet1{ch}_stat_13TeV{shift}", "ff_w_syst_13TeV{shift}",
+            #"ff_qcd_dm1_njet0{ch}_stat_13TeV{shift}",
+            #"ff_qcd_dm1_njet1{ch}_stat_13TeV{shift}", "ff_w_syst_13TeV{shift}",
             "ff_w_dm0_njet0{ch}_stat_13TeV{shift}",
             "ff_w_dm0_njet1{ch}_stat_13TeV{shift}",
-            "ff_w_dm1_njet0{ch}_stat_13TeV{shift}",
-            "ff_w_dm1_njet1{ch}_stat_13TeV{shift}", "ff_tt_syst_13TeV{shift}",
+            #"ff_w_dm1_njet0{ch}_stat_13TeV{shift}",
+            #"ff_w_dm1_njet1{ch}_stat_13TeV{shift}", "ff_tt_syst_13TeV{shift}",
             "ff_tt_dm0_njet0_stat_13TeV{shift}",
             "ff_tt_dm0_njet1_stat_13TeV{shift}",
-            "ff_tt_dm1_njet0_stat_13TeV{shift}",
-            "ff_tt_dm1_njet1_stat_13TeV{shift}"
+            #"ff_tt_dm1_njet0_stat_13TeV{shift}",
+            #"ff_tt_dm1_njet1_stat_13TeV{shift}"
     ]:
         for shift_direction in ["Up", "Down"]:
             fake_factor_variations_et.append(
                 ReplaceWeight(
-                    "CMS_%s" % (systematic_shift.format(ch='_et', shift="")),
+                    "CMS_%s" % (systematic_shift.format(ch='_et', shift="").replace("_dm0", "")),
                     "fake_factor",
                     Weight(
                         "ff2_{syst}".format(
@@ -1087,7 +1087,7 @@ def main(args):
                         "fake_factor"), shift_direction))
             fake_factor_variations_mt.append(
                 ReplaceWeight(
-                    "CMS_%s" % (systematic_shift.format(ch='_mt', shift="")),
+                    "CMS_%s" % (systematic_shift.format(ch='_mt', shift="").replace("_dm0", "")),
                     "fake_factor",
                     Weight(
                         "ff2_{syst}".format(
@@ -1114,8 +1114,8 @@ def main(args):
             "ff_qcd{ch}_syst_13TeV{shift}",
             "ff_qcd_dm0_njet0{ch}_stat_13TeV{shift}",
             "ff_qcd_dm0_njet1{ch}_stat_13TeV{shift}",
-            "ff_qcd_dm1_njet0{ch}_stat_13TeV{shift}",
-            "ff_qcd_dm1_njet1{ch}_stat_13TeV{shift}",
+            #"ff_qcd_dm1_njet0{ch}_stat_13TeV{shift}",
+            #"ff_qcd_dm1_njet1{ch}_stat_13TeV{shift}",
             "ff_w{ch}_syst_13TeV{shift}", "ff_tt{ch}_syst_13TeV{shift}",
             "ff_w_frac{ch}_syst_13TeV{shift}",
             "ff_tt_frac{ch}_syst_13TeV{shift}"
@@ -1123,10 +1123,10 @@ def main(args):
         for shift_direction in ["Up", "Down"]:
             fake_factor_variations_tt.append(
                 ReplaceWeight(
-                    "CMS_%s" % (systematic_shift.format(ch='_tt', shift="")),
+                    "CMS_%s" % (systematic_shift.format(ch='_tt', shift="").replace("_dm0", "")),
                     "fake_factor",
                     Weight(
-                        "(0.5*ff1_{syst}*(byTightIsolationMVArun2v1DBoldDMwLT_1<0.5)+0.5*ff2_{syst}*(byTightIsolationMVArun2v1DBoldDMwLT_2<0.5))".
+                        "(0.5*ff1_{syst}*(byTightIsolationMVArun2017v2DBoldDMwLT2017_1<0.5)+0.5*ff2_{syst}*(byTightIsolationMVArun2017v2DBoldDMwLT2017_2<0.5))".
                         format(
                             syst=systematic_shift.format(
                                 ch="", shift="_%s" % shift_direction.lower())

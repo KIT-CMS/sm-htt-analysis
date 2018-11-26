@@ -1116,7 +1116,7 @@ def main(args):
         for shift_direction in ["Up", "Down"]:
             fake_factor_variations_et.append(
                 ReplaceWeight(
-                    "CMS_%s" % (systematic_shift.format(ch='_et', shift="")),
+                    "CMS_%s" % (systematic_shift.format(ch='_et', shift="").replace("_dm0", "")),
                     "fake_factor",
                     Weight(
                         "ff2_{syst}".format(
@@ -1126,7 +1126,7 @@ def main(args):
                         "fake_factor"), shift_direction))
             fake_factor_variations_mt.append(
                 ReplaceWeight(
-                    "CMS_%s" % (systematic_shift.format(ch='_mt', shift="")),
+                    "CMS_%s" % (systematic_shift.format(ch='_mt', shift="").replace("_dm0", "")),
                     "fake_factor",
                     Weight(
                         "ff2_{syst}".format(
@@ -1162,7 +1162,7 @@ def main(args):
         for shift_direction in ["Up", "Down"]:
             fake_factor_variations_tt.append(
                 ReplaceWeight(
-                    "CMS_%s" % (systematic_shift.format(ch='_tt', shift="")),
+                    "CMS_%s" % (systematic_shift.format(ch='_tt', shift="").replace("_dm0", "")),
                     "fake_factor",
                     Weight(
                         "(0.5*ff1_{syst}*(byTightIsolationMVArun2v1DBoldDMwLT_1<0.5)+0.5*ff2_{syst}*(byTightIsolationMVArun2v1DBoldDMwLT_2<0.5))".
