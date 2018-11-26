@@ -15,8 +15,8 @@ ARTUS_OUTPUTS_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_Nov/merged
 ARTUS_FRIENDS_ET_2017=/ceph/wunsch/Artus17_2018-10-01/et_keras_5
 ARTUS_FRIENDS_MT_2017=/ceph/wunsch/Artus17_2018-10-01/mt_keras_5
 ARTUS_FRIENDS_TT_2017=/ceph/wunsch/Artus17_2018-10-01/tt_keras_5
-ARTUS_FRIENDS_FAKE_FACTOR_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_Nov/fake_factor_friends_njets_mvis_incl
-ARTUS_FRIENDS_FAKE_FACTOR_INCL_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_Nov/fake_factor_friends_njets_mvis_incl
+ARTUS_FRIENDS_FAKE_FACTOR_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_Nov/fake_factor_friends_njets_mvis_incl_NEW
+ARTUS_FRIENDS_FAKE_FACTOR_INCL_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_Nov/fake_factor_friends_njets_mvis_incl_NEW
 
 # Error-handling
 if [[ $ERA == *"2016"* ]]
