@@ -33,13 +33,19 @@ JETFAKES=1                  # options: 0, 1
 EMBEDDING=1                 # options: 0, 1
 ./datacards/produce_datacard.sh $ERA $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING $CHANNELS
 
+# Combine datacards
+# The following line combines datacards of different eras.
+# The era name "combined" is used for the resulting datacards and can be fitted using this
+# as ERA variable in the following.
+#./datacards/combine_datacards.sh 2016 2017
+
 # Build workspace
 STXS_FIT="inclusive"        # options: stxs_stage0, stxs_stage1, inclusive
-./datacards/produce_workspace.sh $STXS_FIT $ERA | tee ${ERA}_produce_workspace_${STXS_FIT}.log
+./datacards/produce_workspace.sh $ERA $STXS_FIT | tee ${ERA}_produce_workspace_${STXS_FIT}.log
 
 # Run statistical inference
 #./combine/significance.sh $ERA | tee ${ERA}_significance.log
-./combine/signal_strength.sh $STXS_FIT $ERA | tee ${ERA}_signal_strength_${STXS_FIT}.log
+./combine/signal_strength.sh $ERA $STXS_FIT | tee ${ERA}_signal_strength_${STXS_FIT}.log
 ./combine/diff_nuisances.sh $ERA
 #./combine/nuisance_impacts.sh $ERA
 
