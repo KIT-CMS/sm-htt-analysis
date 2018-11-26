@@ -138,7 +138,7 @@ def main(args):
             split_value = 101
 
     split_dict = {c: split_value for c in ["et", "mt", "tt"]}
-    
+
     bkg_processes = [
         "VVL", "TTL", "ZL", "jetFakes", "EMB"
     ]
@@ -159,14 +159,22 @@ def main(args):
     legend_bkg_processes.reverse()
 
     rootfile = rootfile_parser.Rootfile_parser(args.input)
-    
+
+    if "2016" in args.era:
+        era = "Run2016"
+    elif "2017" in args.era:
+        era = "Run2017"
+    else:
+        logger.critical("Era {} is not implemented.".format(args.era))
+        raise Exception
+
     plots = []
     for channel in args.channels:
         for category in channel_categories[channel]:
             if channel == "tt" and category=="2":
                     bkg_processes = [
                         b for b in all_bkg_processes if b not in ["TTL"]
-                    ]          
+                    ]
             else:
                 bkg_processes = [b for b in all_bkg_processes]
             legend_bkg_processes = copy.deepcopy(bkg_processes)
@@ -186,26 +194,26 @@ def main(args):
             # get background histograms
             for process in bkg_processes:
                 plot.add_hist(
-                    rootfile.get(channel, category, process), process, "bkg")
+                    rootfile.get(era, channel, category, process), process, "bkg")
                 plot.setGraphStyle(
                     process, "hist", fillcolor=styles.color_dict[process])
 
             # get signal histograms
             for i in range(2):
                 plot.subplot(i + 1).add_hist(
-                    rootfile.get(channel, category, "ggH"), "ggH")
+                    rootfile.get(era, channel, category, "ggH"), "ggH")
                 plot.subplot(i + 1).add_hist(
-                    rootfile.get(channel, category, "ggH"), "ggH_top")
+                    rootfile.get(era, channel, category, "ggH"), "ggH_top")
                 plot.subplot(i + 1).add_hist(
-                    rootfile.get(channel, category, "qqH"), "qqH")
+                    rootfile.get(era, channel, category, "qqH"), "qqH")
                 plot.subplot(i + 1).add_hist(
-                    rootfile.get(channel, category, "qqH"), "qqH_top")
+                    rootfile.get(era, channel, category, "qqH"), "qqH_top")
 
             # get observed data and total background histograms
             plot.add_hist(
-                rootfile.get(channel, category, "data_obs"), "data_obs")
+                rootfile.get(era, channel, category, "data_obs"), "data_obs")
             plot.add_hist(
-                rootfile.get(channel, category, "TotalBkg"), "total_bkg")
+                rootfile.get(era, channel, category, "TotalBkg"), "total_bkg")
 
             plot.subplot(0).setGraphStyle("data_obs", "e0")
             plot.subplot(1).setGraphStyle(
@@ -342,11 +350,11 @@ def main(args):
             if args.chi2test:
                 import ROOT as r
                 f = r.TFile(args.input, "read")
-                background = f.Get("htt_{}_{}_13TeV_{}/TotalBkg".format(
-                    channel, category, "prefit"
+                background = f.Get("htt_{}_{}_Run{}_{}/TotalBkg".format(
+                    channel, category, args.era, "prefit"
                     if "prefit" in args.input else "postfit"))
-                data = f.Get("htt_{}_{}_13TeV_{}/data_obs".format(
-                    channel, category, "prefit"
+                data = f.Get("htt_{}_{}_Run{}_{}/data_obs".format(
+                    channel, category, args.era, "prefit"
                     if "prefit" in args.input else "postfit"))
                 chi2 = data.Chi2Test(background, "UW CHI2/NDF")
                 plot.DrawText(0.7, 0.3,

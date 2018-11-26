@@ -52,4 +52,4 @@ STXS_FIT="inclusive"        # options: stxs_stage0, stxs_stage1, inclusive
 # Make prefit and postfit shapes
 ./combine/prefit_postfit_shapes.sh $ERA
 ./plotting/plot_shapes.sh $ERA $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING $CHANNELS
-./plotting/plot_signals.sh $ERA $STXS_SIGNALS $CATEGORIES $CHANNELS
+#./plotting/plot_signals.sh $ERA $STXS_SIGNALS $CATEGORIES $CHANNELS
