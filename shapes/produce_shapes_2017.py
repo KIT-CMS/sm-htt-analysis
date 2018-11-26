@@ -463,11 +463,11 @@ def main(args):
 
     # MC tau energy scale
     tau_es_3prong_variations = create_systematic_variations(
-        "CMS_scale_mc_t_3prong_13TeV", "tauEsThreeProng", DifferentPipeline)
+        "CMS_scale_mc_t_3prong_Run2017", "tauEsThreeProng", DifferentPipeline)
     tau_es_1prong_variations = create_systematic_variations(
-        "CMS_scale_mc_t_1prong_13TeV", "tauEsOneProng", DifferentPipeline)
+        "CMS_scale_mc_t_1prong_Run2017", "tauEsOneProng", DifferentPipeline)
     tau_es_1prong1pizero_variations = create_systematic_variations(
-        "CMS_scale_mc_t_1prong1pizero_13TeV", "tauEsOneProngOnePiZero",
+        "CMS_scale_mc_t_1prong1pizero_Run2017", "tauEsOneProngOnePiZero",
         DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
         for process_nick in ["ZTT", "TTT", "TTL", "VVL", "VVT"
@@ -493,11 +493,11 @@ def main(args):
 
     # Tau energy scale
     tau_es_3prong_variations = create_systematic_variations(
-        "CMS_scale_t_3prong_13TeV", "tauEsThreeProng", DifferentPipeline)
+        "CMS_scale_t_3prong_Run2017", "tauEsThreeProng", DifferentPipeline)
     tau_es_1prong_variations = create_systematic_variations(
-        "CMS_scale_t_1prong_13TeV", "tauEsOneProng", DifferentPipeline)
+        "CMS_scale_t_1prong_Run2017", "tauEsOneProng", DifferentPipeline)
     tau_es_1prong1pizero_variations = create_systematic_variations(
-        "CMS_scale_t_1prong1pizero_13TeV", "tauEsOneProngOnePiZero",
+        "CMS_scale_t_1prong1pizero_Run2017", "tauEsOneProngOnePiZero",
         DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
         for process_nick in ["ZTT", "TTT", "TTL", "VVT", "VVL", "EMB"
@@ -526,20 +526,20 @@ def main(args):
     # Inclusive JES shapes
     jet_es_variations = []
     '''jet_es_variations += create_systematic_variations(
-        "CMS_scale_j_13TeV", "jecUnc", DifferentPipeline)'''
+        "CMS_scale_j_Run2017", "jecUnc", DifferentPipeline)'''
 
     # Splitted JES shapes
     jet_es_variations += create_systematic_variations(
-        "CMS_scale_j_eta0to3_13TeV", "jecUncEta0to3", DifferentPipeline)
+        "CMS_scale_j_eta0to3_Run2017", "jecUncEta0to3", DifferentPipeline)
     jet_es_variations += create_systematic_variations(
-        "CMS_scale_j_eta0to5_13TeV", "jecUncEta0to5", DifferentPipeline)
+        "CMS_scale_j_eta0to5_Run2017", "jecUncEta0to5", DifferentPipeline)
     jet_es_variations += create_systematic_variations(
-        "CMS_scale_j_eta3to5_13TeV", "jecUncEta3to5", DifferentPipeline)
+        "CMS_scale_j_eta3to5_Run2017", "jecUncEta3to5", DifferentPipeline)
     jet_es_variations += create_systematic_variations(
-        "CMS_scale_j_RelativeBal_13TeV", "jecUncRelativeBal",
+        "CMS_scale_j_RelativeBal_Run2017", "jecUncRelativeBal",
         DifferentPipeline)
     jet_es_variations += create_systematic_variations(
-        "CMS_scale_j_RelativeSample_13TeV", "jecUncRelativeSample",
+        "CMS_scale_j_RelativeSample_Run2017", "jecUncRelativeSample",
         DifferentPipeline)
 
     for variation in jet_es_variations:
@@ -568,7 +568,7 @@ def main(args):
 
     # MET energy scale
     met_unclustered_variations = create_systematic_variations(
-        "CMS_scale_met_unclustered_13TeV", "metUnclusteredEn",
+        "CMS_scale_met_unclustered_Run2017", "metUnclusteredEn",
         DifferentPipeline)
     for variation in met_unclustered_variations:  # + met_clustered_variations:
         for process_nick in [
@@ -596,10 +596,10 @@ def main(args):
 
     # Recoil correction unc
     recoil_resolution_variations = create_systematic_variations(
-        "CMS_htt_boson_reso_met_13TeV", "metRecoilResolution",
+        "CMS_htt_boson_reso_met_Run2017", "metRecoilResolution",
         DifferentPipeline)
     recoil_response_variations = create_systematic_variations(
-        "CMS_htt_boson_scale_met_13TeV", "metRecoilResponse",
+        "CMS_htt_boson_scale_met_Run2017", "metRecoilResponse",
         DifferentPipeline)
     for variation in recoil_resolution_variations + recoil_response_variations:
         for process_nick in [
@@ -625,7 +625,7 @@ def main(args):
 
     # Z pt reweighting
     zpt_variations = create_systematic_variations(
-        "CMS_htt_dyShape_13TeV", "zPtReweightWeight", SquareAndRemoveWeight)
+        "CMS_htt_dyShape_Run2017", "zPtReweightWeight", SquareAndRemoveWeight)
     for variation in zpt_variations:
         for process_nick in ["ZTT", "ZL", "ZJ"]:
             if "et" in [args.gof_channel] + args.channels:
@@ -649,7 +649,7 @@ def main(args):
 
     # top pt reweighting
     top_pt_variations = create_systematic_variations(
-        "CMS_htt_ttbarShape_13TeV", "topPtReweightWeight",
+        "CMS_htt_ttbarShape_Run2017", "topPtReweightWeight",
         SquareAndRemoveWeight)
     for variation in top_pt_variations:
         for process_nick in ["TTT", "TTL", "TTJ"]:
@@ -675,10 +675,10 @@ def main(args):
     # jet to tau fake efficiency
     jet_to_tau_fake_variations = []
     jet_to_tau_fake_variations.append(
-        AddWeight("CMS_htt_jetToTauFake_13TeV", "jetToTauFake_weight",
+        AddWeight("CMS_htt_jetToTauFake_Run2017", "jetToTauFake_weight",
                   Weight("max(1.0-pt_2*0.002, 0.6)", "jetToTauFake_weight"), "Up"))
     jet_to_tau_fake_variations.append(
-        AddWeight("CMS_htt_jetToTauFake_13TeV", "jetToTauFake_weight",
+        AddWeight("CMS_htt_jetToTauFake_Run2017", "jetToTauFake_weight",
                   Weight("min(1.0+pt_2*0.002, 1.4)", "jetToTauFake_weight"), "Down"))
     for variation in jet_to_tau_fake_variations:
         for process_nick in ["ZJ", "TTJ", "W", "VVJ"]:
@@ -703,10 +703,10 @@ def main(args):
 
     # ZL fakes energy scale
     ele_fake_es_1prong_variations = create_systematic_variations(
-        "CMS_ZLShape_et_1prong_13TeV", "tauEleFakeEsOneProng",
+        "CMS_ZLShape_et_1prong_Run2017", "tauEleFakeEsOneProng",
         DifferentPipeline)
     ele_fake_es_1prong1pizero_variations = create_systematic_variations(
-        "CMS_ZLShape_et_1prong1pizero_13TeV", "tauEleFakeEsOneProngPiZeros",
+        "CMS_ZLShape_et_1prong1pizero_Run2017", "tauEleFakeEsOneProngPiZeros",
         DifferentPipeline)
 
     if "et" in [args.gof_channel] + args.channels:
@@ -719,10 +719,10 @@ def main(args):
                     era=era)
 
     mu_fake_es_1prong_variations = create_systematic_variations(
-        "CMS_ZLShape_mt_1prong_13TeV", "tauMuFakeEsOneProng",
+        "CMS_ZLShape_mt_1prong_Run2017", "tauMuFakeEsOneProng",
         DifferentPipeline)
     mu_fake_es_1prong1pizero_variations = create_systematic_variations(
-        "CMS_ZLShape_mt_1prong1pizero_13TeV", "tauMuFakeEsOneProngPiZeros",
+        "CMS_ZLShape_mt_1prong1pizero_Run2017", "tauMuFakeEsOneProngPiZeros",
         DifferentPipeline)
 
     if "mt" in [args.gof_channel] + args.channels:
@@ -734,17 +734,17 @@ def main(args):
                     channel=mt,
                     era=era)
 
-    # Zll reweighting !!! replaced by log normal uncertainties: CMS_eFakeTau_13TeV 16%; CMS_mFakeTau_13TeV 26%
+    # Zll reweighting !!! replaced by log normal uncertainties: CMS_eFakeTau_Run2017 16%; CMS_mFakeTau_Run2017 26%
     '''zll_et_weight_variations = []
     zll_et_weight_variations.append(
         AddWeight(
-            "CMS_eFakeTau_13TeV", "eFakeTau_reweight",
+            "CMS_eFakeTau_Run2017", "eFakeTau_reweight",
             Weight(
                 "(((abs(eta_1) < 1.46)*2.0/1.8) + ((abs(eta_1) >= 1.46 && abs(eta_1) < 1.558)*2.06) + ((abs(eta_1) >= 1.558)*2.13/1.53))",
                 "eFakeTau_reweight"), "Up"))
     zll_et_weight_variations.append(
         AddWeight(
-            "CMS_eFakeTau_13TeV", "eFakeTau_reweight",
+            "CMS_eFakeTau_Run2017", "eFakeTau_reweight",
             Weight(
                 "(((abs(eta_1) < 1.46)*1.6/1.8) + ((abs(eta_1) >= 1.46 && abs(eta_1) < 1.558)*1.27) + ((abs(eta_1) >= 1.558)*0.93/1.53))",
                 "eFakeTau_reweight"), "Down"))
@@ -759,13 +759,13 @@ def main(args):
     zll_mt_weight_variations = []
     zll_mt_weight_variations.append(
         AddWeight(
-            "CMS_mFakeTau_13TeV", "mFakeTau_reweight",
+            "CMS_mFakeTau_Run2017", "mFakeTau_reweight",
             Weight(
                 "(((abs(eta_1) < 0.4)*1.29/1.17) + ((abs(eta_1) >= 0.4 && abs(eta_1) < 0.8)*1.59/1.29) + ((abs(eta_1) >= 0.8 && abs(eta_1) < 1.2)*1.19/1.14) + ((abs(eta_1) >= 1.2 && abs(eta_1) < 1.7)*1.53/0.93) + ((abs(eta_1) >= 1.7 && abs(eta_1) < 2.3)*2.21/1.61) + (abs(eta_1) >= 2.3))",
                 "mFakeTau_reweight"), "Up"))
     zll_mt_weight_variations.append(
         AddWeight(
-            "CMS_mFakeTau_13TeV", "mFakeTau_reweight",
+            "CMS_mFakeTau_Run2017", "mFakeTau_reweight",
             Weight(
                 "(((abs(eta_1) < 0.4)*1.05/1.17) + ((abs(eta_1) >= 0.4 && abs(eta_1) < 0.8)*0.99/1.29) + ((abs(eta_1) >= 0.8 && abs(eta_1) < 1.2)*1.09/1.14) + ((abs(eta_1) >= 1.2 && abs(eta_1) < 1.7)*0.33/0.93) + ((abs(eta_1) >= 1.7 && abs(eta_1) < 2.3)*1.01/1.61) + (abs(eta_1) >= 2.3))",
                 "mFakeTau_reweight"), "Down"))
@@ -780,9 +780,9 @@ def main(args):
 
     # b tagging
     btag_eff_variations = create_systematic_variations(
-        "CMS_htt_eff_b_13TeV", "btagEff", DifferentPipeline)
+        "CMS_htt_eff_b_Run2017", "btagEff", DifferentPipeline)
     mistag_eff_variations = create_systematic_variations(
-        "CMS_htt_mistag_b_13TeV", "btagMistag", DifferentPipeline)
+        "CMS_htt_mistag_b_Run2017", "btagMistag", DifferentPipeline)
     for variation in btag_eff_variations + mistag_eff_variations:
         for process_nick in [
                 "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVT", "VVJ",
@@ -810,11 +810,11 @@ def main(args):
     # Embedded event specifics
     # Tau energy scale
     tau_es_3prong_variations = create_systematic_variations(
-        "CMS_scale_emb_t_3prong_13TeV", "tauEsThreeProng", DifferentPipeline)
+        "CMS_scale_emb_t_3prong_Run2017", "tauEsThreeProng", DifferentPipeline)
     tau_es_1prong_variations = create_systematic_variations(
-        "CMS_scale_emb_t_1prong_13TeV", "tauEsOneProng", DifferentPipeline)
+        "CMS_scale_emb_t_1prong_Run2017", "tauEsOneProng", DifferentPipeline)
     tau_es_1prong1pizero_variations = create_systematic_variations(
-        "CMS_scale_emb_t_1prong1pizero_13TeV", "tauEsOneProngOnePiZero",
+        "CMS_scale_emb_t_1prong1pizero_Run2017", "tauEsOneProngOnePiZero",
         DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
         for process_nick in ["EMB"]:
@@ -836,13 +836,13 @@ def main(args):
                     process=tt_processes[process_nick],
                     channel=tt,
                     era=era)
-                    
+
     tau_es_3prong_variations = create_systematic_variations(
-        "CMS_scale_emb_t_3prong_13TeV", "tauEsThreeProng", DifferentPipeline)
+        "CMS_scale_emb_t_3prong_Run2017", "tauEsThreeProng", DifferentPipeline)
     tau_es_1prong_variations = create_systematic_variations(
-        "CMS_scale_emb_t_1prong_13TeV", "tauEsOneProng", DifferentPipeline)
+        "CMS_scale_emb_t_1prong_Run2017", "tauEsOneProng", DifferentPipeline)
     tau_es_1prong1pizero_variations = create_systematic_variations(
-        "CMS_scale_emb_t_1prong1pizero_13TeV", "tauEsOneProngOnePiZero",
+        "CMS_scale_emb_t_1prong1pizero_Run2017", "tauEsOneProngOnePiZero",
         DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
         for process_nick in ["EMB"]:
@@ -864,26 +864,26 @@ def main(args):
                     process=tt_processes[process_nick],
                     channel=tt,
                     era=era)
-    
+
     mt_decayMode_variations = []
     mt_decayMode_variations.append(
         ReplaceWeight(
-            "CMS_3ProngEff_13TeV", "decayMode_SF",
+            "CMS_3ProngEff_Run2017", "decayMode_SF",
             Weight("embeddedDecayModeWeight_effUp_pi0Nom", "decayMode_SF"),
             "Up"))
     mt_decayMode_variations.append(
         ReplaceWeight(
-            "CMS_3ProngEff_13TeV", "decayMode_SF",
+            "CMS_3ProngEff_Run2017", "decayMode_SF",
             Weight("embeddedDecayModeWeight_effDown_pi0Nom", "decayMode_SF"),
             "Down"))
     mt_decayMode_variations.append(
         ReplaceWeight(
-            "CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
+            "CMS_1ProngPi0Eff_Run2017", "decayMode_SF",
             Weight("embeddedDecayModeWeight_effNom_pi0Up", "decayMode_SF"),
             "Up"))
     mt_decayMode_variations.append(
         ReplaceWeight(
-            "CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
+            "CMS_1ProngPi0Eff_Run2017", "decayMode_SF",
             Weight("embeddedDecayModeWeight_effNom_pi0Down", "decayMode_SF"),
             "Down"))
     for variation in mt_decayMode_variations:
@@ -897,22 +897,22 @@ def main(args):
     et_decayMode_variations = []
     et_decayMode_variations.append(
         ReplaceWeight(
-            "CMS_3ProngEff_13TeV", "decayMode_SF",
+            "CMS_3ProngEff_Run2017", "decayMode_SF",
             Weight("embeddedDecayModeWeight_effUp_pi0Nom", "decayMode_SF"),
             "Up"))
     et_decayMode_variations.append(
         ReplaceWeight(
-            "CMS_3ProngEff_13TeV", "decayMode_SF",
+            "CMS_3ProngEff_Run2017", "decayMode_SF",
             Weight("embeddedDecayModeWeight_effDown_pi0Nom", "decayMode_SF"),
             "Down"))
     et_decayMode_variations.append(
         ReplaceWeight(
-            "CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
+            "CMS_1ProngPi0Eff_Run2017", "decayMode_SF",
             Weight("embeddedDecayModeWeight_effNom_pi0Up", "decayMode_SF"),
             "Up"))
     et_decayMode_variations.append(
         ReplaceWeight(
-            "CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
+            "CMS_1ProngPi0Eff_Run2017", "decayMode_SF",
             Weight("embeddedDecayModeWeight_effNom_pi0Down", "decayMode_SF"),
             "Down"))
     for variation in et_decayMode_variations:
@@ -926,22 +926,22 @@ def main(args):
     tt_decayMode_variations = []
     tt_decayMode_variations.append(
         ReplaceWeight(
-            "CMS_3ProngEff_13TeV", "decayMode_SF",
+            "CMS_3ProngEff_Run2017", "decayMode_SF",
             Weight("embeddedDecayModeWeight_effUp_pi0Nom", "decayMode_SF"),
             "Up"))
     tt_decayMode_variations.append(
         ReplaceWeight(
-            "CMS_3ProngEff_13TeV", "decayMode_SF",
+            "CMS_3ProngEff_Run2017", "decayMode_SF",
             Weight("embeddedDecayModeWeight_effDown_pi0Nom", "decayMode_SF"),
             "Down"))
     tt_decayMode_variations.append(
         ReplaceWeight(
-            "CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
+            "CMS_1ProngPi0Eff_Run2017", "decayMode_SF",
             Weight("embeddedDecayModeWeight_effNom_pi0Up", "decayMode_SF"),
             "Up"))
     tt_decayMode_variations.append(
         ReplaceWeight(
-            "CMS_1ProngPi0Eff_13TeV", "decayMode_SF",
+            "CMS_1ProngPi0Eff_Run2017", "decayMode_SF",
             Weight("embeddedDecayModeWeight_effNom_pi0Down", "decayMode_SF"),
             "Down"))
     for variation in tt_decayMode_variations:
@@ -978,7 +978,7 @@ def main(args):
                     process=mt_processes['ZTTpTTTauTauDown'],
                     analysis="smhtt",
                     era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar_13TeV", "Down"),
+                    variation=Relabel("CMS_htt_emb_ttbar_Run2017", "Down"),
                     mass="125"))
 
             mt_processes['ZTTpTTTauTauUp'] = Process(
@@ -992,7 +992,7 @@ def main(args):
                     process=mt_processes['ZTTpTTTauTauUp'],
                     analysis="smhtt",
                     era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar_13TeV", "Up"),
+                    variation=Relabel("CMS_htt_emb_ttbar_Run2017", "Up"),
                     mass="125"))
 
     if 'et' in [args.gof_channel] + args.channels:
@@ -1008,7 +1008,7 @@ def main(args):
                     process=et_processes['ZTTpTTTauTauDown'],
                     analysis="smhtt",
                     era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar_13TeV", "Down"),
+                    variation=Relabel("CMS_htt_emb_ttbar_Run2017", "Down"),
                     mass="125"))
 
             et_processes['ZTTpTTTauTauUp'] = Process(
@@ -1022,7 +1022,7 @@ def main(args):
                     process=et_processes['ZTTpTTTauTauUp'],
                     analysis="smhtt",
                     era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar_13TeV", "Up"),
+                    variation=Relabel("CMS_htt_emb_ttbar_Run2017", "Up"),
                     mass="125"))
     if 'tt' in [args.gof_channel] + args.channels:
         for category in tt_categories:
@@ -1037,7 +1037,7 @@ def main(args):
                     process=tt_processes['ZTTpTTTauTauDown'],
                     analysis="smhtt",
                     era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar_13TeV", "Down"),
+                    variation=Relabel("CMS_htt_emb_ttbar_Run2017", "Down"),
                     mass="125"))
 
             tt_processes['ZTTpTTTauTauUp'] = Process(
@@ -1051,26 +1051,26 @@ def main(args):
                     process=tt_processes['ZTTpTTTauTauUp'],
                     analysis="smhtt",
                     era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar_13TeV", "Up"),
+                    variation=Relabel("CMS_htt_emb_ttbar_Run2017", "Up"),
                     mass="125"))
 
     # jetfakes
     fake_factor_variations_et = []
     fake_factor_variations_mt = []
     for systematic_shift in [
-            "ff_qcd{ch}_syst_13TeV{shift}",
-            "ff_qcd_dm0_njet0{ch}_stat_13TeV{shift}",
-            "ff_qcd_dm0_njet1{ch}_stat_13TeV{shift}",
-            "ff_qcd_dm1_njet0{ch}_stat_13TeV{shift}",
-            "ff_qcd_dm1_njet1{ch}_stat_13TeV{shift}", "ff_w_syst_13TeV{shift}",
-            "ff_w_dm0_njet0{ch}_stat_13TeV{shift}",
-            "ff_w_dm0_njet1{ch}_stat_13TeV{shift}",
-            "ff_w_dm1_njet0{ch}_stat_13TeV{shift}",
-            "ff_w_dm1_njet1{ch}_stat_13TeV{shift}", "ff_tt_syst_13TeV{shift}",
-            "ff_tt_dm0_njet0_stat_13TeV{shift}",
-            "ff_tt_dm0_njet1_stat_13TeV{shift}",
-            "ff_tt_dm1_njet0_stat_13TeV{shift}",
-            "ff_tt_dm1_njet1_stat_13TeV{shift}"
+            "ff_qcd{ch}_syst_Run2017{shift}",
+            "ff_qcd_dm0_njet0{ch}_stat_Run2017{shift}",
+            "ff_qcd_dm0_njet1{ch}_stat_Run2017{shift}",
+            "ff_qcd_dm1_njet0{ch}_stat_Run2017{shift}",
+            "ff_qcd_dm1_njet1{ch}_stat_Run2017{shift}", "ff_w_syst_Run2017{shift}",
+            "ff_w_dm0_njet0{ch}_stat_Run2017{shift}",
+            "ff_w_dm0_njet1{ch}_stat_Run2017{shift}",
+            "ff_w_dm1_njet0{ch}_stat_Run2017{shift}",
+            "ff_w_dm1_njet1{ch}_stat_Run2017{shift}", "ff_tt_syst_Run2017{shift}",
+            "ff_tt_dm0_njet0_stat_Run2017{shift}",
+            "ff_tt_dm0_njet1_stat_Run2017{shift}",
+            "ff_tt_dm1_njet0_stat_Run2017{shift}",
+            "ff_tt_dm1_njet1_stat_Run2017{shift}"
     ]:
         for shift_direction in ["Up", "Down"]:
             fake_factor_variations_et.append(
@@ -1081,7 +1081,7 @@ def main(args):
                         "ff2_{syst}".format(
                             syst=systematic_shift.format(
                                 ch="", shift="_%s" % shift_direction.lower())
-                            .replace("_13TeV", "")),
+                            .replace("_Run2017", "")),
                         "fake_factor"), shift_direction))
             fake_factor_variations_mt.append(
                 ReplaceWeight(
@@ -1091,7 +1091,7 @@ def main(args):
                         "ff2_{syst}".format(
                             syst=systematic_shift.format(
                                 ch="", shift="_%s" % shift_direction.lower())
-                            .replace("_13TeV", "")),
+                            .replace("_Run2017", "")),
                         "fake_factor"), shift_direction))
     if "et" in [args.gof_channel] + args.channels:
         for variation in fake_factor_variations_et:
@@ -1109,14 +1109,14 @@ def main(args):
                 era=era)
     fake_factor_variations_tt = []
     for systematic_shift in [
-            "ff_qcd{ch}_syst_13TeV{shift}",
-            "ff_qcd_dm0_njet0{ch}_stat_13TeV{shift}",
-            "ff_qcd_dm0_njet1{ch}_stat_13TeV{shift}",
-            "ff_qcd_dm1_njet0{ch}_stat_13TeV{shift}",
-            "ff_qcd_dm1_njet1{ch}_stat_13TeV{shift}",
-            "ff_w{ch}_syst_13TeV{shift}", "ff_tt{ch}_syst_13TeV{shift}",
-            "ff_w_frac{ch}_syst_13TeV{shift}",
-            "ff_tt_frac{ch}_syst_13TeV{shift}"
+            "ff_qcd{ch}_syst_Run2017{shift}",
+            "ff_qcd_dm0_njet0{ch}_stat_Run2017{shift}",
+            "ff_qcd_dm0_njet1{ch}_stat_Run2017{shift}",
+            "ff_qcd_dm1_njet0{ch}_stat_Run2017{shift}",
+            "ff_qcd_dm1_njet1{ch}_stat_Run2017{shift}",
+            "ff_w{ch}_syst_Run2017{shift}", "ff_tt{ch}_syst_Run2017{shift}",
+            "ff_w_frac{ch}_syst_Run2017{shift}",
+            "ff_tt_frac{ch}_syst_Run2017{shift}"
     ]:
         for shift_direction in ["Up", "Down"]:
             fake_factor_variations_tt.append(
@@ -1128,7 +1128,7 @@ def main(args):
                         format(
                             syst=systematic_shift.format(
                                 ch="", shift="_%s" % shift_direction.lower())
-                            .replace("_13TeV", "")),
+                            .replace("_Run2017", "")),
                         "fake_factor"), shift_direction))
     if "tt" in [args.gof_channel] + args.channels:
         for variation in fake_factor_variations_tt:
@@ -1146,11 +1146,11 @@ def main(args):
             "THU_ggH_qmtop"
     ]:
         ggh_variations.append(
-            AddWeight("{}_13TeV".format(unc), "{}_weight".format(unc),
+            AddWeight("{}_Run2017".format(unc), "{}_weight".format(unc),
                       Weight("({})".format(unc), "{}_weight".format(unc)),
                       "Up"))
         ggh_variations.append(
-            AddWeight("{}_13TeV".format(unc), "{}_weight".format(unc),
+            AddWeight("{}_Run2017".format(unc), "{}_weight".format(unc),
                       Weight("(1.0/{})".format(unc), "{}_weight".format(unc)),
                       "Down"))
     for variation in ggh_variations:
