@@ -185,7 +185,7 @@ def main(args):
         "VVT"   : Process("VVT",      VVTEstimation (era, directory, mt, friend_directory=mt_friend_directory)),
         "VVL"   : Process("VVL",      VVLEstimation (era, directory, mt, friend_directory=mt_friend_directory)),
         "VVJ"   : Process("VVJ",      VVJEstimation (era, directory, mt, friend_directory=mt_friend_directory)),
-        "FAKES2" : Process("jetFakes2",    FakeEstimationLT(era, directory, mt, friend_directory=[mt_friend_directory, ff_friend_directory])),
+        #"FAKES2" : Process("jetFakes2",    FakeEstimationLT(era, directory, mt, friend_directory=[mt_friend_directory, ff_friend_directory])),
         #"FAKES2" : Process("jetFakes2", NewFakeEstimationLT(era, directory, mt, friend_directory=[mt_friend_directory, ff_friend_directory])),
         "EMB"   : Process("EMB", ZTTEmbeddedEstimation(era, directory, mt, friend_directory=mt_friend_directory))
          }
@@ -269,7 +269,7 @@ def main(args):
         "VVT"   : Process("VVT",      VVTEstimation (era, directory, tt, friend_directory=tt_friend_directory)),
         "VVL"   : Process("VVL",      VVLEstimation (era, directory, tt, friend_directory=tt_friend_directory)),
         "VVJ"   : Process("VVJ",      VVJEstimation (era, directory, tt, friend_directory=tt_friend_directory)),
-        "FAKES" : Process("jetFakes",    FakeEstimationTT(era, directory, tt, friend_directory=[tt_friend_directory, ff_friend_directory])),
+        #"FAKES" : Process("jetFakes",    FakeEstimationTT(era, directory, tt, friend_directory=[tt_friend_directory, ff_friend_directory])),
         "EMB"   : Process("EMB", ZTTEmbeddedEstimation(era, directory, tt, friend_directory=tt_friend_directory))
         }
     tt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationTT(era, directory, tt, [tt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], tt_processes["data"], friend_directory=[tt_friend_directory, ff_friend_directory]))
