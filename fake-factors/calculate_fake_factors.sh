@@ -21,7 +21,7 @@ then
     FF_database_MT=CMSSW_8_0_4/src/HTTutilities/Jet2TauFakes/data_2017/SM2017/tight/vloose/mt/fakeFactors.root
     FF_database_TT=CMSSW_8_0_4/src/HTTutilities/Jet2TauFakes/data_2017/SM2017/tight/vloose/tt/fakeFactors.root
     FF_workspce=fake-factors/htt_ff_fractions_2017.xroot
-    USE_WORKSPACE=""
+    USE_WORKSPACE=-w
 fi
 
 python fake-factors/calculate_fake_factors.py --era $ERA \
@@ -33,6 +33,6 @@ python fake-factors/calculate_fake_factors.py --era $ERA \
         --et-fake-factor-directory $FF_database_ET \
         --mt-fake-factor-directory $FF_database_MT \
         --tt-fake-factor-directory $FF_database_TT \
-        --num-threads 12 \
+        --num-threads 32 \
         --category-mode $CATEGORYMODE \
         --workspace $FF_workspce $USE_WORKSPACE

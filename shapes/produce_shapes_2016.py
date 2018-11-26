@@ -135,7 +135,7 @@ def main(args):
 
     # Era selection
     if "2016" in args.era:
-        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, ggHEstimation_0J, ggHEstimation_1J_PTH_0_60, ggHEstimation_1J_PTH_60_120, ggHEstimation_1J_PTH_120_200, ggHEstimation_1J_PTH_GT200, ggHEstimation_GE2J_PTH_0_60, ggHEstimation_GE2J_PTH_60_120, ggHEstimation_GE2J_PTH_120_200, ggHEstimation_GE2J_PTH_GT200, ggHEstimation_VBFTOPO_JET3, ggHEstimation_VBFTOPO_JET3VETO, qqHEstimation, qqHEstimation_VBFTOPO_JET3VETO, qqHEstimation_VBFTOPO_JET3, qqHEstimation_REST, qqHEstimation_VH2JET, qqHEstimation_PTJET1_GT200, VHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimation, VVLEstimation, VVTEstimation, VVJEstimation, TTLEstimation, TTTEstimation, TTJEstimation, QCDEstimationMT, QCDEstimationET, QCDEstimationTT, ZTTEmbeddedEstimation, FakeEstimationLT, FakeEstimationTT
+        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, ggHEstimation_0J, ggHEstimation_1J_PTH_0_60, ggHEstimation_1J_PTH_60_120, ggHEstimation_1J_PTH_120_200, ggHEstimation_1J_PTH_GT200, ggHEstimation_GE2J_PTH_0_60, ggHEstimation_GE2J_PTH_60_120, ggHEstimation_GE2J_PTH_120_200, ggHEstimation_GE2J_PTH_GT200, ggHEstimation_VBFTOPO_JET3, ggHEstimation_VBFTOPO_JET3VETO, qqHEstimation, qqHEstimation_VBFTOPO_JET3VETO, qqHEstimation_VBFTOPO_JET3, qqHEstimation_REST, qqHEstimation_VH2JET, qqHEstimation_PTJET1_GT200, VHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimation, VVLEstimation, VVTEstimation, VVJEstimation, TTLEstimation, TTTEstimation, TTJEstimation, QCDEstimationMT, QCDEstimationET, QCDEstimationTT, ZTTEmbeddedEstimation, FakeEstimationLT, NewFakeEstimationLT, FakeEstimationTT, NewFakeEstimationTT
         from shape_producer.era import Run2016
         era = Run2016(args.datasets)
     else:
@@ -185,10 +185,11 @@ def main(args):
         "VVT"   : Process("VVT",      VVTEstimation (era, directory, mt, friend_directory=mt_friend_directory)),
         "VVL"   : Process("VVL",      VVLEstimation (era, directory, mt, friend_directory=mt_friend_directory)),
         "VVJ"   : Process("VVJ",      VVJEstimation (era, directory, mt, friend_directory=mt_friend_directory)),
-        "FAKES" : Process("jetFakes",    FakeEstimationLT(era, directory, mt, friend_directory=[mt_friend_directory, ff_friend_directory])),
+        "FAKES2" : Process("jetFakes2",    FakeEstimationLT(era, directory, mt, friend_directory=[mt_friend_directory, ff_friend_directory])),
+        #"FAKES2" : Process("jetFakes2", NewFakeEstimationLT(era, directory, mt, friend_directory=[mt_friend_directory, ff_friend_directory])),
         "EMB"   : Process("EMB", ZTTEmbeddedEstimation(era, directory, mt, friend_directory=mt_friend_directory))
          }
-
+    mt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, mt, [mt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], mt_processes["data"], friend_directory=[mt_friend_directory, ff_friend_directory]))
     mt_processes["QCD"] = Process("QCD", QCDEstimationMT(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTL", "TTJ", "VVT", "VVL", "VVJ"]], mt_processes["data"], extrapolation_factor=1.17))
     et = ETSM2016()
     if args.QCD_extrap_fit:
@@ -226,10 +227,10 @@ def main(args):
         "VVT"   : Process("VVT",      VVTEstimation (era, directory, et, friend_directory=et_friend_directory)),
         "VVL"   : Process("VVL",      VVLEstimation (era, directory, et, friend_directory=et_friend_directory)),
         "VVJ"   : Process("VVJ",      VVJEstimation (era, directory, et, friend_directory=et_friend_directory)),
-        "FAKES" : Process("jetFakes",    FakeEstimationLT(era, directory, et, friend_directory=[et_friend_directory, ff_friend_directory])),
+        #"FAKES" : Process("jetFakes",    FakeEstimationLT(era, directory, et, friend_directory=[et_friend_directory, ff_friend_directory])),
         "EMB"   : Process("EMB", ZTTEmbeddedEstimation(era, directory, et, friend_directory=et_friend_directory))
         }
-
+    et_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, et, [et_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], et_processes["data"], friend_directory=[et_friend_directory, ff_friend_directory]))
     et_processes["QCD"] = Process("QCD", QCDEstimationET(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTL", "TTJ", "VVT", "VVL", "VVJ"]], et_processes["data"], extrapolation_factor=1.16))
     tt = TTSM2016()
     if args.QCD_extrap_fit:
@@ -271,7 +272,7 @@ def main(args):
         "FAKES" : Process("jetFakes",    FakeEstimationTT(era, directory, tt, friend_directory=[tt_friend_directory, ff_friend_directory])),
         "EMB"   : Process("EMB", ZTTEmbeddedEstimation(era, directory, tt, friend_directory=tt_friend_directory))
         }
-
+    tt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationTT(era, directory, tt, [tt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], tt_processes["data"], friend_directory=[tt_friend_directory, ff_friend_directory]))
     tt_processes["QCD"] = Process("QCD", QCDEstimationTT(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VVT", "VVL", "VVJ"]], tt_processes["data"]))
 
     # Variables and categories
@@ -538,7 +539,7 @@ def main(args):
         "CMS_scale_mc_t_1prong1pizero_13TeV", "tauEsOneProngPiZeros",
         DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
-        for process_nick in ["ZTT", "TTT", "TTL", "VVL", "VVT"
+        for process_nick in ["ZTT", "TTT", "TTL", "VVL", "VVT", "FAKES"
                              ] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -568,7 +569,7 @@ def main(args):
         "CMS_scale_t_1prong1pizero_13TeV", "tauEsOneProngPiZeros",
         DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
-        for process_nick in ["ZTT", "TTT", "TTL", "VVL", "VVT", "EMB"
+        for process_nick in ["ZTT", "TTT", "TTL", "VVL", "VVT", "EMB", "FAKES"
                              ] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -883,7 +884,7 @@ def main(args):
         "CMS_scale_emb_t_1prong1pizero_13TeV", "tauEsOneProngPiZeros",
         DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
-        for process_nick in ["EMB"]:
+        for process_nick in ["EMB", "FAKES"]:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
@@ -1099,16 +1100,18 @@ def main(args):
             "ff_qcd{ch}_syst_13TeV{shift}",
             "ff_qcd_dm0_njet0{ch}_stat_13TeV{shift}",
             "ff_qcd_dm0_njet1{ch}_stat_13TeV{shift}",
-            "ff_qcd_dm1_njet0{ch}_stat_13TeV{shift}",
-            "ff_qcd_dm1_njet1{ch}_stat_13TeV{shift}", "ff_w_syst_13TeV{shift}",
+            #"ff_qcd_dm1_njet0{ch}_stat_13TeV{shift}",
+            #"ff_qcd_dm1_njet1{ch}_stat_13TeV{shift}",
+            "ff_w_syst_13TeV{shift}",
             "ff_w_dm0_njet0{ch}_stat_13TeV{shift}",
             "ff_w_dm0_njet1{ch}_stat_13TeV{shift}",
-            "ff_w_dm1_njet0{ch}_stat_13TeV{shift}",
-            "ff_w_dm1_njet1{ch}_stat_13TeV{shift}", "ff_tt_syst_13TeV{shift}",
+            #"ff_w_dm1_njet0{ch}_stat_13TeV{shift}",
+            #"ff_w_dm1_njet1{ch}_stat_13TeV{shift}",
+            "ff_tt_syst_13TeV{shift}",
             "ff_tt_dm0_njet0_stat_13TeV{shift}",
             "ff_tt_dm0_njet1_stat_13TeV{shift}",
-            "ff_tt_dm1_njet0_stat_13TeV{shift}",
-            "ff_tt_dm1_njet1_stat_13TeV{shift}"
+            #"ff_tt_dm1_njet0_stat_13TeV{shift}",
+            #"ff_tt_dm1_njet1_stat_13TeV{shift}"
     ]:
         for shift_direction in ["Up", "Down"]:
             fake_factor_variations_et.append(
@@ -1150,8 +1153,8 @@ def main(args):
             "ff_qcd{ch}_syst_13TeV{shift}",
             "ff_qcd_dm0_njet0{ch}_stat_13TeV{shift}",
             "ff_qcd_dm0_njet1{ch}_stat_13TeV{shift}",
-            "ff_qcd_dm1_njet0{ch}_stat_13TeV{shift}",
-            "ff_qcd_dm1_njet1{ch}_stat_13TeV{shift}",
+            #"ff_qcd_dm1_njet0{ch}_stat_13TeV{shift}",
+            #"ff_qcd_dm1_njet1{ch}_stat_13TeV{shift}",
             "ff_w{ch}_syst_13TeV{shift}", "ff_tt{ch}_syst_13TeV{shift}",
             "ff_w_frac{ch}_syst_13TeV{shift}",
             "ff_tt_frac{ch}_syst_13TeV{shift}"
