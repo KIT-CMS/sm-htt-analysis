@@ -121,6 +121,7 @@ def main(args):
     mt.cuts.add(Cut("(byTightIsolationMVArun2v1DBoldDMwLT_2<0.5&&byVLooseIsolationMVArun2v1DBoldDMwLT_2>0.5)", "tau_anti_iso"))
     mt_processes = {
         "data"  : Process("data_obs", DataEstimation  (era, directory, mt, friend_directory=mt_friend_directory)),
+        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation(era, directory, mt, friend_directory=mt_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation   (era, directory, mt, friend_directory=mt_friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimation    (era, directory, mt, friend_directory=mt_friend_directory)),
         "ZJ"    : Process("ZJ",       ZJEstimation    (era, directory, mt, friend_directory=mt_friend_directory)),
@@ -139,6 +140,7 @@ def main(args):
     et.cuts.add(Cut("(byTightIsolationMVArun2v1DBoldDMwLT_2<0.5&&byVLooseIsolationMVArun2v1DBoldDMwLT_2>0.5)", "tau_anti_iso"))
     et_processes = {
         "data"  : Process("data_obs", DataEstimation  (era, directory, et, friend_directory=et_friend_directory)),
+        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation(era, directory, et, friend_directory=et_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation   (era, directory, et, friend_directory=et_friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimation    (era, directory, et, friend_directory=et_friend_directory)),
         "ZJ"    : Process("ZJ",       ZJEstimation    (era, directory, et, friend_directory=et_friend_directory)),
@@ -158,6 +160,7 @@ def main(args):
     tt1.cuts.add(Cut("(byTightIsolationMVArun2v1DBoldDMwLT_1<0.5&&byVLooseIsolationMVArun2v1DBoldDMwLT_1>0.5)", "tau_1_anti_iso"))
     tt1_processes = {
         "data"  : Process("data_obs", DataEstimation (era, directory, tt1, friend_directory=tt_friend_directory)),
+        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation(era, directory, tt1, friend_directory=tt_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation  (era, directory, tt1, friend_directory=tt_friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimation   (era, directory, tt1, friend_directory=tt_friend_directory)),
         "ZJ"    : Process("ZJ",       ZJEstimation   (era, directory, tt1, friend_directory=tt_friend_directory)),
@@ -175,6 +178,7 @@ def main(args):
     tt2.cuts.add(Cut("(byTightIsolationMVArun2v1DBoldDMwLT_2<0.5&&byVLooseIsolationMVArun2v1DBoldDMwLT_2>0.5)", "tau_2_anti_iso"))
     tt2_processes = {
         "data"  : Process("data_obs", DataEstimation (era, directory, tt2, friend_directory=tt_friend_directory)),
+        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation(era, directory, tt2, friend_directory=tt_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation  (era, directory, tt2, friend_directory=tt_friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimation   (era, directory, tt2, friend_directory=tt_friend_directory)),
         "ZJ"    : Process("ZJ",       ZJEstimation   (era, directory, tt2, friend_directory=tt_friend_directory)),

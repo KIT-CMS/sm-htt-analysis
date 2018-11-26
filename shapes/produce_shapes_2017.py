@@ -125,7 +125,7 @@ def main(args):
 
     # Era selection
     if "2017" in args.era:
-        from shape_producer.estimation_methods_Fall17 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, ggHEstimation_0J, ggHEstimation_1J_PTH_0_60, ggHEstimation_1J_PTH_60_120, ggHEstimation_1J_PTH_120_200, ggHEstimation_1J_PTH_GT200, ggHEstimation_GE2J_PTH_0_60, ggHEstimation_GE2J_PTH_60_120, ggHEstimation_GE2J_PTH_120_200, ggHEstimation_GE2J_PTH_GT200, ggHEstimation_VBFTOPO_JET3, ggHEstimation_VBFTOPO_JET3VETO, qqHEstimation, qqHEstimation_VBFTOPO_JET3VETO, qqHEstimation_VBFTOPO_JET3, qqHEstimation_REST, qqHEstimation_VH2JET, qqHEstimation_PTJET1_GT200, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, FakeEstimationLT, FakeEstimationTT
+        from shape_producer.estimation_methods_Fall17 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, ggHEstimation_0J, ggHEstimation_1J_PTH_0_60, ggHEstimation_1J_PTH_60_120, ggHEstimation_1J_PTH_120_200, ggHEstimation_1J_PTH_GT200, ggHEstimation_GE2J_PTH_0_60, ggHEstimation_GE2J_PTH_60_120, ggHEstimation_GE2J_PTH_120_200, ggHEstimation_GE2J_PTH_GT200, ggHEstimation_VBFTOPO_JET3, ggHEstimation_VBFTOPO_JET3VETO, qqHEstimation, qqHEstimation_VBFTOPO_JET3VETO, qqHEstimation_VBFTOPO_JET3, qqHEstimation_REST, qqHEstimation_VH2JET, qqHEstimation_PTJET1_GT200, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, FakeEstimationLT, NewFakeEstimationLT, FakeEstimationTT, NewFakeEstimationTT
 
         from shape_producer.era import Run2017
         era = Run2017(args.datasets)
@@ -155,7 +155,7 @@ def main(args):
         "VVJ"   : Process("VVJ",      VVJEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         "VVL"   : Process("VVL",      VVLEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         "W"     : Process("W",        WEstimation         (era, directory, mt, friend_directory=mt_friend_directory)),
-        "FAKES" : Process("jetFakes", FakeEstimationLT    (era, directory, mt, friend_directory=[mt_friend_directory, ff_friend_directory])),
+        #"FAKES" : Process("jetFakes", FakeEstimationLT    (era, directory, mt, friend_directory=[mt_friend_directory, ff_friend_directory])),
         "ggH"   : Process("ggH125",   ggHEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         "qqH"   : Process("qqH125",   qqHEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         "ggH_0J"               : Process("ggH_0J125",               ggHEstimation_0J              (era, directory, mt, friend_directory=mt_friend_directory)),
@@ -175,6 +175,8 @@ def main(args):
         "qqH_VH2JET"           : Process("qqH_VH2JET125",           qqHEstimation_VH2JET          (era, directory, mt, friend_directory=mt_friend_directory)),
         "qqH_PTJET1_GT200"     : Process("qqH_PTJET1_GT200125",     qqHEstimation_PTJET1_GT200    (era, directory, mt, friend_directory=mt_friend_directory)),
         }
+    mt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, mt, [mt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], mt_processes["data"], friend_directory=[mt_friend_directory, ff_friend_directory]))
+    #mt_fakes_for_uncs=Process("jetFakes", FakeEstimationLT(era, directory, mt, friend_directory=[mt_friend_directory, ff_friend_directory]))
     """
     mt_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, mt,
             [mt_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL"]],
@@ -195,7 +197,7 @@ def main(args):
         "VVJ"   : Process("VVJ",      VVJEstimation       (era, directory, et, friend_directory=et_friend_directory)),
         "VVL"   : Process("VVL",      VVLEstimation       (era, directory, et, friend_directory=et_friend_directory)),
         "W"     : Process("W",        WEstimation         (era, directory, et, friend_directory=et_friend_directory)),
-        "FAKES" : Process("jetFakes", FakeEstimationLT    (era, directory, et, friend_directory=[et_friend_directory, ff_friend_directory])),
+        #"FAKES" : Process("jetFakes", FakeEstimationLT    (era, directory, et, friend_directory=[et_friend_directory, ff_friend_directory])),
         "ggH"   : Process("ggH125",   ggHEstimation       (era, directory, et, friend_directory=et_friend_directory)),
         "qqH"   : Process("qqH125",   qqHEstimation       (era, directory, et, friend_directory=et_friend_directory)),
         "ggH_0J"               : Process("ggH_0J125",               ggHEstimation_0J              (era, directory, et, friend_directory=et_friend_directory)),
@@ -215,6 +217,7 @@ def main(args):
         "qqH_VH2JET"           : Process("qqH_VH2JET125",           qqHEstimation_VH2JET          (era, directory, et, friend_directory=et_friend_directory)),
         "qqH_PTJET1_GT200"     : Process("qqH_PTJET1_GT200125",     qqHEstimation_PTJET1_GT200    (era, directory, et, friend_directory=et_friend_directory)),
         }
+    et_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, et, [et_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], et_processes["data"], friend_directory=[et_friend_directory, ff_friend_directory]))
     """
     et_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, et,
             [et_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL"]],
@@ -235,7 +238,7 @@ def main(args):
         "VVJ"   : Process("VVJ",      VVJEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
         "VVL"   : Process("VVL",      VVLEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
         "W"     : Process("W",        WEstimation         (era, directory, tt, friend_directory=tt_friend_directory)),
-        "FAKES" : Process("jetFakes", FakeEstimationTT    (era, directory, tt, friend_directory=[tt_friend_directory, ff_friend_directory])),
+        #"FAKES" : Process("jetFakes", FakeEstimationTT    (era, directory, tt, friend_directory=[tt_friend_directory, ff_friend_directory])),
         "ggH"   : Process("ggH125",   ggHEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
         "qqH"   : Process("qqH125",   qqHEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
         "ggH_0J"               : Process("ggH_0J125",               ggHEstimation_0J              (era, directory, tt, friend_directory=tt_friend_directory)),
@@ -255,6 +258,7 @@ def main(args):
         "qqH_VH2JET"           : Process("qqH_VH2JET125",           qqHEstimation_VH2JET          (era, directory, tt, friend_directory=tt_friend_directory)),
         "qqH_PTJET1_GT200"     : Process("qqH_PTJET1_GT200125",     qqHEstimation_PTJET1_GT200    (era, directory, tt, friend_directory=tt_friend_directory)),
         }
+    tt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationTT(era, directory, tt, [tt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], tt_processes["data"], friend_directory=[tt_friend_directory, ff_friend_directory]))
     """
     tt_processes["QCD"] = Process("QCD", QCDEstimation_ABCD_TT_ISO2(era, directory, tt,
             [tt_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL"]],
@@ -1061,21 +1065,21 @@ def main(args):
             "ff_qcd{ch}_syst_Run2017{shift}",
             "ff_qcd_dm0_njet0{ch}_stat_Run2017{shift}",
             "ff_qcd_dm0_njet1{ch}_stat_Run2017{shift}",
-            "ff_qcd_dm1_njet0{ch}_stat_Run2017{shift}",
-            "ff_qcd_dm1_njet1{ch}_stat_Run2017{shift}", "ff_w_syst_Run2017{shift}",
+            #"ff_qcd_dm1_njet0{ch}_stat_Run2017{shift}",
+            #"ff_qcd_dm1_njet1{ch}_stat_Run2017{shift}", "ff_w_syst_Run2017{shift}",
             "ff_w_dm0_njet0{ch}_stat_Run2017{shift}",
             "ff_w_dm0_njet1{ch}_stat_Run2017{shift}",
-            "ff_w_dm1_njet0{ch}_stat_Run2017{shift}",
-            "ff_w_dm1_njet1{ch}_stat_Run2017{shift}", "ff_tt_syst_Run2017{shift}",
+            #"ff_w_dm1_njet0{ch}_stat_Run2017{shift}",
+            #"ff_w_dm1_njet1{ch}_stat_Run2017{shift}", "ff_tt_syst_Run2017{shift}",
             "ff_tt_dm0_njet0_stat_Run2017{shift}",
             "ff_tt_dm0_njet1_stat_Run2017{shift}",
-            "ff_tt_dm1_njet0_stat_Run2017{shift}",
-            "ff_tt_dm1_njet1_stat_Run2017{shift}"
+            #"ff_tt_dm1_njet0_stat_Run2017{shift}",
+            #"ff_tt_dm1_njet1_stat_Run2017{shift}"
     ]:
         for shift_direction in ["Up", "Down"]:
             fake_factor_variations_et.append(
                 ReplaceWeight(
-                    "CMS_%s" % (systematic_shift.format(ch='_et', shift="")),
+                    "CMS_%s" % (systematic_shift.format(ch='_et', shift="").replace("_dm0", "")),
                     "fake_factor",
                     Weight(
                         "ff2_{syst}".format(
@@ -1085,7 +1089,7 @@ def main(args):
                         "fake_factor"), shift_direction))
             fake_factor_variations_mt.append(
                 ReplaceWeight(
-                    "CMS_%s" % (systematic_shift.format(ch='_mt', shift="")),
+                    "CMS_%s" % (systematic_shift.format(ch='_mt', shift="").replace("_dm0", "")),
                     "fake_factor",
                     Weight(
                         "ff2_{syst}".format(
@@ -1112,8 +1116,8 @@ def main(args):
             "ff_qcd{ch}_syst_Run2017{shift}",
             "ff_qcd_dm0_njet0{ch}_stat_Run2017{shift}",
             "ff_qcd_dm0_njet1{ch}_stat_Run2017{shift}",
-            "ff_qcd_dm1_njet0{ch}_stat_Run2017{shift}",
-            "ff_qcd_dm1_njet1{ch}_stat_Run2017{shift}",
+            #"ff_qcd_dm1_njet0{ch}_stat_Run2017{shift}",
+            #"ff_qcd_dm1_njet1{ch}_stat_Run2017{shift}",
             "ff_w{ch}_syst_Run2017{shift}", "ff_tt{ch}_syst_Run2017{shift}",
             "ff_w_frac{ch}_syst_Run2017{shift}",
             "ff_tt_frac{ch}_syst_Run2017{shift}"
@@ -1121,10 +1125,10 @@ def main(args):
         for shift_direction in ["Up", "Down"]:
             fake_factor_variations_tt.append(
                 ReplaceWeight(
-                    "CMS_%s" % (systematic_shift.format(ch='_tt', shift="")),
+                    "CMS_%s" % (systematic_shift.format(ch='_tt', shift="").replace("_dm0", "")),
                     "fake_factor",
                     Weight(
-                        "(0.5*ff1_{syst}*(byTightIsolationMVArun2v1DBoldDMwLT_1<0.5)+0.5*ff2_{syst}*(byTightIsolationMVArun2v1DBoldDMwLT_2<0.5))".
+                        "(0.5*ff1_{syst}*(byTightIsolationMVArun2017v2DBoldDMwLT2017_1<0.5)+0.5*ff2_{syst}*(byTightIsolationMVArun2017v2DBoldDMwLT2017_2<0.5))".
                         format(
                             syst=systematic_shift.format(
                                 ch="", shift="_%s" % shift_direction.lower())
