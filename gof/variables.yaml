@@ -62,8 +62,8 @@ selected_variables:
         mt:
             - pt_1
             - pt_2
-            - iso_1
-            - iso_2
+            # iso_1
+            # iso_2
             - jpt_1
             - jpt_2
             - bpt_1
@@ -126,8 +126,8 @@ selected_variables:
         mt:
             - pt_1
             - pt_2
-            - iso_1
-            - iso_2
+            # iso_1
+            # iso_2
             - jpt_1
             - jpt_2
             - bpt_1
