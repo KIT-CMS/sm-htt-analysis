@@ -15,6 +15,9 @@ echo "[INFO] Add datacards to workspace from path "${INPUT}"."
 OUTPUT=${PWD}/${ERA}_workspace.root
 echo "[INFO] Write workspace to "${OUTPUT}"."
 
+# Clean previous workspace
+rm -f $OUTPUT
+
 # Define signals to be fitted and produce workspace
 if [ $STXS_FIT == "inclusive" ]; then
     combineTool.py -M T2W -o ${OUTPUT} -i ${INPUT} --parallel $NUM_THREADS
