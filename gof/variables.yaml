@@ -60,27 +60,33 @@ variables:
 selected_variables:
     2016:
         mt:
+            - pt_1
             - pt_2
+            - iso_1
+            - iso_2
             - jpt_1
             - jpt_2
-            - jm_1
-            - jm_2
             - bpt_1
             - bpt_2
             - njets
             - nbtag
             - m_sv
+            - mt_1
+            - mt_2
             - ptvis
             - pt_tt
             - mjj
+            - jdeta
             - m_vis
             - dijetpt
             - met
         et:
+            # pt_1
             - pt_2
+            # iso_1
+            # iso_2
             - jpt_1
             - jpt_2
-            - jm_1
             - bpt_1
             - bpt_2
             - njets
@@ -98,15 +104,82 @@ selected_variables:
         tt:
             - pt_1
             - pt_2
+            # iso_1
+            # iso_2
             - jpt_1
             - jpt_2
-            - jm_1
-            - jm_2
             - bpt_1
             - bpt_2
+            # njets
             - nbtag
             - m_sv
             - mt_1
+            # mt_2
+            - ptvis
+            - pt_tt
+            - mjj
+            - jdeta
+            - m_vis
+            - dijetpt
+            - met
+    2017:
+        mt:
+            - pt_1
+            - pt_2
+            - iso_1
+            - iso_2
+            - jpt_1
+            - jpt_2
+            - bpt_1
+            - bpt_2
+            - njets
+            - nbtag
+            - m_sv
+            - mt_1
+            - mt_2
+            - ptvis
+            - pt_tt
+            - mjj
+            - jdeta
+            - m_vis
+            - dijetpt
+            - met
+        et:
+            # pt_1
+            - pt_2
+            # iso_1
+            # iso_2
+            - jpt_1
+            - jpt_2
+            - bpt_1
+            - bpt_2
+            - njets
+            - nbtag
+            - m_sv
+            - mt_1
+            - mt_2
+            - ptvis
+            - pt_tt
+            - mjj
+            - jdeta
+            - m_vis
+            - dijetpt
+            - met
+        tt:
+            - pt_1
+            - pt_2
+            # iso_1
+            # iso_2
+            - jpt_1
+            - jpt_2
+            - bpt_1
+            - bpt_2
+            # njets
+            - nbtag
+            - m_sv
+            - mt_1
+            # mt_2
+            - ptvis
             - pt_tt
             - mjj
             - jdeta
