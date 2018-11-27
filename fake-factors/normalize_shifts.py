@@ -70,6 +70,10 @@ def main(args):
 
             norm_shift = h_shift.Integral()
             norm_nominal = h_nominal.Integral()
+            if norm_shift == 0:
+                logger.warning("Found shift with integral of zero for systematic %s. Continue.",
+                        name)
+                continue
             scale = norm_nominal / norm_shift
             logger.debug(
                 "Renormalize systematic %s (%f) with integral of %s (%f): %f",
