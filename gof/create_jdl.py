@@ -39,11 +39,11 @@ def main(args):
 
     # 2D fits
     for channel in binning["gof"]:
-        selected_2d_fits = []
-        for var1 in variables["selected_variables"][int(args.era)][channel]:
-            for var2 in variables["selected_variables"][int(args.era)][channel]:
-                selected_2d_fits.append("{}_{}".format(var1, var2))
-        for variable in selected_2d_fits:
+        2d_fits = []
+        for var1 in variables:
+            for var2 in variables:
+                2d_fits.append("{}_{}".format(var1, var2))
+        for variable in 2d_fits:
             if variable in binning["gof"][channel]:
                 arguments.append("{} {} {}".format(args.era, channel, variable))
 
