@@ -35,13 +35,12 @@ global_weight_scale: 1.0
 event_weights: training_weight
 
 # Define list of variables to be used for training
-# NOTE: Outcommented lines are not passing the 1D GoF test.
-# TODO: This list is not yet final.
+# NOTE: This list is not yet final.
 variables:
     - pt_1
     - pt_2
-    - iso_1
-    - iso_2
+    # iso_1
+    # iso_2
     - jpt_1
     - jpt_2
     - bpt_1
