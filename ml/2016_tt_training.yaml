@@ -16,11 +16,11 @@ classes:
 
 # Set class weights
 class_weights:
-    ggh: 149.6
-    qqh: 531.3
+    ggh: 149.1
+    qqh: 620.9
     ztt: 3.3
     noniso: 1.7
-    misc: 9.6
+    misc: 9.9
 
 # Define global scale factor, which is multiplied to all event weights
 global_weight_scale: 1.0

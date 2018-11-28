@@ -19,14 +19,14 @@ classes:
 
 # Set class weights
 class_weights:
-    ggh: 214.2
-    qqh: 1928.7
-    ztt: 2.2
-    zll: 6.8
-    w: 6.0
-    tt: 39.4
+    ggh: 211.0
+    qqh: 2081.3
+    ztt: 2.1
+    zll: 7.4
+    w: 5.9
+    tt: 38.8
     ss: 6.0
-    misc: 42.9
+    misc: 42.3
 
 # Define global scale factor, which is multiplied to all event weights
 global_weight_scale: 1.0

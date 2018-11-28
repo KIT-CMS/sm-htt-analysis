@@ -19,14 +19,14 @@ classes:
 
 # Set class weights
 class_weights:
-    ggh: 212.1
-    qqh: 2164.5
+    ggh: 212.5
+    qqh: 2345.8
     ztt: 1.6
-    zll: 20.7
-    w: 7.8
-    tt: 52.7
-    ss: 6.7
-    misc: 51.3
+    zll: 20.0
+    w: 7.9
+    tt: 52.9
+    ss: 6.8
+    misc: 51.4
 
 # Define global scale factor, which is multiplied to all event weights
 global_weight_scale: 1.0
@@ -35,12 +35,11 @@ global_weight_scale: 1.0
 event_weights: training_weight
 
 # Define list of variables to be used for training
-# NOTE: This list is not yet final.
 variables:
     - pt_1
     - pt_2
-    # iso_1
-    # iso_2
+    # iso_1     # Failed 1D GoF
+    # iso_2     # Failed 1D GoF
     - jpt_1
     - jpt_2
     - bpt_1
