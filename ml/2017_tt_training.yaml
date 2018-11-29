@@ -16,11 +16,11 @@ classes:
 
 # Set class weights
 class_weights:
-    ggh: 148.9
-    qqh: 2056.3
+    ggh: 297.9
+    qqh: 2183.2
     ztt: 7.0
-    noniso: 1.3
-    misc: 19.8
+    noniso: 1.2
+    misc: 19.5
 
 # Define global scale factor, which is multiplied to all event weights
 global_weight_scale: 1.0
@@ -29,43 +29,27 @@ global_weight_scale: 1.0
 event_weights: training_weight
 
 # Define list of variables to be used for training
-# NOTE: This is the selection based on 2016 data.
 variables:
     - pt_1
-    - pt_2
-#   - eta_1
-#   - eta_2
-#   - phi_1
-#   - phi_2
+    # pt_2      # Failed 1D GoF
+    # iso_1     # Failed 1D GoF
+    # iso_2     # Failed 1D GoF
     - jpt_1
     - jpt_2
-#   - jeta_1
-#   - jeta_2
-#   - jphi_1
-#   - jphi_2
-#   - jcsv_1
-    - jm_1
-    - jm_2
-    - jmva_1
-    - jmva_2
-#   - bpt_1
-#   - bpt_2
-#   - beta_1
-#   - bphi_1
-#   - bphi_2
-    - bcsv_1
-#   - bcsv_2
-#   - nbtag
+    - bpt_1
+    - bpt_2
+    - njets
+    - nbtag
     - m_sv
-#   - mt_1
+    - mt_1
+    - mt_2
+    - ptvis
     - pt_tt
     - mjj
     - jdeta
     - m_vis
     - dijetpt
-#   - dijetphi
     - met
-#   - metphi
 
 # Split of dataset in training and validation (in TMVA called training and testing)
 train_test_split: 0.75
