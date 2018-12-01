@@ -20,6 +20,28 @@ formatter = logging.Formatter("%(name)s - %(levelname)s - %(message)s")
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
+labeldict = {
+    'pt_1' : '$p_{T}(\\tau_1$)',
+    'pt_2' : '$p_{T}(\\tau_2)$',
+    'iso_1' : 'iso($\\tau_1$)',
+    'iso_2' : 'iso($\\tau_2$)',
+    'jpt_1' : 'Leading jet $p_T$',
+    'jpt_2' : 'Sub-leading jet $p_T$',
+    'bpt_1' : 'Leading b-jet $p_T$',
+    'bpt_2' : 'Sub-leading b-jet $p_T$',
+    'njets' : 'number of jets',
+    'nbtag' : 'number of b-jets',
+    'm_sv' : 'di-$\\tau$ mass',
+    'mt_1' : '$m_{T}(\\tau_1,MET)$',
+    'mt_2' : '$m_{T}(\\tau_2,MET)$',
+    'ptvis' : 'visible $p_T(\\tau\\tau)$',
+    'pt_tt' : '$p_T(\\tau\\tau)$',
+    'mjj' : 'di-jet mass',
+    'jdeta' : '$\Delta\eta_{jj}$',
+    'm_vis' : 'visible di-$\\tau$ mass',
+    'dijetpt' : '$p_T(jj)$',
+    'met' : 'MET'
+}
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
@@ -75,10 +97,10 @@ def plot_2d(variables, results, filename):
     cbar.set_label(
         'Saturated goodness of fit p-value', rotation=270, labelpad=50)
     plt.xticks(
-        np.array(range(len(variables))) + 0.5, variables, rotation='vertical')
+        np.array(range(len(variables))) + 0.5, [labeldict[x] for x in variables], rotation='vertical')
     plt.yticks(
         np.array(range(len(variables))) + 0.5,
-        variables,
+        [labeldict[x] for x in variables],
         rotation='horizontal')
     plt.xlim(0, len(variables))
     plt.ylim(0, len(variables))
@@ -92,7 +114,7 @@ def plot_1d(variables, results, filename):
     plt.plot(x, y, '+', mew=4, ms=16)
     plt.ylim((-0.05, 1.05))
     plt.xlim((-0.5, len(x) - 0.5))
-    plt.xticks(x, variables, rotation='vertical')
+    plt.xticks(x, [labeldict[x] for x in variables], rotation='vertical')
     plt.axhline(y=0.05, linewidth=3, color='r')
     plt.ylabel('Saturated goodness of fit p-value', labelpad=20)
     ax = plt.gca()
