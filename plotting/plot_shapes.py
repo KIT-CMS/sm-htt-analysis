@@ -312,7 +312,7 @@ def main(args):
                     else:
                         plot.setNXdivisions(4, 0, 0, False)
                     plot.scaleXLabelSize(0.5)
-                    plot.unroll(["VBFTOPO_JET3VETO", "VBFTOPO_JET3", "0J", "1J_PTH_0_60", "1J_PTH_60_120", "1J_PTH_120_200", "1J_PTH_GT200", "GE2J_PTH_0_60", "GE2J_PTH_60_120", "GE2J_PTH_120_200", "GE2J_PTH_GT200"], ur_label_size = 0.5, pads_to_print_labels=[0])
+                    plot.unroll(["0J", "1J_PTH_0_60", "1J_PTH_60_120", "1J_PTH_120_200", "1J_PTH_GT200", "GE2J_PTH_0_60", "GE2J_PTH_60_120", "GE2J_PTH_120_200", "GE2J_PTH_GT200"], ur_label_size = 0.5, pads_to_print_labels=[0])
                 if category in ["2"]:
                     if not channel == "tt":
                         plot.setNXdivisions(7, 0, 4, False)
