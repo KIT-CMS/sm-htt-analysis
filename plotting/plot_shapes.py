@@ -118,16 +118,16 @@ def main(args):
     else:
         category_dict = {
             "1": "ggH",
-            "2": "VBF",
+            "2": "qqH",
             "3": "ggH, unrolled",
-            "4": "VBF, unrolled",
-            "12": "Z#rightarrow#tau#tau",
-            "15": "Z#rightarrowll",
-            "11": "W+jets",
-            "13": "t#bar{t}",
-            "14": "same sign",
+            "4": "qqH, unrolled",
+            "12": "ztt",
+            "15": "zll",
+            "11": "wjets",
+            "13": "tt",
+            "14": "qcd",
             "16": "misc",
-            "17": "noniso"
+            "17": "qcd"
         }
     if args.linear == True:
         split_value = 0
@@ -158,8 +158,6 @@ def main(args):
     legend_bkg_processes = copy.deepcopy(bkg_processes)
     legend_bkg_processes.reverse()
 
-    rootfile = rootfile_parser.Rootfile_parser(args.input)
-
     if "2016" in args.era:
         era = "Run2016"
     elif "2017" in args.era:
@@ -171,6 +169,7 @@ def main(args):
     plots = []
     for channel in args.channels:
         for category in channel_categories[channel]:
+            rootfile = rootfile_parser.Rootfile_parser(args.input)
             tranche = None
             if "_" in category:
                 tranche = category.split("_")[1]
@@ -277,6 +276,9 @@ def main(args):
             plot.subplot(2).setYlims(0.75, 1.45)
             if category in ["2"]:
                 plot.subplot(2).setYlims(0.55, 2.05)
+            if category in ["1", "2"]:
+                plot.subplot(0).setLogY()
+                plot.subplot(0).setYlims(0.1, 150000)
             if args.linear != True:
                 plot.subplot(1).setYlims(0.1, split_dict[channel])
                 plot.subplot(1).setLogY()
@@ -290,13 +292,13 @@ def main(args):
                     x_label = args.gof_variable
                 plot.subplot(2).setXlabel(x_label)
             else:
-                plot.subplot(2).setXlabel("NN score")
+                plot.subplot(2).setXlabel("NN output")
             if args.normalize_by_bin_width:
-                plot.subplot(0).setYlabel("N_{events}/bin width")
+                plot.subplot(0).setYlabel("dN/d(NN output)")
             else:
                 plot.subplot(0).setYlabel("N_{events}")
 
-            plot.subplot(2).setYlabel("Ratio to Bkg.")
+            plot.subplot(2).setYlabel("")
 
             #plot.scaleXTitleSize(0.8)
             #plot.scaleXLabelSize(0.8)
@@ -319,11 +321,11 @@ def main(args):
                     elif tranche == "C":
                         selection = [5,6,7,8]
                     if not channel == "tt":
-                        plot.setNXdivisions(7, 0, 0, False)
-                    else:
-                        plot.setNXdivisions(4, 0, 0, False)
-                    plot.scaleXLabelSize(0.5)
-                    plot.unroll(["0J", "1J_PTH_0_60", "1J_PTH_60_120", "1J_PTH_120_200", "1J_PTH_GT200", "GE2J_PTH_0_60", "GE2J_PTH_60_120", "GE2J_PTH_120_200", "GE2J_PTH_GT200"], ur_label_size = 0.5, pads_to_print_labels=[0], selection=selection)
+                        plot.setNXdivisions(7, 0, 4, False)
+                    #else:
+                    #    plot.setNXdivisions(4, 0, 0, False)
+                    #plot.scaleXLabelSize(0.5)
+                    plot.unroll(["0J", "1J_PTH_0_60", "1J_PTH_60_120", "1J_PTH_120_200", "1J_PTH_GT200", "GE2J_PTH_0_60", "GE2J_PTH_60_120", "GE2J_PTH_120_200", "GE2J_PTH_GT200"], ur_label_size = 0.5, pads_to_print_labels=[], selection=selection)
                 if category in ["2"]:
                     selection =	None
        	       	    if tranche == "A":
@@ -332,7 +334,7 @@ def main(args):
                         selection = [2,3,4]
                     if not channel == "tt":
                         plot.setNXdivisions(7, 0, 4, False)
-                    plot.unroll(["VBFTOPO_JET3VETO", "VBFTOPO_JET3", "VH2JET", "REST", "PTJET1_GT200"], ur_label_size = 0.9, pads_to_print_labels=[0], selection=selection)
+                    plot.unroll(["VBFTOPO_JET3VETO", "VBFTOPO_JET3", "VH2JET", "REST", "PTJET1_GT200"], ur_label_size = 0.9, pads_to_print_labels=[], selection=selection)
 
             # draw subplots. Argument contains names of objects to be drawn in corresponding order.
             plot.subplot(0).Draw(["stack", "total_bkg", "data_obs"])
@@ -353,10 +355,10 @@ def main(args):
                 plot.add_legend(width=0.3 if args.categories == "stxs_stage1" and (category=="2" or (category=="1" and tranche!="A")) else 0.6, height=0.15)
                 for process in legend_bkg_processes:
                     plot.legend(i).add_entry(
-                        0, process, styles.legend_label_dict[process], 'f')
+                        0, process, styles.legend_label_dict[process.replace("TTL", "TT").replace("VVL", "VV")], 'f')
                 plot.legend(i).add_entry(0, "total_bkg", "Bkg. unc.", 'f')
-                plot.legend(i).add_entry(1, "ggH%s" % suffix[i], "ggH", 'l')
-                plot.legend(i).add_entry(1, "qqH%s" % suffix[i], "qqH", 'l')
+                plot.legend(i).add_entry(1, "ggH%s" % suffix[i], "gg#rightarrowH", 'l')
+                plot.legend(i).add_entry(1, "qqH%s" % suffix[i], "qq#rightarrowH", 'l')
                 plot.legend(i).add_entry(0, "data_obs", "Data", 'PE')
                 plot.legend(i).setNColumns(3)
             plot.legend(0).Draw()
