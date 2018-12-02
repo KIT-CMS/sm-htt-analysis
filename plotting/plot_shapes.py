@@ -97,10 +97,10 @@ def main(args):
         }
         if args.categories == "stxs_stage0":
             for channel in ["et", "mt", "tt"]:
-                channel_categories[channel] += ["1", "2"]
+                channel_categories[channel] += ["1_A", "1_B", "1_C", "2_A", "2_B"]
         elif args.categories == "stxs_stage1":
             for channel in ["et", "mt", "tt"]:
-                channel_categories[channel] += ["1", "2"]
+                channel_categories[channel] += ["1_A", "1_B", "1_C", "2_A", "2_B"]
         else:
             logger.critical("Selected unkown STXS categorization {}",
                             args.categories)
@@ -171,6 +171,10 @@ def main(args):
     plots = []
     for channel in args.channels:
         for category in channel_categories[channel]:
+            tranche = None
+            if "_" in category:
+                tranche = category.split("_")[1]
+                category = category.split("_")[0]
             if channel == "tt" and category=="2":
                     bkg_processes = [
                         b for b in all_bkg_processes if b not in ["TTL"]
@@ -182,7 +186,7 @@ def main(args):
             # create plot
             width = 600
             if args.categories == "stxs_stage1":
-                if category in ["1", "2"]:
+                if category == "2" or (category == "1" and tranche != "A"):
                     width = 1200
             if args.linear == True:
                 plot = dd.Plot(
@@ -307,16 +311,28 @@ def main(args):
                 if not channel == "tt":
                     plot.subplot(2).changeXLabels([" ", "0.25", " ", "0.50", " ", "0.75", " ", " "])
                 if category in ["1"]:
+                    selection = None
+                    if tranche == "A":
+                        selection = [0]
+                    elif tranche == "B":
+                        selection = [1,2,3,4]
+                    elif tranche == "C":
+                        selection = [5,6,7,8]
                     if not channel == "tt":
                         plot.setNXdivisions(7, 0, 0, False)
                     else:
                         plot.setNXdivisions(4, 0, 0, False)
                     plot.scaleXLabelSize(0.5)
-                    plot.unroll(["0J", "1J_PTH_0_60", "1J_PTH_60_120", "1J_PTH_120_200", "1J_PTH_GT200", "GE2J_PTH_0_60", "GE2J_PTH_60_120", "GE2J_PTH_120_200", "GE2J_PTH_GT200"], ur_label_size = 0.5, pads_to_print_labels=[0])
+                    plot.unroll(["0J", "1J_PTH_0_60", "1J_PTH_60_120", "1J_PTH_120_200", "1J_PTH_GT200", "GE2J_PTH_0_60", "GE2J_PTH_60_120", "GE2J_PTH_120_200", "GE2J_PTH_GT200"], ur_label_size = 0.5, pads_to_print_labels=[0], selection=selection)
                 if category in ["2"]:
+                    selection =	None
+       	       	    if tranche == "A":
+                        selection = [0,1]
+       	       	    elif tranche == "B":
+                        selection = [2,3,4]
                     if not channel == "tt":
                         plot.setNXdivisions(7, 0, 4, False)
-                    plot.unroll(["VBFTOPO_JET3VETO", "VBFTOPO_JET3", "VH2JET", "REST", "PTJET1_GT200"], ur_label_size = 0.9, pads_to_print_labels=[0])
+                    plot.unroll(["VBFTOPO_JET3VETO", "VBFTOPO_JET3", "VH2JET", "REST", "PTJET1_GT200"], ur_label_size = 0.9, pads_to_print_labels=[0], selection=selection)
 
             # draw subplots. Argument contains names of objects to be drawn in corresponding order.
             plot.subplot(0).Draw(["stack", "total_bkg", "data_obs"])
@@ -334,7 +350,7 @@ def main(args):
             suffix = ["", "_top"]
             for i in range(2):
 
-                plot.add_legend(width=0.3 if args.categories == "stxs_stage1" and category in ["1", "2"] else 0.6, height=0.15)
+                plot.add_legend(width=0.3 if args.categories == "stxs_stage1" and (category=="2" or (category=="1" and tranche!="A")) else 0.6, height=0.15)
                 for process in legend_bkg_processes:
                     plot.legend(i).add_entry(
                         0, process, styles.legend_label_dict[process], 'f')
@@ -394,7 +410,7 @@ def main(args):
 
             # save plot
             postfix = "prefit" if "prefit" in args.input else "postfit" if "postfit" in args.input else "undefined"
-            plot.save("plots/%s_%s_%s_%s.%s" % (args.era, channel, args.gof_variable if args.gof_variable is not None else category,
+            plot.save("plots/%s_%s_%s_%s.%s" % (args.era, channel, args.gof_variable if args.gof_variable is not None else category if tranche==None else "_".join([category, tranche]),
                                                 postfix, "png"
                                                 if args.png else "pdf"))
             plots.append(
