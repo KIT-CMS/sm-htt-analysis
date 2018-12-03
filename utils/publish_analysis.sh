@@ -4,9 +4,11 @@ ERA=$1
 OUTPUT_PATH=$2
 
 # Category plots
-mkdir -p ${OUTPUT_PATH}
-cp ${ERA}_plots/*.png ${OUTPUT_PATH}
-cp utils/index.php ${OUTPUT_PATH}
+mkdir -p ${OUTPUT_PATH}/${ERA}_plots
+cp utils/index.php ${OUTPUT_PATH}/
+cp ${ERA}_plots/*.png ${OUTPUT_PATH}/${ERA}_plots
+cp ${ERA}_plots/*.pdf ${OUTPUT_PATH}/${ERA}_plots
+cp utils/index.php ${OUTPUT_PATH}/${ERA}_plots
 
 # ML
 for CHANNEL in "et" "mt" "tt"
