@@ -49,13 +49,13 @@ variables:
     - m_sv
     - mt_1
     # mt_2      # Failed 1D GoF
-    - ptvis
+    # ptvis     # Failed 2D GoF
     - pt_tt
     - mjj
     - jdeta
     # m_vis     # Failed 1D GoF
     - dijetpt
-    - met
+    # met       # Failed 2D GoF
 
 # Split of dataset in training and validation (in TMVA called training and testing)
 train_test_split: 0.75

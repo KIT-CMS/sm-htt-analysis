@@ -124,7 +124,7 @@ selected_variables:
             - met
     2017:
         mt:
-            - pt_1
+            # pt_1
             - pt_2
             # iso_1
             # iso_2
@@ -136,12 +136,12 @@ selected_variables:
             - nbtag
             - m_sv
             - mt_1
-            - mt_2
+            # mt_2
             - ptvis
             - pt_tt
             - mjj
             - jdeta
-            - m_vis
+            # m_vis
             - dijetpt
             - met
         et:
@@ -167,18 +167,18 @@ selected_variables:
             - met
         tt:
             - pt_1
-            - pt_2
+            # pt_2
             # iso_1
             # iso_2
             - jpt_1
             - jpt_2
             - bpt_1
             - bpt_2
-            # njets
+            - njets
             - nbtag
             - m_sv
             - mt_1
-            # mt_2
+            - mt_2
             - ptvis
             - pt_tt
             - mjj

@@ -53,7 +53,7 @@ variables:
     - pt_tt
     - mjj
     - jdeta
-    - m_vis
+    # m_vis     # Failed 2D GoF
     - dijetpt
     - met
 
