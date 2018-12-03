@@ -5,7 +5,7 @@ OUTPUT_PATH=$2
 
 # Category plots
 mkdir -p ${OUTPUT_PATH}
-cp plots/*.png ${OUTPUT_PATH}
+cp ${ERA}_plots/*.png ${OUTPUT_PATH}
 cp utils/index.php ${OUTPUT_PATH}
 
 # ML

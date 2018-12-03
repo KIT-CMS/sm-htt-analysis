@@ -33,6 +33,6 @@ sed -i "s%CMSSW_7_4_7%${BASE_PATH}/CMSSW_7_4_7%g" utils/setup_cmssw.sh
 ./gof/run_gof.sh $ERA $CHANNEL $VARIABLE
 
 mkdir -p $OUTPUT_DIR
-cp -r plots/ gof.* $OUTPUT_DIR
+cp -r ${ERA}_plots/ gof.* $OUTPUT_DIR
 
 echo "### End of job"
