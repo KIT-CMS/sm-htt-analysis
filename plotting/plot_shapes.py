@@ -202,14 +202,15 @@ def main(args):
                     process, "hist", fillcolor=styles.color_dict[process])
 
             # get signal histograms
-            for i in range(2):
-                plot.subplot(i + 1).add_hist(
+            plot_idx_to_add_signal = [0,2] if args.linear else [1,2]
+            for i in plot_idx_to_add_signal:
+                plot.subplot(i).add_hist(
                     rootfile.get(era, channel, category, "ggH"), "ggH")
-                plot.subplot(i + 1).add_hist(
+                plot.subplot(i).add_hist(
                     rootfile.get(era, channel, category, "ggH"), "ggH_top")
-                plot.subplot(i + 1).add_hist(
+                plot.subplot(i).add_hist(
                     rootfile.get(era, channel, category, "qqH"), "qqH")
-                plot.subplot(i + 1).add_hist(
+                plot.subplot(i).add_hist(
                     rootfile.get(era, channel, category, "qqH"), "qqH_top")
 
             # get observed data and total background histograms
@@ -278,7 +279,7 @@ def main(args):
                 plot.subplot(2).setYlims(0.55, 2.05)
             if category in ["1", "2"]:
                 plot.subplot(0).setLogY()
-                plot.subplot(0).setYlims(0.1, 150000)
+                plot.subplot(0).setYlims(0.1, 15000000 if channel in ["et", "mt"] and category=="1" and tranche=="A" else 150000)
             if args.linear != True:
                 plot.subplot(1).setYlims(0.1, split_dict[channel])
                 plot.subplot(1).setLogY()
