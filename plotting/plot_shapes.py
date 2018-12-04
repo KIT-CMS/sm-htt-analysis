@@ -358,8 +358,8 @@ def main(args):
                     plot.legend(i).add_entry(
                         0, process, styles.legend_label_dict[process.replace("TTL", "TT").replace("VVL", "VV")], 'f')
                 plot.legend(i).add_entry(0, "total_bkg", "Bkg. unc.", 'f')
-                plot.legend(i).add_entry(1, "ggH%s" % suffix[i], "gg#rightarrowH", 'l')
-                plot.legend(i).add_entry(1, "qqH%s" % suffix[i], "qq#rightarrowH", 'l')
+                plot.legend(i).add_entry(0 if args.linear else 1, "ggH%s" % suffix[i], "gg#rightarrowH", 'l')
+                plot.legend(i).add_entry(0 if args.linear else 1, "qqH%s" % suffix[i], "qq#rightarrowH", 'l')
                 plot.legend(i).add_entry(0, "data_obs", "Data", 'PE')
                 plot.legend(i).setNColumns(3)
             plot.legend(0).Draw()
@@ -413,7 +413,7 @@ def main(args):
 
             # save plot
             postfix = "prefit" if "prefit" in args.input else "postfit" if "postfit" in args.input else "undefined"
-            plot.save("%s_plots/%s_%s_%s_%s.%s" % (args.era, args.era, channel, args.gof_variable if args.gof_variable is not None else category if tranche==None else "_".join([category, tranche]),
+            plot.save("plots/%s_%s_%s_%s.%s" % (args.era, channel, args.gof_variable if args.gof_variable is not None else category if tranche==None else "_".join([category, tranche]),
                                                 postfix, "png"
                                                 if args.png else "pdf"))
             plots.append(
