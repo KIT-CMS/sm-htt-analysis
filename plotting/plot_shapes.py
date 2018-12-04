@@ -338,7 +338,8 @@ def main(args):
                     plot.unroll(["VBFTOPO_JET3VETO", "VBFTOPO_JET3", "VH2JET", "REST", "PTJET1_GT200"], ur_label_size = 0.9, pads_to_print_labels=[], selection=selection)
 
             # draw subplots. Argument contains names of objects to be drawn in corresponding order.
-            plot.subplot(0).Draw(["stack", "total_bkg", "data_obs"])
+            procs_to_draw = ["stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top", "data_obs"] if args.linear else ["stack", "total_bkg", "data_obs"]
+            plot.subplot(0).Draw(procs_to_draw)
             if args.linear != True:
                 plot.subplot(1).Draw([
                     "stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top",
@@ -383,9 +384,9 @@ def main(args):
                 plot.add_legend(
                     reference_subplot=2, pos=1, width=0.5, height=0.03)
                 plot.legend(i + 2).add_entry(0, "data_obs", "Data", 'PE')
-                plot.legend(i + 2).add_entry(1, "ggH%s" % suffix[i],
+                plot.legend(i + 2).add_entry(0 if args.linear else 1, "ggH%s" % suffix[i],
                                              "ggH+bkg.", 'l')
-                plot.legend(i + 2).add_entry(1, "qqH%s" % suffix[i],
+                plot.legend(i + 2).add_entry(0 if args.linear else 1, "qqH%s" % suffix[i],
                                              "qqH+bkg.", 'l')
                 plot.legend(i + 2).add_entry(0, "total_bkg", "Bkg. unc.", 'f')
                 plot.legend(i + 2).setNColumns(4)
