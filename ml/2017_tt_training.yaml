@@ -37,8 +37,8 @@ variables:
     - jpt_1
     - jpt_2
     - bpt_1
-    - bpt_2     # Failed 2D GoF
-    - njets     # Failed 2D GoF
+    # bpt_2     # Failed 2D GoF
+    # njets     # Failed 2D GoF
     - nbtag
     - m_sv
     - mt_1
