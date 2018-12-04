@@ -220,12 +220,12 @@ def main(args):
                 rootfile.get(era, channel, category, "TotalBkg"), "total_bkg")
 
             plot.subplot(0).setGraphStyle("data_obs", "e0")
-            plot.subplot(1).setGraphStyle(
+            plot.subplot(0 if args.linear else 1).setGraphStyle(
                 "ggH", "hist", linecolor=styles.color_dict["ggH"], linewidth=3)
-            plot.subplot(1).setGraphStyle("ggH_top", "hist", linecolor=0)
-            plot.subplot(1).setGraphStyle(
+            plot.subplot(0 if args.linear else 1).setGraphStyle("ggH_top", "hist", linecolor=0)
+            plot.subplot(0 if args.linear else 1).setGraphStyle(
                 "qqH", "hist", linecolor=styles.color_dict["qqH"], linewidth=3)
-            plot.subplot(1).setGraphStyle("qqH_top", "hist", linecolor=0)
+            plot.subplot(0 if args.linear else 1).setGraphStyle("qqH_top", "hist", linecolor=0)
             plot.setGraphStyle(
                 "total_bkg",
                 "e2",
