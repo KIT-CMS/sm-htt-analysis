@@ -167,7 +167,7 @@ selected_variables:
             - met
         tt:
             - pt_1
-            # pt_2
+            - pt_2
             # iso_1
             # iso_2
             - jpt_1
@@ -179,10 +179,10 @@ selected_variables:
             - m_sv
             - mt_1
             - mt_2
-            - ptvis
+            # ptvis
             - pt_tt
             - mjj
             - jdeta
             - m_vis
             - dijetpt
-            - met
+            # met

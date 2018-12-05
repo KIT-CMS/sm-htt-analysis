@@ -30,26 +30,26 @@ event_weights: training_weight
 
 # Define list of variables to be used for training
 variables:
-    # pt_1      # Failed 2D GoF
-    # pt_2      # Failed 1D GoF
+    - pt_1
+    # pt_2      # Failed 2D GoF
     # iso_1     # Failed 1D GoF
     # iso_2     # Failed 1D GoF
-    - jpt_1
+    # jpt_1     # Failed 2D GoF
     - jpt_2
     - bpt_1
-    # bpt_2     # Failed 2D GoF
-    # njets     # Failed 2D GoF
+    - bpt_2
+    - njets
     - nbtag
     - m_sv
     - mt_1
     - mt_2
-    - ptvis
+    # ptvis     # Failed 1D GoF
     - pt_tt
     - mjj
     - jdeta
     - m_vis
     - dijetpt
-    # met       # Failed 2D GoF
+    # met       # Failed 1D GoF
 
 # Split of dataset in training and validation (in TMVA called training and testing)
 train_test_split: 0.75
