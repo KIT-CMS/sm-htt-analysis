@@ -93,6 +93,17 @@ def main(args):
                 hist.SetTitle(name_output)
                 hist.SetName(name_output)
                 hist.Write()
+                if "Run201" in name_output:
+                    if ("scale_t_" in name_output
+                            or "scale_mc_t_" in name_output
+                            or "scale_emb_t_" in name_output
+                            or "scale_j_" in name_output
+                            or "_1ProngPi0Eff_" in name_output
+                            or "_1ProngEff_" in name_output
+                            or ("_ff_" in name_output and "_syst_" in name_output)):
+                        hist.SetTitle(name_output.replace("_Run2016", "").replace("_Run2017", ""))
+                        hist.SetName(name_output.replace("_Run2016", "").replace("_Run2017", ""))
+                        hist.Write()
         file_output.Close()
 
     # Clean-up

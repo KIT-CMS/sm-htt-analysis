@@ -633,7 +633,7 @@ def main(args):
 
     # MET energy scale
     met_unclustered_variations = create_systematic_variations(
-        "CMS_scale_met_unclustered_Run2016", "metUnclusteredEn",
+        "CMS_scale_met_unclustered", "metUnclusteredEn",
         DifferentPipeline)
     # NOTE: Clustered MET not used anymore in the uncertainty model
     #met_clustered_variations = create_systematic_variations(
@@ -663,10 +663,10 @@ def main(args):
 
     # Recoil correction unc
     recoil_resolution_variations = create_systematic_variations(
-        "CMS_htt_boson_reso_met_Run2016", "metRecoilResolution",
+        "CMS_htt_boson_reso_met", "metRecoilResolution",
         DifferentPipeline)
     recoil_response_variations = create_systematic_variations(
-        "CMS_htt_boson_scale_met_Run2016", "metRecoilResponse",
+        "CMS_htt_boson_scale_met", "metRecoilResponse",
         DifferentPipeline)
     for variation in recoil_resolution_variations + recoil_response_variations:
         for process_nick in [
@@ -692,7 +692,7 @@ def main(args):
 
     # Z pt reweighting
     zpt_variations = create_systematic_variations(
-        "CMS_htt_dyShape_Run2016", "zPtReweightWeight", SquareAndRemoveWeight)
+        "CMS_htt_dyShape", "zPtReweightWeight", SquareAndRemoveWeight)
     for variation in zpt_variations:
         for process_nick in ["ZTT", "ZL", "ZJ"]:
             if "et" in [args.gof_channel] + args.channels:
@@ -716,7 +716,7 @@ def main(args):
 
     # top pt reweighting
     top_pt_variations = create_systematic_variations(
-        "CMS_htt_ttbarShape_Run2016", "topPtReweightWeight",
+        "CMS_htt_ttbarShape", "topPtReweightWeight",
         SquareAndRemoveWeight)
     for variation in top_pt_variations:
         for process_nick in ["TTT", "TTL", "TTJ"]:
@@ -1017,7 +1017,7 @@ def main(args):
                     process=mt_processes['ZTTpTTTauTauDown'],
                     analysis="smhtt",
                     era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar_Run2016", "Down"),
+                    variation=Relabel("CMS_htt_emb_ttbar", "Down"),
                     mass="125"))
 
             mt_processes['ZTTpTTTauTauUp'] = Process(
@@ -1031,7 +1031,7 @@ def main(args):
                     process=mt_processes['ZTTpTTTauTauUp'],
                     analysis="smhtt",
                     era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar_Run2016", "Up"),
+                    variation=Relabel("CMS_htt_emb_ttbar", "Up"),
                     mass="125"))
 
     if 'et' in [args.gof_channel] + args.channels:
@@ -1047,7 +1047,7 @@ def main(args):
                     process=et_processes['ZTTpTTTauTauDown'],
                     analysis="smhtt",
                     era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar_Run2016", "Down"),
+                    variation=Relabel("CMS_htt_emb_ttbar", "Down"),
                     mass="125"))
 
             et_processes['ZTTpTTTauTauUp'] = Process(
@@ -1061,7 +1061,7 @@ def main(args):
                     process=et_processes['ZTTpTTTauTauUp'],
                     analysis="smhtt",
                     era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar_Run2016", "Up"),
+                    variation=Relabel("CMS_htt_emb_ttbar", "Up"),
                     mass="125"))
     if 'tt' in [args.gof_channel] + args.channels:
         for category in tt_categories:
@@ -1076,7 +1076,7 @@ def main(args):
                     process=tt_processes['ZTTpTTTauTauDown'],
                     analysis="smhtt",
                     era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar_Run2016", "Down"),
+                    variation=Relabel("CMS_htt_emb_ttbar", "Down"),
                     mass="125"))
 
             tt_processes['ZTTpTTTauTauUp'] = Process(
@@ -1090,7 +1090,7 @@ def main(args):
                     process=tt_processes['ZTTpTTTauTauUp'],
                     analysis="smhtt",
                     era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar_Run2016", "Up"),
+                    variation=Relabel("CMS_htt_emb_ttbar", "Up"),
                     mass="125"))
 
     # Fake factor uncertainties
@@ -1187,11 +1187,11 @@ def main(args):
             "THU_ggH_qmtop"
     ]:
         ggh_variations.append(
-            AddWeight("{}_Run2016".format(unc), "{}_weight".format(unc),
+            AddWeight(unc, "{}_weight".format(unc),
                       Weight("({})".format(unc), "{}_weight".format(unc)),
                       "Up"))
         ggh_variations.append(
-            AddWeight("{}_Run2016".format(unc), "{}_weight".format(unc),
+            AddWeight(unc, "{}_weight".format(unc),
                       Weight("(1.0/{})".format(unc), "{}_weight".format(unc)),
                       "Down"))
     for variation in ggh_variations:
