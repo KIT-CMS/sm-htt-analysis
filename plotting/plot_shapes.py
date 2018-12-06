@@ -85,6 +85,7 @@ def main(args):
             "et": ["100"],
             "mt": ["100"],
             "tt": ["100"],
+            "em": ["100"]
         }
     else:
         channel_categories = {
@@ -93,13 +94,14 @@ def main(args):
             #"mt": ["ztt", "zll", "w", "tt", "ss", "misc"],
             "mt": ["12", "15", "11", "13", "14", "16"],
             #"tt": ["ztt", "noniso", "misc"]
-            "tt": ["12", "17", "16"]
+            "tt": ["12", "17", "16"],
+            "em": ["12", "13", "14", "16", "18", "19"]
         }
         if args.categories == "stxs_stage0":
-            for channel in ["et", "mt", "tt"]:
+            for channel in ["et", "mt", "tt", "em"]:
                 channel_categories[channel] += ["1_A", "1_B", "1_C", "2_A", "2_B"]
         elif args.categories == "stxs_stage1":
-            for channel in ["et", "mt", "tt"]:
+            for channel in ["et", "mt", "tt", "em"]:
                 channel_categories[channel] += ["1_A", "1_B", "1_C", "2_A", "2_B"]
         else:
             logger.critical("Selected unkown STXS categorization {}",
@@ -127,7 +129,9 @@ def main(args):
             "13": "tt",
             "14": "qcd",
             "16": "misc",
-            "17": "qcd"
+            "17": "qcd",
+            "18": "single top",
+            "19": "diboson"
         }
     if args.linear == True:
         split_value = 0
@@ -137,7 +141,7 @@ def main(args):
         else:
             split_value = 101
 
-    split_dict = {c: split_value for c in ["et", "mt", "tt"]}
+    split_dict = {c: split_value for c in ["et", "mt", "tt", "em"]}
 
     bkg_processes = [
         "VVL", "TTL", "ZL", "jetFakes", "EMB"
@@ -178,6 +182,10 @@ def main(args):
                     bkg_processes = [
                         b for b in all_bkg_processes if b not in ["TTL"]
                     ]
+            elif channel == "em" and args.embedding:
+                bkg_processes = ["ST", "VV", "W", "TT", "ZL", "QCD", "EMB"]
+            elif channel == "em" and not args.embedding:
+                bkg_processes = ["ST", "VV", "W", "TT", "ZL", "QCD", "ZTT"]
             else:
                 bkg_processes = [b for b in all_bkg_processes]
             legend_bkg_processes = copy.deepcopy(bkg_processes)
@@ -280,6 +288,9 @@ def main(args):
             if category in ["1", "2"]:
                 plot.subplot(0).setLogY()
                 plot.subplot(0).setYlims(0.1, 15000000 if channel in ["et", "mt"] and category=="1" and tranche=="A" else 150000)
+                if channel == "em":
+                    plot.subplot(0).setYlims(1, 15000000)
+                
             if args.linear != True:
                 plot.subplot(1).setYlims(0.1, split_dict[channel])
                 plot.subplot(1).setLogY()
@@ -328,10 +339,10 @@ def main(args):
                     #plot.scaleXLabelSize(0.5)
                     plot.unroll(["0J", "1J_PTH_0_60", "1J_PTH_60_120", "1J_PTH_120_200", "1J_PTH_GT200", "GE2J_PTH_0_60", "GE2J_PTH_60_120", "GE2J_PTH_120_200", "GE2J_PTH_GT200"], ur_label_size = 0.5, pads_to_print_labels=[], selection=selection)
                 if category in ["2"]:
-                    selection =	None
-       	       	    if tranche == "A":
+                    selection = None
+                    if tranche == "A":
                         selection = [0,1]
-       	       	    elif tranche == "B":
+                    elif tranche == "B":
                         selection = [2,3,4]
                     if not channel == "tt":
                         plot.setNXdivisions(7, 0, 4, False)
