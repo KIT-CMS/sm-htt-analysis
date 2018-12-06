@@ -104,7 +104,8 @@ def plot_2d(variables, results, filename):
         rotation='horizontal')
     plt.xlim(0, len(variables))
     plt.ylim(0, len(variables))
-    plt.savefig(filename, bbox_inches='tight')
+    plt.savefig(filename+".png", bbox_inches="tight")
+    plt.savefig(filename+".pdf", bbox_inches="tight")
 
 
 def plot_1d(variables, results, filename):
@@ -119,7 +120,8 @@ def plot_1d(variables, results, filename):
     plt.ylabel('Saturated goodness of fit p-value', labelpad=20)
     ax = plt.gca()
     ax.xaxis.grid()
-    plt.savefig(filename, bbox_inches="tight")
+    plt.savefig(filename+".png", bbox_inches="tight")
+    plt.savefig(filename+".pdf", bbox_inches="tight")
 
 
 def search_results_1d(path, channel, era, variables):
@@ -180,7 +182,7 @@ def main(args):
     for variable in missing_1d:
         print("{} {} {}".format(args.era, args.channel, variable))
 
-    plot_1d(variables, results_1d, "{}_{}_gof_1d.png".format(args.era, args.channel))
+    plot_1d(variables, results_1d, "{}_{}_gof_1d".format(args.era, args.channel))
 
     # Plot 2D gof results
     """
@@ -190,7 +192,7 @@ def main(args):
     for variable in missing_2d:
         print("{} {} {}".format(args.era, args.channel, variable))
 
-    plot_2d(variables, results_2d, "{}_{}_gof_2d.png".format(args.era, args.channel))
+    plot_2d(variables, results_2d, "{}_{}_gof_2d".format(args.era, args.channel))
     """
 
     # Plot results for selected variables
@@ -206,13 +208,13 @@ def main(args):
     ]
 
     plot_1d(variables_selected, results_1d_selected,
-            "{}_{}_gof_1d_selected.png".format(args.era, args.channel))
+            "{}_{}_gof_1d_selected".format(args.era, args.channel))
 
     # Plot 2D gof results for reduced variable set
     missing_2d_selected, results_2d_selected = search_results_2d(
         args.path, args.channel, args.era, variables_selected)
     plot_2d(variables_selected, results_2d_selected,
-            "{}_{}_gof_2d_selected.png".format(args.era, args.channel))
+            "{}_{}_gof_2d_selected".format(args.era, args.channel))
 
     logger.debug("Missing variables for 2D plot in channel %s:", args.channel)
     for variable in missing_2d_selected:
