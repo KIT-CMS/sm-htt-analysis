@@ -18,7 +18,7 @@ source utils/setup_samples.sh $ERA
 # Produce shapes
 
 
-python shapes/produce_shapes.py \
+python shapes/produce_shapes_${ERA}.py \
     --directory $ARTUS_OUTPUTS \
     --et-friend-directory $ARTUS_FRIENDS_ET \
     --mt-friend-directory $ARTUS_FRIENDS_MT \

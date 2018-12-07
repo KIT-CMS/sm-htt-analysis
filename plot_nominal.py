@@ -119,35 +119,35 @@ def main(args):
         bkg_processes_names = [
          "emb", "zll","ttl", "vv","w", "qcd"
         ]
-        bkg_processes = ["EMB", "ZLL", "TTL", "VV", "W", "QCD"]  # names in ROOT file
+        bkg_processes = ["EMB", "ZL", "TTL", "VV", "W", "QCD"]  # names in ROOT file
 
     else:
         bkg_processes_names = [
             "ztt", "zll", "tt", "vv", "ewk", "w", "qcd"
         ]  # enforced by HarryPlotter
-        bkg_processes = ["ZTT", "ZLL", "TT", "VV", "EWK", "W", "QCD"]  # names in ROOT file
+        bkg_processes = ["ZTT", "ZL", "TT", "VV", "EWK", "W", "QCD"]  # names in ROOT file
     '''
     ### Use this for fake-factor shapes
     if args.emb and args.ff:
         bkg_processes_names = [
          "emb", "zll", "ttl", "vvl", "fakes"
         ]
-        bkg_processes = ["EMB", "ZLL", "TTL", "VVL", "jetFakes"]  # names in ROOT file
+        bkg_processes = ["EMB", "ZL", "TTL", "VVL", "jetFakes"]  # names in ROOT file
     elif args.emb:
         bkg_processes_names = [
          "emb", "zll","zj", "ttl", "ttj", "ewkl", "ewkj", "vvl", "vvj", "w", "qcd"
         ]
-        bkg_processes = ["EMB", "ZLL", "ZJ", "TTL", "TTJ", "EWKL", "EWKJ", "VVL", "VVJ", "WEMB", "QCDEMB"]  # names in ROOT file
+        bkg_processes = ["EMB", "ZL", "ZJ", "TTL", "TTJ", "EWKL", "EWKJ", "VVL", "VVJ", "WEMB", "QCDEMB"]  # names in ROOT file
     elif args.ff:
         bkg_processes_names = [
             "ztt", "zll", "ttt", "ttl", "vvt", "vvl", "ewk", "fakes"
         ]  # enforced by HarryPlotter
-        bkg_processes = ["ZTT", "ZLL", "TTT", "TTL", "VVT", "VVL", "EWK", "jetFakes"]  # names in ROOT file
+        bkg_processes = ["ZTT", "ZL", "TTT", "TTL", "VVT", "VVL", "EWK", "jetFakes"]  # names in ROOT file
     else:
         bkg_processes_names = [
             "ztt", "zll","zj", "tt", "vv", "ewk", "w", "qcd"
         ]  # enforced by HarryPlotter
-        bkg_processes = ["ZTT", "ZLL", "ZJ", "TT", "VV", "EWK", "W", "QCD"]  # names in ROOT file
+        bkg_processes = ["ZTT", "ZL", "ZJ", "TT", "VV", "EWK", "W", "QCD"]  # names in ROOT file
     
     qcd_scale_factors = {"mt": 1.0, "et": 1.0, "tt": 1.0, "em": 1.0}
     channels = args.channels
