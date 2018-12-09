@@ -44,7 +44,7 @@ def main(args):
         from shape_producer.era import Run2016
         era = Run2016(args.database)
     elif "2017" in args.era:
-        from shape_producer.estimation_methods_Fall17 import DataEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, VVLEstimation, WEstimation, ggHEstimation, qqHEstimation, EWKZEstimation, ZTTEmbeddedEstimation
+        from shape_producer.estimation_methods_Fall17 import DataEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, VVLEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, EWKZEstimation, ZTTEmbeddedEstimation
 
         from shape_producer.era import Run2017
         era = Run2017(args.database)
@@ -106,6 +106,7 @@ def main(args):
         for estimation in [
                 ggHEstimation(era, args.directory, channel),
                 qqHEstimation(era, args.directory, channel),
+                VHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
                 ZTTEmbeddedEstimation(era, args.directory, channel),
                 ZLEstimation(era, args.directory, channel),
@@ -191,6 +192,7 @@ def main(args):
         for estimation in [
                 ggHEstimation(era, args.directory, channel),
                 qqHEstimation(era, args.directory, channel),
+                VHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
                 ZTTEmbeddedEstimation(era, args.directory, channel),
                 ZLEstimation(era, args.directory, channel),
@@ -276,6 +278,7 @@ def main(args):
         for estimation in [
                 ggHEstimation(era, args.directory, channel),
                 qqHEstimation(era, args.directory, channel),
+                VHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
                 ZTTEmbeddedEstimation(era, args.directory, channel),
                 ZLEstimation(era, args.directory, channel),
