@@ -7,7 +7,7 @@ ARTUS_OUTPUTS_2016=/ceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016/m
 ARTUS_FRIENDS_ET_2016=/ceph/wunsch/Artus16_Nov/et_keras_20181127
 ARTUS_FRIENDS_MT_2016=/ceph/wunsch/Artus16_Nov/mt_keras_20181127
 ARTUS_FRIENDS_TT_2016=/ceph/wunsch/Artus16_Nov/tt_keras_20181127
-ARTUS_FRIENDS_FAKE_FACTOR_2016=/ceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016/fake_factor_friends_njets_mvis_NEW_NN_Dec03
+ARTUS_FRIENDS_FAKE_FACTOR_2016=/ceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016/fake_factor_friends_njets_mvis_NEW_NN_Dec10
 ARTUS_FRIENDS_FAKE_FACTOR_INCL_2016=/ceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016/fake_factor_friends_njets_mvis_incl_NEW
 
 # Samples Run2017
@@ -15,7 +15,7 @@ ARTUS_OUTPUTS_2017=/ceph/akhmet/merged_files_from_naf/27_11_2018_mt-et-tt_all-pi
 ARTUS_FRIENDS_ET_2017=/ceph/wunsch/Artus17_Nov/et_keras_20181202
 ARTUS_FRIENDS_MT_2017=/ceph/wunsch/Artus17_Nov/mt_keras_20181202
 ARTUS_FRIENDS_TT_2017=/ceph/wunsch/Artus17_Nov/tt_keras_20181205
-ARTUS_FRIENDS_FAKE_FACTOR_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_NovPU/fake_factor_friends_njets_mvis_NEW_NN_Dec05
+ARTUS_FRIENDS_FAKE_FACTOR_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_NovPU/fake_factor_friends_njets_mvis_NEW_NN_Dec10
 ARTUS_FRIENDS_FAKE_FACTOR_INCL_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_NovPU/fake_factor_friends_njets_mvis_incl_NEW23
 
 # Error-handling
