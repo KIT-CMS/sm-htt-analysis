@@ -774,6 +774,52 @@ def main(args):
                     channel=tt,
                     era=era)
 
+    # lepton trigger efficiency
+    lep_trigger_eff_variations = []
+    lep_trigger_eff_variations.append(
+        AddWeight("CMS_eff_trigger_mt_Run2016", "trg_mt_eff_weight",
+                  Weight("(1.0*(pt_1<=23)+1.02*(pt_1>23))", "trg_mt_eff_weight"), "Up"))
+    lep_trigger_eff_variations.append(
+        AddWeight("CMS_eff_trigger_mt_Run2016", "trg_mt_eff_weight",
+                  Weight("(1.0*(pt_1<=23)+0.98*(pt_1>23))", "trg_mt_eff_weight"), "Down"))
+    lep_trigger_eff_variations.append(
+        AddWeight("CMS_eff_xtrigger_mt_Run2016", "xtrg_mt_eff_weight",
+                  Weight("(1.07*(pt_1<=23)+1.0*(pt_1>23))", "xtrg_mt_eff_weight"), "Up"))
+    lep_trigger_eff_variations.append(
+        AddWeight("CMS_eff_xtrigger_mt_Run2016", "xtrg_mt_eff_weight",
+                  Weight("(0.93*(pt_1<=23)+1.0*(pt_1>23))", "xtrg_mt_eff_weight"), "Down"))
+    for variation in jet_to_tau_fake_variations:
+        for process_nick in [
+                "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVL", "VVT", "VVJ"
+        ] + signal_nicks:
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+    lep_trigger_eff_variations = []
+    lep_trigger_eff_variations.append(
+        AddWeight("CMS_eff_trigger_emb_mt_Run2016", "trg_mt_eff_weight",
+                  Weight("(1.0*(pt_1<=23)+1.02*(pt_1>23))", "trg_mt_eff_weight"), "Up"))
+    lep_trigger_eff_variations.append(
+        AddWeight("CMS_eff_trigger_emb_mt_Run2016", "trg_mt_eff_weight",
+                  Weight("(1.0*(pt_1<=23)+0.98*(pt_1>23))", "trg_mt_eff_weight"), "Down"))
+    lep_trigger_eff_variations.append(
+        AddWeight("CMS_eff_xtrigger_emb_mt_Run2016", "xtrg_mt_eff_weight",
+                  Weight("(1.07*(pt_1<=23)+1.0*(pt_1>23))", "xtrg_mt_eff_weight"), "Up"))
+    lep_trigger_eff_variations.append(
+        AddWeight("CMS_eff_xtrigger_emb_mt_Run2016", "xtrg_mt_eff_weight",
+                  Weight("(0.93*(pt_1<=23)+1.0*(pt_1>23))", "xtrg_mt_eff_weight"), "Down"))
+    for variation in jet_to_tau_fake_variations:
+        for process_nick in ["EMB"]:
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+    
     # ZL fakes energy scale
     ele_fake_es_1prong_variations = create_systematic_variations(
         "CMS_ZLShape_et_1prong_Run2016", "tauEleFakeEsOneProng",
