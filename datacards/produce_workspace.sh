@@ -18,6 +18,10 @@ echo "[INFO] Write workspace to "${OUTPUT}"."
 # Clean previous workspace
 rm -f $OUTPUT
 
+# Set stack size to unlimited, otherwise the T2W tool throws a segfault if
+# combining all eras
+ulimit -s unlimited
+
 # Define signals to be fitted and produce workspace
 if [ $STXS_FIT == "inclusive" ]; then
     combineTool.py -M T2W -o ${OUTPUT} -i ${INPUT} --parallel $NUM_THREADS
