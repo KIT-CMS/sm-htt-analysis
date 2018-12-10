@@ -179,9 +179,7 @@ def main(args):
                 tranche = category.split("_")[1]
                 category = category.split("_")[0]
             if channel == "tt" and category=="2":
-                    bkg_processes = [
-                        b for b in all_bkg_processes if b not in ["TTL"]
-                    ]
+                    bkg_processes = [b for b in all_bkg_processes]
             elif channel == "em" and args.embedding:
                 bkg_processes = ["ST", "VV", "W", "TT", "ZL", "QCD", "EMB"]
             elif channel == "em" and not args.embedding:
@@ -282,7 +280,7 @@ def main(args):
                 max(2 * plot.subplot(0).get_hist("total_bkg").GetMaximum(),
                     split_dict[channel] * 2))
 
-            plot.subplot(2).setYlims(0.75, 1.45)
+            plot.subplot(2).setYlims(0.975, 1.05)
             if category in ["2"]:
                 plot.subplot(2).setYlims(0.55, 2.05)
             if category in ["1", "2"]:
