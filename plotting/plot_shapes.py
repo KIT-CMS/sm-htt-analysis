@@ -280,7 +280,7 @@ def main(args):
                 max(2 * plot.subplot(0).get_hist("total_bkg").GetMaximum(),
                     split_dict[channel] * 2))
 
-            plot.subplot(2).setYlims(0.975, 1.05)
+            plot.subplot(2).setYlims(0.75, 1.45)
             if category in ["2"]:
                 plot.subplot(2).setYlims(0.55, 2.05)
             if category in ["1", "2"]:
