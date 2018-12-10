@@ -761,7 +761,7 @@ def main(args):
     lep_trigger_eff_variations.append(
         AddWeight("CMS_eff_xtrigger_mt_Run2017", "xtrg_mt_eff_weight",
                   Weight("(0.93*(pt_1<=25)+1.0*(pt_1>25))", "xtrg_mt_eff_weight"), "Down"))
-    for variation in jet_to_tau_fake_variations:
+    for variation in lep_trigger_eff_variations:
         for process_nick in [
                 "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVL", "VVT", "VVJ"
         ] + signal_nicks:
@@ -784,7 +784,7 @@ def main(args):
     lep_trigger_eff_variations.append(
         AddWeight("CMS_eff_xtrigger_emb_mt_Run2017", "xtrg_mt_eff_weight",
                   Weight("(0.93*(pt_1<=25)+1.0*(pt_1>25))", "xtrg_mt_eff_weight"), "Down"))
-    for variation in jet_to_tau_fake_variations:
+    for variation in lep_trigger_eff_variations:
         for process_nick in ["EMB"]:
             if "mt" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -805,7 +805,7 @@ def main(args):
     lep_trigger_eff_variations.append(
         AddWeight("CMS_eff_xtrigger_et_Run2017", "xtrg_et_eff_weight",
                   Weight("(0.93*(pt_1<=28)+1.0*(pt_1>28))", "xtrg_et_eff_weight"), "Down"))
-    for variation in jet_to_tau_fake_variations:
+    for variation in lep_trigger_eff_variations:
         for process_nick in [
                 "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVL", "VVT", "VVJ"
         ] + signal_nicks:
@@ -828,7 +828,7 @@ def main(args):
     lep_trigger_eff_variations.append(
         AddWeight("CMS_eff_xtrigger_emb_et_Run2017", "xtrg_et_eff_weight",
                   Weight("(0.93*(pt_1<=28)+1.0*(pt_1>28))", "xtrg_et_eff_weight"), "Down"))
-    for variation in jet_to_tau_fake_variations:
+    for variation in lep_trigger_eff_variations:
         for process_nick in ["EMB"]:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
