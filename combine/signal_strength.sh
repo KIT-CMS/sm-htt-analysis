@@ -5,6 +5,10 @@ STXS_FIT=$2
 
 source utils/setup_cmssw.sh
 
+# Set stack size to unlimited, otherwise the T2W tool throws a segfault if
+# combining all eras
+ulimit -s unlimited
+
 if [ $STXS_FIT == "inclusive" ]
 then
     combine -M MaxLikelihoodFit -m 125 -d ${ERA}_workspace.root \

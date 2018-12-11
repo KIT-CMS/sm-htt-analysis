@@ -8,3 +8,7 @@ THIS_PWD=$PWD
 cd CMSSW_7_4_7/src
 eval `scramv1 runtime -sh`
 cd $THIS_PWD
+
+# Set stack size to unlimited, otherwise combine may throw a segfault for
+# complex fits
+ulimit -s unlimited
