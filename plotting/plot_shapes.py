@@ -218,6 +218,10 @@ def main(args):
                     rootfile.get(era, channel, category, "qqH"), "qqH")
                 plot.subplot(i).add_hist(
                     rootfile.get(era, channel, category, "qqH"), "qqH_top")
+                VHhist = rootfile.get(era, channel, category, "ZH").Clone("VH")
+                VHhist.Add(rootfile.get(era, channel, category, "WH"))
+                plot.subplot(i).add_hist(VHhist, "VH")
+                plot.subplot(i).add_hist(VHhist, "VH_top")
 
             # get observed data and total background histograms
             plot.add_hist(
@@ -232,6 +236,9 @@ def main(args):
             plot.subplot(0 if args.linear else 1).setGraphStyle(
                 "qqH", "hist", linecolor=styles.color_dict["qqH"], linewidth=3)
             plot.subplot(0 if args.linear else 1).setGraphStyle("qqH_top", "hist", linecolor=0)
+            plot.subplot(0 if args.linear else 1).setGraphStyle(
+                "VH", "hist", linecolor=styles.color_dict["VH"], linewidth=3)
+            plot.subplot(0 if args.linear else 1).setGraphStyle("VH_top", "hist", linecolor=0)
             plot.setGraphStyle(
                 "total_bkg",
                 "e2",
@@ -242,12 +249,16 @@ def main(args):
             # assemble ratio
             bkg_ggH = plot.subplot(2).get_hist("ggH")
             bkg_qqH = plot.subplot(2).get_hist("qqH")
+            bkg_VH = plot.subplot(2).get_hist("VH")
             bkg_ggH.Add(plot.subplot(2).get_hist("total_bkg"))
             bkg_qqH.Add(plot.subplot(2).get_hist("total_bkg"))
+            bkg_VH.Add(plot.subplot(2).get_hist("total_bkg"))
             plot.subplot(2).add_hist(bkg_ggH, "bkg_ggH")
             plot.subplot(2).add_hist(bkg_ggH, "bkg_ggH_top")
             plot.subplot(2).add_hist(bkg_qqH, "bkg_qqH")
             plot.subplot(2).add_hist(bkg_qqH, "bkg_qqH_top")
+            plot.subplot(2).add_hist(bkg_VH, "bkg_VH")
+            plot.subplot(2).add_hist(bkg_VH, "bkg_VH_top")
             plot.subplot(2).setGraphStyle(
                 "bkg_ggH",
                 "hist",
@@ -260,10 +271,16 @@ def main(args):
                 linecolor=styles.color_dict["qqH"],
                 linewidth=3)
             plot.subplot(2).setGraphStyle("bkg_qqH_top", "hist", linecolor=0)
+            plot.subplot(2).setGraphStyle(
+                "bkg_VH",
+                "hist",
+                linecolor=styles.color_dict["VH"],
+                linewidth=3)
+            plot.subplot(2).setGraphStyle("bkg_VH_top", "hist", linecolor=0)
 
             plot.subplot(2).normalize([
                 "total_bkg", "bkg_ggH", "bkg_ggH_top", "bkg_qqH",
-                "bkg_qqH_top", "data_obs"
+                "bkg_qqH_top", "bkg_VH", "bkg_VH_top", "data_obs"
             ], "total_bkg")
 
             # stack background processes
@@ -349,12 +366,12 @@ def main(args):
                 plot.subplot(2).changeXLabels(["0.2", "0.4", "0.6", "0.8", "1.0"])
 
             # draw subplots. Argument contains names of objects to be drawn in corresponding order.
-            procs_to_draw = ["stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top", "data_obs"] if args.linear else ["stack", "total_bkg", "data_obs"]
+            procs_to_draw = ["stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top", "VH", "VH_top", "data_obs"] if args.linear else ["stack", "total_bkg", "data_obs"]
             plot.subplot(0).Draw(procs_to_draw)
             if args.linear != True:
                 plot.subplot(1).Draw([
                     "stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top",
-                    "data_obs"
+                    "VH", "VH_top", "data_obs"
                 ])
             plot.subplot(2).Draw([
                 "total_bkg", "bkg_ggH", "bkg_ggH_top", "bkg_qqH",
@@ -372,6 +389,7 @@ def main(args):
                 plot.legend(i).add_entry(0, "total_bkg", "Bkg. unc.", 'f')
                 plot.legend(i).add_entry(0 if args.linear else 1, "ggH%s" % suffix[i], "gg#rightarrowH", 'l')
                 plot.legend(i).add_entry(0 if args.linear else 1, "qqH%s" % suffix[i], "qq#rightarrowH", 'l')
+                plot.legend(i).add_entry(0 if args.linear else 1, "VH%s" % suffix[i], "qq#rightarrowVH", 'l')
                 plot.legend(i).add_entry(0, "data_obs", "Data", 'PE')
                 plot.legend(i).setNColumns(3)
             plot.legend(0).Draw()
