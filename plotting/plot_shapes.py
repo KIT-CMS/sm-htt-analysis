@@ -288,7 +288,7 @@ def main(args):
                 plot.subplot(0).setYlims(0.1, 15000000 if channel in ["et", "mt"] and category=="1" and tranche=="A" else 150000)
                 if channel == "em":
                     plot.subplot(0).setYlims(1, 15000000)
-                
+
             if args.linear != True:
                 plot.subplot(1).setYlims(0.1, split_dict[channel])
                 plot.subplot(1).setLogY()
@@ -345,6 +345,8 @@ def main(args):
                     if not channel == "tt":
                         plot.setNXdivisions(7, 0, 4, False)
                     plot.unroll(["VBFTOPO_JET3VETO", "VBFTOPO_JET3", "VH2JET", "REST", "PTJET1_GT200"], ur_label_size = 0.9, pads_to_print_labels=[], selection=selection)
+            if not channel == "tt" and category in ["11", "12", "13", "14", "15", "16"]:
+                plot.subplot(2).changeXLabels(["0.2", "0.4", "0.6", "0.8", "1.0"])
 
             # draw subplots. Argument contains names of objects to be drawn in corresponding order.
             procs_to_draw = ["stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top", "data_obs"] if args.linear else ["stack", "total_bkg", "data_obs"]
