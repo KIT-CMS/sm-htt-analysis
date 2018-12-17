@@ -4,13 +4,8 @@
 import ROOT
 ROOT.PyConfig.IgnoreCommandLineOptions = True  # disable ROOT internal argument parser
 
-from shape_producer.era import Run2016
-from shape_producer.channel import ETSM, MTSM, TTSM
-from shape_producer.estimation_methods_2016 import DataEstimation
-
 import argparse
 import numpy as np
-import yaml
 import os
 
 import logging
@@ -32,118 +27,145 @@ def setup_logging(output_file, level=logging.DEBUG):
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
-        description="Calculate binning of ML scores.")
-
+        description="Calculate binning of final discriminator.")
     parser.add_argument(
-        "--directory",
+        "--era",
         required=True,
         type=str,
-        help="Directory with Artus outputs.")
+        help="Analysis era")
     parser.add_argument(
-        "--datasets", required=True, type=str, help="Kappa datsets database.")
-    parser.add_argument(
-        "--output",
+        "--input",
         required=True,
         type=str,
-        help="Output path for binning config.")
-    parser.add_argument(
-        "--artus-friends",
-        required=True,
-        type=str,
-        help="Friend trees with neural network responses.")
-    parser.add_argument(
-        "--channel",
-        required=True,
-        type=str,
-        help="Name of training on mt channel.")
-    parser.add_argument(
-        "--training-config",
-        required=True,
-        type=str,
-        help="Name training config.")
-
+        help="Input ROOT file with prefit shapes")
     return parser.parse_args()
 
 
+def get(f, name):
+    x = f.Get(name)
+    if x == None:
+        logger.critical("Key %s does not exist in %s.", name, f.GetName())
+        raise Exception
+    return x
+
+
+def ams(s, b, u):
+    ams = 0.0
+    try:
+        ams = np.sqrt(2*(
+            (s+b) * np.log( ((s+b)*(b+(u**2))) / ((b**2)+(s+b)*(u**2)) ) - (b**2) / (u**2) * np.log( 1.0 + ((u**2)*s) / (b*(b+(u**2))) )
+            ))
+    except:
+        ams = 0.0
+    if np.isnan(ams):
+        ams = 0.0
+    return ams
+
+
+def calculate_binning(sig, bkg, min_entries, bins_per_category):
+    # Number of bins (without overflow and underflow bins)
+    num_bins = sig.GetNbinsX()
+    if not num_bins == bkg.GetNbinsX():
+        logger.critical("Signal and background histograms have different number of bins.")
+        raise Exception
+    # Check that number of bins is multiple of bins per category
+    if not num_bins % bins_per_category == 0:
+        logger.critical("Number of bins in histogram %u is not multiple of bins per category %u.",
+                num_bins, bins_per_category)
+        raise Exception
+    # Go from right to left and merge bins if ams increases
+    this_ams = -1
+    next_ams = -1
+    s = 0.0
+    b = 0.0
+    u = 0.0
+    bin_borders = [sig.GetBinLowEdge(num_bins+1)]
+    for i in reversed(range(2, num_bins+1)):
+        # AMS if we split on the low edge of this bin
+        s = s+sig.GetBinContent(i)
+        b = b+bkg.GetBinContent(i)
+        u = np.sqrt(u**2+bkg.GetBinError(i)**2)
+        this_ams = ams(s, b, u)
+
+        # AMS if we split on the low edge of the next bin
+        next_s = s+sig.GetBinContent(i-1)
+        next_b = b+bkg.GetBinContent(i-1)
+        next_u = np.sqrt(b**2 + bkg.GetBinError(i-1)**2)
+        next_ams = ams(next_s, next_b, next_u)
+
+        # Decide to split or not
+        logger.debug("This AMS %f vs next AMS %f at bin %u.", this_ams, next_ams, i)
+        if (i-1) % bins_per_category == 0: # Split at unrolling border
+            bin_borders.insert(0, sig.GetBinLowEdge(i))
+            s = 0.0
+            b = 0.0
+            u = 0.0
+        if s+b < min_entries: # Require minimum amount of entries
+            continue
+        if next_ams < this_ams: # Make only new border if AMS would not increase
+            bin_borders.insert(0, sig.GetBinLowEdge(i))
+            s = 0.0
+            b = 0.0
+            u = 0.0
+    bin_borders.insert(0, sig.GetBinLowEdge(1))
+    return np.array(bin_borders)
+
+
 def main(args):
-    # Define era and channel
-    era = Run2016(args.datasets)
-
-    if "et" in args.channel:
-        channel = ETSM()
-    elif "mt" in args.channel:
-        channel = MTSM()
-    elif "tt" in args.channel:
-        channel = TTSM()
-    else:
-        logger.fatal("Channel %s not known.", args.channel)
+    # Find categories and channels in ROOT file (for the given era)
+    if not os.path.exists(args.input):
+        logger.critical("Input file %s does not exist.", args.input)
         raise Exception
-    logger.debug("Use channel %s.", args.channel)
+    f = ROOT.TFile(args.input)
+    config = {}
+    for key in f.GetListOfKeys():
+        name = key.GetName()
+        if not args.era in name:
+            continue
+        channel, category = name.split("_")[1:3]
+        if not channel in config:
+            config[channel] = {}
+        if not category in config[channel]:
+            config[channel][category] = None
 
-    # Get cut string
-    estimation = DataEstimation(era, args.directory, channel)
-    cut_string = (estimation.get_cuts() + channel.cuts).expand()
-    logger.debug("Data cut string: %s", cut_string)
+    for channel in config:
+        logger.info("Found channel %s with categories %s.", channel, config[channel].keys())
 
-    # Get chain
-    tree_path = "{}_nominal/ntuple".format(args.channel)
-    logger.debug("Use tree path %s to get tree.", tree_path)
+    # Get bins used per category per channel
+    bins_per_category = {}
+    for channel in config:
+        min_bins = 1e6
+        for category in config[channel]:
+            name = "htt_{}_{}_Run{}_prefit".format(channel, category, args.era)
+            directory = get(f, name)
+            h = get(directory, "TotalBkg")
+            num_bins = h.GetNbinsX()
+            if min_bins > num_bins:
+                min_bins = int(num_bins)
+        bins_per_category[channel] = min_bins
 
-    files = [str(f) for f in estimation.get_files()]
-    chain = ROOT.TChain()
-    for i, f in enumerate(files):
-        base = os.path.basename(f).replace(".root", "")
-        f_friend = os.path.join(args.artus_friends, base,
-                                base + ".root") + "/" + tree_path
-        logger.debug("Add file with scores %d: %s", i, f_friend)
-        chain.Add(f_friend)
-        logger.debug("Add friend with ntuple %d: %s", i, f)
-        chain.AddFriend(tree_path, f)
+    for channel in config:
+        logger.info("Found for channel %s %u bins per category.", channel, bins_per_category[channel])
 
-    chain_numentries = chain.GetEntries()
-    if not chain_numentries > 0:
-        logger.fatal("Chain (before skimming) does not contain any events.")
-        raise Exception
-    logger.debug("Found %s events before skimming with cut string.",
-                 chain_numentries)
+    # Go through channel and categories and find best binning
+    for channel in config:
+        for category in config[channel]:
+            if not int(category) < 10:
+                continue
+            name = "htt_{}_{}_Run{}_prefit".format(channel, category, args.era)
+            directory = get(f, name)
+            sig = get(directory, "TotalSig")
+            bkg  = get(directory, "TotalBkg")
+            binning = calculate_binning(sig=sig, bkg=bkg,
+                    min_entries=5, bins_per_category=bins_per_category[channel])
+            config[channel][category] = binning
+            logger.info("Binning for category %s in channel %s:\n%s", category, channel, binning)
 
-    # Skim chain
-    chain_skimmed = chain.CopyTree(cut_string)
-    chain_skimmed_numentries = chain_skimmed.GetEntries()
-
-    if not chain_skimmed_numentries > 0:
-        logger.fatal("Chain (after skimming) does not contain any events.")
-        raise Exception
-    logger.debug("Found %s events after skimming with cut string.",
-                 chain_skimmed_numentries)
-
-    # Calculate binning
-    logger.debug("Load classes from config %s.", args.training_config)
-    classes = yaml.load(open(args.training_config))["classes"]
-    logger.debug("Use classes %s.", classes)
-    scores = [[] for c in classes]
-    for event in chain_skimmed:
-        max_score = float(getattr(event, args.channel + "_max_score"))
-        max_index = int(getattr(event, args.channel + "_max_index"))
-        scores[max_index].append(max_score)
-
-    binning = {}
-    percentiles = range(0, 105, 5)
-    logger.debug("Use percentiles %s for binning.", percentiles)
-    for i, name in enumerate(classes):
-        logger.debug("Process class %s.", name)
-        x = scores[i] + [1.0/float(len(classes)), 1.0]
-        logger.debug("Found %s events in class %s.", len(x), name)
-        binning[name] = [float(x) for x in np.percentile(x, percentiles)]
-
-    # Write binning to output
-    config = yaml.load(open(args.output))
-    config["analysis"][args.channel] = binning
-    logger.info("Write binning to %s.", args.output)
-    yaml.dump(config, open(args.output, "w"))
+    # Clean-up
+    f.Close()
 
 
 if __name__ == "__main__":
     args = parse_arguments()
-    setup_logging("calculate_binning.log", logging.DEBUG)
+    setup_logging("{}_calculate_binning.log".format(args.era), logging.INFO)
     main(args)

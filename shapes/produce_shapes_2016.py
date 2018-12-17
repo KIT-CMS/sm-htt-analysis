@@ -309,7 +309,7 @@ def main(args):
         for i, label in enumerate(classes_et):
             score = Variable(
                 "et_max_score",
-                 VariableBinning(binning["analysis"]["et"][label]))
+                 VariableBinning(binning["analysis"][args.era]["et"][label]))
             et_categories.append(
                 Category(
                     label,
@@ -320,13 +320,13 @@ def main(args):
             if label in ["ggh", "qqh"]:
                 expression = ""
                 for i_e, e in enumerate(binning["stxs_stage1"][label]):
-                    offset = (binning["analysis"]["et"][label][-1]-binning["analysis"]["et"][label][0])*i_e
+                    offset = (binning["analysis"][args.era]["et"][label][-1]-binning["analysis"][args.era]["et"][label][0])*i_e
                     expression += "{STXSBIN}*(et_max_score+{OFFSET})".format(STXSBIN=e, OFFSET=offset)
                     if not e is binning["stxs_stage1"][label][-1]:
                         expression += " + "
                 score_unrolled = Variable(
                     "et_max_score_unrolled",
-                     VariableBinning(binning["analysis"]["et"][label+"_unrolled"]),
+                     VariableBinning(binning["analysis"][args.era]["et"][label+"_unrolled"]),
                      expression=expression)
                 et_categories.append(
                     Category(
@@ -377,7 +377,7 @@ def main(args):
         for i, label in enumerate(classes_mt):
             score = Variable(
                 "mt_max_score",
-                 VariableBinning(binning["analysis"]["mt"][label]))
+                 VariableBinning(binning["analysis"][args.era]["mt"][label]))
             mt_categories.append(
                 Category(
                     label,
@@ -388,13 +388,13 @@ def main(args):
             if label in ["ggh", "qqh"]:
                 expression = ""
                 for i_e, e in enumerate(binning["stxs_stage1"][label]):
-                    offset = (binning["analysis"]["mt"][label][-1]-binning["analysis"]["mt"][label][0])*i_e
+                    offset = (binning["analysis"][args.era]["mt"][label][-1]-binning["analysis"][args.era]["mt"][label][0])*i_e
                     expression += "{STXSBIN}*(mt_max_score+{OFFSET})".format(STXSBIN=e, OFFSET=offset)
                     if not e is binning["stxs_stage1"][label][-1]:
                         expression += " + "
                 score_unrolled = Variable(
                     "mt_max_score_unrolled",
-                     VariableBinning(binning["analysis"]["mt"][label+"_unrolled"]),
+                     VariableBinning(binning["analysis"][args.era]["mt"][label+"_unrolled"]),
                      expression=expression)
                 mt_categories.append(
                     Category(
@@ -445,7 +445,7 @@ def main(args):
         for i, label in enumerate(classes_tt):
             score = Variable(
                 "tt_max_score",
-                 VariableBinning(binning["analysis"]["tt"][label]))
+                 VariableBinning(binning["analysis"][args.era]["tt"][label]))
             tt_categories.append(
                 Category(
                     label,
@@ -456,13 +456,13 @@ def main(args):
             if label in ["ggh", "qqh"]:
                 expression = ""
                 for i_e, e in enumerate(binning["stxs_stage1"][label]):
-                    offset = (binning["analysis"]["tt"][label][-1]-binning["analysis"]["tt"][label][0])*i_e
+                    offset = (binning["analysis"][args.era]["tt"][label][-1]-binning["analysis"][args.era]["tt"][label][0])*i_e
                     expression += "{STXSBIN}*(tt_max_score+{OFFSET})".format(STXSBIN=e, OFFSET=offset)
                     if not e is binning["stxs_stage1"][label][-1]:
                         expression += " + "
                 score_unrolled = Variable(
                     "tt_max_score_unrolled",
-                     VariableBinning(binning["analysis"]["tt"][label+"_unrolled"]),
+                     VariableBinning(binning["analysis"][args.era]["tt"][label+"_unrolled"]),
                      expression=expression)
                 tt_categories.append(
                     Category(
