@@ -5,8 +5,8 @@ variables:
 # - eta_2
 # - phi_1
 # - phi_2
-  - iso_1
-  - iso_2
+# - iso_1
+# - iso_2
   - jpt_1
   - jpt_2
 # - jeta_1
@@ -114,7 +114,7 @@ selected_variables:
             - nbtag
             - m_sv
             - mt_1
-            # mt_2
+            - mt_2
             - ptvis
             - pt_tt
             - mjj

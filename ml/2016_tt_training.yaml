@@ -38,12 +38,12 @@ variables:
     - jpt_1
     - jpt_2
     - bpt_1
-    # bpt_2     # Failed 2D GoF
+    - bpt_2
     # njets     # Failed 1D GoF
     - nbtag
     - m_sv
     - mt_1
-    # mt_2      # Failed 1D GoF
+    - mt_2
     - ptvis
     - pt_tt
     - mjj

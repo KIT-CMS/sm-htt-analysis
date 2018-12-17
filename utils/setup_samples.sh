@@ -6,9 +6,9 @@ ERA=$1
 ARTUS_OUTPUTS_2016=/ceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016/merged
 ARTUS_FRIENDS_ET_2016=/ceph/wunsch/Artus16_Nov/et_keras_20181127
 ARTUS_FRIENDS_MT_2016=/ceph/wunsch/Artus16_Nov/mt_keras_20181127
-ARTUS_FRIENDS_TT_2016=/ceph/wunsch/Artus16_Nov/tt_keras_20181127
-ARTUS_FRIENDS_FAKE_FACTOR_2016=/ceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016/fake_factor_friends_njets_mvis_NEW_NN_Dec10
-ARTUS_FRIENDS_FAKE_FACTOR_INCL_2016=/ceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016/fake_factor_friends_njets_mvis_NEW_incl_Dec11
+ARTUS_FRIENDS_TT_2016=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_NovPU/tt_keras_20181215
+ARTUS_FRIENDS_FAKE_FACTOR_2016=/ceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016/fake_factor_friends_njets_mvis_NEW_NN_Dec16
+ARTUS_FRIENDS_FAKE_FACTOR_INCL_2016=/ceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016/fake_factor_friends_njets_mvis_NEW_incl_Dec15
 
 # Samples Run2017
 ARTUS_OUTPUTS_2017=/ceph/akhmet/merged_files_from_naf/27_11_2018_mt-et-tt_all-pipelines_sv-fit
