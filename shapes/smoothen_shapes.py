@@ -15,7 +15,7 @@ def parse_arguments():
         default=[],
         nargs='+',
         type=str,
-        choices=['em', 'et', 'mt', 'tt']
+        choices=['em', 'et', 'mt', 'tt'],
         help="Channels to be considered.")
     return parser.parse_args()
 
