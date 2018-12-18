@@ -7,6 +7,7 @@ ROOT.PyConfig.IgnoreCommandLineOptions = True  # disable ROOT internal argument 
 import argparse
 import numpy as np
 import os
+import yaml
 
 import logging
 logger = logging.getLogger("calculate_binning.py")
@@ -49,19 +50,6 @@ def get(f, name):
     return x
 
 
-def ams(s, b, u):
-    ams = 0.0
-    try:
-        ams = np.sqrt(2*(
-            (s+b) * np.log( ((s+b)*(b+(u**2))) / ((b**2)+(s+b)*(u**2)) ) - (b**2) / (u**2) * np.log( 1.0 + ((u**2)*s) / (b*(b+(u**2))) )
-            ))
-    except:
-        ams = 0.0
-    if np.isnan(ams):
-        ams = 0.0
-    return ams
-
-
 def calculate_binning(sig, bkg, min_entries, bins_per_category):
     # Number of bins (without overflow and underflow bins)
     num_bins = sig.GetNbinsX()
@@ -73,42 +61,24 @@ def calculate_binning(sig, bkg, min_entries, bins_per_category):
         logger.critical("Number of bins in histogram %u is not multiple of bins per category %u.",
                 num_bins, bins_per_category)
         raise Exception
-    # Go from right to left and merge bins if ams increases
-    this_ams = -1
-    next_ams = -1
-    s = 0.0
-    b = 0.0
-    u = 0.0
+    # Go from right to left and merge bins if requirement not met
     bin_borders = [sig.GetBinLowEdge(num_bins+1)]
+    b = 0
     for i in reversed(range(2, num_bins+1)):
-        # AMS if we split on the low edge of this bin
-        s = s+sig.GetBinContent(i)
         b = b+bkg.GetBinContent(i)
-        u = np.sqrt(u**2+bkg.GetBinError(i)**2)
-        this_ams = ams(s, b, u)
-
-        # AMS if we split on the low edge of the next bin
-        next_s = s+sig.GetBinContent(i-1)
-        next_b = b+bkg.GetBinContent(i-1)
-        next_u = np.sqrt(b**2 + bkg.GetBinError(i-1)**2)
-        next_ams = ams(next_s, next_b, next_u)
-
-        # Decide to split or not
-        logger.debug("This AMS %f vs next AMS %f at bin %u.", this_ams, next_ams, i)
-        if (i-1) % bins_per_category == 0: # Split at unrolling border
+        if b>min_entries: # Minimum of background events expected
             bin_borders.insert(0, sig.GetBinLowEdge(i))
-            s = 0.0
-            b = 0.0
-            u = 0.0
-        if s+b < min_entries: # Require minimum amount of entries
-            continue
-        if next_ams < this_ams: # Make only new border if AMS would not increase
+            b = 0
+        elif (i-1) % bins_per_category == 0: # Split at unrolling border
             bin_borders.insert(0, sig.GetBinLowEdge(i))
-            s = 0.0
-            b = 0.0
-            u = 0.0
+            b = 0
     bin_borders.insert(0, sig.GetBinLowEdge(1))
     return np.array(bin_borders)
+
+
+def to_yaml(x):
+    s = yaml.dump([float(f) for f in x])
+    return s
 
 
 def main(args):
@@ -150,8 +120,6 @@ def main(args):
     # Go through channel and categories and find best binning
     for channel in config:
         for category in config[channel]:
-            if not int(category) < 10:
-                continue
             name = "htt_{}_{}_Run{}_prefit".format(channel, category, args.era)
             directory = get(f, name)
             sig = get(directory, "TotalSig")
@@ -159,7 +127,8 @@ def main(args):
             binning = calculate_binning(sig=sig, bkg=bkg,
                     min_entries=5, bins_per_category=bins_per_category[channel])
             config[channel][category] = binning
-            logger.info("Binning for category %s in channel %s:\n%s", category, channel, binning)
+            binning_str = to_yaml(binning)
+            logger.info("Binning for category %s in channel %s:\n%s", category, channel, binning_str)
 
     # Clean-up
     f.Close()
@@ -167,5 +136,5 @@ def main(args):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    setup_logging("{}_calculate_binning.log".format(args.era), logging.INFO)
+    setup_logging("{}_calculate_binning.log".format(args.era), logging.DEBUG)
     main(args)
