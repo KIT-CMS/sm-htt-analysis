@@ -500,7 +500,7 @@ def main(args):
             "ggH_VBFTOPO_JET3"
         ]
     else:
-        signal_nicks = ["ggH", "qqH"]
+        signal_nicks = ["ggH", "qqH", "WH", "ZH"]
 
     if "et" in [args.gof_channel] + args.channels:
         for process, category in product(et_processes.values(), et_categories):
@@ -784,10 +784,10 @@ def main(args):
                   Weight("(1.0*(pt_1<=23)+0.98*(pt_1>23))", "trg_mt_eff_weight"), "Down"))
     lep_trigger_eff_variations.append(
         AddWeight("CMS_eff_xtrigger_mt_Run2016", "xtrg_mt_eff_weight",
-                  Weight("(1.07*(pt_1<=23)+1.0*(pt_1>23))", "xtrg_mt_eff_weight"), "Up"))
+                  Weight("(1.054*(pt_1<=23)+1.0*(pt_1>23))", "xtrg_mt_eff_weight"), "Up"))
     lep_trigger_eff_variations.append(
         AddWeight("CMS_eff_xtrigger_mt_Run2016", "xtrg_mt_eff_weight",
-                  Weight("(0.93*(pt_1<=23)+1.0*(pt_1>23))", "xtrg_mt_eff_weight"), "Down"))
+                  Weight("(0.946*(pt_1<=23)+1.0*(pt_1>23))", "xtrg_mt_eff_weight"), "Down"))
     for variation in lep_trigger_eff_variations:
         for process_nick in [
                 "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVL", "VVT", "VVJ"
@@ -807,10 +807,10 @@ def main(args):
                   Weight("(1.0*(pt_1<=23)+0.98*(pt_1>23))", "trg_mt_eff_weight"), "Down"))
     lep_trigger_eff_variations.append(
         AddWeight("CMS_eff_xtrigger_emb_mt_Run2016", "xtrg_mt_eff_weight",
-                  Weight("(1.07*(pt_1<=23)+1.0*(pt_1>23))", "xtrg_mt_eff_weight"), "Up"))
+                  Weight("(1.054*(pt_1<=23)+1.0*(pt_1>23))", "xtrg_mt_eff_weight"), "Up"))
     lep_trigger_eff_variations.append(
         AddWeight("CMS_eff_xtrigger_emb_mt_Run2016", "xtrg_mt_eff_weight",
-                  Weight("(0.93*(pt_1<=23)+1.0*(pt_1>23))", "xtrg_mt_eff_weight"), "Down"))
+                  Weight("(0.946*(pt_1<=23)+1.0*(pt_1>23))", "xtrg_mt_eff_weight"), "Down"))
     for variation in lep_trigger_eff_variations:
         for process_nick in ["EMB"]:
             if "mt" in [args.gof_channel] + args.channels:

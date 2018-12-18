@@ -438,7 +438,7 @@ def main(args):
             "ggH_VBFTOPO_JET3", "VH", "WH", "ZH"
         ]
     else:
-        signal_nicks = ["ggH", "qqH"]
+        signal_nicks = ["ggH", "qqH", "WH", "ZH"]
 
     # yapf: enable
     if "et" in [args.gof_channel] + args.channels:
@@ -757,10 +757,10 @@ def main(args):
                   Weight("(1.0*(pt_1<=25)+0.98*(pt_1>25))", "trg_mt_eff_weight"), "Down"))
     lep_trigger_eff_variations.append(
         AddWeight("CMS_eff_xtrigger_mt_Run2017", "xtrg_mt_eff_weight",
-                  Weight("(1.07*(pt_1<=25)+1.0*(pt_1>25))", "xtrg_mt_eff_weight"), "Up"))
+                  Weight("(1.054*(pt_1<=25)+1.0*(pt_1>25))", "xtrg_mt_eff_weight"), "Up"))
     lep_trigger_eff_variations.append(
         AddWeight("CMS_eff_xtrigger_mt_Run2017", "xtrg_mt_eff_weight",
-                  Weight("(0.93*(pt_1<=25)+1.0*(pt_1>25))", "xtrg_mt_eff_weight"), "Down"))
+                  Weight("(0.946*(pt_1<=25)+1.0*(pt_1>25))", "xtrg_mt_eff_weight"), "Down"))
     for variation in lep_trigger_eff_variations:
         for process_nick in [
                 "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVL", "VVT", "VVJ"
@@ -780,10 +780,10 @@ def main(args):
                   Weight("(1.0*(pt_1<=25)+0.98*(pt_1>25))", "trg_mt_eff_weight"), "Down"))
     lep_trigger_eff_variations.append(
         AddWeight("CMS_eff_xtrigger_emb_mt_Run2017", "xtrg_mt_eff_weight",
-                  Weight("(1.07*(pt_1<=25)+1.0*(pt_1>25))", "xtrg_mt_eff_weight"), "Up"))
+                  Weight("(1.054*(pt_1<=25)+1.0*(pt_1>25))", "xtrg_mt_eff_weight"), "Up"))
     lep_trigger_eff_variations.append(
         AddWeight("CMS_eff_xtrigger_emb_mt_Run2017", "xtrg_mt_eff_weight",
-                  Weight("(0.93*(pt_1<=25)+1.0*(pt_1>25))", "xtrg_mt_eff_weight"), "Down"))
+                  Weight("(0.946*(pt_1<=25)+1.0*(pt_1>25))", "xtrg_mt_eff_weight"), "Down"))
     for variation in lep_trigger_eff_variations:
         for process_nick in ["EMB"]:
             if "mt" in [args.gof_channel] + args.channels:
@@ -801,10 +801,10 @@ def main(args):
                   Weight("(1.0*(pt_1<=28)+0.98*(pt_1>28))", "trg_et_eff_weight"), "Down"))
     lep_trigger_eff_variations.append(
         AddWeight("CMS_eff_xtrigger_et_Run2017", "xtrg_et_eff_weight",
-                  Weight("(1.07*(pt_1<=28)+1.0*(pt_1>28))", "xtrg_et_eff_weight"), "Up"))
+                  Weight("(1.054*(pt_1<=28)+1.0*(pt_1>28))", "xtrg_et_eff_weight"), "Up"))
     lep_trigger_eff_variations.append(
         AddWeight("CMS_eff_xtrigger_et_Run2017", "xtrg_et_eff_weight",
-                  Weight("(0.93*(pt_1<=28)+1.0*(pt_1>28))", "xtrg_et_eff_weight"), "Down"))
+                  Weight("(0.946*(pt_1<=28)+1.0*(pt_1>28))", "xtrg_et_eff_weight"), "Down"))
     for variation in lep_trigger_eff_variations:
         for process_nick in [
                 "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVL", "VVT", "VVJ"
@@ -824,10 +824,10 @@ def main(args):
                   Weight("(1.0*(pt_1<=28)+0.98*(pt_1>28))", "trg_et_eff_weight"), "Down"))
     lep_trigger_eff_variations.append(
         AddWeight("CMS_eff_xtrigger_emb_et_Run2017", "xtrg_et_eff_weight",
-                  Weight("(1.07*(pt_1<=28)+1.0*(pt_1>28))", "xtrg_et_eff_weight"), "Up"))
+                  Weight("(1.054*(pt_1<=28)+1.0*(pt_1>28))", "xtrg_et_eff_weight"), "Up"))
     lep_trigger_eff_variations.append(
         AddWeight("CMS_eff_xtrigger_emb_et_Run2017", "xtrg_et_eff_weight",
-                  Weight("(0.93*(pt_1<=28)+1.0*(pt_1>28))", "xtrg_et_eff_weight"), "Down"))
+                  Weight("(0.946*(pt_1<=28)+1.0*(pt_1>28))", "xtrg_et_eff_weight"), "Down"))
     for variation in lep_trigger_eff_variations:
         for process_nick in ["EMB"]:
             if "et" in [args.gof_channel] + args.channels:
