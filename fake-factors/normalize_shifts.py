@@ -4,6 +4,7 @@
 import ROOT
 import argparse
 import logging
+import copy
 logger = logging.getLogger()
 
 
@@ -27,7 +28,7 @@ def setup_logging(output_file, level=logging.DEBUG):
     logger.addHandler(file_handler)
 
 
-def interpolateHistos(self, h1_old, h2_old):
+def interpolateHistos(h1_old, h2_old):
 
         h1,h2 = copy.deepcopy(h1_old),copy.deepcopy(h2_old)
 
