@@ -218,8 +218,8 @@ def main(args):
                     rootfile.get(era, channel, category, "qqH"), "qqH")
                 plot.subplot(i).add_hist(
                     rootfile.get(era, channel, category, "qqH"), "qqH_top")
-                VHhist = rootfile.get(era, channel, category, "ZH").Clone("VH")
-                VHhist.Add(rootfile.get(era, channel, category, "WH"))
+                VHhist = rootfile.get(era, channel, category, "ZH125").Clone("VH")
+                VHhist.Add(rootfile.get(era, channel, category, "WH125"))
                 plot.subplot(i).add_hist(VHhist, "VH")
                 plot.subplot(i).add_hist(VHhist, "VH_top")
 
