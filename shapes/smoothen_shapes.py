@@ -47,6 +47,9 @@ def main(args):
                 if "scale_j_" in key or "scale_met" in key:
                     if key.startswith("em_"):
                         continue
+                    if "ggH" in key or "qqH" in key:
+                        #print "Skipping %s"%key
+                        continue
                     hist_unc = rootfile.Get(directory+"/"+key)
                     if channel == "em":
                         hist_unc.SetName(key)
