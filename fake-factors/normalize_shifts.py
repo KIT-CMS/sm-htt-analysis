@@ -77,7 +77,7 @@ def main(args):
                 logger.critical("Failed to get shape syst. histogram %s.",
                                 name)
                 raise Exception
-            
+
             h_shift, h_shift_down = interpolateHistos(h_shift_raw, h_shift_down_raw)
 
             nominal = "#" + "#".join(split[:-1]) + "#"
@@ -99,6 +99,7 @@ def main(args):
                 "Renormalize systematic %s (%f) with integral of %s (%f): %f",
                 name, norm_shift, nominal, norm_nominal, scale)
             h_shift.Scale(scale)
+            h_shift.Write()
             logger.debug(
                 "Renormalize systematic %s (%f) with integral of %s (%f): %f",
                 name.replace("Up", "Down"), norm_shift, nominal, norm_nominal, scale)
