@@ -15,6 +15,7 @@ then
         --robustFit 1 -n $ERA -v1 \
         --X-rtd MINIMIZER_analytic --cminDefaultMinimizerStrategy 0
     python combine/check_mlfit.py fitDiagnostics${ERA}.root
+    root -l fitDiagnostics${ERA}.root <<< "fit_b->Print(); fit_s->Print()" | grep "covariance matrix quality"
 fi
 
 if [ $STXS_FIT == "stxs_stage0" ] || [ $STXS_FIT == "stxs_stage1" ]
