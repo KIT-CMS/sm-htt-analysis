@@ -16,7 +16,7 @@ NUM_THREADS=8
 rm -rf output/${ERA}_smhtt
 
 # Create datacards
-$CMSSW_BASE/bin/slc6_amd64_gcc491/MorphingSM2017 \
+$CMSSW_BASE/bin/slc6_amd64_gcc530/MorphingSM2017 \
     --base_path=$PWD \
     --input_folder_mt="/" \
     --input_folder_et="/" \
@@ -28,7 +28,18 @@ $CMSSW_BASE/bin/slc6_amd64_gcc491/MorphingSM2017 \
     --postfix="-ML" \
     --channel="${CHANNELS}" \
     --auto_rebin=true \
+    --manual_rebin=false \
     --stxs_signals=$STXS_SIGNALS \
     --categories=$CATEGORIES \
     --era=$ERA \
     --output="${ERA}_smhtt"
+
+# Use Barlow-Beeston-lite approach for bin-by-bin systematics
+THIS_PWD=${PWD}
+echo $THIS_PWD
+cd output/${ERA}_smhtt/cmb/125/
+for FILE in *.txt
+do
+    sed -i '$s/$/\n * autoMCStats 0.0/' $FILE
+done
+cd $THIS_PWD
