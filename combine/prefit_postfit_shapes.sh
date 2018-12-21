@@ -11,5 +11,4 @@ PostFitShapesFromWorkspace -m 125 -w ${ERA}_workspace.root \
 
 # Postfit shapes
 PostFitShapesFromWorkspace -m 125 -w ${ERA}_workspace.root \
-    -d output/${ERA}_smhtt/cmb/125/combined.txt.cmb -o ${ERA}_datacard_shapes_postfit_sb.root -f mlfit${ERA}.root:fit_s --postfit
-#PostFitShapesFromWorkspace -m 125 -w ${ERA}_workspace.root -o ${ERA}_datacard_shapes_postfit_b.root -f mlfit${ERA}.root:fit_b --postfit
+    -d output/${ERA}_smhtt/cmb/125/combined.txt.cmb -o ${ERA}_datacard_shapes_postfit_sb.root -f fitDiagnostics${ERA}.root:fit_s --postfit
