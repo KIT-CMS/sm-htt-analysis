@@ -1,18 +1,18 @@
 #!/bin/bash
 
 # Export CMSSW
-export SCRAM_ARCH=slc6_amd64_gcc491
+export SCRAM_ARCH=slc6_amd64_gcc530
 export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch
 source $VO_CMS_SW_DIR/cmsset_default.sh
 
-scram project CMSSW CMSSW_7_4_7
-cd CMSSW_7_4_7/src
+scram project CMSSW CMSSW_8_1_0
+cd CMSSW_8_1_0/src
 
 # Clone combine
 git clone ssh://git@github.com/cms-analysis/HiggsAnalysis-CombinedLimit HiggsAnalysis/CombinedLimit
 cd HiggsAnalysis/CombinedLimit
 git fetch origin
-git checkout v6.3.2
+git checkout v7.0.12
 cd ../..
 
 # Clone CombineHarvester
