@@ -34,7 +34,7 @@ def interpolateHistos(h1_old, h2_old):
 
         nbins=h1_old.GetNbinsX()
         for ibin in xrange(nbins):
-            cont1,cont2=h1_old.GetBinContent(ibin),h2_old.GetBinContent(ibin+1)
+            cont1,cont2=h1_old.GetBinContent(ibin+1),h2_old.GetBinContent(ibin+1)
             h1.SetBinContent( ibin+1, cont2* float(nbins-ibin-1)/(nbins-1) + cont1* float(ibin)/(nbins-1) )
             h2.SetBinContent( ibin+1, cont1* float(nbins-ibin-1)/(nbins-1) + cont2* float(ibin)/(nbins-1) )
 
