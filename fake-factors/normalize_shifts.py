@@ -33,10 +33,38 @@ def interpolateHistos(h1_old, h2_old):
         h1,h2 = copy.deepcopy(h1_old),copy.deepcopy(h2_old)
 
         nbins=h1_old.GetNbinsX()
-        for ibin in xrange(nbins+2):     #includes under- and overflow
-            cont1,cont2=h1_old.GetBinContent(ibin),h2_old.GetBinContent(ibin)
-            h1.SetBinContent( ibin, cont2* float(nbins-ibin)/nbins + cont1* float(ibin)/nbins )
-            h2.SetBinContent( ibin, cont1* float(nbins-ibin)/nbins + cont2* float(ibin)/nbins )
+        for ibin in xrange(nbins):
+            cont1,cont2=h1_old.GetBinContent(ibin),h2_old.GetBinContent(ibin+1)
+            h1.SetBinContent( ibin+1, cont2* float(nbins-ibin-1)/(nbins-1) + cont1* float(ibin)/(nbins-1) )
+            h2.SetBinContent( ibin+1, cont1* float(nbins-ibin-1)/(nbins-1) + cont2* float(ibin)/(nbins-1) )
+
+        return h1,h2
+
+
+def interpolateHistos_ggh(h1_old, h2_old):
+
+        h1,h2 = copy.deepcopy(h1_old),copy.deepcopy(h2_old)
+
+        nbins=h1_old.GetNbinsX() / 9
+        for isec in xrange(9):
+            for ibin in xrange(nbins):
+                cont1,cont2=h1_old.GetBinContent(isec*nbins+ibin+1),h2_old.GetBinContent(isec*nbins+ibin+1)
+                h1.SetBinContent( isec*nbins+ibin+1, cont2* float(nbins-ibin-1)/(nbins-1) + cont1* float(ibin)/(nbins-1) )
+                h2.SetBinContent( isec*nbins+ibin+1, cont1* float(nbins-ibin-1)/(nbins-1) + cont2* float(ibin)/(nbins-1) )
+
+        return h1,h2
+
+
+def interpolateHistos_qqh(h1_old, h2_old):
+
+        h1,h2 = copy.deepcopy(h1_old),copy.deepcopy(h2_old)
+
+        nbins=h1_old.GetNbinsX() / 5
+        for isec in xrange(5):
+            for ibin in xrange(nbins):
+                cont1,cont2=h1_old.GetBinContent(isec*nbins+ibin+1),h2_old.GetBinContent(isec*nbins+ibin+1)
+                h1.SetBinContent( isec*nbins+ibin+1, cont2* float(nbins-ibin-1)/(nbins-1) + cont1* float(ibin)/(nbins-1) )
+                h2.SetBinContent( isec*nbins+ibin+1, cont1* float(nbins-ibin-1)/(nbins-1) + cont2* float(ibin)/(nbins-1) )
 
         return h1,h2
 
@@ -78,7 +106,7 @@ def main(args):
                                 name)
                 raise Exception
 
-            h_shift, h_shift_down = interpolateHistos(h_shift_raw, h_shift_down_raw)
+            h_shift, h_shift_down = interpolateHistos_ggh(h_shift_raw, h_shift_down_raw) if "ggh_unrolled" in name else interpolateHistos_qqh(h_shift_raw, h_shift_down_raw) if "qqh_unrolled" in name else interpolateHistos(h_shift_raw, h_shift_down_raw)
 
             nominal = "#" + "#".join(split[:-1]) + "#"
             h_nominal = file_.Get(nominal)
