@@ -23,12 +23,12 @@ $CMSSW_BASE/bin/slc6_amd64_gcc530/MorphingSM2017 \
     --input_folder_tt="/" \
     --input_folder_em="/" \
     --real_data=false \
+    --classic_bbb=false \
     --jetfakes=$JETFAKES \
     --embedding=$EMBEDDING \
     --postfix="-ML" \
     --channel="${CHANNELS}" \
     --auto_rebin=true \
-    --manual_rebin=false \
     --stxs_signals=$STXS_SIGNALS \
     --categories=$CATEGORIES \
     --era=$ERA \
