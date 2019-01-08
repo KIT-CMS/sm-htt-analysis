@@ -9,7 +9,7 @@ source utils/setup_cmssw.sh
 # combining all eras
 ulimit -s unlimited
 
-if [ $STXS_FIT == "inclusiveRobustHesse" ]
+if [ $STXS_FIT == "robustHesse" ]
 then
     combine -M MaxLikelihoodFit -m 125 -d ${ERA}_workspace.root \
         --robustFit 1 -n $ERA -v1 \
