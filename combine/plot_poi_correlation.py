@@ -30,14 +30,11 @@ if __name__ == "__main__":
     print("[INFO] Identified POIs with names {}.".format(pois))
 
     num_pois = len(pois)
-    m = ROOT.TH2D("h", "h", 2, 0, num_pois, 2, 0, num_pois)
+    m = ROOT.TH2D("h", "h", num_pois, 0, num_pois, num_pois, 0, num_pois)
     for i in range(num_pois):
         for j in range(num_pois):
             val = result.correlation(params.find(pois[i]), params.find(pois[j]))
             m.SetBinContent(i+1, j+1, val)
-
-    print("[DEBUG] Print correlation matrix:")
-    m.Print()
 
     m.SetTitle("")
     for i in range(num_pois):
@@ -49,10 +46,17 @@ if __name__ == "__main__":
 
     ROOT.gStyle.SetOptStat(0)
     ROOT.gStyle.SetPalette(1)
-    c = ROOT.TCanvas("c", "c", 800, 800)
+    c = ROOT.TCanvas("c", "c", 1600, 1600)
+    c.SetGrid(1)
+    margin = 0.32
+    c.SetTopMargin(margin)
+    c.SetBottomMargin(margin)
+    c.SetLeftMargin(margin)
+    c.SetRightMargin(margin)
     m.Draw("COLZ")
     c.Update()
 
+    """
     t = ROOT.TText()
     t.SetTextAlign(22)
     t.SetTextFont(42)
@@ -60,5 +64,6 @@ if __name__ == "__main__":
         for j in range(num_pois):
             t.DrawText(i+0.5, j+0.5, "{:.2f}".format(
                 m.GetBinContent(i+1, j+1)))
+    """
 
     c.SaveAs("{}_plot_poi_correlation.pdf".format(era))

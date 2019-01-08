@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ERA=$1
+STXS_FIT=$2
 
 source utils/setup_cmssw.sh
 
@@ -8,6 +9,6 @@ source utils/setup_cmssw.sh
 # combining all eras
 ulimit -s unlimited
 
-./combine/signal_strength.sh ${ERA} "robustHesse"
+#./combine/signal_strength.sh ${ERA} "robustHesse"
 
-python combine/plot_poi_correlation.py ${ERA} fitDiagnostics${ERA}.root
+python combine/plot_poi_correlation.py ${ERA}_${STXS_FIT} fitDiagnostics${ERA}.root
