@@ -15,7 +15,10 @@ ulimit -s unlimited
 # Perform scan
 combineTool.py -M MultiDimFit -d ${ERA}_workspace.root -m 125 \
     --algo grid \
-    --points $NUM --rMin $MIN --rMax $MAX \
+    -P ${POI} \
+    --floatOtherPOIs 1 \
+    --points $NUM \
+    --rMin $MIN --rMax $MAX \
     -n ${ERA}_${POI}
 
 # Plot 2*deltaNLL vs POI
