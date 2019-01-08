@@ -12,12 +12,16 @@ source utils/setup_cmssw.sh
 # combining all eras
 ulimit -s unlimited
 
+# Perform scan
 combineTool.py -M MultiDimFit -d ${ERA}_workspace.root -m 125 \
     --algo grid \
     --points $NUM --rMin $MIN --rMax $MAX \
     -n ${ERA}
+
+# Plot 2*deltaNLL vs POI
 python ${CMSSW_BASE}/bin/slc6_amd64_gcc530/plot1DScan.py \
     --main higgsCombine${ERA}.MultiDimFit.mH125.root \
     --POI $POI \
     --output ${ERA}_plot_nll_${POI} \
+    --pub \
     --translate combine/translate.json
