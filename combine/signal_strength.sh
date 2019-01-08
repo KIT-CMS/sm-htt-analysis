@@ -9,19 +9,23 @@ source utils/setup_cmssw.sh
 # combining all eras
 ulimit -s unlimited
 
-if [ $STXS_FIT == "inclusive" ]
+if [ $STXS_FIT == "inclusiveRobustHesse" ]
 then
     combine -M MaxLikelihoodFit -m 125 -d ${ERA}_workspace.root \
         --robustFit 1 -n $ERA -v1 \
+        --robustHesse 1 \
         --X-rtd MINIMIZER_analytic --cminDefaultMinimizerStrategy 0
-    python combine/check_mlfit.py fitDiagnostics${ERA}.root
+    #python combine/check_mlfit.py fitDiagnostics${ERA}.root
     root -l fitDiagnostics${ERA}.root <<< "fit_b->Print(); fit_s->Print()" | grep "covariance matrix quality"
 fi
 
-if [ $STXS_FIT == "stxs_stage0" ] || [ $STXS_FIT == "stxs_stage1" ]
+if [ $STXS_FIT == "inclusive" ] || [ $STXS_FIT == "stxs_stage0" ] || [ $STXS_FIT == "stxs_stage1" ]
 then
     combineTool.py -M MultiDimFit -m 125 -d ${ERA}_workspace.root \
-        --algo singles -t -1 --expectSignal 1 \
-        --robustFit 1 -n $ERA -v1 \
-        --X-rtd MINIMIZER_analytic --cminDefaultMinimizerStrategy 0
+        --algo singles --robustFit 1 \
+        --X-rtd MINIMIZER_analytic --cminDefaultMinimizerStrategy 0 \
+        --floatOtherPOIs 1 \
+        -t -1 --expectSignal 1 \
+        -n $ERA -v1
+    python combine/print_fitresult.py higgsCombine${ERA}.MultiDimFit.mH125.root
 fi
