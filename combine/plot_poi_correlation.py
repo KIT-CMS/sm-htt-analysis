@@ -8,14 +8,14 @@ import sys
 
 
 if __name__ == "__main__":
-    filename = sys.argv[1]
+    era = sys.argv[1]
+    print("[INFO] Plot for era {}.".format(era))
+
+    filename = sys.argv[2]
     print("[INFO] Plot POI correlations from file {}.".format(filename))
     f = ROOT.TFile(filename)
     if f == None:
         raise Exception("[ERROR] File {} not found.".format(filename))
-
-    era = sys.argv[2]
-    print("[INFO] Plot for era {}.".format(era))
 
     result = f.Get("fit_s")
     if result == None:

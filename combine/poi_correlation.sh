@@ -10,4 +10,4 @@ ulimit -s unlimited
 
 ./combine/signal_strength.sh ${ERA} "robustHesse"
 
-python combine/plot_poi_correlation.py fitDiagnostics${ERA}.root
+python combine/plot_poi_correlation.py ${ERA} fitDiagnostics${ERA}.root
