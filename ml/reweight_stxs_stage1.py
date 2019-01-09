@@ -75,10 +75,15 @@ def reweight(file_, name, integral, bins, args):
     value = array.array("f", [-999])
     b = copy.Branch(args.weight_branch, value, args.weight_branch+"/F")
     num_bins = len(bins.keys())
+    min_cat = min(bins.keys())
     for i, event in enumerate(copy):
         stxs_cat = int(getattr(copy, args.stxs_branch))
-        value[0] = weights[i]*integral/float(num_bins)/bins[stxs_cat]
-        b.Fill()
+        if stxs_cat < min_cat:
+            logger.warning("Encountered event with STXS flag %u and weight %f.", stxs_cat, weights[i])
+            value[0] = weights[i]
+        else:
+            value[0] = weights[i]*integral/float(num_bins)/bins[stxs_cat]
+            b.Fill()
     copy.Write()
     return copy
 
