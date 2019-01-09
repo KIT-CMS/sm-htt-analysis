@@ -9,6 +9,7 @@ source utils/setup_samples.sh $ERA
 
 mkdir -p ml/${ERA}_${CHANNEL}
 
+# Write dataset config
 python ml/write_dataset_config.py \
     --era ${ERA} \
     --channel ${CHANNEL} \
@@ -21,4 +22,12 @@ python ml/write_dataset_config.py \
     --training-weight-branch training_weight \
     --output-config ml/${ERA}_${CHANNEL}/dataset_config.yaml
 
+# Create dataset files from config
 ./htt-ml/dataset/create_training_dataset.py ml/${ERA}_${CHANNEL}/dataset_config.yaml
+
+# Reweight STXS stage 1 signals so that each stage 1 signal is weighted equally but
+# conserve the overall weight of the stage 0 signal
+#python ml/reweight_stxs_stage1.py \
+#    ml/${ERA}_${CHANNEL} \
+#    ml/${ERA}_${CHANNEL}/fold0_training_dataset.root \
+#    ml/${ERA}_${CHANNEL}/fold1_training_dataset.root
