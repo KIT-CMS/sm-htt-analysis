@@ -83,7 +83,7 @@ def reweight(file_, name, integral, bins, args):
             value[0] = weights[i]
         else:
             value[0] = weights[i]*integral/float(num_bins)/bins[stxs_cat]
-            b.Fill()
+        b.Fill()
     copy.Write()
     return copy
 
