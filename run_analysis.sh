@@ -46,6 +46,7 @@ STXS_FIT="inclusive"        # options: stxs_stage0, stxs_stage1, inclusive
 # Run statistical inference
 #./combine/significance.sh $ERA | tee ${ERA}_significance.log
 ./combine/signal_strength.sh $ERA $STXS_FIT | tee ${ERA}_signal_strength_${STXS_FIT}.log
+./combine/signal_strength.sh $ERA "robustHesse" | tee ${ERA}_signal_strength_robustHesse.log
 ./combine/diff_nuisances.sh $ERA
 #./combine/nuisance_impacts.sh $ERA
 
