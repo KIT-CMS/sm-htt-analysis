@@ -224,10 +224,15 @@ def main(args):
                 plot.subplot(i).add_hist(VHhist, "VH_top")
 
             # get observed data and total background histograms
+            # NOTE: With CMSSW_8_1_0 the TotalBkg definition has changed.
             plot.add_hist(
                 rootfile.get(era, channel, category, "data_obs"), "data_obs")
-            plot.add_hist(
-                rootfile.get(era, channel, category, "TotalBkg"), "total_bkg")
+            total_bkg = rootfile.get(era, channel, category, "TotalBkg")
+            ggHHist = rootfile.get(era, channel, category, "ggH")
+            qqHHist = rootfile.get(era, channel, category, "qqH")
+            total_bkg.Add(ggHHist, -1)
+            total_bkg.Add(qqHHist, -1)
+            plot.add_hist(total_bkg, "total_bkg")
 
             plot.subplot(0).setGraphStyle("data_obs", "e0")
             plot.subplot(0 if args.linear else 1).setGraphStyle(
