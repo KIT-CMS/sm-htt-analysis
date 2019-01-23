@@ -534,6 +534,32 @@ def main(args):
                     channel=tt,
                     era=era)
 
+    # MC ele energy scale
+    ele_es_variations = create_systematic_variations(
+        "CMS_scale_mc_e", "eleEs", DifferentPipeline)
+    for variation in ele_es_variations:
+        for process_nick in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVL", "VVT", "VVJ"
+                             ] + signal_nicks:
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+
+    # Ele energy scale
+    ele_es_variations = create_systematic_variations(
+        "CMS_scale_e", "eleEs", DifferentPipeline)
+    for variation in ele_es_variations:
+        for process_nick in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVL", "VVT", "VVJ", "EMB"
+                             ] + signal_nicks:
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+
     # Jet energy scale
 
     # Inclusive JES shapes
@@ -938,6 +964,18 @@ def main(args):
                     variation=variation,
                     process=tt_processes[process_nick],
                     channel=tt,
+                    era=era)
+
+    # Ele energy scale
+    ele_es_variations = create_systematic_variations(
+        "CMS_scale_emb_e", "eleEs", DifferentPipeline)
+    for variation in ele_es_variations:
+        for process_nick in ["EMB"]:
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
                     era=era)
 
     mt_decayMode_variations = []
