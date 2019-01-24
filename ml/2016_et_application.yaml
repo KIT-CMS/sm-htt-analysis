@@ -15,4 +15,4 @@ preprocessing:
 branch_prefix: et_
 
 # Output directory
-output_directory: /ceph/wunsch/Artus16_Nov/et_keras_20181128
+output_directory: /ceph/wunsch/Artus16_Nov/et_keras_20190124
