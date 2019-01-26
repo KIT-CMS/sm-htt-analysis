@@ -19,11 +19,11 @@ classes:
 
 # Set class weights
 class_weights:
-    ggh: 204.7
-    qqh: 2274.6
+    ggh: 205.7
+    qqh: 1734.2
     ztt: 1.8
-    zll: 16.7
-    w: 6.7
+    zll: 15.9
+    w: 6.8
     tt: 14.8
     ss: 6.8
     misc: 65.3
