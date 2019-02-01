@@ -15,7 +15,7 @@ ulimit -s unlimited
 # Perform scan
 combineTool.py -M MultiDimFit -d ${ERA}_workspace.root -m 125 \
     --algo grid \
-    --X-rtd MINIMIZER_analytic --cminDefaultMinimizerStrategy 0
+    --X-rtd MINIMIZER_analytic --cminDefaultMinimizerStrategy 0 \
     -P ${POI} \
     --floatOtherPOIs 1 \
     --points $NUM \
