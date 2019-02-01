@@ -1107,7 +1107,7 @@ def main(args):
                     process=mt_processes['ZTTpTTTauTauDown'],
                     analysis="smhtt",
                     era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar", "Down"),
+                    variation=Relabel("CMS_htt_emb_ttbar_Run2016", "Down"),
                     mass="125"))
 
             mt_processes['ZTTpTTTauTauUp'] = Process(
@@ -1121,7 +1121,7 @@ def main(args):
                     process=mt_processes['ZTTpTTTauTauUp'],
                     analysis="smhtt",
                     era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar", "Up"),
+                    variation=Relabel("CMS_htt_emb_ttbar_Run2016", "Up"),
                     mass="125"))
 
     if 'et' in [args.gof_channel] + args.channels:
@@ -1137,7 +1137,7 @@ def main(args):
                     process=et_processes['ZTTpTTTauTauDown'],
                     analysis="smhtt",
                     era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar", "Down"),
+                    variation=Relabel("CMS_htt_emb_ttbar_Run2016", "Down"),
                     mass="125"))
 
             et_processes['ZTTpTTTauTauUp'] = Process(
@@ -1151,7 +1151,7 @@ def main(args):
                     process=et_processes['ZTTpTTTauTauUp'],
                     analysis="smhtt",
                     era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar", "Up"),
+                    variation=Relabel("CMS_htt_emb_ttbar_Run2016", "Up"),
                     mass="125"))
     if 'tt' in [args.gof_channel] + args.channels:
         for category in tt_categories:
@@ -1166,7 +1166,7 @@ def main(args):
                     process=tt_processes['ZTTpTTTauTauDown'],
                     analysis="smhtt",
                     era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar", "Down"),
+                    variation=Relabel("CMS_htt_emb_ttbar_Run2016", "Down"),
                     mass="125"))
 
             tt_processes['ZTTpTTTauTauUp'] = Process(
@@ -1180,7 +1180,7 @@ def main(args):
                     process=tt_processes['ZTTpTTTauTauUp'],
                     analysis="smhtt",
                     era=era,
-                    variation=Relabel("CMS_htt_emb_ttbar", "Up"),
+                    variation=Relabel("CMS_htt_emb_ttbar_Run2016", "Up"),
                     mass="125"))
 
     # Fake factor uncertainties
