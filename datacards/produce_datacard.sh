@@ -24,6 +24,7 @@ $CMSSW_BASE/bin/slc6_amd64_gcc530/MorphingSM2017 \
     --input_folder_em="/" \
     --real_data=false \
     --classic_bbb=false \
+    --binomial_bbb=true \
     --jetfakes=$JETFAKES \
     --embedding=$EMBEDDING \
     --postfix="-ML" \
