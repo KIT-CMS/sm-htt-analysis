@@ -36,10 +36,7 @@ ggh_fine_full_unrolling_8classes: &ggh_fine_full_unrolling_8classes
       4.675,  4.725,  4.775,  4.825,  4.875,  4.925,  4.975,  5.025,  5.075,  5.125,
       5.175,  5.225,  5.275,  5.325,  5.375,  5.4  ,  5.45 ,  5.5  ,  5.55 ,  5.6  , 5.65,
       5.7  ,  5.75 ,  5.8  ,  5.85 ,  5.9  ,  5.95 ,  6.   ,  6.05 ,  6.1  ,  6.15 , 6.2,
-      6.25 ,  6.275,  6.325,  6.375,  6.425,  6.475,  6.525,  6.575,  6.625,  6.675,
-      6.725,  6.775,  6.825,  6.875,  6.925,  6.975,  7.025,  7.075,  7.125,  7.15 , 7.2,
-      7.25 ,  7.3  ,  7.35 ,  7.4  ,  7.45 ,  7.5  ,  7.55 ,  7.6  ,  7.65 ,  7.7  , 7.75,
-      7.8  ,  7.85 ,  7.9  ,  7.95 ,  8.   ]
+      6.25 ,  6.275]
 
 qqh_fine_full_unrolling_8classes: &qqh_fine_full_unrolling_8classes
     [ 0.125,  0.15 ,  0.2  ,  0.25 ,  0.3  ,  0.35 ,  0.4  ,  0.45 ,  0.5  ,  0.55 ,  0.6,
@@ -138,6 +135,38 @@ analysis:
 
 # Define STXS stage 1 cuts for unrolling
 stxs_stage1:
+  lt:
+    ggh:
+        # 101 hardly populated and merged into 2jet
+        # 102 hardly populated and merged into 2jet
+        # 103
+        - "(njets==0)"
+        # 104
+        - "(njets==1)*(pt_tt>0)*(pt_tt<60)"
+        # 105
+        - "(njets==1)*(pt_tt>60)*(pt_tt<120)"
+        # 106
+        - "(njets==1)*(pt_tt>120)*(pt_tt<200)"
+        # 107 not populated
+        # 108
+        - "(njets>=2)*(pt_tt>0)*(pt_tt<60)"
+        # 109
+        - "(njets>=2)*(pt_tt>60)*(pt_tt<120)"
+        # 110
+        - "(njets>=2)*(pt_tt>120)*(pt_tt<200)"
+        # 111 not populated
+    qqh:
+        # 201
+        - "(jpt_1>0)*(jpt_1<200)*(njets>=2)*(mjj>400)*(jdeta>2.8)*(pt_ttjj>0)*(pt_ttjj<25)"
+        # 202
+        - "(jpt_1>0)*(jpt_1<200)*(njets>=2)*(mjj>400)*(jdeta>2.8)*(pt_ttjj>25)"
+        # 203
+        - "(jpt_1>0)*(jpt_1<200)*(njets>=2)*(mjj>60)*(mjj<120)"
+        # 204
+        - "( (jpt_1>0)*(jpt_1<200)*(njets<2) + (jpt_1>0)*(jpt_1<200)*(njets>=2)*(mjj>400)*(jdeta<2.8) + (jpt_1>0)*(jpt_1<200)*(njets>=2)*(mjj>0)*(mjj<60) + (jpt_1>0)*(jpt_1<200)*(njets>=2)*(mjj>120)*(mjj<400) )"
+        # 205
+        - "(jpt_1>200)"
+  tt:
     ggh:
         # 101 hardly populated and merged into 2jet
         # 102 hardly populated and merged into 2jet
