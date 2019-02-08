@@ -638,10 +638,10 @@ def main(args):
 
     # Recoil correction unc
     recoil_resolution_variations = create_systematic_variations(
-        "CMS_htt_boson_reso_met", "metRecoilResolution",
+        "CMS_htt_boson_reso_met_Run2017", "metRecoilResolution",
         DifferentPipeline)
     recoil_response_variations = create_systematic_variations(
-        "CMS_htt_boson_scale_met", "metRecoilResponse",
+        "CMS_htt_boson_scale_met_Run2017", "metRecoilResponse",
         DifferentPipeline)
     for variation in recoil_resolution_variations + recoil_response_variations:
         for process_nick in [
