@@ -302,12 +302,12 @@ def main(args):
                 max(2 * plot.subplot(0).get_hist("total_bkg").GetMaximum(),
                     split_dict[channel] * 2))
 
-            plot.subplot(2).setYlims(0.75, 1.45)
+            plot.subplot(2).setYlims(0.45, 2.05)
             if category in ["2"]:
-                plot.subplot(2).setYlims(0.55, 2.05)
+                plot.subplot(2).setYlims(0.45, 2.05)
             if category in ["1", "2"]:
                 plot.subplot(0).setLogY()
-                plot.subplot(0).setYlims(0.1, 15000000 if channel in ["et", "mt"] and category=="1" and tranche=="A" else 150000)
+                plot.subplot(0).setYlims(0.1, 150000000) #15000000 if channel in ["et", "mt"] and category=="1" and tranche=="A" else 150000)
                 if channel == "em":
                     plot.subplot(0).setYlims(1, 15000000)
 
@@ -349,9 +349,9 @@ def main(args):
                     if tranche == "A":
                         selection = [0]
                     elif tranche == "B":
-                        selection = [1,2,3,4]
+                        selection = [1,2,3,4] if (channel=="tt" or channel=="em") else [1,2,3]
                     elif tranche == "C":
-                        selection = [5,6,7,8]
+                        selection = [5,6,7,8] if (channel=="tt" or channel=="em") else [4,5,6]
                     if not channel == "tt":
                         plot.setNXdivisions(7, 0, 4, False)
                     #else:
