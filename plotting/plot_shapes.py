@@ -349,15 +349,15 @@ def main(args):
                     if tranche == "A":
                         selection = [0]
                     elif tranche == "B":
-                        selection = [1,2,3,4] if (channel=="tt" or channel=="em") else [1,2,3]
+                        selection = [1,2,3,4] if channel=="tt" else [1,2,3]
                     elif tranche == "C":
-                        selection = [5,6,7,8] if (channel=="tt" or channel=="em") else [4,5,6]
+                        selection = [5,6,7,8] if channel=="tt" else [5,6,7] if channel=="em" else [4,5,6]
                     if not channel == "tt":
                         plot.setNXdivisions(7, 0, 4, False)
                     #else:
                     #    plot.setNXdivisions(4, 0, 0, False)
                     #plot.scaleXLabelSize(0.5)
-                    plot.unroll(["0J", "1J_PTH_0_60", "1J_PTH_60_120", "1J_PTH_120_200", "1J_PTH_GT200", "GE2J_PTH_0_60", "GE2J_PTH_60_120", "GE2J_PTH_120_200", "GE2J_PTH_GT200"], ur_label_size = 0.5, pads_to_print_labels=[], selection=selection)
+                    plot.unroll(["0J", "1J_PTH_0_60", "1J_PTH_60_120", "1J_PTH_120_200", "1J_PTH_GT200", "GE2J_PTH_0_60", "GE2J_PTH_60_120"] + ([] if (channel=="et" or channel=="mt") else ["GE2J_PTH_120_200", "GE2J_PTH_GT200"]), ur_label_size = 0.5, pads_to_print_labels=[], selection=selection)
                 if category in ["2"]:
                     selection = None
                     if tranche == "A":
