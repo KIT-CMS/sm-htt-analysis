@@ -19,7 +19,7 @@ combineTool.py -M MultiDimFit -d ${ERA}_workspace.root -m 125 \
     -P ${POI} \
     --floatOtherPOIs 1 \
     --points $NUM \
-    --rMin $MIN --rMax $MAX \
+    --setParameterRanges ${POI}=${MIN},${MAX} \
     -n ${ERA}_${POI}
 
 # Plot 2*deltaNLL vs POI
