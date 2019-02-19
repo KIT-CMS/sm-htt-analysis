@@ -7,7 +7,7 @@ ROOT.PyConfig.IgnoreCommandLineOptions = True  # disable ROOT internal argument 
 import argparse
 import os
 
-from shape_producer.estimation_methods_2016 import DataEstimation
+from shape_producer.estimation_methods_2016 import DataEstimation, qqHEstimation, ggHEstimation
 from shape_producer.era import Run2016
 from shape_producer.channel import ETSM2016, MTSM2016, TTSM2016
 
@@ -33,6 +33,7 @@ def main(args):
     data = DataEstimation(era, args.directory, channel, friend_directory=friend_directory)
     files = data.get_files()
     cuts = (data.get_cuts() + channel.cuts).expand()
+    weights = data.get_weights().extract()
 
     # Combine all files
     tree = ROOT.TChain()
@@ -50,35 +51,40 @@ def main(args):
     tree.AddFriend(friend)
 
     # All events after baseline selection
-    tree.Draw("m_sv>>all_events", cuts, "goff")
-    all_events = ROOT.gDirectory.Get("all_events").GetEntries()
+    tree.Draw("m_sv>>all_events", cuts + "*({})".format(weights), "goff")
+    all_events = ROOT.gDirectory.Get("all_events").Integral(-1000, 1000)
 
     # Only 16043
-    tree.Draw("m_sv>>only_16043", cuts + "*(({})==0)*(({})==1)".format(args.cut18032, args.cut16043), "goff")
-    only_16043 = ROOT.gDirectory.Get("only_16043").GetEntries()
+    tree.Draw("m_sv>>only_16043", cuts + "*(({})==0)*(({})==1)*({})".format(args.cut18032, args.cut16043, weights), "goff")
+    only_16043 = ROOT.gDirectory.Get("only_16043").Integral(-1000, 1000)
 
     # All 16043
-    tree.Draw("m_sv>>all_16043", cuts + "*(({})==1)".format(args.cut16043), "goff")
-    all_16043 = ROOT.gDirectory.Get("all_16043").GetEntries()
+    tree.Draw("m_sv>>all_16043", cuts + "*(({})==1)*({})".format(args.cut16043, weights), "goff")
+    all_16043 = ROOT.gDirectory.Get("all_16043").Integral(-1000, 1000)
 
     # Only 18032
-    tree.Draw("m_sv>>only_18032", cuts + "*(({})==1)*(({})==0)".format(args.cut18032, args.cut16043), "goff")
-    only_18032 = ROOT.gDirectory.Get("only_18032").GetEntries()
+    tree.Draw("m_sv>>only_18032", cuts + "*(({})==1)*(({})==0)*({})".format(args.cut18032, args.cut16043, weights), "goff")
+    only_18032 = ROOT.gDirectory.Get("only_18032").Integral(-1000, 1000)
 
     # All 18032
-    tree.Draw("m_sv>>all_18032", cuts + "*(({})==1)".format(args.cut18032), "goff")
-    all_18032 = ROOT.gDirectory.Get("all_18032").GetEntries()
+    tree.Draw("m_sv>>all_18032", cuts + "*(({})==1)*({})".format(args.cut18032, weights), "goff")
+    all_18032 = ROOT.gDirectory.Get("all_18032").Integral(-1000, 1000)
 
     # Both
-    tree.Draw("m_sv>>both", cuts + "*(({})==1)*(({})==1)".format(args.cut18032, args.cut16043), "goff")
-    both = ROOT.gDirectory.Get("both").GetEntries()
+    tree.Draw("m_sv>>both", cuts + "*(({})==1)*(({})==1)*({})".format(args.cut18032, args.cut16043, weights), "goff")
+    both = ROOT.gDirectory.Get("both").Integral(-1000, 1000)
 
     # None
-    tree.Draw("m_sv>>none", cuts + "*(({})==0)*(({})==0)".format(args.cut18032, args.cut16043), "goff")
-    none = ROOT.gDirectory.Get("none").GetEntries()
+    tree.Draw("m_sv>>none", cuts + "*(({})==0)*(({})==0)*({})".format(args.cut18032, args.cut16043, weights), "goff")
+    none = ROOT.gDirectory.Get("none").Integral(-1000, 1000)
 
     # Print
-    print("Cross-check: {}".format(both + only_18032 + only_16043 + none == all_events))
+    print("Cross-check: {}, {}".format(both + only_18032 + only_16043 + none, all_events))
+    print("Cross-check: {}, {}".format(all_18032 + only_16043 + none, all_events))
+    print("Cross-check: {}, {}".format(only_18032 + all_16043 + none, all_events))
+    print("Cross-check: {}, {}".format(all_16043, only_16043 + both))
+    print("Cross-check: {}, {}".format(all_18032, only_18032 + both))
+    print("Cross-check: {}, {}".format(all_events - both - only_18032 - only_16043, none))
     print("All events: {}".format(all_events))
     print("In none of both selection: {}".format(none))
     print("In both selections together: {}".format(both))
