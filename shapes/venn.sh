@@ -5,15 +5,15 @@
 # See HIG16043: https://arxiv.org/pdf/1708.00373.pdf
 
 ET_0JET="(njets==0)"
-ET_VBF="(njets>=1)*(mjj>300)*(pt_tt>50)"
+ET_VBF="(njets>=2)*(mjj>300)*(pt_tt>50)"
 ET_BOOSTED="(${ET_0JET}==0)*(${ET_VBF}==0)"
 
 MT_0JET="(njets==0)"
-MT_VBF="(njets>=1)*(mjj>300)*(pt_tt>50)*(pt_2>40)"
+MT_VBF="(njets>=2)*(mjj>300)*(pt_tt>50)*(pt_2>40)"
 MT_BOOSTED="(${MT_0JET}==0)*(${MT_VBF}==0)"
 
 TT_0JET="(njets==0)"
-TT_VBF="(njets>=1)*(pt_tt>100)*(jdeta>2.5)"
+TT_VBF="(njets>=2)*(pt_tt>100)*(jdeta>2.5)"
 TT_BOOSTED="(${TT_0JET}==0)*(${TT_VBF}==0)"
 
 echo ">>> ET, qqH:"
