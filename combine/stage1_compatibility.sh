@@ -8,10 +8,12 @@ source utils/setup_cmssw.sh
 # combining all eras
 ulimit -s unlimited
 
+#FIXED=1.0 # for compatibility with SM expectation
+FIXED=0.75 # forcompatibility with inclusive bestfit signal strength
 combineTool.py -M MultiDimFit -m 125 -d ${ERA}_workspace.root \
     --algo fixed --robustFit 1 \
     --X-rtd MINIMIZER_analytic --cminDefaultMinimizerStrategy 0 \
-    --fixedPointPOIs r_qqH_REST=-1.0618,r_ggH_GE2J=0.4676,r_VBFTOPO=0.9982,r_qqH_VH2JET=-1.1692,r_ggH_1J_PTH_GT120=1.8007,r_ggH_1J_PTH_0_60=-0.3422,r_qqH_PTJET1_GT200=1.4062,r_ggH_1J_PTH_60_120=1.2626,r_ggH_0J=-0.3977 \
+    --fixedPointPOIs r_qqH_REST=${FIXED},r_ggH_GE2J=${FIXED},r_VBFTOPO=${FIXED},r_qqH_VH2JET=${FIXED},r_ggH_1J_PTH_GT120=${FIXED},r_ggH_1J_PTH_0_60=${FIXED},r_qqH_PTJET1_GT200=${FIXED},r_ggH_1J_PTH_60_120=${FIXED},r_ggH_0J=${FIXED} \
     -n $ERA -v1
 
 python combine/print_stage1_compatibility.py higgsCombine${ERA}.MultiDimFit.mH125.root

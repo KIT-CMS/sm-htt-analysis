@@ -45,4 +45,4 @@ if __name__ == "__main__":
             alternative = 2.0*e.deltaNLL
 
     print("[INFO] Degrees of freedom: %u"%(len(pois)))
-    print("[INFO] p-value taken from ROOT::Math::chisquared_cdf(alternative, NDOF-1): %.2f"%(ROOT.Math.chisquared_cdf(alternative, len(pois)-1)))
+    print("[INFO] p-value taken from ROOT::Math::chisquared_cdf_c(alternative, NDOF-1): %.2f"%(ROOT.Math.chisquared_cdf_c(alternative, len(pois)-1)))
