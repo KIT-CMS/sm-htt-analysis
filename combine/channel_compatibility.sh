@@ -10,11 +10,14 @@ ERA=$1
 ulimit -s unlimited
 
 combine -M ChannelCompatibilityCheck -d ${PWD}/${ERA}_workspace.root -m 125.0 -n ${ERA} \
-        --X-rtd MINIMIZER_analytic --cminDefaultMinimizerStrategy 0 \
+        --X-rtd MINIMIZER_analytic \
+        --cminDefaultMinimizerStrategy 0 \
+        --robustFit 1 \
         --X-rtd FITTER_NEW_CROSSING_ALGO \
-        --robustFit 1 -v 1 \
+        -v 1 \
         --group htt_em \
         --group htt_et \
         --group htt_mt \
         --group htt_tt \
-        --rMin -10 --rMax 10
+        --rMin -1 --rMax 3 \
+        --saveFitResult
