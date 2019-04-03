@@ -31,7 +31,7 @@ python shapes/produce_shapes_$ERA.py \
     --et-friend-directory $ARTUS_FRIENDS_ET \
     --mt-friend-directory $ARTUS_FRIENDS_MT \
     --tt-friend-directory $ARTUS_FRIENDS_TT \
-    --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR_INCL \
+    --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR \
     --era $ERA \
     --tag $ERA \
     --num-threads $NUM_THREADS
