@@ -100,11 +100,6 @@ def parse_arguments():
         type=str,
         help="Variable for goodness of fit shapes.")
     parser.add_argument(
-        "--HIG16043",
-        action="store_true",
-        default=False,
-        help="Create shapes of HIG16043 reference analysis.")
-    parser.add_argument(
         "--num-threads",
         default=32,
         type=int,
@@ -241,8 +236,6 @@ def main(args):
     tt = TTSM2016()
     if args.QCD_extrap_fit:
         tt.cuts.get("os").invert()
-    if args.HIG16043:
-        tt.cuts.remove("pt_h")
     tt_processes = {
         "data"  : Process("data_obs", DataEstimation  (era, directory, tt, friend_directory=tt_friend_directory)),
         "HTT"   : Process("HTT",      HTTEstimation   (era, directory, tt, friend_directory=tt_friend_directory)),
@@ -288,26 +281,8 @@ def main(args):
     binning = yaml.load(open(args.binning))
 
     et_categories = []
-    # HIG16043 shapes
-    if "et" in args.channels and args.HIG16043:
-        for category in ["0jet", "vbf", "boosted"]:
-            variable = Variable(
-                    binning["HIG16043"]["et"][category]["variable"],
-                    VariableBinning(binning["HIG16043"]["et"][category]["binning"]),
-                    expression=binning["HIG16043"]["et"][category]["expression"])
-            et_categories.append(
-                Category(
-                    category,
-                    et,
-                    Cuts(
-                        Cut(binning["HIG16043"]["et"][category]["cut_unrolling"],
-                            "et_cut_unrolling_{}".format(category)),
-                        Cut(binning["HIG16043"]["et"][category]["cut_category"],
-                            "et_cut_category_{}".format(category))
-                        ),
-                    variable=variable))
     # Analysis shapes
-    elif "et" in args.channels:
+    if "et" in args.channels:
         classes_et = ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]
         for i, label in enumerate(classes_et):
             score = Variable(
@@ -356,26 +331,8 @@ def main(args):
                 variable=score))
 
     mt_categories = []
-    # HIG16043 shapes
-    if "mt" in args.channels and args.HIG16043:
-        for category in ["0jet", "vbf", "boosted"]:
-            variable = Variable(
-                    binning["HIG16043"]["mt"][category]["variable"],
-                    VariableBinning(binning["HIG16043"]["mt"][category]["binning"]),
-                    expression=binning["HIG16043"]["mt"][category]["expression"])
-            mt_categories.append(
-                Category(
-                    category,
-                    mt,
-                    Cuts(
-                        Cut(binning["HIG16043"]["mt"][category]["cut_unrolling"],
-                            "mt_cut_unrolling_{}".format(category)),
-                        Cut(binning["HIG16043"]["mt"][category]["cut_category"],
-                            "mt_cut_category_{}".format(category))
-                        ),
-                    variable=variable))
     # Analysis shapes
-    elif "mt" in args.channels:
+    if "mt" in args.channels:
         classes_mt = ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]
         for i, label in enumerate(classes_mt):
             score = Variable(
@@ -424,26 +381,8 @@ def main(args):
                 variable=score))
 
     tt_categories = []
-    # HIG16043 shapes
-    if "tt" in args.channels and args.HIG16043:
-        for category in ["0jet", "vbf", "boosted"]:
-            variable = Variable(
-                    binning["HIG16043"]["tt"][category]["variable"],
-                    VariableBinning(binning["HIG16043"]["tt"][category]["binning"]),
-                    expression=binning["HIG16043"]["tt"][category]["expression"])
-            tt_categories.append(
-                Category(
-                    category,
-                    tt,
-                    Cuts(
-                        Cut(binning["HIG16043"]["tt"][category]["cut_unrolling"],
-                            "tt_cut_unrolling_{}".format(category)),
-                        Cut(binning["HIG16043"]["tt"][category]["cut_category"],
-                            "tt_cut_category_{}".format(category))
-                        ),
-                    variable=variable))
     # Analysis shapes
-    elif "tt" in args.channels:
+    if "tt" in args.channels:
         classes_tt = ["ggh", "qqh", "ztt", "noniso", "misc"]
         for i, label in enumerate(classes_tt):
             score = Variable(
