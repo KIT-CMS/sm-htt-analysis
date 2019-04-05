@@ -18,6 +18,9 @@ ARTUS_FRIENDS_TT_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_Jan/tt_keras_
 ARTUS_FRIENDS_FAKE_FACTOR_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_Jan/fake_factor_friends_njets_mvis_NEW_NN_Jan26
 ARTUS_FRIENDS_FAKE_FACTOR_INCL_2017=$ARTUS_FRIENDS_FAKE_FACTOR_2017
 
+# Samples Run2018
+ARTUS_OUTPUTS_2018=/portal/ekpbms2/home/jbechtel/new_ntupels/
+
 # Error-handling
 if [[ $ERA == *"2016"* ]]
 then
@@ -35,10 +38,10 @@ then
     ARTUS_FRIENDS_TT=$ARTUS_FRIENDS_TT_2017
     ARTUS_FRIENDS_FAKE_FACTOR=$ARTUS_FRIENDS_FAKE_FACTOR_2017
     ARTUS_FRIENDS_FAKE_FACTOR_INCL=$ARTUS_FRIENDS_FAKE_FACTOR_INCL_2017
-else
-    echo "[ERROR] Era $ERA is not implemented." 1>&2
-    read -p "Press any key to continue... " -n1 -s
+elif [[ $ERA == *"2018"* ]]
+then
+    ARTUS_OUTPUTS=$ARTUS_OUTPUTS_2018
 fi
 
 # Kappa database
-KAPPA_DATABASE=/ceph/swozniewski/kappa_database/datasets_2019_01_20.json
+KAPPA_DATABASE=/portal/ekpbms1/home/jbechtel/postprocessing/2018/sm-htt-analysis/datasets.json
