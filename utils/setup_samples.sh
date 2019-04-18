@@ -10,6 +10,9 @@ ARTUS_FRIENDS_TT_2016=/ceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_201
 ARTUS_FRIENDS_FAKE_FACTOR_2016=/ceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016_Jan19/fake_factor_friends_njets_mvis_NEW_NN_Jan27
 ARTUS_FRIENDS_FAKE_FACTOR_INCL_2016=$ARTUS_FRIENDS_FAKE_FACTOR_2016
 
+ARTUS_OUTPUTS_EM_2016=/ceph/jbechtel/2016/em_all_vars_JetFix_def
+
+
 # Samples Run2017
 ARTUS_OUTPUTS_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_Jan/merged_fixedjets
 ARTUS_FRIENDS_ET_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_Jan/et_keras_20190125
@@ -18,6 +21,9 @@ ARTUS_FRIENDS_TT_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_Jan/tt_keras_
 ARTUS_FRIENDS_FAKE_FACTOR_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_Jan/fake_factor_friends_njets_mvis_NEW_NN_Jan26
 ARTUS_FRIENDS_FAKE_FACTOR_INCL_2017=$ARTUS_FRIENDS_FAKE_FACTOR_2017
 
+ARTUS_OUTPUTS_EM_2017=/portal/ekpbms2/home/jbechtel/no_ee_noise_files/
+
+
 # Samples Run2018
 ARTUS_OUTPUTS_2018=/portal/ekpbms2/home/jbechtel/no_ee_noise_files/
 
@@ -25,6 +31,7 @@ ARTUS_OUTPUTS_2018=/portal/ekpbms2/home/jbechtel/no_ee_noise_files/
 if [[ $ERA == *"2016"* ]]
 then
     ARTUS_OUTPUTS=$ARTUS_OUTPUTS_2016
+    ARTUS_OUTPUTS_EM=$ARTUS_OUTPUTS_EM_2016
     ARTUS_FRIENDS_ET=$ARTUS_FRIENDS_ET_2016
     ARTUS_FRIENDS_MT=$ARTUS_FRIENDS_MT_2016
     ARTUS_FRIENDS_TT=$ARTUS_FRIENDS_TT_2016

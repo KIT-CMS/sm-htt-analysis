@@ -34,7 +34,7 @@ def parse_arguments():
         help="Categories")
     parser.add_argument("--era", type=str, default="Run2018", help="Era")
     parser.add_argument(
-        "--lumi", type=float, default=41.5, help="Integrated Luminosity")
+        "--lumi", type=float, default=None, help="Integrated Luminosity")
     parser.add_argument("--mass", type=str, default="125", help="Mass")
     parser.add_argument(
         "--additional-arguments",
@@ -101,7 +101,6 @@ config_template = {
     "cms": True,
     "extra_text": "Preliminary",
     "energies": [13],
-    "year": "2018",
     "nicks_blacklist": ["noplot"],
     "analysis_modules": ["Ratio"],
     "ratio_result_nicks": ["ratio_Bkg", "ratio_Data"],
@@ -115,21 +114,7 @@ logvars = ["nbtag","njets","jpt_1","jpt_2"]
 
 
 def main(args):
-    '''
-    ### Use this for inclusive background process labels (probably obsolete)
-    if args.emb:
-        bkg_processes_names = [
-         "emb", "zll","ttl", "vv","w", "qcd"
-        ]
-        bkg_processes = ["EMB", "ZL", "TTL", "VV", "W", "QCD"]  # names in ROOT file
 
-    else:
-        bkg_processes_names = [
-            "ztt", "zll", "tt", "vv", "ewk", "w", "qcd"
-        ]  # enforced by HarryPlotter
-        bkg_processes = ["ZTT", "ZL", "TT", "VV", "EWK", "W", "QCD"]  # names in ROOT file
-    '''
-    ### Use this for fake-factor shapes
     if args.emb and args.ff:
         bkg_processes_names = [
          "emb", "zll", "ttl", "vvl", "fakes"
@@ -151,10 +136,18 @@ def main(args):
         signal_names=["ggh","qqh"]
         bkg_processes = ["ZTT", "ZL", "ZJ","TTL","TTT", "TTJ", "VVL","VVT","VVJ","W","QCD"]
         signal=["ggH125","qqH125"]
-    qcd_scale_factors = {"mt": 1.0, "et": 1.0, "tt": 1.0, "em": 1.0}
     channels = args.channels
     analysis = args.analysis
     era = args.era
+    if args.lumi is None:
+        if "2016" in era:
+            lumi = 35.9
+        elif "2017" in era:
+            lumi = 41.5
+        elif "2018" in era:
+            lumi = 59.7
+    else:
+        lumi=args.lumi
     output_dir = args.output_dir
     y_log = args.y_log
     mass = args.mass
@@ -169,16 +162,11 @@ def main(args):
             categories = [channel+"_"+v for v in variables]
         shapes = args.shapes if args.shapes is not None else "shapes_{}.root".format(channel)
         if "em" in channel:
-            bkg_processes = [p for p in bkg_processes if p not in ["ZJ", "TTJ", "VVJ", "EWKJ", "WEMB"]]
-            bkg_processes_names = [p for p in bkg_processes_names if p not in ["zj", "ttj", "vvj", "ewkj"]]
-            if not "W" in bkg_processes: 
-                bkg_processes.insert(bkg_processes_names.index("w"),"W")
+            bkg_processes = [p for p in bkg_processes if p not in ["ZJ", "TTJ", "VVJ"]]
+            bkg_processes_names = [p for p in bkg_processes_names if p not in ["zj", "ttj", "vvj"]]
         elif "tt" in channel and not args.ff:
             bkg_processes = [p for p in bkg_processes if p not in ["WEMB", "QCDEMB"]]
-            # if not "W" in bkg_processes: 
-            #     bkg_processes.insert(bkg_processes_names.index("w"),"W")
-            # if not "QCD" in bkg_processes: 
-            #     bkg_processes.insert(bkg_processes_names.index("qcd"),"QCD")    
+        
         for variable, category in zip(variables, categories):
             config = deepcopy(config_template)
 
@@ -191,9 +179,10 @@ def main(args):
                 config["chi2test_compare"] = ["UW CHI2/NDF"]
 
             config["files"] = [shapes] 
-            config["lumis"] = [args.lumi]
+            config["lumis"] = [lumi]
+            config["year"] = era.strip("Run")
             config["output_dir"] = output_dir+"/"+channel
-            config["y_log"] = True if (variable in logvars) else False
+            config["y_log"] = True if ((variable in logvars) or y_log) else False
             config["y_rel_lims"] = [5, 500] if (variable in logvars) else [0.9, 1.5]
             config["markers"] = ["HIST"] * len(bkg_processes_names) + ["LINE"]*len(signal_names) + ["P"] + ["E2"] + ["LINE"]*len(signal_names) + ["P"]
             config["legend_markers"] = ["F"] * (len(bkg_processes_names))  +  ["LINE"]*len(signal_names) +  ["ELP"] + ["E2"] + ["L"]*len(signal_names) + ["P"]
@@ -218,6 +207,9 @@ def main(args):
             else:
                 config["filename"] = "_".join(
                     [channel, category, analysis, era, variable, mass,"emb"])
+            if args.comparison:
+                config["filename"] = "_".join(
+                    [channel, category, analysis, era, variable, mass,"comparison"])
             if args.ff:
                 config["filename"] = config["filename"]+"_ff"
             if not args.x_label == None:
@@ -233,7 +225,6 @@ def main(args):
             ] * (2+len(signal_names))
             config["ratio_numerator_nicks"] = [" ".join(bkg_processes_names)] + [" ".join(bkg_processes_names+[signal_names[0]])]+ [" ".join(bkg_processes_names+[signal_names[1]])] + ["data"]
             config["ratio_result_nicks"] = ["bkg_ratio"] + [x+"_ratio" for x in signal_names] + ["data_ratio"]
-            #config["scale_factors"] = [1.0  if x != "qcd" else qcd_scale_factors[channel] for x in bkg_processes_names] + [1.0]
             if args.comparison:
                 config["markers"] = ["HIST"] + ["LINE"] + ["HIST"] * (len(bkg_processes_names)-1) +  ["EX0"] + ["E2", "EX0"] + ["EX0"]
                 config["legend_markers"] = ["F"] + ["L"]  + ["F"]  * (len(bkg_processes_names)-1)  + ["PEX0"] +  ["F", "PEX0"] + ["PEX0"]
@@ -253,10 +244,10 @@ def main(args):
                 config["subplot_legend_fontsize"] = 0.06
                 config["y_subplot_label"] = ""
                 config["legend_fontsize"] = 0.044
-
-                config["nicks"] = bkg_processes_names + ["ztt_noplot", "zll_noplot", "zj_noplot", "tt_noplot", "ttt_noplot", "ttj_noplot", "vv_noplot", "vvt_noplot", "vvj_noplot", "w_noplot", "qcd_noplot"] + ["data"]
+                bkg_processes_names_noplot = ["ztt_noplot","ttt_noplot","vvt_noplot"] + [x+"_noplot" for x in bkg_processes_names if not "emb" in x]
+                config["nicks"] = bkg_processes_names + bkg_processes_names_noplot + ["data"]
                 config["analysis_modules"].append("AddHistograms")
-                config["add_nicks"] = [" ".join(["ztt_noplot", "zll_noplot", "zj_noplot", "tt_noplot", "ttt_noplot", "ttj_noplot", "vv_noplot", "vvt_noplot", "vvj_noplot", "w_noplot", "qcd_noplot"])]
+                config["add_nicks"] = [" ".join(bkg_processes_names_noplot)]
                 config["add_result_nicks"] = ["ztt"]
                 config["add_result_position"] = 1
                 config["x_expressions"] = [
@@ -266,7 +257,7 @@ def main(args):
                 ] + [
                     "#" + "#".join([
                         channel, category, process, analysis, era, variable, mass
-                    ]) + "#" for process in ["ZTT", "ZL", "ZJ", "TTL", "TTT", "TTJ", "VVL", "VVT", "VVJ", "W", "QCD"]
+                    ]) + "#" for process in ["ZTT","TTT","VVT"] + [x for x in bkg_processes if x!="EMB"]
                 ] + [
                     "#" + "#".join([
                         channel, category, "data_obs", analysis, era, variable,
@@ -274,7 +265,7 @@ def main(args):
                     ]) + "#"
                 ]
                 config["stacks"] = ["mc"] + ["ztt"] + ["mc"] * (len(bkg_processes_names)-1) + ["data"] + config_template["stacks"] + ["ratio_data_zttmc"]
-                config["ratio_denominator_nicks"] = [" ".join(bkg_processes_names)] + [" ".join(["ztt_noplot", "zll_noplot", "zj_noplot", "tt_noplot", "ttt_noplot", "ttj_noplot", "vv_noplot", "vvt_noplot", "vvj_noplot", "w_noplot", "qcd_noplot"])] + [" ".join(bkg_processes_names)]
+                config["ratio_denominator_nicks"] = [" ".join(bkg_processes_names)] + [" ".join(bkg_processes_names_noplot)] + [" ".join(bkg_processes_names)]
                 config["ratio_numerator_nicks"] = [
                     " ".join(bkg_processes_names), "data", "data"
                 ]
