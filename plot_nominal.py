@@ -15,6 +15,8 @@ def parse_arguments():
         description=
         "Plot categories using HarryPlotter from shapes produced by shape-producer module."
     )
+    parser.add_argument("--comparison", action="store_true", help="Plot Embedded - MC comparison. --emb has to be set.")
+
     parser.add_argument("--emb", action="store_true", help="Embedded prefix")
     parser.add_argument("--ff", action="store_true", help="Use fake-factors")
     parser.add_argument(
@@ -30,7 +32,7 @@ def parse_arguments():
         type=str,
         required=False, default=None,
         help="Categories")
-    parser.add_argument("--era", type=str, default="Run2017ReReco31Mar", help="Era")
+    parser.add_argument("--era", type=str, default="Run2018", help="Era")
     parser.add_argument(
         "--lumi", type=float, default=41.5, help="Integrated Luminosity")
     parser.add_argument("--mass", type=str, default="125", help="Mass")
@@ -99,17 +101,17 @@ config_template = {
     "cms": True,
     "extra_text": "Preliminary",
     "energies": [13],
-    "year": "2017",
+    "year": "2018",
     "nicks_blacklist": ["noplot"],
     "analysis_modules": ["Ratio"],
     "ratio_result_nicks": ["ratio_Bkg", "ratio_Data"],
-    "y_subplot_lims": [0.7, 1.3],
+    "y_subplot_lims": [0.62, 1.5],
     "y_label": "N_{evts}",
     "y_subplot_label": "#scale[0.8]{Ratio to Bkg.}",
     "subplot_lines": [0.8, 1.0, 1.2]
 }
 
-logvars = []
+logvars = ["nbtag","njets","jpt_1","jpt_2"]
 
 
 def main(args):
@@ -134,10 +136,10 @@ def main(args):
         ]
         bkg_processes = ["EMB", "ZL", "TTL", "VVL", "jetFakes"]  # names in ROOT file
     elif args.emb:
-        bkg_processes_names = [
-         "emb", "zll","zj", "ttl", "ttj", "ewkl", "ewkj", "vvl", "vvj", "w", "qcd"
-        ]
-        bkg_processes = ["EMB", "ZL", "ZJ", "TTL", "TTJ", "EWKL", "EWKJ", "VVL", "VVJ", "WEMB", "QCDEMB"]  # names in ROOT file
+        bkg_processes_names = ["emb", "zll","zj", "ttl", "ttj","vvl", "vvj", "w", "qcd"]
+        signal_names=["ggh","qqh"]
+        bkg_processes = ["EMB", "ZL", "ZJ","TTL", "TTJ","VVL", "VVJ", "W", "QCD"]
+        signal=["ggH125","qqH125"]
     elif args.ff:
         bkg_processes_names = [
             "ztt", "zll", "ttt", "ttl", "vvt", "vvl", "ewk", "fakes"
@@ -145,10 +147,10 @@ def main(args):
         bkg_processes = ["ZTT", "ZL", "TTT", "TTL", "VVT", "VVL", "EWK", "jetFakes"]  # names in ROOT file
     else:
         bkg_processes_names = [
-            "ztt", "zll","zj", "tt", "vv", "ewk", "w", "qcd"
-        ]  # enforced by HarryPlotter
-        bkg_processes = ["ZTT", "ZL", "ZJ", "TT", "VV", "EWK", "W", "QCD"]  # names in ROOT file
-    
+            "ztt", "zll","zj","ttl", "ttt","ttj","vvl","vvt","vvj","w","qcd"]
+        signal_names=["ggh","qqh"]
+        bkg_processes = ["ZTT", "ZL", "ZJ","TTL","TTT", "TTJ", "VVL","VVT","VVJ","W","QCD"]
+        signal=["ggH125","qqH125"]
     qcd_scale_factors = {"mt": 1.0, "et": 1.0, "tt": 1.0, "em": 1.0}
     channels = args.channels
     analysis = args.analysis
@@ -173,10 +175,10 @@ def main(args):
                 bkg_processes.insert(bkg_processes_names.index("w"),"W")
         elif "tt" in channel and not args.ff:
             bkg_processes = [p for p in bkg_processes if p not in ["WEMB", "QCDEMB"]]
-            if not "W" in bkg_processes: 
-                bkg_processes.insert(bkg_processes_names.index("w"),"W")
-            if not "QCD" in bkg_processes: 
-                bkg_processes.insert(bkg_processes_names.index("qcd"),"QCD")    
+            # if not "W" in bkg_processes: 
+            #     bkg_processes.insert(bkg_processes_names.index("w"),"W")
+            # if not "QCD" in bkg_processes: 
+            #     bkg_processes.insert(bkg_processes_names.index("qcd"),"QCD")    
         for variable, category in zip(variables, categories):
             config = deepcopy(config_template)
 
@@ -188,34 +190,34 @@ def main(args):
                 config["chi2test_nicks"] = ["tot_background_noplot data"]
                 config["chi2test_compare"] = ["UW CHI2/NDF"]
 
-            config["files"] = [shapes]
+            config["files"] = [shapes] 
             config["lumis"] = [args.lumi]
             config["output_dir"] = output_dir+"/"+channel
             config["y_log"] = True if (variable in logvars) else False
-            config["y_rel_lims"] = [0.9, 50] if y_log else [0.9, 1.5]
-            config["markers"] = ["HIST"] * len(bkg_processes_names) + ["P"] + config["markers"]
-            config["legend_markers"] = ["F"] * (len(bkg_processes_names))  + ["ELP"] + config["legend_markers"]
-            config["labels"] = bkg_processes_names + ["data"
-                                                      ] + config["labels"]
-            config["colors"] = bkg_processes_names + ["data"
-                                                      ] + config["colors"]
-            config["nicks"] = bkg_processes_names + ["data"]
+            config["y_rel_lims"] = [5, 500] if (variable in logvars) else [0.9, 1.5]
+            config["markers"] = ["HIST"] * len(bkg_processes_names) + ["LINE"]*len(signal_names) + ["P"] + ["E2"] + ["LINE"]*len(signal_names) + ["P"]
+            config["legend_markers"] = ["F"] * (len(bkg_processes_names))  +  ["LINE"]*len(signal_names) +  ["ELP"] + ["E2"] + ["L"]*len(signal_names) + ["P"]
+            config["labels"] = bkg_processes_names + signal_names + ["data"
+                                                      ] + [""]*len(signal_names) + config["labels"]
+            config["colors"] = bkg_processes_names + signal_names + ["data"
+                                                      ] + ["#B7B7B7"] + signal_names + ["#000000"]
+            config["nicks"] = bkg_processes_names + signal_names + ["data"]
             config["x_expressions"] = [
                 "#" + "#".join([
-                    channel, category, process, analysis, "Run2017ReReco31Mar", variable, mass
-                ]) + "#" for process in bkg_processes
+                    channel, category, process, analysis, era, variable, mass
+                ]) + "#" for process in bkg_processes+signal
             ] + [
                 "#" + "#".join([
-                    channel, category, "data_obs", analysis, "Run2017ReReco31Mar", variable,
+                    channel, category, "data_obs", analysis, era, variable,
                     mass
                 ]) + "#"
             ]
             if args.emb == False:
                 config["filename"] = "_".join(
-                    [channel, category, analysis, "Run2017ReReco31Mar", variable, mass])
+                    [channel, category, analysis, era, variable, mass])
             else:
                 config["filename"] = "_".join(
-                    [channel, category, analysis, "Run2017ReReco31Mar", variable, mass,"emb"])
+                    [channel, category, analysis, era, variable, mass,"emb"])
             if args.ff:
                 config["filename"] = config["filename"]+"_ff"
             if not args.x_label == None:
@@ -223,16 +225,60 @@ def main(args):
             else:
                 config["x_label"] = "_".join([channel, variable])
             config["title"] = "_".join(["channel", channel])
-            config["stacks"] = ["mc"] * len(bkg_processes_names) + [
+            config["stacks"] = ["mc"] * len(bkg_processes_names) + signal_names + [
                 "data"
-            ] + config["stacks"]
+            ] + [x+"Ratio" for x in signal_names] + config["stacks"]
             config["ratio_denominator_nicks"] = [
                 " ".join(bkg_processes_names)
-            ] * 2
-            config["ratio_numerator_nicks"] = [
-                " ".join(bkg_processes_names), "data"
-            ]
+            ] * (2+len(signal_names))
+            config["ratio_numerator_nicks"] = [" ".join(bkg_processes_names)] + [" ".join(bkg_processes_names+[signal_names[0]])]+ [" ".join(bkg_processes_names+[signal_names[1]])] + ["data"]
+            config["ratio_result_nicks"] = ["bkg_ratio"] + [x+"_ratio" for x in signal_names] + ["data_ratio"]
             #config["scale_factors"] = [1.0  if x != "qcd" else qcd_scale_factors[channel] for x in bkg_processes_names] + [1.0]
+            if args.comparison:
+                config["markers"] = ["HIST"] + ["LINE"] + ["HIST"] * (len(bkg_processes_names)-1) +  ["EX0"] + ["E2", "EX0"] + ["EX0"]
+                config["legend_markers"] = ["F"] + ["L"]  + ["F"]  * (len(bkg_processes_names)-1)  + ["PEX0"] +  ["F", "PEX0"] + ["PEX0"]
+                config["labels"] = [bkg_processes_names[0]] + ["Z #rightarrow #tau#tau (simulation)"] + bkg_processes_names[1:] + ["data"
+                                                          ] +  ["Bkg. (embedded) unc.",  "Obs./Bkg. (simulation)", "Obs./Bkg. (embedded)"]
+                config["colors"] = [bkg_processes_names[0]] + ["#C70039"] + bkg_processes_names[1:] + ["data"
+                                                          ] + ["#B7B7B7", " #C70039 ", "#000000"]
+
+                                                          #~ ] + ["#B7B7B7", "#ce661c", "#000000"]
+                config["subplot_legend"] =  [
+                                            0.195, 
+                                            0.77, 
+                                            0.92, 
+                                            0.93
+                                        ], 
+                config["subplot_legend_cols"] = 3
+                config["subplot_legend_fontsize"] = 0.06
+                config["y_subplot_label"] = ""
+                config["legend_fontsize"] = 0.044
+
+                config["nicks"] = bkg_processes_names + ["ztt_noplot", "zll_noplot", "zj_noplot", "tt_noplot", "ttt_noplot", "ttj_noplot", "vv_noplot", "vvt_noplot", "vvj_noplot", "w_noplot", "qcd_noplot"] + ["data"]
+                config["analysis_modules"].append("AddHistograms")
+                config["add_nicks"] = [" ".join(["ztt_noplot", "zll_noplot", "zj_noplot", "tt_noplot", "ttt_noplot", "ttj_noplot", "vv_noplot", "vvt_noplot", "vvj_noplot", "w_noplot", "qcd_noplot"])]
+                config["add_result_nicks"] = ["ztt"]
+                config["add_result_position"] = 1
+                config["x_expressions"] = [
+                    "#" + "#".join([
+                        channel, category, process, analysis, era, variable, mass
+                    ]) + "#" for process in bkg_processes
+                ] + [
+                    "#" + "#".join([
+                        channel, category, process, analysis, era, variable, mass
+                    ]) + "#" for process in ["ZTT", "ZL", "ZJ", "TTL", "TTT", "TTJ", "VVL", "VVT", "VVJ", "W", "QCD"]
+                ] + [
+                    "#" + "#".join([
+                        channel, category, "data_obs", analysis, era, variable,
+                        mass
+                    ]) + "#"
+                ]
+                config["stacks"] = ["mc"] + ["ztt"] + ["mc"] * (len(bkg_processes_names)-1) + ["data"] + config_template["stacks"] + ["ratio_data_zttmc"]
+                config["ratio_denominator_nicks"] = [" ".join(bkg_processes_names)] + [" ".join(["ztt_noplot", "zll_noplot", "zj_noplot", "tt_noplot", "ttt_noplot", "ttj_noplot", "vv_noplot", "vvt_noplot", "vvj_noplot", "w_noplot", "qcd_noplot"])] + [" ".join(bkg_processes_names)]
+                config["ratio_numerator_nicks"] = [
+                    " ".join(bkg_processes_names), "data", "data"
+                ]
+                config["ratio_result_nicks"] = ["ratio_Bkg", "ratio_Data_to_MC", "ratio_Data"]
             configs.append(config)
 
     higgsplot.HiggsPlotter(
