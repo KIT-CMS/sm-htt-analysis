@@ -19,7 +19,7 @@ ARTUS_FRIENDS_FAKE_FACTOR_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_Jan/
 ARTUS_FRIENDS_FAKE_FACTOR_INCL_2017=$ARTUS_FRIENDS_FAKE_FACTOR_2017
 
 # Samples Run2018
-ARTUS_OUTPUTS_2018=/portal/ekpbms2/home/jbechtel/new_ntupels/
+ARTUS_OUTPUTS_2018=/portal/ekpbms2/home/jbechtel/no_ee_noise_files/
 
 # Error-handling
 if [[ $ERA == *"2016"* ]]
