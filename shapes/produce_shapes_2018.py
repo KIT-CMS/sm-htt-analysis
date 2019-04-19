@@ -47,6 +47,11 @@ def parse_arguments():
         type=str,
         help="Directory with Artus outputs.")
     parser.add_argument(
+        "--em-directory",
+        required=True,
+        type=str,
+        help="Directory with Artus outputs.")
+    parser.add_argument(
         "--et-friend-directory",
         default="",
         type=str,
@@ -306,7 +311,7 @@ def main(args):
     
     em_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, em,
             [em_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL"]],
-            em_processes["data"], friend_directory=em_friend_directory, extrapolation_factor=1.888))
+            em_processes["data"], friend_directory=em_friend_directory, extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
     
 
 
