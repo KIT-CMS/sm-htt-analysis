@@ -20,5 +20,6 @@ git clone ssh://git@github.com/KIT-CMS/CombineHarvester CombineHarvester -b SMHT
 mkdir -p CombineHarvester/HTTSM2017/shapes
 
 # Build
-scram b -j 24
+CORES=`grep -c ^processor /proc/cpuinfo`
+scram b -j $CORES
 scram b python
