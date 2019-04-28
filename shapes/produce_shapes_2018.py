@@ -196,10 +196,10 @@ def main(args):
     
     mt_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, mt,
             [mt_processes[process] for process in ["ZTT", "ZL", "ZJ", "TTL","TTT","TTJ", "VVT", "VVJ", "VVL","W"]],
-            mt_processes["data"], friend_directory=mt_friend_directory, extrapolation_factor=1.888))
+            mt_processes["data"], friend_directory=mt_friend_directory, extrapolation_factor=1.1))
     mt_processes["QCDEMB"] = Process("QCDEMB", QCDEstimation_SStoOS_MTETEM(era, directory, mt,
             [mt_processes[process] for process in ["EMB", "ZL", "ZJ", "TTL", "TTJ", "VVJ", "VVL","W"]],
-            mt_processes["data"], friend_directory=mt_friend_directory, extrapolation_factor=1.888))
+            mt_processes["data"], friend_directory=mt_friend_directory, extrapolation_factor=1.1))
     
 
 
@@ -244,7 +244,10 @@ def main(args):
     
     et_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, et,
             [et_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL"]],
-            et_processes["data"], friend_directory=et_friend_directory, extrapolation_factor=1.888))
+            et_processes["data"], friend_directory=et_friend_directory, extrapolation_factor=1.1))
+    et_processes["QCDEMB"] = Process("QCDEMB", QCDEstimation_SStoOS_MTETEM(era, directory, et,
+            [et_processes[process] for process in ["EMB", "ZL", "ZJ", "W", "TTJ", "TTL", "VVJ", "VVL"]],
+            et_processes["data"], friend_directory=et_friend_directory, extrapolation_factor=1.1))
     
 
     tt = TTSM2018()
@@ -289,7 +292,9 @@ def main(args):
     tt_processes["QCD"] = Process("QCD", QCDEstimation_ABCD_TT_ISO2(era, directory, tt,
             [tt_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL"]],
             tt_processes["data"], friend_directory=tt_friend_directory))
-    
+    tt_processes["QCDEMB"] = Process("QCDEMB", QCDEstimation_ABCD_TT_ISO2(era, directory, tt,
+            [tt_processes[process] for process in ["EMB", "ZL", "ZJ", "W", "TTJ", "TTL", "VVJ", "VVL"]],
+            tt_processes["data"], friend_directory=tt_friend_directory))
 
     em = EMSM2018()
     em_processes = {
@@ -311,6 +316,9 @@ def main(args):
     
     em_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, em,
             [em_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL"]],
+            em_processes["data"], friend_directory=em_friend_directory, extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
+    em_processes["QCDEMB"] = Process("QCDEMB", QCDEstimation_SStoOS_MTETEM(era, directory, em,
+            [em_processes[process] for process in ["EMB", "ZL", "ZJ", "W", "TTJ", "TTL", "VVJ", "VVL"]],
             em_processes["data"], friend_directory=em_friend_directory, extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
     
 

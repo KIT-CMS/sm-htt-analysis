@@ -22,7 +22,7 @@ ARTUS_FRIENDS_FAKE_FACTOR_INCL_2017=$ARTUS_FRIENDS_FAKE_FACTOR_2017
 ARTUS_OUTPUTS_EM_2017=/portal/ekpbms1/home/jbechtel/postprocessing/em_all_vars_new/files
 
 # Samples Run2018
-ARTUS_OUTPUTS_2018=/ceph/jbechtel/2018/no_ee_noise_files/
+ARTUS_OUTPUTS_2018=/portal/ekpbms1/home/jbechtel/postprocessing/2018/sm-htt-analysis/files
 ARTUS_FRIENDS_ET_2018=blank
 ARTUS_FRIENDS_MT_2018=blank
 ARTUS_FRIENDS_TT_2018=blank

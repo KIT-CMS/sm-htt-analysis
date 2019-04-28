@@ -123,7 +123,7 @@ def main(args):
     elif args.emb:
         bkg_processes_names = ["emb", "zll","zj", "ttl", "ttj","vvl", "vvj", "w", "qcd"]
         signal_names=["ggh","qqh"]
-        bkg_processes = ["EMB", "ZL", "ZJ","TTL", "TTJ","VVL", "VVJ", "W", "QCD"]
+        bkg_processes = ["EMB", "ZL", "ZJ","TTL", "TTJ","VVL", "VVJ", "W", "QCDEMB"]
         signal=["ggH125","qqH125"]
     elif args.ff:
         bkg_processes_names = [
@@ -164,9 +164,7 @@ def main(args):
         if "em" in channel:
             bkg_processes = [p for p in bkg_processes if p not in ["ZJ", "TTJ", "VVJ"]]
             bkg_processes_names = [p for p in bkg_processes_names if p not in ["zj", "ttj", "vvj"]]
-        elif "tt" in channel and not args.ff:
-            bkg_processes = [p for p in bkg_processes if p not in ["WEMB", "QCDEMB"]]
-        
+
         for variable, category in zip(variables, categories):
             config = deepcopy(config_template)
 
