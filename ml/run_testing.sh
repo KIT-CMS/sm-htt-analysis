@@ -19,6 +19,16 @@ fi
 
 mkdir -p ml/${ERA}_${CHANNEL}
 
+# Draw recall and precision scores from .json file. Usage for variable pruning
+TEST_RECALL_PRECISION=0
+if [ -n "$TEST_RECALL_PRECISION" ]; then
+python htt-ml/testing/keras_recall_precision.py \
+    ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 0
+
+python htt-ml/testing/keras_recall_precision.py \
+    ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 1
+fi
+
 # Confusion matrices
 TEST_CONFUSION_MATRIX=1
 if [ -n "$TEST_CONFUSION_MATRIX" ]; then
@@ -26,6 +36,16 @@ python htt-ml/testing/keras_confusion_matrix.py \
     ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 0
 
 python htt-ml/testing/keras_confusion_matrix.py \
+    ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 1
+fi
+
+# Signifance on test data
+TEST_SIGNIFICANCE=1
+if [ -n "$TEST_SIGNIFICANCE" ]; then
+python htt-ml/testing/keras_significance.py \
+    ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 0
+
+python htt-ml/testing/keras_significance.py \
     ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 1
 fi
 
@@ -42,7 +62,7 @@ fi
 
 # Taylor analysis (ranking)
 export KERAS_BACKEND=tensorflow
-#TEST_TAYLOR_RANKING=1
+TEST_TAYLOR_RANKING=0
 if [ -n "$TEST_TAYLOR_RANKING" ]; then
 python htt-ml/testing/keras_taylor_ranking.py \
     ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 0
@@ -52,7 +72,7 @@ python htt-ml/testing/keras_taylor_ranking.py \
 fi
 
 # Make plots combining goodness of fit and Taylor ranking
-#TEST_PLOT_COMBINED_GOF_TAYLOR=1
+TEST_PLOT_COMBINED_GOF_TAYLOR=0
 if [ -n "$TEST_PLOT_COMBINED_GOF_TAYLOR" ]; then
     for IFOLD in 0 1; do
         python ml/plot_combined_taylor_gof.py \
@@ -63,4 +83,14 @@ if [ -n "$TEST_PLOT_COMBINED_GOF_TAYLOR" ]; then
             ${IFOLD} \
             ml/${ERA}_${CHANNEL}/
     done
+fi
+
+
+# Add a new variable according to the given taylor rankings at the end.
+PRUNE_VARIABLES=0
+if [ -n "$PRUNE_VARIABLES" ]; then
+python ml/prune_variables.py \
+    ml/${ERA}_${CHANNEL}_training_pruning_fold0.yaml
+python ml/prune_variables.py \
+    ml/${ERA}_${CHANNEL}_training_pruning_fold1.yaml
 fi
