@@ -19,8 +19,8 @@ fi
 
 mkdir -p ml/${ERA}_${CHANNEL}
 
-# Draw recall and precision scores from .json file. Usage for variable pruning
-TEST_RECALL_PRECISION=0
+# Put recall and precision scores into .json file. Usage for variable pruning. Plotting with plot_recall_precision!
+TEST_RECALL_PRECISION=1
 if [ -n "$TEST_RECALL_PRECISION" ]; then
 python htt-ml/testing/keras_recall_precision.py \
     ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 0
@@ -40,7 +40,7 @@ python htt-ml/testing/keras_confusion_matrix.py \
 fi
 
 # Signifance on test data
-TEST_SIGNIFICANCE=1
+TEST_SIGNIFICANCE=0
 if [ -n "$TEST_SIGNIFICANCE" ]; then
 python htt-ml/testing/keras_significance.py \
     ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 0
@@ -51,7 +51,7 @@ fi
 
 # Taylor analysis (1D)
 export KERAS_BACKEND=tensorflow
-TEST_TAYLOR_1D=1
+TEST_TAYLOR_1D=0
 if [ -n "$TEST_TAYLOR_1D" ]; then
 python htt-ml/testing/keras_taylor_1D.py \
     ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 0

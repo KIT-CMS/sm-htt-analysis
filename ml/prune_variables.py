@@ -13,6 +13,8 @@ def parse_arguments():
     parser = argparse.ArgumentParser(
         description="Add variables after each training run in order of taylor coefficients.")
     parser.add_argument("config_train", help="Path to training config file")
+    parser.add_argument("variable", help="Variable of which the taylor coefficents should be used, e.g. ggh, qqh...")
+
     #parser.add_argument("taylor_coefficients", help="Path to file with ordered 1D taylor coefficients.")
     return parser.parse_args()
 
@@ -50,10 +52,16 @@ def setup_logging(level, output_file=None):
 def main(args, config_train, taylor_coefficients):
     variables = config_train["variables"]
     training_path = config_train['output_path']
-    training_path = training_path.split('/')[:-1]
-    new_element = '{}_variables'.format(len(variables) + 1)
+    training_path = training_path.split('/')[:-2]
+    new_element = '{}/{}_variables'.format(str(args.variables),len(variables) + 1)
     training_path.append(new_element)
     config_train['output_path'] = '/' + os.path.join(*training_path)
+
+    training_path = config_train['output_path_json']
+    training_path = training_path.split('/')[:-2]
+    new_element = '{}/all'.format(str(args.variables), len(variables) + 1)
+    training_path.append(new_element)
+    config_train['output_path_json'] = '/' + os.path.join(*training_path)
 
     # Add the next variable to the training config that was not in there already.
     for key, variable in taylor_coefficients.items():
@@ -70,6 +78,7 @@ if __name__ == "__main__":
     setup_logging(logging.DEBUG)
     args = parse_arguments()
     config = parse_config(args.config_train)
-    taylor_path = config['taylor_coefficient_path']
+    variable_name = str(args.variable)
+    taylor_path = config['taylor_coefficient_path'] + variable_name + ".txt"
     taylor_coefficients = parse_txt(taylor_path)
     main(args, config, taylor_coefficients)

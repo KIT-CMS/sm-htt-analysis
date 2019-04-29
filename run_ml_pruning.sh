@@ -2,9 +2,12 @@
 
 ERA=$1
 CHANNEL=$2
+LOSS=$3
+CLASS=$4
 
 for i in {1..18}
 do
-   ./ml/run_training.sh $ERA $CHANNEL
-   ./ml/run_testing.sh $ERA $CHANNEL
+   ./ml/run_pruning.sh $ERA $CHANNEL $CLASS
+   ./ml/run_train_pruning.sh $ERA $CHANNEL $LOSS
+   ./ml/run_test_pruning.sh $ERA $CHANNEL
 done

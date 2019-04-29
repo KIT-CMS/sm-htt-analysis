@@ -2,7 +2,7 @@
 
 ERA=$1
 CHANNEL=$2
-LOSS=$2
+LOSS=$3
 
 ./ml/create_training_dataset.sh $ERA $CHANNEL
 #./ml/sum_training_weights.sh $ERA
