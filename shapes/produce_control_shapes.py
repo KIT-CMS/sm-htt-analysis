@@ -11,7 +11,7 @@ from shape_producer.binning import ConstantBinning, VariableBinning
 from shape_producer.variable import Variable
 from shape_producer.systematic_variations import Nominal, DifferentPipeline, SquareAndRemoveWeight, create_systematic_variations
 from shape_producer.process import Process
-from shape_producer.estimation_methods_Fall17 import *
+from shape_producer.estimation_methods_2017 import *
 from shape_producer.estimation_methods import AddHistogramEstimationMethod
 from shape_producer.era import Run2017ReReco31Mar
 from shape_producer.channel import MTMSSM2017 as MT
