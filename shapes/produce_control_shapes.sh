@@ -11,14 +11,12 @@ source utils/setup_python.sh
 source utils/setup_samples.sh $ERA
 
 # Produce shapes
-echo outputs: $ARTUS_OUTPUTS
-
 python shapes/produce_control_shapes.py \
     --directory $ARTUS_OUTPUTS \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
     --channels mt  \
-    --fake-factor-friend-directory /storage/b/akhmet/SM_Htautau/ntuples/Artus_2018-09-01/fake_factor_friends/ \
+    --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR \
     --mt-friend-directory $ARTUS_FRIENDS_MT \
     --num-threads 15
 
@@ -28,7 +26,7 @@ python shapes/produce_control_shapes.py \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
     --channels et \
-    --fake-factor-friend-directory /storage/b/akhmet/SM_Htautau/ntuples/Artus_2018-09-01/fake_factor_friends/ \
+    --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR \
     --et-friend-directory $ARTUS_FRIENDS_ET \
     --num-threads 15
 
@@ -38,7 +36,7 @@ python shapes/produce_control_shapes.py \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
     --channels tt \
-    --fake-factor-friend-directory /storage/b/akhmet/SM_Htautau/ntuples/Artus_2018-09-01/fake_factor_friends/ \
+    --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR \
     --tt-friend-directory $ARTUS_FRIENDS_TT \
     --num-threads 15
     
