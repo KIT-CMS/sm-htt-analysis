@@ -18,7 +18,7 @@ ARTUS_FRIENDS_ET_2017=/portal/ekpbms1/home/akhmet/workdir/FriendTreeProductionMa
 ARTUS_FRIENDS_MT_2017=/portal/ekpbms1/home/akhmet/workdir/FriendTreeProductionMain/CMSSW_10_2_14/src/MELA_workdir/MELA_collected
 ARTUS_FRIENDS_TT_2017=/portal/ekpbms1/home/akhmet/workdir/FriendTreeProductionMain/CMSSW_10_2_14/src/MELA_workdir/MELA_collected
 ARTUS_FRIENDS_EM_2017=/portal/ekpbms1/home/akhmet/workdir/FriendTreeProductionMain/CMSSW_10_2_14/src/MELA_workdir/MELA_collected
-ARTUS_FRIENDS_FAKE_FACTOR_2017=/ceph/swozniewski/SM_Htautau/ntuples/Artus17_Jan/fake_factor_friends_njets_mvis_NEW_NN_Jan26
+ARTUS_FRIENDS_FAKE_FACTOR_2017=/home/mscham/data/fake_factor_friends_2017_m_vis_inclusive/
 ARTUS_FRIENDS_FAKE_FACTOR_INCL_2017=$ARTUS_FRIENDS_FAKE_FACTOR_2017
 
 # Samples Run2018
