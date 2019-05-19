@@ -18,7 +18,7 @@ python shapes/produce_control_shapes.py \
     --channels mt  \
     --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR \
     --mt-friend-directory $ARTUS_FRIENDS_MT \
-    --num-threads 15
+    --num-threads 30
 
 # Produce shapes
 python shapes/produce_control_shapes.py \
@@ -28,7 +28,7 @@ python shapes/produce_control_shapes.py \
     --channels et \
     --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR \
     --et-friend-directory $ARTUS_FRIENDS_ET \
-    --num-threads 15
+    --num-threads 30
 
 # Produce shapes
 python shapes/produce_control_shapes.py \
@@ -38,7 +38,7 @@ python shapes/produce_control_shapes.py \
     --channels tt \
     --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR \
     --tt-friend-directory $ARTUS_FRIENDS_TT \
-    --num-threads 15
+    --num-threads 30
     
 # Produce shapes
 python shapes/produce_control_shapes.py \
@@ -47,4 +47,4 @@ python shapes/produce_control_shapes.py \
     --binning $BINNING \
     --channels em \
     --em-friend-directory $ARTUS_FRIENDS_EM \
-    --num-threads 15
+    --num-threads 30

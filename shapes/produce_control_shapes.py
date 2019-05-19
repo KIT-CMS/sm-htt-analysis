@@ -271,6 +271,8 @@ def main(args):
 
     variable_names = [
         "m_vis", "ptvis",
+        "m_sv", "pt_sv", "eta_sv",
+        "m_fastmtt", "pt_fastmtt", "eta_fastmtt",
         "ME_D", "ME_vbf", "ME_z2j_1", "ME_z2j_2", "ME_q2v1", "ME_q2v2", "ME_costheta1", "ME_costheta2", "ME_costhetastar", "ME_phi", "ME_phi1",
         "njets", "jpt_1", "jpt_2", "jeta_1", "jeta_2",
         "met",
