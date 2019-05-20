@@ -4,6 +4,7 @@ LCG_RELEASE=93c
 
 if uname -a | grep ekpdeepthought
 then
+		LCG_RELEASE=93
     source /cvmfs/sft.cern.ch/lcg/views/LCG_${LCG_RELEASE}/x86_64-ubuntu1604-gcc54-dbg/setup.sh
 else
     source /cvmfs/sft.cern.ch/lcg/views/LCG_${LCG_RELEASE}/x86_64-slc6-gcc62-opt/setup.sh
