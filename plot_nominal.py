@@ -119,11 +119,14 @@ def main(args):
         bkg_processes_names = [
          "emb", "zll", "ttl", "vvl", "fakes"
         ]
+        signal=["ggH125","qqH125"]
+        signal_names=["ggh","qqh"]
+
         bkg_processes = ["EMB", "ZL", "TTL", "VVL", "jetFakes"]  # names in ROOT file
     elif args.emb:
         bkg_processes_names = ["emb", "zll","zj", "ttl", "ttj","vvl", "vvj", "w", "qcd"]
         signal_names=["ggh","qqh"]
-        bkg_processes = ["EMB", "ZL", "ZJ","TTL", "TTJ","VVL", "VVJ", "W", "QCDEMB"]
+        bkg_processes = ["EMB", "ZL", "ZJ","TTL", "TTJ","VVL", "VVJ", "W", "QCD"]
         signal=["ggH125","qqH125"]
     elif args.ff:
         bkg_processes_names = [
@@ -164,7 +167,8 @@ def main(args):
         if "em" in channel:
             bkg_processes = [p for p in bkg_processes if p not in ["ZJ", "TTJ", "VVJ"]]
             bkg_processes_names = [p for p in bkg_processes_names if p not in ["zj", "ttj", "vvj"]]
-
+        if len(variables)==1:
+            variables=[variables[0]]*len(categories)
         for variable, category in zip(variables, categories):
             config = deepcopy(config_template)
 
@@ -176,7 +180,7 @@ def main(args):
                 config["chi2test_nicks"] = ["tot_background_noplot data"]
                 config["chi2test_compare"] = ["UW CHI2/NDF"]
 
-            config["files"] = [shapes] 
+            config["files"] = [shapes]
             config["lumis"] = [lumi]
             config["year"] = era.strip("Run")
             config["output_dir"] = output_dir+"/"+channel
@@ -214,7 +218,7 @@ def main(args):
                 config["x_label"] = args.x_label
             else:
                 config["x_label"] = "_".join([channel, variable])
-            config["title"] = "_".join(["channel", channel])
+            config["title"] = "_".join(["channel", channel, category])
             config["stacks"] = ["mc"] * len(bkg_processes_names) + signal_names + [
                 "data"
             ] + [x+"Ratio" for x in signal_names] + config["stacks"]
@@ -233,11 +237,11 @@ def main(args):
 
                                                           #~ ] + ["#B7B7B7", "#ce661c", "#000000"]
                 config["subplot_legend"] =  [
-                                            0.195, 
-                                            0.77, 
-                                            0.92, 
+                                            0.195,
+                                            0.77,
+                                            0.92,
                                             0.93
-                                        ], 
+                                        ],
                 config["subplot_legend_cols"] = 3
                 config["subplot_legend_fontsize"] = 0.06
                 config["y_subplot_label"] = ""
