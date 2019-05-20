@@ -3,6 +3,7 @@
 ERA=$1
 CHANNEL=$2
 VARIABLE=$3
+RESET=$4
 
 source utils/setup_cvmfs_sft.sh
 
@@ -19,7 +20,7 @@ fi
 
 
 python ml/prune_variables.py \
-    ml/${ERA}_${CHANNEL}_training_pruning_0.yaml ${VARIABLE}
+    ml/${ERA}_${CHANNEL}_training_pruning_0.yaml ${VARIABLE} ${RESET}
 
 python ml/prune_variables.py \
-    ml/${ERA}_${CHANNEL}_training_pruning_1.yaml ${VARIABLE}
+    ml/${ERA}_${CHANNEL}_training_pruning_1.yaml ${VARIABLE} ${RESET}

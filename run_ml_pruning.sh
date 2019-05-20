@@ -11,3 +11,5 @@ do
    ./ml/run_train_pruning.sh $ERA $CHANNEL $LOSS
    ./ml/run_test_pruning.sh $ERA $CHANNEL
 done
+
+./ml/run_plot_recall_precision.sh $ERA $CHANNEL

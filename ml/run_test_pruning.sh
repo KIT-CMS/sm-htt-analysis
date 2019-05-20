@@ -23,64 +23,18 @@ mkdir -p ml/${ERA}_${CHANNEL}
 TEST_RECALL_PRECISION=1
 if [ -n "$TEST_RECALL_PRECISION" ]; then
 python htt-ml/testing/keras_recall_precision.py \
-    ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 0
+    ml/${ERA}_${CHANNEL}_training_pruning_0.yaml ml/${ERA}_${CHANNEL}_testing.yaml 0
 
 python htt-ml/testing/keras_recall_precision.py \
-    ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 1
+    ml/${ERA}_${CHANNEL}_training_pruning_1.yaml ml/${ERA}_${CHANNEL}_testing.yaml 1
 fi
 
 # Confusion matrices
 TEST_CONFUSION_MATRIX=1
 if [ -n "$TEST_CONFUSION_MATRIX" ]; then
 python htt-ml/testing/keras_confusion_matrix.py \
-    ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 0
+    ml/${ERA}_${CHANNEL}_training_pruning_0.yaml ml/${ERA}_${CHANNEL}_testing.yaml 0
 
 python htt-ml/testing/keras_confusion_matrix.py \
-    ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 1
-fi
-
-# Signifance on test data
-TEST_SIGNIFICANCE=0
-if [ -n "$TEST_SIGNIFICANCE" ]; then
-python htt-ml/testing/keras_significance.py \
-    ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 0
-
-python htt-ml/testing/keras_significance.py \
-    ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 1
-fi
-
-# Taylor analysis (1D)
-export KERAS_BACKEND=tensorflow
-TEST_TAYLOR_1D=0
-if [ -n "$TEST_TAYLOR_1D" ]; then
-python htt-ml/testing/keras_taylor_1D.py \
-    ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 0
-
-python htt-ml/testing/keras_taylor_1D.py \
-    ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 1
-fi
-
-# Taylor analysis (ranking)
-export KERAS_BACKEND=tensorflow
-TEST_TAYLOR_RANKING=0
-if [ -n "$TEST_TAYLOR_RANKING" ]; then
-python htt-ml/testing/keras_taylor_ranking.py \
-    ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 0
-
-python htt-ml/testing/keras_taylor_ranking.py \
-    ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 1
-fi
-
-# Make plots combining goodness of fit and Taylor ranking
-TEST_PLOT_COMBINED_GOF_TAYLOR=0
-if [ -n "$TEST_PLOT_COMBINED_GOF_TAYLOR" ]; then
-    for IFOLD in 0 1; do
-        python ml/plot_combined_taylor_gof.py \
-            ${ERA} \
-            ml/${ERA}_${CHANNEL}/fold${IFOLD}_keras_taylor_ranking.yaml \
-            /path/to/gof/result/dir/ \
-            ${CHANNEL} \
-            ${IFOLD} \
-            ml/${ERA}_${CHANNEL}/
-    done
+    ml/${ERA}_${CHANNEL}_training_pruning_1.yaml ml/${ERA}_${CHANNEL}_testing.yaml 1
 fi
