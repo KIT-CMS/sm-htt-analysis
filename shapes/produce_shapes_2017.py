@@ -264,8 +264,6 @@ def main(args):
         "VVL"   : Process("VVL",      VVLEstimation       (era, directory, em, friend_directory=em_friend_directory)),
         "W"     : Process("W",        WEstimation         (era, directory, em, friend_directory=em_friend_directory)),
 
-        "ggH125"   : Process("ggH125",   ggHEstimation       (era, directory, em, friend_directory=em_friend_directory)),
-        "qqH125"   : Process("qqH125",   qqHEstimation       (era, directory, em, friend_directory=em_friend_directory)),
         "VH125"    : Process("VH125",    VHEstimation        (era, directory, em, friend_directory=em_friend_directory)),
         "WH125"    : Process("WH125",    WHEstimation        (era, directory, em, friend_directory=em_friend_directory)),
         "ZH125"    : Process("ZH125",    ZHEstimation        (era, directory, em, friend_directory=em_friend_directory)),
