@@ -57,7 +57,7 @@ def get_properties(dict_, era, channel, directory, additional_cuts):
     if "2016" in era.name:
         from shape_producer.estimation_methods_2016 import DataEstimation
     elif "2017" in era.name:
-        from shape_producer.estimation_methods_Fall17 import DataEstimation
+        from shape_producer.estimation_methods_2017 import DataEstimation
     else:
         logger.fatal(
             "Can not import data estimation because era {} is not implemented.".

@@ -31,7 +31,7 @@ def parse_arguments():
         help="Branch with weights.")
     parser.add_argument(
         "--stxs-branch",
-        default="htxs_stage1cat",
+        default="htxs_stage1p1cat",
         type=str,
         help="Branch with STXS flags.")
     return parser.parse_args()

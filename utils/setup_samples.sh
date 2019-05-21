@@ -3,13 +3,13 @@
 ERA=$1
 
 # Samples Run2016
-ARTUS_OUTPUTS_2016=/ceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016_Jan19/merged_fixedjets2
-ARTUS_FRIENDS_ET_2016=/ceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016_Jan19/et_keras_20190124
-ARTUS_FRIENDS_MT_2016=/ceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016_Jan19/mt_keras_20190124
-ARTUS_FRIENDS_TT_2016=/ceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016_Jan19/tt_keras_20190124
-ARTUS_FRIENDS_FAKE_FACTOR_2016=/ceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016_Jan19/fake_factor_friends_njets_mvis_NEW_NN_Jan27
+ARTUS_OUTPUTS_2016=/invalidceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016_Jan19/merged_fixedjets2
+ARTUS_FRIENDS_ET_2016=/invalidceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016_Jan19/et_keras_20190124
+ARTUS_FRIENDS_MT_2016=/invalidceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016_Jan19/mt_keras_20190124
+ARTUS_FRIENDS_TT_2016=/invalidceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016_Jan19/tt_keras_20190124
+ARTUS_FRIENDS_FAKE_FACTOR_2016=/invalidceph/swozniewski/SM_Htautau/ntuples/Artus16_Nov/Artus_2016_Jan19/fake_factor_friends_njets_mvis_NEW_NN_Jan27
 ARTUS_FRIENDS_FAKE_FACTOR_INCL_2016=$ARTUS_FRIENDS_FAKE_FACTOR_2016
-ARTUS_OUTPUTS_EM_2016=/ceph/jbechtel/2016/em_all_vars_JetFix_def
+ARTUS_OUTPUTS_EM_2016=/invalidceph/jbechtel/2016/em_all_vars_JetFix_def
 
 
 # Samples Run2017

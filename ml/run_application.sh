@@ -7,6 +7,11 @@ source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
 source utils/setup_samples.sh $ERA
 
+if uname -a | grep ekpdeepthought
+then
+    source utils/setup_cuda.sh
+fi
+
 python ml/write_application_filelist.py \
     --directory $ARTUS_OUTPUTS \
     --database $KAPPA_DATABASE \
@@ -23,4 +28,4 @@ python ml/run_application.py \
     --training-config ml/${ERA}_${CHANNEL}_training.yaml \
     --application-config ml/${ERA}_${CHANNEL}_application.yaml \
     --filelist ml/${ERA}_${CHANNEL}/application_filelist.yaml \
-    --num-processes 12
+    --num-processes 20
