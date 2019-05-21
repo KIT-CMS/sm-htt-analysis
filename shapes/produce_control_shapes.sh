@@ -39,7 +39,7 @@ python shapes/produce_control_shapes.py \
     --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR \
     --tt-friend-directory $ARTUS_FRIENDS_TT \
     --num-threads 30
-    
+
 # Produce shapes
 python shapes/produce_control_shapes.py \
     --directory $ARTUS_OUTPUTS \
