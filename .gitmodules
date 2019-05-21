@@ -16,3 +16,6 @@
 [submodule "jdl_creator"]
 	path = jdl_creator
 	url = ssh://git@github.com/KIT-CMS/jdl_creator
+[submodule "fake-factor-application"]
+	path = fake-factor-application
+	url = git@github.com:KIT-CMS/fake-factor-application.git
