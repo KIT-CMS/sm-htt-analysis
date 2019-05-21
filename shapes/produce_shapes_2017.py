@@ -169,15 +169,13 @@ def main(args):
         "VVL"   : Process("VVL",      VVLEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         "W"     : Process("W",        WEstimation         (era, directory, mt, friend_directory=mt_friend_directory)),
 
-        "ggH"   : Process("ggH125",   ggHEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
-        "qqH"   : Process("qqH125",   qqHEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
-        "VH"    : Process("VH125",    VHEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
-        "WH"    : Process("WH125",    WHEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
-        "ZH"    : Process("ZH125",    ZHEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
-        "ttH"   : Process("ttH125",   ttHEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
+        "VH125"    : Process("VH125",    VHEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
+        "WH125"    : Process("WH125",    WHEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
+        "ZH125"    : Process("ZH125",    ZHEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
+        "ttH125"   : Process("ttH125",   ttHEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         }
 
-    # Stage 1.1 signals for ggH & qqH
+    # Stage 0 and 1.1 signals for ggH & qqH
     for ggH_stage1p1 in ggHEstimation.htxs_dict:
         mt_processes[ggH_stage1p1] = Process(ggH_stage1p1, ggHEstimation(era, directory, mt, friend_directory=mt_friend_directory))
     for qqH_stage1p1 in qqHEstimation.htxs_dict:
@@ -204,15 +202,13 @@ def main(args):
         "VVL"   : Process("VVL",      VVLEstimation       (era, directory, et, friend_directory=et_friend_directory)),
         "W"     : Process("W",        WEstimation         (era, directory, et, friend_directory=et_friend_directory)),
 
-        "ggH"   : Process("ggH125",   ggHEstimation       (era, directory, et, friend_directory=et_friend_directory)),
-        "qqH"   : Process("qqH125",   qqHEstimation       (era, directory, et, friend_directory=et_friend_directory)),
-        "VH"    : Process("VH125",    VHEstimation        (era, directory, et, friend_directory=et_friend_directory)),
-        "WH"    : Process("WH125",    WHEstimation        (era, directory, et, friend_directory=et_friend_directory)),
-        "ZH"    : Process("ZH125",    ZHEstimation        (era, directory, et, friend_directory=et_friend_directory)),
-        "ttH"   : Process("ttH125",   ttHEstimation       (era, directory, et, friend_directory=et_friend_directory)),
+        "VH125"    : Process("VH125",    VHEstimation        (era, directory, et, friend_directory=et_friend_directory)),
+        "WH125"    : Process("WH125",    WHEstimation        (era, directory, et, friend_directory=et_friend_directory)),
+        "ZH125"    : Process("ZH125",    ZHEstimation        (era, directory, et, friend_directory=et_friend_directory)),
+        "ttH125"   : Process("ttH125",   ttHEstimation       (era, directory, et, friend_directory=et_friend_directory)),
         }
     
-    # Stage 1.1 signals for ggH & qqH
+    # Stage 0 and 1.1 signals for ggH & qqH
     for ggH_stage1p1 in ggHEstimation.htxs_dict:
         et_processes[ggH_stage1p1] = Process(ggH_stage1p1, ggHEstimation(era, directory, et, friend_directory=et_friend_directory))
     for qqH_stage1p1 in qqHEstimation.htxs_dict:
@@ -239,15 +235,13 @@ def main(args):
         "VVL"   : Process("VVL",      VVLEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
         "W"     : Process("W",        WEstimation         (era, directory, tt, friend_directory=tt_friend_directory)),
 
-        "ggH"   : Process("ggH125",   ggHEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
-        "qqH"   : Process("qqH125",   qqHEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
-        "VH"    : Process("VH125",    VHEstimation        (era, directory, tt, friend_directory=tt_friend_directory)),
-        "WH"    : Process("WH125",    WHEstimation        (era, directory, tt, friend_directory=tt_friend_directory)),
-        "ZH"    : Process("ZH125",    ZHEstimation        (era, directory, tt, friend_directory=tt_friend_directory)),
-        "ttH"   : Process("ttH125",   ttHEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
+        "VH125"    : Process("VH125",    VHEstimation        (era, directory, tt, friend_directory=tt_friend_directory)),
+        "WH125"    : Process("WH125",    WHEstimation        (era, directory, tt, friend_directory=tt_friend_directory)),
+        "ZH125"    : Process("ZH125",    ZHEstimation        (era, directory, tt, friend_directory=tt_friend_directory)),
+        "ttH125"   : Process("ttH125",   ttHEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
         }
     
-    # Stage 1.1 signals for ggH & qqH
+    # Stage 0 and 1.1 signals for ggH & qqH
     for ggH_stage1p1 in ggHEstimation.htxs_dict:
         tt_processes[ggH_stage1p1] = Process(ggH_stage1p1, ggHEstimation(era, directory, tt, friend_directory=tt_friend_directory))
     for qqH_stage1p1 in qqHEstimation.htxs_dict:
@@ -270,15 +264,15 @@ def main(args):
         "VVL"   : Process("VVL",      VVLEstimation       (era, directory, em, friend_directory=em_friend_directory)),
         "W"     : Process("W",        WEstimation         (era, directory, em, friend_directory=em_friend_directory)),
 
-        "ggH"   : Process("ggH125",   ggHEstimation       (era, directory, em, friend_directory=em_friend_directory)),
-        "qqH"   : Process("qqH125",   qqHEstimation       (era, directory, em, friend_directory=em_friend_directory)),
-        "VH"    : Process("VH125",    VHEstimation        (era, directory, em, friend_directory=em_friend_directory)),
-        "WH"    : Process("WH125",    WHEstimation        (era, directory, em, friend_directory=em_friend_directory)),
-        "ZH"    : Process("ZH125",    ZHEstimation        (era, directory, em, friend_directory=em_friend_directory)),
-        "ttH"   : Process("ttH125",   ttHEstimation       (era, directory, em, friend_directory=em_friend_directory)),
+        "ggH125"   : Process("ggH125",   ggHEstimation       (era, directory, em, friend_directory=em_friend_directory)),
+        "qqH125"   : Process("qqH125",   qqHEstimation       (era, directory, em, friend_directory=em_friend_directory)),
+        "VH125"    : Process("VH125",    VHEstimation        (era, directory, em, friend_directory=em_friend_directory)),
+        "WH125"    : Process("WH125",    WHEstimation        (era, directory, em, friend_directory=em_friend_directory)),
+        "ZH125"    : Process("ZH125",    ZHEstimation        (era, directory, em, friend_directory=em_friend_directory)),
+        "ttH125"   : Process("ttH125",   ttHEstimation       (era, directory, em, friend_directory=em_friend_directory)),
         }
 
-    # Stage 1.1 signals for ggH & qqH
+    # Stage 0 and 1.1 signals for ggH & qqH
     for ggH_stage1p1 in ggHEstimation.htxs_dict:
         em_processes[ggH_stage1p1] = Process(ggH_stage1p1, ggHEstimation(era, directory, em, friend_directory=em_friend_directory))
     for qqH_stage1p1 in qqHEstimation.htxs_dict:
@@ -489,9 +483,11 @@ def main(args):
                 cuts,
                 variable=score))
     # Nominal histograms
-    signal_nicks = ["ggH", "qqH", "WH", "ZH", "ttH"]
+    signal_nicks = ["WH125", "ZH125", "VH125", "ttH125"]
     if args.gof_channel == None:
         signal_nicks += [ggH_stage1p1 for ggH_stage1p1 in ggHEstimation.htxs_dict] + [qqH_stage1p1 for qqH_stage1p1 in qqHEstimation.htxs_dict]
+    else:
+        signal_nicks +=  ["ggH125", "qqH125"]
 
     # yapf: enable
     if "et" in [args.gof_channel] + args.channels:
