@@ -1,62 +1,3 @@
-variables:
-  - pt_1
-  - pt_2
-# - eta_1
-# - eta_2
-# - phi_1
-# - phi_2
-# - iso_1
-# - iso_2
-  - jpt_1
-  - jpt_2
-# - jeta_1
-# - jeta_2
-# - jphi_1
-# - jphi_2
-# - jcsv_1
-# - jcsv_2
-# - jm_1
-# - jm_2
-# - jmva_1
-# - jmva_2
-  - bpt_1
-  - bpt_2
-# - beta_1
-# - beta_2
-# - bphi_1
-# - bphi_2
-# - bcsv_1
-# - bcsv_2
-  - njets
-# - npv
-  - nbtag
-  - m_sv
-  - mt_1
-  - mt_2
-  - ptvis
-  - pt_tt
-# - pt_ttjj
-  - mjj
-  - jdeta
-# - H_pt
-# - H_mass
-# - pzetavis
-# - pzetamiss
-# - pZetaMissVis
-  - m_vis
-# - dijetphi
-  - dijetpt
-# - m_2
-  - met
-# - metcov00
-# - metcov11
-# - metphi
-# - diLepMass
-# - d0_1
-# - d0_2
-# - dZ_1
-# - dZ_2
-
 selected_variables:
     2016:
         mt:
@@ -111,6 +52,27 @@ selected_variables:
             - bpt_1
             - bpt_2
             # njets
+            - nbtag
+            - m_sv
+            - mt_1
+            - mt_2
+            - ptvis
+            - pt_tt
+            - mjj
+            - jdeta
+            - m_vis
+            - dijetpt
+            - met
+        em:
+            # pt_1
+            - pt_2
+            # iso_1
+            # iso_2
+            - jpt_1
+            - jpt_2
+            - bpt_1
+            - bpt_2
+            - njets
             - nbtag
             - m_sv
             - mt_1
@@ -186,3 +148,21 @@ selected_variables:
             - m_vis
             - dijetpt
             # met
+        em:
+            # pt_1
+            - pt_2
+            # iso_1
+            # iso_2
+            - jpt_1
+            - jpt_2
+            - njets
+            - m_sv
+            - mt_1
+            - mt_2
+            - ptvis
+            - pt_tt
+            - mjj
+            - jdeta
+            - m_vis
+            - dijetpt
+            - met
