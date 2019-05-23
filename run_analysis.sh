@@ -14,8 +14,8 @@ done
 ./utils/clean.sh
 
 # Parse arguments
-ERA=$1               # options: 2016
-CHANNELS=${@:2}      # options: et, mt, tt
+ERA=$1               # options: 2016, 2017
+CHANNELS=${@:2}      # options: em, et, mt, tt
 
 # Create shapes of systematics
 ./shapes/produce_shapes.sh $ERA $CHANNELS

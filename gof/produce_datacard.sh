@@ -32,7 +32,6 @@ $CMSSW_BASE/bin/slc6_amd64_gcc530/MorphingSM2017 \
     --postfix="-ML" \
     --channel=$CHANNEL \
     --auto_rebin=false \
-    --rebin_categories=false \
     --stxs_signals=$STXS_SIGNALS \
     --categories="gof" \
     --gof_category_name=$GOF_CATEGORY_NAME \
