@@ -434,7 +434,7 @@ def main(args):
     em_categories = []
     # Analysis shapes
     if "em" in args.channels:
-        classes_em = ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]
+        classes_em = ["ggh", "qqh", "ztt", "tt", "ss", "misc", "db"]
         for i, label in enumerate(classes_em):
             score = Variable(
                 "em_max_score",
