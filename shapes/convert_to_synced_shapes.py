@@ -95,6 +95,9 @@ def main(args):
                 hist.Write()
                 if "Run201" in name_output:
                     if ("scale_t_" in name_output
+                            or "prefiring" in name_output
+                            or "scale_mc_e_" in name_output
+                            or "reso_mc_e_" in name_output
                             or "scale_mc_t_" in name_output
                             or "scale_emb_t_" in name_output
                             or "scale_j_" in name_output
