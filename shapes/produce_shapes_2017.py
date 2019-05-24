@@ -176,10 +176,10 @@ def main(args):
         }
 
     # Stage 0 and 1.1 signals for ggH & qqH
-    for ggH_stage1p1 in ggHEstimation.htxs_dict:
-        mt_processes[ggH_stage1p1] = Process(ggH_stage1p1, ggHEstimation(ggH_stage1p1, era, directory, mt, friend_directory=mt_friend_directory))
-    for qqH_stage1p1 in qqHEstimation.htxs_dict:
-        mt_processes[qqH_stage1p1] = Process(qqH_stage1p1, qqHEstimation(qqH_stage1p1, era, directory, mt, friend_directory=mt_friend_directory))
+    for ggH_htxs in ggHEstimation.htxs_dict:
+        mt_processes[ggH_htxs] = Process(ggH_htxs, ggHEstimation(ggH_htxs, era, directory, mt, friend_directory=mt_friend_directory))
+    for qqH_htxs in qqHEstimation.htxs_dict:
+        mt_processes[qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, mt, friend_directory=mt_friend_directory))
 
     mt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, mt, [mt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], mt_processes["data"], friend_directory=mt_friend_directory+[ff_friend_directory]))
     mt_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, mt,
@@ -209,10 +209,10 @@ def main(args):
         }
     
     # Stage 0 and 1.1 signals for ggH & qqH
-    for ggH_stage1p1 in ggHEstimation.htxs_dict:
-        et_processes[ggH_stage1p1] = Process(ggH_stage1p1, ggHEstimation(ggH_stage1p1, era, directory, et, friend_directory=et_friend_directory))
-    for qqH_stage1p1 in qqHEstimation.htxs_dict:
-        et_processes[qqH_stage1p1] = Process(qqH_stage1p1, qqHEstimation(qqH_stage1p1, era, directory, et, friend_directory=et_friend_directory))
+    for ggH_htxs in ggHEstimation.htxs_dict:
+        et_processes[ggH_htxs] = Process(ggH_htxs, ggHEstimation(ggH_htxs, era, directory, et, friend_directory=et_friend_directory))
+    for qqH_htxs in qqHEstimation.htxs_dict:
+        et_processes[qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, et, friend_directory=et_friend_directory))
 
     et_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, et, [et_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], et_processes["data"], friend_directory=et_friend_directory+[ff_friend_directory]))
     et_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, et,
@@ -242,10 +242,10 @@ def main(args):
         }
     
     # Stage 0 and 1.1 signals for ggH & qqH
-    for ggH_stage1p1 in ggHEstimation.htxs_dict:
-        tt_processes[ggH_stage1p1] = Process(ggH_stage1p1, ggHEstimation(ggH_stage1p1, era, directory, tt, friend_directory=tt_friend_directory))
-    for qqH_stage1p1 in qqHEstimation.htxs_dict:
-        tt_processes[qqH_stage1p1] = Process(qqH_stage1p1, qqHEstimation(qqH_stage1p1, era, directory, tt, friend_directory=tt_friend_directory))
+    for ggH_htxs in ggHEstimation.htxs_dict:
+        tt_processes[ggH_htxs] = Process(ggH_htxs, ggHEstimation(ggH_htxs, era, directory, tt, friend_directory=tt_friend_directory))
+    for qqH_htxs in qqHEstimation.htxs_dict:
+        tt_processes[qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, tt, friend_directory=tt_friend_directory))
 
     tt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationTT(era, directory, tt, [tt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], tt_processes["data"], friend_directory=tt_friend_directory+[ff_friend_directory]))
     tt_processes["QCD"] = Process("QCD", QCDEstimation_ABCD_TT_ISO2(era, directory, tt,
@@ -271,10 +271,10 @@ def main(args):
         }
 
     # Stage 0 and 1.1 signals for ggH & qqH
-    for ggH_stage1p1 in ggHEstimation.htxs_dict:
-        em_processes[ggH_stage1p1] = Process(ggH_stage1p1, ggHEstimation(ggH_stage1p1, era, directory, em, friend_directory=em_friend_directory))
-    for qqH_stage1p1 in qqHEstimation.htxs_dict:
-        em_processes[qqH_stage1p1] = Process(qqH_stage1p1, qqHEstimation(qqH_stage1p1, era, directory, em, friend_directory=em_friend_directory))
+    for ggH_htxs in ggHEstimation.htxs_dict:
+        em_processes[ggH_htxs] = Process(ggH_htxs, ggHEstimation(ggH_htxs, era, directory, em, friend_directory=em_friend_directory))
+    for qqH_htxs in qqHEstimation.htxs_dict:
+        em_processes[qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, em, friend_directory=em_friend_directory))
 
     em_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, em, [em_processes[process] for process in ["ZTT", "ZL", "W", "TTT", "VVT", "VVL"]], em_processes["data"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
 
@@ -483,10 +483,9 @@ def main(args):
     # Nominal histograms
     signal_nicks = ["WH125", "ZH125", "VH125", "ttH125"]
     if args.gof_channel == None:
-        signal_nicks += [ggH_stage1p1 for ggH_stage1p1 in ggHEstimation.htxs_dict] + [qqH_stage1p1 for qqH_stage1p1 in qqHEstimation.htxs_dict]
+        signal_nicks += [ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict] + [qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict]
     else:
-        #signal_nicks +=  ["ggH125", "qqH125"]
-        signal_nicks += [ggH_stage1p1 for ggH_stage1p1 in ggHEstimation.htxs_dict] + [qqH_stage1p1 for qqH_stage1p1 in qqHEstimation.htxs_dict]
+        signal_nicks +=  ["ggH125", "qqH125"]
 
     # yapf: enable
     if "et" in [args.gof_channel] + args.channels:
