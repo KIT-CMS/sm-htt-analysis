@@ -1426,6 +1426,62 @@ def main(args):
                 channel=tt,
                 era=era)
 
+    # QCD for em
+    qcd_variations = []
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_0jet_rate_Run2017", "qcd_weight",
+        Weight("em_qcd_osss_0jet_rateup_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        "Up"))
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_0jet_rate_Run2017", "qcd_weight",
+        Weight("em_qcd_osss_0jet_ratedown_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        "Down"))
+
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_0jet_shape_Run2017", "qcd_weight",
+        Weight("em_qcd_osss_0jet_shapeup_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        "Up"))
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_0jet_shape_Run2017", "qcd_weight",
+        Weight("em_qcd_osss_0jet_shapedown_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        "Down"))
+
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_1jet_shape_Run2017", "qcd_weight",
+        Weight("em_qcd_osss_1jet_shapeup_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        "Up"))
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_1jet_shape_Run2017", "qcd_weight",
+        Weight("em_qcd_osss_1jet_shapedown_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        "Down"))
+
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_iso_Run2017", "qcd_weight",
+        Weight("em_qcd_extrap_up_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        "Up"))
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_iso_Run2017", "qcd_weight",
+        Weight("em_qcd_osss_binned_Weight", "qcd_weight"),
+        "Down"))
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_iso", "qcd_weight",
+        Weight("em_qcd_extrap_up_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        "Up"))
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_iso", "qcd_weight",
+        Weight("em_qcd_osss_binned_Weight", "qcd_weight"),
+        "Down"))
+
+
+    for variation in qcd_variations:
+        for process_nick in ["QCD"]:
+            if "em" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=em_processes[process_nick],
+                    channel=em,
+                    era=era)
+
     # Gluon-fusion WG1 uncertainty scheme
     ggh_variations = []
     for unc in [
