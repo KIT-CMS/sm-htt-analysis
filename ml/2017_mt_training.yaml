@@ -4,8 +4,8 @@ datasets:
     - ml/2017_mt/fold1_training_dataset.root
 
 # Base path for all output files
-output_path: ml/2017_mt
-output_path_json: ml/2017_mt_json
+output_path: ml/2017_mt_final
+output_path_json: ml/2017_mt_json_final
 
 # Define classes based on tree names in dataset file
 classes:
@@ -42,21 +42,21 @@ variables:
     # iso_1     # Failed 1D GoF
     # iso_2     # Failed 1D GoF
     - jpt_1
-    - jpt_2
-    - bpt_1
-    - bpt_2
-    - njets
+    #- jpt_2
+    #- bpt_1
+    #- bpt_2
+    #- njets
     - nbtag
     - m_sv
-    - mt_1
-    - mt_2      # Failed 1D GoF
+    #- mt_1
+    #- mt_2      # Failed 1D GoF
     - ptvis     # Failed 2D GoF
-    - pt_tt
-    - mjj
-    - jdeta
+    #- pt_tt
+    #- mjj
+    #- jdeta
     - m_vis     # Failed 1D GoF
-    - dijetpt
-    - met       # Failed 2D GoF
+    #- dijetpt
+    #- met       # Failed 2D GoF
 
 # Split of dataset in training and validation (in TMVA called training and testing)
 train_test_split: 0.75

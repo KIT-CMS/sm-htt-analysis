@@ -26,8 +26,8 @@ then
     python htt-ml/training/keras_training.py ml/${ERA}_${CHANNEL}_training.yaml 1
 elif [[ $LOSS == *"custom"* ]]
 then
-    python htt-ml/training/keras_training_custom_loss.py ml/${ERA}_${CHANNEL}_training.yaml 0
-    python htt-ml/training/keras_training_custom_loss.py ml/${ERA}_${CHANNEL}_training.yaml 1
+    python htt-ml/training/keras_training_custom_loss.py ml/${ERA}_${CHANNEL}_training_custom_loss.yaml 0
+    python htt-ml/training/keras_training_custom_loss.py ml/${ERA}_${CHANNEL}_training_custom_loss.yaml 1
 else
     echo "Loss name not implemented, try standard or custom"
 fi
