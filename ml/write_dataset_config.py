@@ -72,7 +72,8 @@ def main(args):
         from shape_producer.era import Run2016
         era = Run2016(args.database)
     elif "2017" in args.era:
-        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZJEstimation, ZLEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, VVLEstimation, WEstimation, ggHEstimation, qqHEstimation, EWKZEstimation
+        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZJEstimation, ZLEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, VVLEstimation, WEstimation, ggHEstimation, qqHEstimation, EWKZEstimation, ZTTEmbeddedEstimation
+
 
         from shape_producer.era import Run2017
         era = Run2017(args.database)
@@ -502,20 +503,26 @@ def main(args):
             "VVT": "misc",
             "VVJ": "misc",
             "VVL": "misc",
-            "EWKZ": "misc"
+            "EWKZ": "misc",
+	    "EMB":"ztt"
         }
         for estimation in [
                 ggHEstimation("ggH", era, args.base_path, channel),
                 qqHEstimation("qqH", era, args.base_path, channel),
-                ZTTEstimation(era, args.base_path, channel),
+		ZTTEmbeddedEstimation(era, args.base_path, channel),
+		##removed for embedding
+		#ZTTEstimation(era, args.base_path, channel),
                 ZLEstimation(era, args.base_path, channel),
                 ZJEstimation(era, args.base_path, channel),
-                TTTEstimation(era, args.base_path, channel),
+		##removed for embedding
+                #TTTEstimation(era, args.base_path, channel),
+		##next 2 were at some point removed for embedding, as recommened swozn
                 TTJEstimation(era, args.base_path, channel),
                 TTLEstimation(era, args.base_path, channel),
                 WEstimation(era, args.base_path, channel),
                 VVJEstimation(era, args.base_path, channel),
-                VVTEstimation(era, args.base_path, channel),
+		##removed for embedding
+                #VVTEstimation(era, args.base_path, channel),
                 VVLEstimation(era, args.base_path, channel),
                 EWKZEstimation(era, args.base_path, channel),
         ]:
