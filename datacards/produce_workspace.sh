@@ -32,16 +32,34 @@ if [ $STXS_FIT == "stxs_stage0" ]; then
         --PO '"map=^.*/ggH.?$:r_ggH[1,-5,5]"' \
         --PO '"map=^.*/qqH.?$:r_qqH[1,-5,5]"'
 fi
-if [ $STXS_FIT == "stxs_stage1" ]; then
+
+# Stage 1.1 as unified for the MC production, see https://indico.cern.ch/event/820874/contributions/3431583/attachments/1843868/3024330/Legacy_SM_H_-_Status.pdf, Slide 4
+if [ $STXS_FIT == "stxs_stage1p1" ]; then
     combineTool.py -M T2W -o ${OUTPUT} -i ${INPUT} --parallel $NUM_THREADS \
         -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel \
-        --PO '"map=^.*/ggH_0J.?$:r_ggH_0J[1,-70,70]"' \
-        --PO '"map=^.*/ggH_1J_PTH_0_60.?$:r_ggH_1J_PTH_0_60[1,-70,70]"' \
-        --PO '"map=^.*/ggH_1J_PTH_60_120.?$:r_ggH_1J_PTH_60_120[1,-70,70]"' \
-        --PO '"map=^.*/ggH_1J_PTH_(120_200|GT200).?$:r_ggH_1J_PTH_GT120[1,-70,70]"' \
-        --PO '"map=^.*/ggH_GE2J_PTH_(0_60|60_120|120_200|GT200).?$:r_ggH_GE2J[1,-70,70]"' \
-        --PO '"map=^.*/(ggH|qqH)_VBFTOPO_(JET3VETO|JET3).?$:r_VBFTOPO[1,-70,70]"' \
-        --PO '"map=^.*/qqH_REST.?$:r_qqH_REST[1,-70,70]"' \
-        --PO '"map=^.*/qqH_VH2JET.?$:r_qqH_VH2JET[1,-70,70]"' \
-        --PO '"map=^.*/qqH_PTJET1_GT200.?$:r_qqH_PTJET1_GT200[1,-70,70]"'
+        --PO '"map=^.*/ggH_GG2H_FWDH:r_ggH_GG2H_0J[1,-70,70]"' \
+        --PO '"map=^.*/ggH_GG2H_PTH_GT200:r_ggH_GG2H_PTH_GT200[1,-70,70]"' \
+        --PO '"map=^.*/ggH_GG2H_0J_PTH_0_10:r_ggH_GG2H_0J[1,-70,70]"' \
+        --PO '"map=^.*/ggH_GG2H_0J_PTH_GT10:r_ggH_GG2H_0J[1,-70,70]"' \
+        --PO '"map=^.*/ggH_GG2H_1J_PTH_0_60:r_ggH_GG2H_1J_PTH_0_120[1,-70,70]"' \
+        --PO '"map=^.*/ggH_GG2H_1J_PTH_60_120:r_ggH_GG2H_1J_PTH_0_120[1,-70,70]"' \
+        --PO '"map=^.*/ggH_GG2H_1J_PTH_120_200:r_ggH_GG2H_1J_PTH_120_200[1,-70,70]"' \
+        --PO '"map=^.*/ggH_GG2H_GE2J_MJJ_0_350_PTH_0_60:r_ggH_GG2H_GE2J_MJJ_0_350_PTH_0_200[1,-70,70]"' \
+        --PO '"map=^.*/ggH_GG2H_GE2J_MJJ_0_350_PTH_60_120:r_ggH_GG2H_GE2J_MJJ_0_350_PTH_0_200[1,-70,70]"' \
+        --PO '"map=^.*/ggH_GG2H_GE2J_MJJ_0_350_PTH_120_200:r_ggH_GG2H_GE2J_MJJ_0_350_PTH_0_200[1,-70,70]"' \
+        --PO '"map=^.*/ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25:r_ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200[1,-70,70]"' \
+        --PO '"map=^.*/ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25:r_ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200[1,-70,70]"' \
+        --PO '"map=^.*/ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25:r_ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200[1,-70,70]"' \
+        --PO '"map=^.*/ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25:r_ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200[1,-70,70]"' \
+        --PO '"map=^.*/qqH_QQ2HQQ_FWDH:r_qqH_QQ2HQQ_OJ[1,-70,70]"' \
+        --PO '"map=^.*/qqH_QQ2HQQ_0J:r_qqH_QQ2HQQ_OJ[1,-70,70]"' \
+        --PO '"map=^.*/qqH_QQ2HQQ_1J:r_qqH_QQ2HQQ_1J[1,-70,70]"' \
+        --PO '"map=^.*/qqH_QQ2HQQ_GE2J_MJJ_0_60:r_qqH_QQ2HQQ_GE2J_MJJ_0_350[1,-70,70]"' \
+        --PO '"map=^.*/qqH_QQ2HQQ_GE2J_MJJ_60_120:r_qqH_QQ2HQQ_GE2J_MJJ_0_350[1,-70,70]"' \
+        --PO '"map=^.*/qqH_QQ2HQQ_GE2J_MJJ_120_350:r_qqH_QQ2HQQ_GE2J_MJJ_0_350[1,-70,70]"' \
+        --PO '"map=^.*/qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200:r_qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200[1,-70,70]"' \
+        --PO '"map=^.*/qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25:r_qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200[1,-70,70]"' \
+        --PO '"map=^.*/qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25:r_qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200[1,-70,70]"' \
+        --PO '"map=^.*/qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25:r_qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200[1,-70,70]"' \
+        --PO '"map=^.*/qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25:r_qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200[1,-70,70]"'
 fi

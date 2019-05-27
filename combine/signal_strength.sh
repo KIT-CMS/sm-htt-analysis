@@ -19,7 +19,7 @@ then
     root -l fitDiagnostics${ERA}.root <<< "fit_b->Print(); fit_s->Print()" | grep "covariance matrix quality"
 fi
 
-if [ $STXS_FIT == "inclusive" ] || [ $STXS_FIT == "stxs_stage0" ] || [ $STXS_FIT == "stxs_stage1" ]
+if [ $STXS_FIT == "inclusive" ] || [ $STXS_FIT == "stxs_stage0" ] || [ $STXS_FIT == "stxs_stage1p1" ]
 then
     combineTool.py -M MultiDimFit -m 125 -d ${ERA}_workspace.root \
         --algo singles --robustFit 1 \

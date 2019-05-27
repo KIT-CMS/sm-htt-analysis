@@ -5,12 +5,13 @@ import ROOT
 ROOT.PyConfig.IgnoreCommandLineOptions = True  # disable ROOT internal argument parser
 
 from shape_producer.cutstring import Cut, Cuts
-from shape_producer.channel import ETSM2016, MTSM2016, TTSM2016, ETSM2017, MTSM2017, TTSM2017
+from shape_producer.channel import EMSM2016, ETSM2016, MTSM2016, TTSM2016, EMSM2017, ETSM2017, MTSM2017, TTSM2017
 from shape_producer.process import Process
 
 import argparse
 import numpy as np
 import yaml
+import os
 
 import logging
 logger = logging.getLogger("calculate_binning.py")
@@ -39,6 +40,30 @@ def parse_arguments():
         type=str,
         help="Directory with Artus outputs.")
     parser.add_argument(
+        "--em-friend-directories",
+        nargs='+',
+        default=[],
+        type=str,
+        help="Directories with Artus friend outputs for em channel.")
+    parser.add_argument(
+        "--et-friend-directories",
+        nargs='+',
+        default=[],
+        type=str,
+        help="Directories with Artus friend outputs for et channel.")
+    parser.add_argument(
+        "--mt-friend-directories",
+        nargs='+',
+        default=[],
+        type=str,
+        help="Directories with Artus friend outputs for mt channel.")
+    parser.add_argument(
+        "--tt-friend-directories",
+        nargs='+',
+        default=[],
+        type=str,
+        help="Directories with Artus friend outputs for tt channel.")
+    parser.add_argument(
         "--era", required=True, type=str, help="Experiment era.")
     parser.add_argument(
         "--datasets", required=True, type=str, help="Kappa datsets database.")
@@ -57,7 +82,7 @@ def get_properties(dict_, era, channel, directory, additional_cuts):
     if "2016" in era.name:
         from shape_producer.estimation_methods_2016 import DataEstimation
     elif "2017" in era.name:
-        from shape_producer.estimation_methods_Fall17 import DataEstimation
+        from shape_producer.estimation_methods_2017 import DataEstimation
     else:
         logger.fatal(
             "Can not import data estimation because era {} is not implemented.".
@@ -83,16 +108,24 @@ def get_properties(dict_, era, channel, directory, additional_cuts):
     for i, f in enumerate(files):
         logger.debug("File %d: %s", i + 1, str(f).replace(directory + "/", ""))
     dict_["files"] = files
+    dict_["directory"] = directory
 
     return dict_
 
 
-def build_chain(dict_):
+def build_chain(dict_, friend_directories):
     # Build chain
     logger.debug("Use tree path %s for chain.", dict_["tree_path"])
     chain = ROOT.TChain(dict_["tree_path"])
+    friendchains = {}
+    for d in friend_directories:
+        friendchains[d] = ROOT.TChain(dict_["tree_path"])
     for f in dict_["files"]:
         chain.AddFile(f)
+        # Make sure, that friend files are put in the same order together
+        for d in friendchains:
+            friendfile = os.path.join(d,f.replace(dict_["directory"] + "/", ""))
+            friendchains[d].AddFile(friendfile)
     chain_numentries = chain.GetEntries()
     if not chain_numentries > 0:
         logger.fatal("Chain (before skimming) does not contain any events.")
@@ -103,11 +136,18 @@ def build_chain(dict_):
     # Skim chain
     chain_skimmed = chain.CopyTree(dict_["cut_string"])
     chain_skimmed_numentries = chain_skimmed.GetEntries()
+    friendchains_skimmed = {}
+    # Apply skim selection also to friend chains
+    for d in friendchains:
+        friendchains[d].AddFriend(chain)
+        friendchains_skimmed[d] = friendchains[d].CopyTree(dict_["cut_string"])
     if not chain_skimmed_numentries > 0:
         logger.fatal("Chain (after skimming) does not contain any events.")
         raise Exception
     logger.debug("Found %s events after skimming with cut string.",
                  chain_skimmed_numentries)
+    for d in friendchains_skimmed:
+        chain_skimmed.AddFriend(friendchains_skimmed[d])
 
     return chain_skimmed
 
@@ -125,14 +165,22 @@ def get_1d_binning(channel, chain, variables, percentiles):
     binning = {}
     for i, v in enumerate(variables):
         binning[v] = {}
-        borders = [float(x) for x in np.percentile(values[i], percentiles)]
-        borders = sorted(list(set(borders))) # remove duplicates in bins for integer binning
-        borders = [b - 0.01 for b in borders] # epsilon offset for integer variables to make it more stable
-        borders[-1] += 0.02 # stretch last one to include the last border in case it is an integer
+        if len(values[i]) > 0:
+            borders = [float(x) for x in np.percentile(values[i], percentiles)]
+            borders = sorted(list(set(borders))) # remove duplicates in bins for integer binning
+            borders = [b - 0.01 for b in borders] # epsilon offset for integer variables to make it more stable
+            borders[-1] += 0.02 # stretch last one to include the last border in case it is an integer
+        else:
+            logger.fatal("No valid values found for variable {}. Please remove from list for channel {}.".format(v, channel))
+            raise Exception
+
         binning[v]["bins"] = borders
         binning[v]["expression"] = v
-        binning[v]["cut"] = "({VAR}>{MIN})&&({VAR}<{MAX})".format(
-            VAR=v, MIN=borders[0], MAX=borders[-1])
+        if len(borders) >= 2:
+            binning[v]["cut"] = "({VAR}>{MIN})&&({VAR}<{MAX})".format(
+                VAR=v, MIN=borders[0], MAX=borders[-1])
+        else:
+            binning[v]["cut"] = "(1 == 0)"
         logger.debug("Binning for variable %s: %s", v, binning[v]["bins"])
 
     return binning
@@ -185,97 +233,51 @@ def main(args):
         raise Exception
 
     # Load variables
-    variables = yaml.load(open(args.variables))["variables"]
+    variables = yaml.load(open(args.variables))["selected_variables"]
 
     # Define bins and range of binning for variables in enabled channels
-    channels = ["et", "mt", "tt"]
+    channel_dict = {
+        "em" : { "2016": EMSM2016(), "2017" : EMSM2017()},
+        "et" : { "2016": ETSM2016(), "2017" : ETSM2017()},
+        "mt" : { "2016": MTSM2016(), "2017" : MTSM2017()},
+        "tt" : { "2016": TTSM2016(), "2017" : TTSM2017()},
+    }
+    friend_directories_dict = {
+        "em" : args.em_friend_directories,
+        "et" : args.et_friend_directories,
+        "mt" : args.mt_friend_directories,
+        "tt" : args.tt_friend_directories,
+    }
     percentiles = [1.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 99.0]
 
     config = {"gof": {}}
 
-    # Channel: ET
-    if "et" in channels:
+    for ch in channel_dict:
         # Get properties
         if "2016" in args.era:
-            channel = ETSM2016()
+            eraname = "2016"
         elif "2017" in args.era:
-            channel = ETSM2017()
-        logger.info("Channel: et")
+            eraname = "2017"
+        channel = channel_dict[ch][eraname]
+        logger.info("Channel: %s"%ch)
         dict_ = {}
         additional_cuts = Cuts()
-        logger.warning("Use additional cuts for et: %s",
-                       additional_cuts.expand())
+        logger.warning("Use additional cuts for %s: %s"%(ch,additional_cuts.expand()))
         dict_ = get_properties(dict_, era, channel, args.directory,
                                additional_cuts)
 
         # Build chain
-        dict_["tree_path"] = "et_nominal/ntuple"
-        chain = build_chain(dict_)
+        dict_["tree_path"] = "%s_nominal/ntuple"%ch
+        chain = build_chain(dict_, friend_directories_dict[ch])
 
         # Get percentiles and calculate 1d binning
-        binning = get_1d_binning("et", chain, variables, percentiles)
+        binning = get_1d_binning(ch, chain, variables[int(eraname)][ch], percentiles)
 
         # Add binning for unrolled 2d distributions
-        binning = add_2d_unrolled_binning(variables, binning)
+        binning = add_2d_unrolled_binning(variables[int(eraname)][ch], binning)
 
         # Append binning to config
-        config["gof"]["et"] = binning
-
-    # Channel: MT
-    if "mt" in channels:
-        # Get properties
-        if "2016" in args.era:
-            channel = MTSM2016()
-        elif "2017" in args.era:
-            channel = MTSM2017()
-        logger.info("Channel: mt")
-        dict_ = {}
-        additional_cuts = Cuts()
-        logger.warning("Use additional cuts for mt: %s",
-                       additional_cuts.expand())
-        dict_ = get_properties(dict_, era, channel, args.directory,
-                               additional_cuts)
-
-        # Build chain
-        dict_["tree_path"] = "mt_nominal/ntuple"
-        chain = build_chain(dict_)
-
-        # Get percentiles
-        binning = get_1d_binning("mt", chain, variables, percentiles)
-
-        # Add binning for unrolled 2d distributions
-        binning = add_2d_unrolled_binning(variables, binning)
-
-        # Append binning to config
-        config["gof"]["mt"] = binning
-
-    # Channel: TT
-    if "tt" in channels:
-        # Get properties
-        if "2016" in args.era:
-            channel = TTSM2016()
-        elif "2017" in args.era:
-            channel = TTSM2017()
-        logger.info("Channel: tt")
-        dict_ = {}
-        additional_cuts = Cuts()
-        logger.warning("Use additional cuts for tt: %s",
-                       additional_cuts.expand())
-        dict_ = get_properties(dict_, era, channel, args.directory,
-                               additional_cuts)
-
-        # Build chain
-        dict_["tree_path"] = "tt_nominal/ntuple"
-        chain = build_chain(dict_)
-
-        # Get percentiles
-        binning = get_1d_binning("tt", chain, variables, percentiles)
-
-        # Add binning for unrolled 2d distributions
-        binning = add_2d_unrolled_binning(variables, binning)
-
-        # Append binning to config
-        config["gof"]["tt"] = binning
+        config["gof"][ch] = binning
 
     # Write config
     logger.info("Write binning config to %s.", args.output)

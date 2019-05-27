@@ -47,37 +47,20 @@ def parse_arguments():
         type=str,
         help="Directory with Artus outputs.")
     parser.add_argument(
-        "--em-directory",
-        required=True,
-        type=str,
-        help="Directory with Artus outputs.")
-    parser.add_argument(
         "--et-friend-directory",
-        default=None,
         type=str,
+        default=[],
+        nargs='+',
         help=
-        "Directory arranged as Artus output and containing a friend tree for et."
+        "Directories arranged as Artus output and containing a friend tree for et."
     )
     parser.add_argument(
         "--mt-friend-directory",
-        default=None,
         type=str,
+        default=[],
+        nargs='+',
         help=
-        "Directory arranged as Artus output and containing a friend tree for mt."
-    )
-    parser.add_argument(
-        "--tt-friend-directory",
-        default=None,
-        type=str,
-        help=
-        "Directory arranged as Artus output and containing a friend tree for tt."
-    )
-    parser.add_argument(
-        "--em-friend-directory",
-        default=None,
-        type=str,
-        help=
-        "Directory arranged as Artus output and containing a friend tree for tt."
+        "Directories arranged as Artus output and containing a friend tree for mt."
     )
     parser.add_argument(
         "--fake-factor-friend-directory",
@@ -85,6 +68,22 @@ def parse_arguments():
         type=str,
         help=
         "Directory arranged as Artus output and containing friend trees to data files with fake factors."
+    )
+    parser.add_argument(
+        "--tt-friend-directory",
+        type=str,
+        default=[],
+        nargs='+',
+        help=
+        "Directories arranged as Artus output and containing a friend tree for tt."
+    )
+    parser.add_argument(
+        "--em-friend-directory",
+        type=str,
+        default=[],
+        nargs='+',
+        help=
+        "Directories arranged as Artus output and containing a friend tree for em."
     )
     parser.add_argument(
         "--datasets", required=True, type=str, help="Kappa datsets database.")
@@ -137,7 +136,7 @@ def main(args):
 
     # Era selection
     if "2017" in args.era:
-        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, ggHEstimation_0J, ggHEstimation_1J_PTH_0_60, ggHEstimation_1J_PTH_60_120, ggHEstimation_1J_PTH_120_200, ggHEstimation_1J_PTH_GT200, ggHEstimation_GE2J_PTH_0_60, ggHEstimation_GE2J_PTH_60_120, ggHEstimation_GE2J_PTH_120_200, ggHEstimation_GE2J_PTH_GT200, ggHEstimation_VBFTOPO_JET3, ggHEstimation_VBFTOPO_JET3VETO, qqHEstimation, qqHEstimation_VBFTOPO_JET3VETO, qqHEstimation_VBFTOPO_JET3, qqHEstimation_REST, qqHEstimation_VH2JET, qqHEstimation_PTJET1_GT200, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, FakeEstimationLT, NewFakeEstimationLT, FakeEstimationTT, NewFakeEstimationTT
+        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT
 
         from shape_producer.era import Run2017
         era = Run2017(args.datasets)
@@ -149,11 +148,10 @@ def main(args):
     # Channels and processes
     # yapf: disable
     directory = args.directory
-    em_directory = args.em_directory
     et_friend_directory = args.et_friend_directory
     mt_friend_directory = args.mt_friend_directory
     tt_friend_directory = args.tt_friend_directory
-    em_friend_directory = [] # args.em_friend_directory # to be added as soon as NN friends for em are available
+    em_friend_directory = args.em_friend_directory
 
     ff_friend_directory = args.fake_factor_friend_directory
     mt = MTSM2017()
@@ -170,33 +168,20 @@ def main(args):
         "VVJ"   : Process("VVJ",      VVJEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         "VVL"   : Process("VVL",      VVLEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         "W"     : Process("W",        WEstimation         (era, directory, mt, friend_directory=mt_friend_directory)),
-        #"FAKES" : Process("jetFakes", FakeEstimationLT    (era, directory, mt, friend_directory=[mt_friend_directory, ff_friend_directory])),
-        "ggH"   : Process("ggH125",   ggHEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
-        "qqH"   : Process("qqH125",   qqHEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
-        "ggH_0J"               : Process("ggH_0J125",               ggHEstimation_0J              (era, directory, mt, friend_directory=mt_friend_directory)),
-        "ggH_1J_PTH_0_60"      : Process("ggH_1J_PTH_0_60125",      ggHEstimation_1J_PTH_0_60     (era, directory, mt, friend_directory=mt_friend_directory)),
-        "ggH_1J_PTH_60_120"    : Process("ggH_1J_PTH_60_120125",    ggHEstimation_1J_PTH_60_120   (era, directory, mt, friend_directory=mt_friend_directory)),
-        "ggH_1J_PTH_120_200"   : Process("ggH_1J_PTH_120_200125",   ggHEstimation_1J_PTH_120_200  (era, directory, mt, friend_directory=mt_friend_directory)),
-        "ggH_1J_PTH_GT200"     : Process("ggH_1J_PTH_GT200125",     ggHEstimation_1J_PTH_GT200    (era, directory, mt, friend_directory=mt_friend_directory)),
-        "ggH_GE2J_PTH_0_60"    : Process("ggH_GE2J_PTH_0_60125",    ggHEstimation_GE2J_PTH_0_60   (era, directory, mt, friend_directory=mt_friend_directory)),
-        "ggH_GE2J_PTH_60_120"  : Process("ggH_GE2J_PTH_60_120125",  ggHEstimation_GE2J_PTH_60_120 (era, directory, mt, friend_directory=mt_friend_directory)),
-        "ggH_GE2J_PTH_120_200" : Process("ggH_GE2J_PTH_120_200125", ggHEstimation_GE2J_PTH_120_200(era, directory, mt, friend_directory=mt_friend_directory)),
-        "ggH_GE2J_PTH_GT200"   : Process("ggH_GE2J_PTH_GT200125",   ggHEstimation_GE2J_PTH_GT200  (era, directory, mt, friend_directory=mt_friend_directory)),
-        "ggH_VBFTOPO_JET3VETO" : Process("ggH_VBFTOPO_JET3VETO125", ggHEstimation_VBFTOPO_JET3VETO(era, directory, mt, friend_directory=mt_friend_directory)),
-        "ggH_VBFTOPO_JET3"     : Process("ggH_VBFTOPO_JET3125",     ggHEstimation_VBFTOPO_JET3    (era, directory, mt, friend_directory=mt_friend_directory)),
-        "qqH_VBFTOPO_JET3VETO" : Process("qqH_VBFTOPO_JET3VETO125", qqHEstimation_VBFTOPO_JET3VETO(era, directory, mt, friend_directory=mt_friend_directory)),
-        "qqH_VBFTOPO_JET3"     : Process("qqH_VBFTOPO_JET3125",     qqHEstimation_VBFTOPO_JET3    (era, directory, mt, friend_directory=mt_friend_directory)),
-        "qqH_REST"             : Process("qqH_REST125",             qqHEstimation_REST            (era, directory, mt, friend_directory=mt_friend_directory)),
-        "qqH_VH2JET"           : Process("qqH_VH2JET125",           qqHEstimation_VH2JET          (era, directory, mt, friend_directory=mt_friend_directory)),
-        "qqH_PTJET1_GT200"     : Process("qqH_PTJET1_GT200125",     qqHEstimation_PTJET1_GT200    (era, directory, mt, friend_directory=mt_friend_directory)),
-        "VH"                   : Process("VH125",                   VHEstimation                  (era, directory, mt, friend_directory=mt_friend_directory)),
-        "WH"                   : Process("WH125",                   WHEstimation                  (era, directory, mt, friend_directory=mt_friend_directory)),
-        "ZH"                   : Process("ZH125",                   ZHEstimation                  (era, directory, mt, friend_directory=mt_friend_directory)),
-        "ttH"                  : Process("ttH125",                  ttHEstimation                 (era, directory, mt, friend_directory=mt_friend_directory)),
+
+        "VH125"    : Process("VH125",    VHEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
+        "WH125"    : Process("WH125",    WHEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
+        "ZH125"    : Process("ZH125",    ZHEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
+        "ttH125"   : Process("ttH125",   ttHEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         }
-    mt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, mt, [mt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], mt_processes["data"], friend_directory=[mt_friend_directory, ff_friend_directory]))
-    #mt_fakes_for_uncs=Process("jetFakes", FakeEstimationLT(era, directory, mt, friend_directory=[mt_friend_directory, ff_friend_directory]))
-    
+
+    # Stage 0 and 1.1 signals for ggH & qqH
+    for ggH_htxs in ggHEstimation.htxs_dict:
+        mt_processes[ggH_htxs] = Process(ggH_htxs, ggHEstimation(ggH_htxs, era, directory, mt, friend_directory=mt_friend_directory))
+    for qqH_htxs in qqHEstimation.htxs_dict:
+        mt_processes[qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, mt, friend_directory=mt_friend_directory))
+
+    mt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, mt, [mt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], mt_processes["data"], friend_directory=mt_friend_directory+[ff_friend_directory]))
     mt_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, mt,
             [mt_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL"]],
             mt_processes["data"], friend_directory=mt_friend_directory, extrapolation_factor=1.00))
@@ -216,32 +201,20 @@ def main(args):
         "VVJ"   : Process("VVJ",      VVJEstimation       (era, directory, et, friend_directory=et_friend_directory)),
         "VVL"   : Process("VVL",      VVLEstimation       (era, directory, et, friend_directory=et_friend_directory)),
         "W"     : Process("W",        WEstimation         (era, directory, et, friend_directory=et_friend_directory)),
-        #"FAKES" : Process("jetFakes", FakeEstimationLT    (era, directory, et, friend_directory=[et_friend_directory, ff_friend_directory])),
-        "ggH"   : Process("ggH125",   ggHEstimation       (era, directory, et, friend_directory=et_friend_directory)),
-        "qqH"   : Process("qqH125",   qqHEstimation       (era, directory, et, friend_directory=et_friend_directory)),
-        "ggH_0J"               : Process("ggH_0J125",               ggHEstimation_0J              (era, directory, et, friend_directory=et_friend_directory)),
-        "ggH_1J_PTH_0_60"      : Process("ggH_1J_PTH_0_60125",      ggHEstimation_1J_PTH_0_60     (era, directory, et, friend_directory=et_friend_directory)),
-        "ggH_1J_PTH_60_120"    : Process("ggH_1J_PTH_60_120125",    ggHEstimation_1J_PTH_60_120   (era, directory, et, friend_directory=et_friend_directory)),
-        "ggH_1J_PTH_120_200"   : Process("ggH_1J_PTH_120_200125",   ggHEstimation_1J_PTH_120_200  (era, directory, et, friend_directory=et_friend_directory)),
-        "ggH_1J_PTH_GT200"     : Process("ggH_1J_PTH_GT200125",     ggHEstimation_1J_PTH_GT200    (era, directory, et, friend_directory=et_friend_directory)),
-        "ggH_GE2J_PTH_0_60"    : Process("ggH_GE2J_PTH_0_60125",    ggHEstimation_GE2J_PTH_0_60   (era, directory, et, friend_directory=et_friend_directory)),
-        "ggH_GE2J_PTH_60_120"  : Process("ggH_GE2J_PTH_60_120125",  ggHEstimation_GE2J_PTH_60_120 (era, directory, et, friend_directory=et_friend_directory)),
-        "ggH_GE2J_PTH_120_200" : Process("ggH_GE2J_PTH_120_200125", ggHEstimation_GE2J_PTH_120_200(era, directory, et, friend_directory=et_friend_directory)),
-        "ggH_GE2J_PTH_GT200"   : Process("ggH_GE2J_PTH_GT200125",   ggHEstimation_GE2J_PTH_GT200  (era, directory, et, friend_directory=et_friend_directory)),
-        "ggH_VBFTOPO_JET3VETO" : Process("ggH_VBFTOPO_JET3VETO125", ggHEstimation_VBFTOPO_JET3VETO(era, directory, et, friend_directory=et_friend_directory)),
-        "ggH_VBFTOPO_JET3"     : Process("ggH_VBFTOPO_JET3125",     ggHEstimation_VBFTOPO_JET3    (era, directory, et, friend_directory=et_friend_directory)),
-        "qqH_VBFTOPO_JET3VETO" : Process("qqH_VBFTOPO_JET3VETO125", qqHEstimation_VBFTOPO_JET3VETO(era, directory, et, friend_directory=et_friend_directory)),
-        "qqH_VBFTOPO_JET3"     : Process("qqH_VBFTOPO_JET3125",     qqHEstimation_VBFTOPO_JET3    (era, directory, et, friend_directory=et_friend_directory)),
-        "qqH_REST"             : Process("qqH_REST125",             qqHEstimation_REST            (era, directory, et, friend_directory=et_friend_directory)),
-        "qqH_VH2JET"           : Process("qqH_VH2JET125",           qqHEstimation_VH2JET          (era, directory, et, friend_directory=et_friend_directory)),
-        "qqH_PTJET1_GT200"     : Process("qqH_PTJET1_GT200125",     qqHEstimation_PTJET1_GT200    (era, directory, et, friend_directory=et_friend_directory)),
-        "VH"                   : Process("VH125",                   VHEstimation                  (era, directory, et, friend_directory=et_friend_directory)),
-        "WH"                   : Process("WH125",                   WHEstimation                  (era, directory, et, friend_directory=et_friend_directory)),
-        "ZH"                   : Process("ZH125",                   ZHEstimation                  (era, directory, et, friend_directory=et_friend_directory)),
-        # "ttH"                  : Process("ttH125",                  ttHEstimation                 (era, directory, et, friend_directory=et_friend_directory)),
+
+        "VH125"    : Process("VH125",    VHEstimation        (era, directory, et, friend_directory=et_friend_directory)),
+        "WH125"    : Process("WH125",    WHEstimation        (era, directory, et, friend_directory=et_friend_directory)),
+        "ZH125"    : Process("ZH125",    ZHEstimation        (era, directory, et, friend_directory=et_friend_directory)),
+        "ttH125"   : Process("ttH125",   ttHEstimation       (era, directory, et, friend_directory=et_friend_directory)),
         }
-    et_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, et, [et_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], et_processes["data"], friend_directory=[et_friend_directory, ff_friend_directory]))
     
+    # Stage 0 and 1.1 signals for ggH & qqH
+    for ggH_htxs in ggHEstimation.htxs_dict:
+        et_processes[ggH_htxs] = Process(ggH_htxs, ggHEstimation(ggH_htxs, era, directory, et, friend_directory=et_friend_directory))
+    for qqH_htxs in qqHEstimation.htxs_dict:
+        et_processes[qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, et, friend_directory=et_friend_directory))
+
+    et_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, et, [et_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], et_processes["data"], friend_directory=et_friend_directory+[ff_friend_directory]))
     et_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, et,
             [et_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL"]],
             et_processes["data"], friend_directory=et_friend_directory, extrapolation_factor=1.00))
@@ -261,72 +234,49 @@ def main(args):
         "VVJ"   : Process("VVJ",      VVJEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
         "VVL"   : Process("VVL",      VVLEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
         "W"     : Process("W",        WEstimation         (era, directory, tt, friend_directory=tt_friend_directory)),
-        #"FAKES" : Process("jetFakes", FakeEstimationTT    (era, directory, tt, friend_directory=[tt_friend_directory, ff_friend_directory])),
-        "ggH"   : Process("ggH125",   ggHEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
-        "qqH"   : Process("qqH125",   qqHEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
-        "ggH_0J"               : Process("ggH_0J125",               ggHEstimation_0J              (era, directory, tt, friend_directory=tt_friend_directory)),
-        "ggH_1J_PTH_0_60"      : Process("ggH_1J_PTH_0_60125",      ggHEstimation_1J_PTH_0_60     (era, directory, tt, friend_directory=tt_friend_directory)),
-        "ggH_1J_PTH_60_120"    : Process("ggH_1J_PTH_60_120125",    ggHEstimation_1J_PTH_60_120   (era, directory, tt, friend_directory=tt_friend_directory)),
-        "ggH_1J_PTH_120_200"   : Process("ggH_1J_PTH_120_200125",   ggHEstimation_1J_PTH_120_200  (era, directory, tt, friend_directory=tt_friend_directory)),
-        "ggH_1J_PTH_GT200"     : Process("ggH_1J_PTH_GT200125",     ggHEstimation_1J_PTH_GT200    (era, directory, tt, friend_directory=tt_friend_directory)),
-        "ggH_GE2J_PTH_0_60"    : Process("ggH_GE2J_PTH_0_60125",    ggHEstimation_GE2J_PTH_0_60   (era, directory, tt, friend_directory=tt_friend_directory)),
-        "ggH_GE2J_PTH_60_120"  : Process("ggH_GE2J_PTH_60_120125",  ggHEstimation_GE2J_PTH_60_120 (era, directory, tt, friend_directory=tt_friend_directory)),
-        "ggH_GE2J_PTH_120_200" : Process("ggH_GE2J_PTH_120_200125", ggHEstimation_GE2J_PTH_120_200(era, directory, tt, friend_directory=tt_friend_directory)),
-        "ggH_GE2J_PTH_GT200"   : Process("ggH_GE2J_PTH_GT200125",   ggHEstimation_GE2J_PTH_GT200  (era, directory, tt, friend_directory=tt_friend_directory)),
-        "ggH_VBFTOPO_JET3VETO" : Process("ggH_VBFTOPO_JET3VETO125", ggHEstimation_VBFTOPO_JET3VETO(era, directory, tt, friend_directory=tt_friend_directory)),
-        "ggH_VBFTOPO_JET3"     : Process("ggH_VBFTOPO_JET3125",     ggHEstimation_VBFTOPO_JET3    (era, directory, tt, friend_directory=tt_friend_directory)),
-        "qqH_VBFTOPO_JET3VETO" : Process("qqH_VBFTOPO_JET3VETO125", qqHEstimation_VBFTOPO_JET3VETO(era, directory, tt, friend_directory=tt_friend_directory)),
-        "qqH_VBFTOPO_JET3"     : Process("qqH_VBFTOPO_JET3125",     qqHEstimation_VBFTOPO_JET3    (era, directory, tt, friend_directory=tt_friend_directory)),
-        "qqH_REST"             : Process("qqH_REST125",             qqHEstimation_REST            (era, directory, tt, friend_directory=tt_friend_directory)),
-        "qqH_VH2JET"           : Process("qqH_VH2JET125",           qqHEstimation_VH2JET          (era, directory, tt, friend_directory=tt_friend_directory)),
-        "qqH_PTJET1_GT200"     : Process("qqH_PTJET1_GT200125",     qqHEstimation_PTJET1_GT200    (era, directory, tt, friend_directory=tt_friend_directory)),
-        "VH"                   : Process("VH125",                   VHEstimation                  (era, directory, tt, friend_directory=tt_friend_directory)),
-        "WH"                   : Process("WH125",                   WHEstimation                  (era, directory, tt, friend_directory=tt_friend_directory)),
-        "ZH"                   : Process("ZH125",                   ZHEstimation                  (era, directory, tt, friend_directory=tt_friend_directory)),
-        "ttH"                  : Process("ttH125",                  ttHEstimation                 (era, directory, tt, friend_directory=tt_friend_directory)),
+
+        "VH125"    : Process("VH125",    VHEstimation        (era, directory, tt, friend_directory=tt_friend_directory)),
+        "WH125"    : Process("WH125",    WHEstimation        (era, directory, tt, friend_directory=tt_friend_directory)),
+        "ZH125"    : Process("ZH125",    ZHEstimation        (era, directory, tt, friend_directory=tt_friend_directory)),
+        "ttH125"   : Process("ttH125",   ttHEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
         }
-    tt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationTT(era, directory, tt, [tt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], tt_processes["data"], friend_directory=[tt_friend_directory, ff_friend_directory]))
     
+    # Stage 0 and 1.1 signals for ggH & qqH
+    for ggH_htxs in ggHEstimation.htxs_dict:
+        tt_processes[ggH_htxs] = Process(ggH_htxs, ggHEstimation(ggH_htxs, era, directory, tt, friend_directory=tt_friend_directory))
+    for qqH_htxs in qqHEstimation.htxs_dict:
+        tt_processes[qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, tt, friend_directory=tt_friend_directory))
+
+    tt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationTT(era, directory, tt, [tt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], tt_processes["data"], friend_directory=tt_friend_directory+[ff_friend_directory]))
     tt_processes["QCD"] = Process("QCD", QCDEstimation_ABCD_TT_ISO2(era, directory, tt,
             [tt_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL"]],
             tt_processes["data"], friend_directory=tt_friend_directory))
     
     em = EMSM2017()
     em_processes = {
-        "data"  : Process("data_obs", DataEstimation      (era, em_directory, em, friend_directory=em_friend_directory)),
-        "ZTT"   : Process("ZTT",      ZTTEstimation       (era, em_directory, em, friend_directory=em_friend_directory)),
-        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation  (era, em_directory, em, friend_directory=em_friend_directory)),
-        "ZL"    : Process("ZL",       ZLEstimation        (era, em_directory, em, friend_directory=em_friend_directory)),
-        "TTT"   : Process("TTT",      TTTEstimation       (era, em_directory, em, friend_directory=em_friend_directory)),
-        "TTL"   : Process("TTL",      TTLEstimation       (era, em_directory, em, friend_directory=em_friend_directory)),
-        "VVT"   : Process("VVT",      VVTEstimation       (era, em_directory, em, friend_directory=em_friend_directory)),
-        "VVL"   : Process("VVL",      VVLEstimation       (era, em_directory, em, friend_directory=em_friend_directory)),
-        "W"     : Process("W",        WEstimation         (era, em_directory, em, friend_directory=em_friend_directory)),
-        "ggH"   : Process("ggH125",   ggHEstimation       (era, em_directory, em, friend_directory=em_friend_directory)),
-        "qqH"   : Process("qqH125",   qqHEstimation       (era, em_directory, em, friend_directory=em_friend_directory)),
-        "ggH_0J"               : Process("ggH_0J125",               ggHEstimation_0J              (era, em_directory, em, friend_directory=em_friend_directory)),
-        "ggH_1J_PTH_0_60"      : Process("ggH_1J_PTH_0_60125",      ggHEstimation_1J_PTH_0_60     (era, em_directory, em, friend_directory=em_friend_directory)),
-        "ggH_1J_PTH_60_120"    : Process("ggH_1J_PTH_60_120125",    ggHEstimation_1J_PTH_60_120   (era, em_directory, em, friend_directory=em_friend_directory)),
-        "ggH_1J_PTH_120_200"   : Process("ggH_1J_PTH_120_200125",   ggHEstimation_1J_PTH_120_200  (era, em_directory, em, friend_directory=em_friend_directory)),
-        "ggH_1J_PTH_GT200"     : Process("ggH_1J_PTH_GT200125",     ggHEstimation_1J_PTH_GT200    (era, em_directory, em, friend_directory=em_friend_directory)),
-        "ggH_GE2J_PTH_0_60"    : Process("ggH_GE2J_PTH_0_60125",    ggHEstimation_GE2J_PTH_0_60   (era, em_directory, em, friend_directory=em_friend_directory)),
-        "ggH_GE2J_PTH_60_120"  : Process("ggH_GE2J_PTH_60_120125",  ggHEstimation_GE2J_PTH_60_120 (era, em_directory, em, friend_directory=em_friend_directory)),
-        "ggH_GE2J_PTH_120_200" : Process("ggH_GE2J_PTH_120_200125", ggHEstimation_GE2J_PTH_120_200(era, em_directory, em, friend_directory=em_friend_directory)),
-        "ggH_GE2J_PTH_GT200"   : Process("ggH_GE2J_PTH_GT200125",   ggHEstimation_GE2J_PTH_GT200  (era, em_directory, em, friend_directory=em_friend_directory)),
-        "ggH_VBFTOPO_JET3VETO" : Process("ggH_VBFTOPO_JET3VETO125", ggHEstimation_VBFTOPO_JET3VETO(era, em_directory, em, friend_directory=em_friend_directory)),
-        "ggH_VBFTOPO_JET3"     : Process("ggH_VBFTOPO_JET3125",     ggHEstimation_VBFTOPO_JET3    (era, em_directory, em, friend_directory=em_friend_directory)),
-        "qqH_VBFTOPO_JET3VETO" : Process("qqH_VBFTOPO_JET3VETO125", qqHEstimation_VBFTOPO_JET3VETO(era, em_directory, em, friend_directory=em_friend_directory)),
-        "qqH_VBFTOPO_JET3"     : Process("qqH_VBFTOPO_JET3125",     qqHEstimation_VBFTOPO_JET3    (era, em_directory, em, friend_directory=em_friend_directory)),
-        "qqH_REST"             : Process("qqH_REST125",             qqHEstimation_REST            (era, em_directory, em, friend_directory=em_friend_directory)),
-        "qqH_VH2JET"           : Process("qqH_VH2JET125",           qqHEstimation_VH2JET          (era, em_directory, em, friend_directory=em_friend_directory)),
-        "qqH_PTJET1_GT200"     : Process("qqH_PTJET1_GT200125",     qqHEstimation_PTJET1_GT200    (era, em_directory, em, friend_directory=em_friend_directory)),
-        "VH"                   : Process("VH125",                   VHEstimation                  (era, em_directory, em, friend_directory=em_friend_directory)),
-        "WH"                   : Process("WH125",                   WHEstimation                  (era, em_directory, em, friend_directory=em_friend_directory)),
-        "ZH"                   : Process("ZH125",                   ZHEstimation                  (era, em_directory, em, friend_directory=em_friend_directory)),
-        #~ "ttH"                  : Process("ttH125",                  ttHEstimation                 (era, em_directory, em, friend_directory=em_friend_directory)),
+        "data"  : Process("data_obs", DataEstimation      (era, directory, em, friend_directory=em_friend_directory)),
+        "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, em, friend_directory=em_friend_directory)),
+        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation  (era, directory, em, friend_directory=em_friend_directory)),
+        "ZL"    : Process("ZL",       ZLEstimation        (era, directory, em, friend_directory=em_friend_directory)),
+        "TTT"   : Process("TTT",      TTTEstimation       (era, directory, em, friend_directory=em_friend_directory)),
+        "TTL"   : Process("TTL",      TTLEstimation       (era, directory, em, friend_directory=em_friend_directory)),
+        "VVT"   : Process("VVT",      VVTEstimation       (era, directory, em, friend_directory=em_friend_directory)),
+        "VVL"   : Process("VVL",      VVLEstimation       (era, directory, em, friend_directory=em_friend_directory)),
+        "W"     : Process("W",        WEstimation         (era, directory, em, friend_directory=em_friend_directory)),
+
+        "VH125"    : Process("VH125",    VHEstimation        (era, directory, em, friend_directory=em_friend_directory)),
+        "WH125"    : Process("WH125",    WHEstimation        (era, directory, em, friend_directory=em_friend_directory)),
+        "ZH125"    : Process("ZH125",    ZHEstimation        (era, directory, em, friend_directory=em_friend_directory)),
+        "ttH125"   : Process("ttH125",   ttHEstimation       (era, directory, em, friend_directory=em_friend_directory)),
         }
 
-    em_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, em_directory, em, [em_processes[process] for process in ["ZTT", "ZL", "W", "TTT", "VVT", "VVL"]], em_processes["data"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
+    # Stage 0 and 1.1 signals for ggH & qqH
+    for ggH_htxs in ggHEstimation.htxs_dict:
+        em_processes[ggH_htxs] = Process(ggH_htxs, ggHEstimation(ggH_htxs, era, directory, em, friend_directory=em_friend_directory))
+    for qqH_htxs in qqHEstimation.htxs_dict:
+        em_processes[qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, em, friend_directory=em_friend_directory))
+
+    em_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, em, [em_processes[process] for process in ["ZTT", "ZL", "W", "TTT", "VVT", "VVL"]], em_processes["data"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
 
     
     # Variables and categories
@@ -484,7 +434,7 @@ def main(args):
     em_categories = []
     # Analysis shapes
     if "em" in args.channels:
-        classes_em = ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]
+        classes_em = ["ggh", "qqh", "ztt", "tt", "ss", "misc", "db"]
         for i, label in enumerate(classes_em):
             score = Variable(
                 "em_max_score",
@@ -531,17 +481,11 @@ def main(args):
                 cuts,
                 variable=score))
     # Nominal histograms
+    signal_nicks = ["WH125", "ZH125", "VH125", "ttH125"]
     if args.gof_channel == None:
-        signal_nicks = [
-            "ggH", "qqH", "qqH_VBFTOPO_JET3VETO", "qqH_VBFTOPO_JET3",
-            "qqH_REST", "qqH_PTJET1_GT200", "qqH_VH2JET", "ggH_0J",
-            "ggH_1J_PTH_0_60", "ggH_1J_PTH_60_120", "ggH_1J_PTH_120_200",
-            "ggH_1J_PTH_GT200", "ggH_GE2J_PTH_0_60", "ggH_GE2J_PTH_60_120",
-            "ggH_GE2J_PTH_120_200", "ggH_GE2J_PTH_GT200", "ggH_VBFTOPO_JET3VETO",
-            "ggH_VBFTOPO_JET3", "VH", "WH", "ZH"
-        ]
+        signal_nicks += [ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict] + [qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict]
     else:
-        signal_nicks = ["ggH", "qqH", "WH", "ZH"]
+        signal_nicks +=  ["ggH125", "qqH125"]
 
     # yapf: enable
     if "et" in [args.gof_channel] + args.channels:
@@ -584,7 +528,45 @@ def main(args):
                     era=era,
                     variation=Nominal(),
                     mass="125"))
+
     # Shapes variations
+
+    # Prefiring weights
+    prefiring_variaitons = [
+        ReplaceWeight("CMS_prefiring_Run2017", "prefireWeight", Weight("prefiringweightup", "prefireWeight"),"Up"),
+        ReplaceWeight("CMS_prefiring_Run2017", "prefireWeight", Weight("prefiringweightdown", "prefireWeight"),"Down"),
+    ]
+    for variation in prefiring_variaitons:
+        for process_nick in [
+                "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVT", "VVJ",
+                "VVL",
+        ] + signal_nicks:
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+            if "tt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
+        for process_nick in ["ZTT", "ZL", "W", "TTT", "TTL",  "VVL", "VVT"
+                            ] + signal_nicks:
+            if "em" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=em_processes[process_nick],
+                    channel=em,
+                    era=era)
 
     # MC tau energy scale
     tau_es_3prong_variations = create_systematic_variations(
@@ -596,7 +578,7 @@ def main(args):
         DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
         for process_nick in ["ZTT", "TTT", "TTL", "VVL", "VVT", "FAKES"
-                             ] + signal_nicks:
+                            ] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
@@ -626,7 +608,7 @@ def main(args):
         DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
         for process_nick in ["ZTT", "TTT", "TTL", "VVT", "VVL", "EMB", "FAKES"
-                             ] + signal_nicks:
+                            ] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
@@ -646,12 +628,14 @@ def main(args):
                     channel=tt,
                     era=era)
 
-    # MC ele energy scale
+    # MC ele energy scale & smear uncertainties
     ele_es_variations = create_systematic_variations(
-        "CMS_scale_mc_e", "eleEs", DifferentPipeline)
+        "CMS_scale_mc_e", "eleScale", DifferentPipeline)
+    ele_es_variations += create_systematic_variations(
+        "CMS_reso_mc_e", "eleSmear", DifferentPipeline)
     for variation in ele_es_variations:
         for process_nick in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVL", "VVT", "VVJ"
-                             ] + signal_nicks:
+                            ] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
@@ -659,33 +643,14 @@ def main(args):
                     channel=et,
                     era=era)
         for process_nick in ["ZTT", "ZL", "W", "TTT", "TTL",  "VVL", "VVT"
-                             ] + signal_nicks:
+                            ] + signal_nicks:
             if "em" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
                     process=em_processes[process_nick],
                     channel=em,
                     era=era)
-    # Ele energy scale
-    ele_es_variations = create_systematic_variations(
-        "CMS_scale_e", "eleEs", DifferentPipeline)
-    for variation in ele_es_variations:
-        for process_nick in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVL", "VVT", "VVJ", "EMB"
-                             ] + signal_nicks:
-            if "et" in [args.gof_channel] + args.channels:
-                systematics.add_systematic_variation(
-                    variation=variation,
-                    process=et_processes[process_nick],
-                    channel=et,
-                    era=era)
-        for process_nick in ["ZTT", "ZL", "W", "TTT", "TTL",  "VVL", "VVT"
-                             ] + signal_nicks:
-            if "em" in [args.gof_channel] + args.channels:
-                systematics.add_systematic_variation(
-                    variation=variation,
-                    process=em_processes[process_nick],
-                    channel=em,
-                    era=era)
+
     # Jet energy scale
 
     # Inclusive JES shapes
@@ -710,7 +675,7 @@ def main(args):
     for variation in jet_es_variations:
         for process_nick in [
                 "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVT", "VVJ",
-                "VVL"
+                "VVL",
         ] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -731,7 +696,7 @@ def main(args):
                     channel=tt,
                     era=era)
         for process_nick in ["ZTT", "ZL", "W", "TTT", "TTL",  "VVL", "VVT"
-                             ] + signal_nicks:
+                            ] + signal_nicks:
             if "em" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
@@ -739,14 +704,14 @@ def main(args):
                     channel=em,
                     era=era)
                     
-    # MET energy scale
+    # MET energy scale. Note: only those variations for non-resonant processes are used in the stat. inference
     met_unclustered_variations = create_systematic_variations(
         "CMS_scale_met_unclustered", "metUnclusteredEn",
         DifferentPipeline)
     for variation in met_unclustered_variations:  # + met_clustered_variations:
         for process_nick in [
                 "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVT", "VVJ",
-                "VVL"
+                "VVL",
         ] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -767,7 +732,7 @@ def main(args):
                     channel=tt,
                     era=era)
         for process_nick in ["ZTT", "ZL", "W", "TTT", "TTL",  "VVL", "VVT"
-                             ] + signal_nicks:
+                            ] + signal_nicks:
             if "em" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
@@ -783,8 +748,7 @@ def main(args):
         "CMS_htt_boson_scale_met_Run2017", "metRecoilResponse",
         DifferentPipeline)
     for variation in recoil_resolution_variations + recoil_response_variations:
-        for process_nick in [
-                "ZTT", "ZL", "ZJ", "W"] + signal_nicks:
+        for process_nick in ["ZTT", "ZL", "ZJ", "W"] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
@@ -803,8 +767,7 @@ def main(args):
                     process=tt_processes[process_nick],
                     channel=tt,
                     era=era)
-        for process_nick in ["ZTT", "ZL", "W"
-                             ] + signal_nicks:
+        for process_nick in ["ZTT", "ZL", "W"] + signal_nicks:
             if "em" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
@@ -953,7 +916,7 @@ def main(args):
                   Weight("(0.946*(pt_1<=25)+1.0*(pt_1>25))", "xtrg_mt_eff_weight"), "Down"))
     for variation in lep_trigger_eff_variations:
         for process_nick in [
-                "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVL", "VVT", "VVJ"
+            "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVL", "VVT", "VVJ",
         ] + signal_nicks:
             if "mt" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -997,7 +960,7 @@ def main(args):
                   Weight("(0.946*(pt_1<=28)+1.0*(pt_1>28))", "xtrg_et_eff_weight"), "Down"))
     for variation in lep_trigger_eff_variations:
         for process_nick in [
-                "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVL", "VVT", "VVJ"
+            "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVL", "VVT", "VVJ",
         ] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -1100,7 +1063,7 @@ def main(args):
                     channel=tt,
                     era=era)
         for process_nick in ["ZTT", "ZL", "W", "TTT", "TTL",  "VVL", "VVT"
-                             ] + signal_nicks:
+                            ] + signal_nicks:
             if "em" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
@@ -1259,7 +1222,7 @@ def main(args):
     tttautau_process_em = Process(
         "TTT",
         TTTEstimation(
-            era, em_directory, em, friend_directory=em_friend_directory))
+            era, directory, em, friend_directory=em_friend_directory))
     if 'mt' in [args.gof_channel] + args.channels:
         for category in mt_categories:
             mt_processes['ZTTpTTTauTauDown'] = Process(
@@ -1353,7 +1316,7 @@ def main(args):
             em_processes['ZTTpTTTauTauDown'] = Process(
                 "ZTTpTTTauTauDown",
                 AddHistogramEstimationMethod(
-                    "AddHistogram", "nominal", era, em_directory, em,
+                    "AddHistogram", "nominal", era, directory, em,
                     [em_processes["EMB"], tttautau_process_em], [1.0, -0.1]))
             systematics.add(
                 Systematic(
@@ -1367,7 +1330,7 @@ def main(args):
             em_processes['ZTTpTTTauTauUp'] = Process(
                 "ZTTpTTTauTauUp",
                 AddHistogramEstimationMethod(
-                    "AddHistogram", "nominal", era, em_directory, em,
+                    "AddHistogram", "nominal", era, directory, em,
                     [em_processes["EMB"], tttautau_process_em], [1.0, 0.1]))
             systematics.add(
                 Systematic(
@@ -1462,6 +1425,62 @@ def main(args):
                 process=tt_processes["FAKES"],
                 channel=tt,
                 era=era)
+
+    # QCD for em
+    qcd_variations = []
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_0jet_rate_Run2017", "qcd_weight",
+        Weight("em_qcd_osss_0jet_rateup_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        "Up"))
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_0jet_rate_Run2017", "qcd_weight",
+        Weight("em_qcd_osss_0jet_ratedown_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        "Down"))
+
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_0jet_shape_Run2017", "qcd_weight",
+        Weight("em_qcd_osss_0jet_shapeup_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        "Up"))
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_0jet_shape_Run2017", "qcd_weight",
+        Weight("em_qcd_osss_0jet_shapedown_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        "Down"))
+
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_1jet_shape_Run2017", "qcd_weight",
+        Weight("em_qcd_osss_1jet_shapeup_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        "Up"))
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_1jet_shape_Run2017", "qcd_weight",
+        Weight("em_qcd_osss_1jet_shapedown_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        "Down"))
+
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_iso_Run2017", "qcd_weight",
+        Weight("em_qcd_extrap_up_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        "Up"))
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_iso_Run2017", "qcd_weight",
+        Weight("em_qcd_osss_binned_Weight", "qcd_weight"),
+        "Down"))
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_iso", "qcd_weight",
+        Weight("em_qcd_extrap_up_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        "Up"))
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_iso", "qcd_weight",
+        Weight("em_qcd_osss_binned_Weight", "qcd_weight"),
+        "Down"))
+
+
+    for variation in qcd_variations:
+        for process_nick in ["QCD"]:
+            if "em" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=em_processes[process_nick],
+                    channel=em,
+                    era=era)
 
     # Gluon-fusion WG1 uncertainty scheme
     ggh_variations = []

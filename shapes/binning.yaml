@@ -102,6 +102,16 @@ standard_binning_8classes: &standard_binning_8classes
 
 # Define binning used in analysis
 analysis:
+  em:
+    ggh:          *fine_binning_8classes
+    qqh:          *fine_binning_8classes
+    ztt:          *fine_binning_8classes
+    tt:           *fine_binning_8classes
+    ss:           *fine_binning_8classes
+    misc:         *fine_binning_8classes
+    db:           *fine_binning_8classes
+    ggh_unrolled: *ggh_fine_full_unrolling_8classes
+    qqh_unrolled: *qqh_fine_full_unrolling_8classes
   et:
     ggh:          *fine_binning_8classes
     qqh:          *fine_binning_8classes

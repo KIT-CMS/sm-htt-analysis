@@ -11,8 +11,8 @@ source utils/setup_samples.sh $ERA
 # Produce shapes
 python shapes/produce_shapes_$ERA.py \
     --directory $ARTUS_OUTPUTS \
-    --em-directory $ARTUS_OUTPUTS \
     --et-friend-directory $ARTUS_FRIENDS_ET \
+    --em-friend-directory $ARTUS_FRIENDS_EM \
     --mt-friend-directory $ARTUS_FRIENDS_MT \
     --tt-friend-directory $ARTUS_FRIENDS_TT \
     --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR \
@@ -24,4 +24,4 @@ python shapes/produce_shapes_$ERA.py \
     --num-threads 32
 
 # Normalize fake-factor shapes to nominal
-python fake-factors/normalize_shifts.py ${ERA}_shapes.root
+python fake-factor-application/normalize_shifts.py ${ERA}_shapes.root

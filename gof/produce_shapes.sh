@@ -16,6 +16,10 @@ then
     python gof/calculate_binning.py \
         --era $ERA \
         --directory $ARTUS_OUTPUTS \
+        --em-friend-directories $ARTUS_FRIENDS_EM \
+        --et-friend-directories $ARTUS_FRIENDS_ET \
+        --mt-friend-directories $ARTUS_FRIENDS_MT \
+        --tt-friend-directories $ARTUS_FRIENDS_TT \
         --datasets $KAPPA_DATABASE \
         --output $BINNING \
         --variables gof/variables.yaml
@@ -28,6 +32,7 @@ python shapes/produce_shapes_$ERA.py \
     --binning $BINNING \
     --gof-channel $CHANNEL \
     --gof-variable $VARIABLE \
+    --em-friend-directory $ARTUS_FRIENDS_EM \
     --et-friend-directory $ARTUS_FRIENDS_ET \
     --mt-friend-directory $ARTUS_FRIENDS_MT \
     --tt-friend-directory $ARTUS_FRIENDS_TT \
@@ -37,4 +42,4 @@ python shapes/produce_shapes_$ERA.py \
     --num-threads $NUM_THREADS
 
 # Normalize fake-factor shapes to nominal
-python fake-factors/normalize_shifts.py ${ERA}_shapes.root
+python fake-factor-application/normalize_shifts.py ${ERA}_shapes.root
