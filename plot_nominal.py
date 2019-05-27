@@ -178,7 +178,7 @@ def main(args):
                 config["add_nicks"] = [" ".join(bkg_processes_names)]
                 config["add_result_nicks"] = ["tot_background_noplot"]
                 config["chi2test_nicks"] = ["tot_background_noplot data"]
-                config["chi2test_compare"] = ["UW CHI2/NDF"]
+                config["chi2test_compare"] = ["WU CHI2/NDF"]
 
             config["files"] = [shapes]
             config["lumis"] = [lumi]
