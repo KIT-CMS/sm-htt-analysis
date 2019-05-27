@@ -27,4 +27,4 @@ variable_exports:
 branch_prefix: tt_
 
 # Output directory
-output_directory: /ceph/wunsch/Artus17_Jan/tt_keras_20190125
+output_directory: /home/mscham/mlapplication/2017_tt/
