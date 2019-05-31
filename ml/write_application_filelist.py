@@ -44,11 +44,9 @@ def main(args):
         from shape_producer.era import Run2016
         era = Run2016(args.database)
     elif "2017" in args.era:
-<<<<<<< HEAD
-        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, VVLEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, EWKZEstimation, ZTTEmbeddedEstimation
-=======
+
         from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, VVLEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, EWKZEstimation, ZTTEmbeddedEstimation, ttHEstimation
->>>>>>> master
+
 
         from shape_producer.era import Run2017
         era = Run2017(args.database)

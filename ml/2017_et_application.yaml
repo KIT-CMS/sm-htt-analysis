@@ -15,4 +15,4 @@ preprocessing:
 branch_prefix: et_
 
 # Output directory
-output_directory: /ceph/wunsch/Artus17_Jan/et_keras_20190125
+output_directory: /home/sjoerger/workspace/pruning/et/complete_analysis/18_variables

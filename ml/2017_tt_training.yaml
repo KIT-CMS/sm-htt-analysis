@@ -5,7 +5,7 @@ datasets:
 
 # Base path for all output files
 output_path: ml/2017_tt
-output_path_json: ml/2017_tt_json
+output_path_json: ml/2017_tt
 
 # Define classes based on tree names in dataset file
 classes:
@@ -17,11 +17,11 @@ classes:
 
 # Set class weights
 class_weights:
-    ggh: 231.8
-    qqh: 735.3
+    ggh: 200.2
+    qqh: 625.2
     ztt: 4.7
     noniso: 1.4
-    misc: 13.8
+    misc: 12.8
 
 # Define global scale factor, which is multiplied to all event weights
 global_weight_scale: 1.0
@@ -51,6 +51,7 @@ variables:
     - m_vis
     - dijetpt
     - met       # Failed 1D GoF
+    #- ME_D
 
 # Split of dataset in training and validation (in TMVA called training and testing)
 train_test_split: 0.75
