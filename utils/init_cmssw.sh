@@ -16,7 +16,7 @@ git checkout v7.0.12
 cd ../..
 
 # Clone CombineHarvester
-git clone ssh://git@github.com/KIT-CMS/CombineHarvester CombineHarvester -b SMHTT2017-dev
+git clone ssh://git@github.com/KIT-CMS/CombineHarvester CombineHarvester -b SMHTTLegacy-dev
 mkdir -p CombineHarvester/HTTSM2017/shapes
 
 # Build

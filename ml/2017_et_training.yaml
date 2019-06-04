@@ -4,8 +4,8 @@ datasets:
     - ml/2017_et/fold1_training_dataset.root
 
 # Base path for all output files
-output_path: /home/sjoerger/workspace/pruning/et/ME_D/without
-output_path_json: /home/sjoerger/workspace/pruning/et/ME_D/without
+output_path: ml/2017_et_pruned
+output_path_json: ml/2017_et_pruned
 
 # Define classes based on tree names in dataset file
 classes:

@@ -2,7 +2,7 @@
 
 ERA=$1
 LOSS=$2
-CHANNEL="mt"
+CHANNEL="em"
 
 ./ml/run_pruning.sh $ERA $CHANNEL ggh True
 

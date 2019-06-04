@@ -103,10 +103,13 @@ def main(args):
         elif args.categories == "stxs_stage1":
             for channel in ["et", "mt", "tt", "em"]:
                 channel_categories[channel] += ["1_A", "1_B", "1_C", "2_A", "2_B"]
+        elif args.categories == "stxs_stage1p1":
+            for channel in ["et", "mt", "tt", "em"]:
+                channel_categories[channel] += ["1_A", "1_B", "1_C", "2_A", "2_B"]
         else:
-            logger.critical("Selected unkown STXS categorization {}",
-                            args.categories)
+            logger.critical("Selected unkown STXS categorization {}".format(args.categories))
             raise Exception
+
     channel_dict = {
         "ee": "ee",
         "em": "e#mu",
@@ -190,7 +193,7 @@ def main(args):
             legend_bkg_processes.reverse()
             # create plot
             width = 600
-            if args.categories == "stxs_stage1":
+            if args.categories == "stxs_stage1" or args.categories == "stxs_stage1p1":
                 if category == "2" or (category == "1" and tranche != "A"):
                     width = 1200
             if args.linear == True:
@@ -341,7 +344,7 @@ def main(args):
 
             #plot.subplot(2).setNYdivisions(3, 5)
 
-            if args.categories == "stxs_stage1":
+            if args.categories == "stxs_stage1" or args.categories == 'stxs_stage1p1':
                 if not channel == "tt":
                     plot.subplot(2).changeXLabels([" ", "0.25", " ", "0.50", " ", "0.75", " ", " "])
                 if category in ["1"]:
@@ -387,7 +390,7 @@ def main(args):
             suffix = ["", "_top"]
             for i in range(2):
 
-                plot.add_legend(width=0.3 if args.categories == "stxs_stage1" and (category=="2" or (category=="1" and tranche!="A")) else 0.6, height=0.15)
+                plot.add_legend(width=0.3 if (args.categories == "stxs_stage1" or args.categories == "stxs_stage1p1") and (category=="2" or (category=="1" and tranche!="A")) else 0.6, height=0.15)
                 for process in legend_bkg_processes:
                     plot.legend(i).add_entry(
                         0, process, styles.legend_label_dict[process.replace("TTL", "TT").replace("VVL", "VV")], 'f')
@@ -439,7 +442,7 @@ def main(args):
                 raise Exception
 
             posChannelCategoryLabelLeft = None
-            if args.categories == "stxs_stage1":
+            if args.categories == "stxs_stage1" or args.categories == "stxs_stage1p1":
                 if category in ["1", "2"]:
                     posChannelCategoryLabelLeft = 0.075
             plot.DrawChannelCategoryLabel(

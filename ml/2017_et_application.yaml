@@ -7,9 +7,21 @@ classifiers:
     - ml/2017_et/fold1_keras_model.h5
     - ml/2017_et/fold0_keras_model.h5
 
+weights:
+    - ml/2017_et/fold1_keras_weights.h5
+    - ml/2017_et/fold0_keras_weights.h5
+
 preprocessing:
     - ml/2017_et/fold1_keras_preprocessing.pickle
     - ml/2017_et/fold0_keras_preprocessing.pickle
+
+architecture_exports:
+    - ml/2017_et/fold1_keras_architecture.json
+    - ml/2017_et/fold0_keras_architecture.json
+
+variable_exports:
+    - ml/2017_et/fold1_keras_variables.json
+    - ml/2017_et/fold0_keras_variables.json
 
 # Branch prefix
 branch_prefix: et_
