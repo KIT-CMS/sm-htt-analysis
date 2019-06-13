@@ -129,7 +129,7 @@ def main(args):
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
-                    str(f).replace(args.base_path + "/", "")
+                    str(f).replace(args.base_path.rstrip("/") + "/", "")
                     for f in estimation.get_files()
                 ],
                 "cut_string": (estimation.get_cuts() + channel.cuts +
@@ -147,7 +147,7 @@ def main(args):
         channel_ss.cuts.get("os").invert()
         output_config["processes"][estimation.name] = {
             "files": [
-                str(f).replace(args.base_path + "/", "")
+                str(f).replace(args.base_path.rstrip("/") + "/", "")
                 for f in estimation.get_files()
             ],
             "cut_string": (estimation.get_cuts() + channel_ss.cuts +
@@ -206,7 +206,7 @@ def main(args):
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
-                    str(f).replace(args.base_path + "/", "")
+                    str(f).replace(args.base_path.rstrip("/") + "/", "")
                     for f in estimation.get_files()
                 ],
                 "cut_string": (estimation.get_cuts() + channel.cuts +
@@ -224,7 +224,7 @@ def main(args):
         channel_ss.cuts.get("os").invert()
         output_config["processes"][estimation.name] = {
             "files": [
-                str(f).replace(args.base_path + "/", "")
+                str(f).replace(args.base_path.rstrip("/") + "/", "")
                 for f in estimation.get_files()
             ],
             "cut_string": (estimation.get_cuts() + channel_ss.cuts +
@@ -284,7 +284,7 @@ def main(args):
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
-                    str(f).replace(args.base_path + "/", "")
+                    str(f).replace(args.base_path.rstrip("/") + "/", "")
                     for f in estimation.get_files()
                 ],
                 "cut_string": (estimation.get_cuts() + channel.cuts +
@@ -302,7 +302,7 @@ def main(args):
         channel_ss.cuts.get("os").invert()
         output_config["processes"][estimation.name] = {
             "files": [
-                str(f).replace(args.base_path + "/", "")
+                str(f).replace(args.base_path.rstrip("/") + "/", "")
                 for f in estimation.get_files()
             ],
             "cut_string": (estimation.get_cuts() + channel_ss.cuts +
@@ -361,7 +361,7 @@ def main(args):
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
-                    str(f).replace(args.base_path + "/", "")
+                    str(f).replace(args.base_path.rstrip("/") + "/", "")
                     for f in estimation.get_files()
                 ],
                 "cut_string": (estimation.get_cuts() + channel.cuts +
@@ -379,7 +379,7 @@ def main(args):
         channel_ss.cuts.get("os").invert()
         output_config["processes"][estimation.name] = {
             "files": [
-                str(f).replace(args.base_path + "/", "")
+                str(f).replace(args.base_path.rstrip("/") + "/", "")
                 for f in estimation.get_files()
             ],
             "cut_string": (estimation.get_cuts() + channel_ss.cuts +
@@ -439,7 +439,7 @@ def main(args):
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
-                    str(f).replace(args.base_path + "/", "")
+                    str(f).replace(args.base_path.rstrip("/") + "/", "")
                     for f in estimation.get_files()
                 ],
                 "cut_string": (estimation.get_cuts() + channel.cuts +
@@ -462,7 +462,7 @@ def main(args):
                 "tau_2_iso_loose"))
         output_config["processes"][estimation.name] = {
             "files": [
-                str(f).replace(args.base_path + "/", "")
+                str(f).replace(args.base_path.rstrip("/") + "/", "")
                 for f in estimation.get_files()
             ],
             "cut_string": (estimation.get_cuts() + channel_iso.cuts +
@@ -521,7 +521,7 @@ def main(args):
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
-                    str(f).replace(args.base_path + "/", "")
+                    str(f).replace(args.base_path.rstrip("/") + "/", "")
                     for f in estimation.get_files()
                 ],
                 "cut_string": (estimation.get_cuts() + channel.cuts +
@@ -544,7 +544,7 @@ def main(args):
                 "tau_2_iso_loose"))
         output_config["processes"][estimation.name] = {
             "files": [
-                str(f).replace(args.base_path + "/", "")
+                str(f).replace(args.base_path.rstrip("/") + "/", "")
                 for f in estimation.get_files()
             ],
             "cut_string": (estimation.get_cuts() + channel_iso.cuts +
@@ -596,7 +596,7 @@ def main(args):
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
-                    str(f).replace(args.base_path + "/", "")
+                    str(f).replace(args.base_path.rstrip("/") + "/", "")
                     for f in estimation.get_files()
                 ],
                 "cut_string": (estimation.get_cuts() + channel.cuts +
@@ -614,7 +614,7 @@ def main(args):
         channel_ss.cuts.get("os").invert()
         output_config["processes"][estimation.name] = {
             "files": [
-                str(f).replace(args.base_path + "/", "")
+                str(f).replace(args.base_path.rstrip("/") + "/", "")
                 for f in estimation.get_files()
             ],
             "cut_string": (estimation.get_cuts() + channel_ss.cuts +
@@ -666,7 +666,7 @@ def main(args):
         ]:
             output_config["processes"][estimation.name] = {
                 "files": [
-                    str(f).replace(args.base_path + "/", "")
+                    str(f).replace(args.base_path.rstrip("/") + "/", "")
                     for f in estimation.get_files()
                 ],
                 "cut_string": (estimation.get_cuts() + channel.cuts +
@@ -684,7 +684,7 @@ def main(args):
         channel_ss.cuts.get("os").invert()
         output_config["processes"][estimation.name] = {
             "files": [
-                str(f).replace(args.base_path + "/", "")
+                str(f).replace(args.base_path.rstrip("/") + "/", "")
                 for f in estimation.get_files()
             ],
             "cut_string": (estimation.get_cuts() + channel_ss.cuts +
