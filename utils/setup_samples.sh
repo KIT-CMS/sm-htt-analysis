@@ -13,12 +13,14 @@ ARTUS_OUTPUTS_EM_2016=/invalidceph/jbechtel/2016/em_all_vars_JetFix_def
 
 
 # Samples Run2017
-ARTUS_OUTPUTS_2017=/storage/b/akhmet/merged_files_from_naf/Full_2017_test_all-channels
-ARTUS_FRIENDS_ET_2017="/storage/b/akhmet/merged_files_from_naf/MELA_collected /storage/b/akhmet/merged_files_from_naf/SVFit_collected /storage/b/akhmet/merged_files_from_naf/NNScore_collected"
-ARTUS_FRIENDS_MT_2017="/storage/b/akhmet/merged_files_from_naf/MELA_collected /storage/b/akhmet/merged_files_from_naf/SVFit_collected /storage/b/akhmet/merged_files_from_naf/NNScore_collected"
-ARTUS_FRIENDS_TT_2017="/storage/b/akhmet/merged_files_from_naf/MELA_collected /storage/b/akhmet/merged_files_from_naf/SVFit_collected /storage/b/akhmet/merged_files_from_naf/NNScore_collected"
-ARTUS_FRIENDS_EM_2017="/storage/b/akhmet/merged_files_from_naf/MELA_collected /storage/b/akhmet/merged_files_from_naf/SVFit_collected /storage/b/akhmet/merged_files_from_naf/NNScore_collected"
-ARTUS_FRIENDS_FAKE_FACTOR_2017=/home/mscham/data/fake_factor_friends_2017_m_vis_inclusive/
+NNScore=/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_NNScore/NNScore_collected/
+#NNScore=/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_NNScorePuppi/NNScore_collected/
+ARTUS_OUTPUTS_2017="/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis/"
+ARTUS_FRIENDS_ET_2017="/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_MELA/MELA_collected/ /storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_SVFit/SVFit_collected/ ${NNScore}"
+ARTUS_FRIENDS_MT_2017="/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_MELA/MELA_collected/ /storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_SVFit/SVFit_collected/ ${NNScore}"
+ARTUS_FRIENDS_TT_2017="/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_MELA/MELA_collected/ /storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_SVFit/SVFit_collected/ ${NNScore}"
+ARTUS_FRIENDS_EM_2017="/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_MELA/MELA_collected/ /storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_SVFit/SVFit_collected/ ${NNScore}"
+ARTUS_FRIENDS_FAKE_FACTOR_2017="/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_FakeFactors/FakeFactors_collected/"
 ARTUS_FRIENDS_FAKE_FACTOR_INCL_2017=$ARTUS_FRIENDS_FAKE_FACTOR_2017
 
 # Samples Run2018
