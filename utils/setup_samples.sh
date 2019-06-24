@@ -65,5 +65,5 @@ then
 fi
 
 # Kappa database
-#KAPPA_DATABASE=datasets/datasets.json
-KAPPA_DATABASE=/portal/ekpbms1/home/akhmet/workdir/SkimmingMain/CMSSW_10_2_14/src/datasets.json
+KAPPA_DATABASE=datasets/datasets.json
+
