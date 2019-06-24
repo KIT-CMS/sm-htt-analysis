@@ -1,6 +1,7 @@
 import ROOT as r
 import re
 import math
+import os
 from matplotlib import pyplot as plt
 
 def sorted_nicely(l):
@@ -23,12 +24,17 @@ variables = sorted_nicely(set([k.strip("#").split("#")[1].split("-")[0] for k in
 
 processes = sorted_nicely(set([k.strip("#").split("#")[2] for k in counts]))
 
-categories_less = sorted_cats(set([k.strip("#").split("#")[1] for k in counts if "less" in k])) 
-categories_greater = sorted_cats(set([k.strip("#").split("#")[1] for k in counts if "greater" in k]))
-
+categories_less = {}
+categories_greater = {}
 cutvalues = {}
 for var in variables:
-    cutvalues[var] = [float(k.replace(k.split("-")[0],"").replace("-less-","").replace("p",".")) for k in categories_less if var == k.split("-")[0]]
+    categories_less[var] = sorted_cats(set([k.strip("#").split("#")[1] for k in counts if "less" in k and var  == k.strip("#").split("#")[1].split("-")[0]] ))
+    categories_greater[var] = sorted_cats(set([k.strip("#").split("#")[1] for k in counts if "greater" in k and var == k.strip("#").split("#")[1].split("-")[0]]))
+    cutvalues[var] = [float(k.replace(k.split("-")[0],"").replace("-less-","").replace("p",".")) for k in categories_less[var]]
+    print var
+    for cl,cg,val in zip(categories_less[var],categories_greater[var],cutvalues[var]):
+        print "\t",cl,cg,val
+    print "-------------------"
 
 backgrounds = [p for p in processes if "H125" not in p]
 signals = [p for p in processes if "H125" in p]
@@ -47,27 +53,29 @@ for c in counts:
 
 soverb_dict = {}
 
-for cg, cl in zip(categories_greater,categories_less):
-    print cg, cl
-    variable = cg.split("-")[0]
-    soverb_dict.setdefault(variable,{"greater" : [], "less" : []})
-    denominator = math.sqrt(yields_dict[cg]["qqH125"] + yields_dict[cg]["BG"])
-    if denominator > 0:
-        soverb_greater = yields_dict[cg]["qqH125"]/denominator
-    else:
-        soverb_greater = 0
-    denominator = math.sqrt(yields_dict[cl]["qqH125"] + yields_dict[cl]["BG"])
-    if denominator > 0:
-        soverb_less = yields_dict[cl]["qqH125"]/denominator
-    else:
-        soverb_less = 0
-    soverb_dict[variable]["greater"].append(soverb_greater)
-    soverb_dict[variable]["less"].append(soverb_less)
+for var in variables:
+    for cg, cl in zip(categories_greater[var],categories_less[var]):
+        soverb_dict.setdefault(var,{"greater" : [], "less" : []})
+        denominator = math.sqrt(yields_dict[cg]["qqH125"] + yields_dict[cg]["BG"])
+        if denominator > 0:
+            soverb_greater = yields_dict[cg]["qqH125"]/denominator
+        else:
+            soverb_greater = 0
+        denominator = math.sqrt(yields_dict[cl]["qqH125"] + yields_dict[cl]["BG"])
+        if denominator > 0:
+            soverb_less = yields_dict[cl]["qqH125"]/denominator
+        else:
+            soverb_less = 0
+        soverb_dict[var]["greater"].append(soverb_greater)
+        soverb_dict[var]["less"].append(soverb_less)
 
+
+if not os.path.exists("cutscans"):
+    os.mkdir("cutscans")
 
 for var in soverb_dict:
     plt.clf()
     plt.plot(cutvalues[var], soverb_dict[var]["greater"], color='r',label='greater')
     plt.plot(cutvalues[var], soverb_dict[var]["less"], color='b',label='less')
     plt.legend()
-    plt.savefig("%s_soverb_cutscan.png"%var)
+    plt.savefig("cutscans/%s_soverb_cutscan.png"%var)
