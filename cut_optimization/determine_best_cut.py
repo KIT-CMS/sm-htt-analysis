@@ -2,7 +2,10 @@ import ROOT as r
 import re
 import math
 import os
-from matplotlib import pyplot as plt
+import numpy as np
+import Dumbledraw.dumbledraw as dd
+import Dumbledraw.rootfile_parser_inputshapes as rootfile_parser
+import Dumbledraw.styles as styles
 
 def sorted_nicely(l):
     """ Sort the given iterable in the way that humans expect: alphanumeric sort (in bash, that's 'sort -V')"""
@@ -49,33 +52,94 @@ for c in counts:
     if process in backgrounds:
         yields_dict[cat].setdefault("BG",0.0)
         yields_dict[cat]["BG"] += getattr(t,c)
+    elif process in signals:
+        yields_dict[cat].setdefault("H125",0.0)
+        yields_dict[cat]["H125"] += getattr(t,c)
 
 
 soverb_dict = {}
-
-for var in variables:
-    for cg, cl in zip(categories_greater[var],categories_less[var]):
-        soverb_dict.setdefault(var,{"greater" : [], "less" : []})
-        denominator = math.sqrt(yields_dict[cg]["qqH125"] + yields_dict[cg]["BG"])
-        if denominator > 0:
-            soverb_greater = yields_dict[cg]["qqH125"]/denominator
-        else:
-            soverb_greater = 0
-        denominator = math.sqrt(yields_dict[cl]["qqH125"] + yields_dict[cl]["BG"])
-        if denominator > 0:
-            soverb_less = yields_dict[cl]["qqH125"]/denominator
-        else:
-            soverb_less = 0
-        soverb_dict[var]["greater"].append(soverb_greater)
-        soverb_dict[var]["less"].append(soverb_less)
+signals = signals + ["H125"]
+for sig in signals:
+    soverb_dict[sig] = {}
+    for var in variables:
+        for cg, cl in zip(categories_greater[var],categories_less[var]):
+            soverb_dict[sig].setdefault(var,{"greater" : [], "less" : []})
+            denominator = math.sqrt(yields_dict[cg][sig] + yields_dict[cg]["BG"])
+            if denominator > 0:
+                soverb_greater = yields_dict[cg][sig]/denominator
+            else:
+                soverb_greater = 0
+            denominator = math.sqrt(yields_dict[cl][sig] + yields_dict[cl]["BG"])
+            if denominator > 0:
+                soverb_less = yields_dict[cl][sig]/denominator
+            else:
+                soverb_less = 0
+            soverb_dict[sig][var]["greater"].append(soverb_greater)
+            soverb_dict[sig][var]["less"].append(soverb_less)
 
 
 if not os.path.exists("cutscans"):
     os.mkdir("cutscans")
 
-for var in soverb_dict:
-    plt.clf()
-    plt.plot(cutvalues[var], soverb_dict[var]["greater"], color='r',label='greater')
-    plt.plot(cutvalues[var], soverb_dict[var]["less"], color='b',label='less')
-    plt.legend()
-    plt.savefig("cutscans/%s_soverb_cutscan.png"%var)
+channel_dict = {
+    "ee": "ee",
+    "em": "e#mu",
+    "et": "e#tau_{h}",
+    "mm": "#mu#mu",
+    "mt": "#mu#tau_{h}",
+    "tt": "#tau_{h}#tau_{h}"
+}
+
+for ch in channel_dict:
+    if not os.path.exists("cutscans/%s"%ch):
+        os.mkdir("cutscans/%s"%ch)
+    for sig in signals:
+        if not os.path.exists("cutscans/%s/%s"%(ch,sig)):
+            os.mkdir("cutscans/%s/%s"%(ch,sig))
+
+for sig in signals:
+    for var in soverb_dict[sig]:
+        channel = var.split("_")[0]
+        variable_name = var.replace(channel+"_","",1)
+        print channel, variable_name
+        width = 600
+        plot = dd.Plot(
+            [], "ModTDR", r=0.04, l=0.14, width=width)
+        cuts_less = r.TGraph(len(cutvalues[var]), np.array(cutvalues[var]), np.array(soverb_dict[sig][var]["less"]))
+        cuts_greater = r.TGraph(len(cutvalues[var]), np.array(cutvalues[var]), np.array(soverb_dict[sig][var]["greater"]))
+        plot.add_graph(cuts_less, "cuts_less")
+        plot.add_graph(cuts_greater, "cuts_greater")
+        plot.setGraphStyle("cuts_less", "L", linecolor=r.kBlue, linewidth=3, markersize=0)
+        plot.setGraphStyle("cuts_greater", "L", linecolor=r.kRed, linewidth=3, markersize=0)
+        plot.subplot(0).setXlims(cutvalues[var][0], cutvalues[var][-1])
+        plot.subplot(0).setYlims(0.0,1.4*max(soverb_dict[sig][var]["less"]+soverb_dict[sig][var]["greater"]))
+        var_label = styles.x_label_dict[channel].get(variable_name, variable_name)
+        plot.subplot(0).setXlabel("Cut on "+var_label)
+        plot.subplot(0).setYlabel("S/#sqrt{S + B}")
+        plot.scaleYLabelSize(0.8)
+        plot.scaleYTitleOffset(1.0)
+        plot.subplot(0).Draw(["cuts_less", "cuts_greater"])
+        # create legends
+        plot.add_legend(width=0.35, height=0.15, pos=2)
+        var_label = variable_name
+        plot.legend(0).add_entry(0, "cuts_less", "%s < cut"%var_label, 'l')
+        plot.legend(0).add_entry(0, "cuts_greater", "%s > cut"%var_label, 'l')
+        plot.legend(0).Draw()
+
+        # draw additional labels
+        plot.DrawCMS()
+        era = "2017"
+        if "2016" in era:
+            plot.DrawLumi("35.9 fb^{-1} (2016, 13 TeV)")
+        elif "2017" in era:
+            plot.DrawLumi("41.5 fb^{-1} (2017, 13 TeV)")
+        plot.DrawText(0.72,0.82,"#splitline{S = %s}{B = total BG}"%sig)
+
+        posChannelCategoryLabelLeft = None
+        plot.DrawChannelCategoryLabel(
+            "%s, %s" % (channel_dict[channel], "inclusive"),
+            begin_left=posChannelCategoryLabelLeft)
+
+        # save plot
+        plot.save("cutscans/%s/%s/%s_soverb_cutscan.%s" % (channel, sig, var, "pdf"))
+        plot.save("cutscans/%s/%s/%s_soverb_cutscan.%s" % (channel, sig, var, "png"))
