@@ -106,7 +106,7 @@ config_template = {
     "ratio_result_nicks": ["ratio_Bkg", "ratio_Data"],
     "y_subplot_lims": [0.62, 1.5],
     "y_label": "N_{evts}",
-    "y_subplot_label": "#scale[0.8]{Ratio to Bkg.}",
+    "y_subplot_label": "#scale[0.8]{stat bkg unc.}",
     "subplot_lines": [0.8, 1.0, 1.2]
 }
 
@@ -178,7 +178,7 @@ def main(args):
                 config["add_nicks"] = [" ".join(bkg_processes_names)]
                 config["add_result_nicks"] = ["tot_background_noplot"]
                 config["chi2test_nicks"] = ["tot_background_noplot data"]
-                config["chi2test_compare"] = ["WU CHI2/NDF"]
+                config["chi2test_compare"] = ["UU CHI2/NDF"]
 
             config["files"] = [shapes]
             config["lumis"] = [lumi]
