@@ -305,23 +305,18 @@ def main(args):
                         Cut("et_max_index=={index}".format(index=i), "exclusive_score")),
                     variable=score))
             if label in ["ggh", "qqh"]:
-                expression = ""
-                for i_e, e in enumerate(binning["stxs_stage1"]["lt"][label]):
-                    offset = (binning["analysis"]["et"][label][-1]-binning["analysis"]["et"][label][0])*i_e
-                    expression += "{STXSBIN}*(et_max_score+{OFFSET})".format(STXSBIN=e, OFFSET=offset)
-                    if not e is binning["stxs_stage1"]["lt"][label][-1]:
-                        expression += " + "
-                score_unrolled = Variable(
-                    "et_max_score_unrolled",
-                     VariableBinning(binning["analysis"]["et"][label+"_unrolled"]),
-                     expression=expression)
-                et_categories.append(
-                    Category(
-                        "{}_unrolled".format(label),
-                        et,
-                        Cuts(Cut("et_max_index=={index}".format(index=i), "exclusive_score"),
-                             Cut("et_max_score>{}".format(1.0/len(classes_et)), "protect_unrolling")),
-                        variable=score_unrolled))
+                stxs = 100 if label == "ggh" else 200
+                for i_e, e in enumerate(binning["stxs_stage1p1"][label]):
+                    score = Variable(
+                        "et_max_score",
+                         VariableBinning(binning["analysis"]["et"][label]))
+                    et_categories.append(
+                        Category(
+                            "{}_{}".format(label,str(stxs+i_e)),
+                            et,
+                            Cuts(Cut("et_max_index=={index}".format(index=i), "exclusive_score"),
+                                 Cut(e, "stxs_stage1p1_cut")),
+                            variable=score))
     # Goodness of fit shapes
     elif args.gof_channel == "et":
         score = Variable(
@@ -355,23 +350,18 @@ def main(args):
                         Cut("mt_max_index=={index}".format(index=i), "exclusive_score")),
                     variable=score))
             if label in ["ggh", "qqh"]:
-                expression = ""
-                for i_e, e in enumerate(binning["stxs_stage1"]["lt"][label]):
-                    offset = (binning["analysis"]["mt"][label][-1]-binning["analysis"]["mt"][label][0])*i_e
-                    expression += "{STXSBIN}*(mt_max_score+{OFFSET})".format(STXSBIN=e, OFFSET=offset)
-                    if not e is binning["stxs_stage1"]["lt"][label][-1]:
-                        expression += " + "
-                score_unrolled = Variable(
-                    "mt_max_score_unrolled",
-                     VariableBinning(binning["analysis"]["mt"][label+"_unrolled"]),
-                     expression=expression)
-                mt_categories.append(
-                    Category(
-                        "{}_unrolled".format(label),
-                        mt,
-                        Cuts(Cut("mt_max_index=={index}".format(index=i), "exclusive_score"),
-                             Cut("mt_max_score>{}".format(1.0/len(classes_mt)), "protect_unrolling")),
-                        variable=score_unrolled))
+                stxs = 100 if label == "ggh" else 200
+                for i_e, e in enumerate(binning["stxs_stage1p1"][label]):
+                    score = Variable(
+                        "mt_max_score",
+                         VariableBinning(binning["analysis"]["mt"][label]))
+                    mt_categories.append(
+                        Category(
+                            "{}_{}".format(label,str(stxs+i_e)),
+                            mt,
+                            Cuts(Cut("mt_max_index=={index}".format(index=i), "exclusive_score"),
+                                 Cut(e, "stxs_stage1p1_cut")),
+                            variable=score))
     # Goodness of fit shapes
     elif args.gof_channel == "mt":
         score = Variable(
@@ -405,23 +395,18 @@ def main(args):
                         Cut("tt_max_index=={index}".format(index=i), "exclusive_score")),
                     variable=score))
             if label in ["ggh", "qqh"]:
-                expression = ""
-                for i_e, e in enumerate(binning["stxs_stage1"]["tt"][label]):
-                    offset = (binning["analysis"]["tt"][label][-1]-binning["analysis"]["tt"][label][0])*i_e
-                    expression += "{STXSBIN}*(tt_max_score+{OFFSET})".format(STXSBIN=e, OFFSET=offset)
-                    if not e is binning["stxs_stage1"]["tt"][label][-1]:
-                        expression += " + "
-                score_unrolled = Variable(
-                    "tt_max_score_unrolled",
-                     VariableBinning(binning["analysis"]["tt"][label+"_unrolled"]),
-                     expression=expression)
-                tt_categories.append(
-                    Category(
-                        "{}_unrolled".format(label),
-                        tt,
-                        Cuts(Cut("tt_max_index=={index}".format(index=i), "exclusive_score"),
-                             Cut("tt_max_score>{}".format(1.0/len(classes_tt)), "protect_unrolling")),
-                        variable=score_unrolled))
+                stxs = 100 if label == "ggh" else 200
+                for i_e, e in enumerate(binning["stxs_stage1p1"][label]):
+                    score = Variable(
+                        "tt_max_score",
+                         VariableBinning(binning["analysis"]["tt"][label]))
+                    tt_categories.append(
+                        Category(
+                            "{}_{}".format(label,str(stxs+i_e)),
+                            tt,
+                            Cuts(Cut("tt_max_index=={index}".format(index=i), "exclusive_score"),
+                                 Cut(e, "stxs_stage1p1_cut")),
+                            variable=score))
     # Goodness of fit shapes
     elif args.gof_channel == "tt":
         score = Variable(
@@ -454,23 +439,18 @@ def main(args):
                         Cut("em_max_index=={index}".format(index=i), "exclusive_score")),
                     variable=score))
             if label in ["ggh", "qqh"]:
-                expression = ""
-                for i_e, e in enumerate(binning["stxs_stage1"]["lt"][label]):
-                    offset = (binning["analysis"]["em"][label][-1]-binning["analysis"]["em"][label][0])*i_e
-                    expression += "{STXSBIN}*(em_max_score+{OFFSET})".format(STXSBIN=e, OFFSET=offset)
-                    if not e is binning["stxs_stage1"]["lt"][label][-1]:
-                        expression += " + "
-                score_unrolled = Variable(
-                    "em_max_score_unrolled",
-                     VariableBinning(binning["analysis"]["em"][label+"_unrolled"]),
-                     expression=expression)
-                em_categories.append(
-                    Category(
-                        "{}_unrolled".format(label),
-                        em,
-                        Cuts(Cut("em_max_index=={index}".format(index=i), "exclusive_score"),
-                             Cut("em_max_score>{}".format(1.0/len(classes_em)), "protect_unrolling")),
-                        variable=score_unrolled))
+                stxs = 100 if label == "ggh" else 200
+                for i_e, e in enumerate(binning["stxs_stage1p1"][label]):
+                    score = Variable(
+                        "em_max_score",
+                         VariableBinning(binning["analysis"]["em"][label]))
+                    em_categories.append(
+                        Category(
+                            "{}_{}".format(label,str(stxs+i_e)),
+                            em,
+                            Cuts(Cut("em_max_index=={index}".format(index=i), "exclusive_score"),
+                                 Cut(e, "stxs_stage1p1_cut")),
+                            variable=score))
     # Goodness of fit shapes
     elif args.gof_channel == "em":
         score = Variable(
