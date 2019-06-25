@@ -47,37 +47,20 @@ def parse_arguments():
         type=str,
         help="Directory with Artus outputs.")
     parser.add_argument(
-        "--em-directory",
-        required=True,
-        type=str,
-        help="Directory with Artus outputs.")
-    parser.add_argument(
         "--et-friend-directory",
-        default=None,
         type=str,
+        default=[],
+        nargs='+',
         help=
-        "Directory arranged as Artus output and containing a friend tree for et."
+        "Directories arranged as Artus output and containing a friend tree for et."
     )
     parser.add_argument(
         "--mt-friend-directory",
-        default=None,
         type=str,
+        default=[],
+        nargs='+',
         help=
-        "Directory arranged as Artus output and containing a friend tree for mt."
-    )
-    parser.add_argument(
-        "--tt-friend-directory",
-        default=None,
-        type=str,
-        help=
-        "Directory arranged as Artus output and containing a friend tree for tt."
-    )
-    parser.add_argument(
-        "--em-friend-directory",
-        default=None,
-        type=str,
-        help=
-        "Directory arranged as Artus output and containing a friend tree for tt."
+        "Directories arranged as Artus output and containing a friend tree for mt."
     )
     parser.add_argument(
         "--fake-factor-friend-directory",
@@ -85,6 +68,22 @@ def parse_arguments():
         type=str,
         help=
         "Directory arranged as Artus output and containing friend trees to data files with fake factors."
+    )
+    parser.add_argument(
+        "--tt-friend-directory",
+        type=str,
+        default=[],
+        nargs='+',
+        help=
+        "Directories arranged as Artus output and containing a friend tree for tt."
+    )
+    parser.add_argument(
+        "--em-friend-directory",
+        type=str,
+        default=[],
+        nargs='+',
+        help=
+        "Directories arranged as Artus output and containing a friend tree for em."
     )
     parser.add_argument(
         "--datasets", required=True, type=str, help="Kappa datsets database.")
@@ -154,11 +153,10 @@ def main(args):
     # Channels and processes
     # yapf: disable
     directory = args.directory
-    em_directory = args.em_directory
     et_friend_directory = args.et_friend_directory
     mt_friend_directory = args.mt_friend_directory
     tt_friend_directory = args.tt_friend_directory
-    em_friend_directory = [] # args.em_friend_directory to add as soon as NN friends are available for em
+    em_friend_directory = args.em_friend_directory
     ff_friend_directory = args.fake_factor_friend_directory
     mt = MTSM2016()
     if args.QCD_extrap_fit:
@@ -190,8 +188,10 @@ def main(args):
     for qqH_htxs in qqHEstimation.htxs_dict:
         mt_processes[qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, mt, friend_directory=mt_friend_directory))
 
-    mt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, mt, [mt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], mt_processes["data"], friend_directory=[mt_friend_directory, ff_friend_directory]))
+    mt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, mt, [mt_processes[process] for process in ["ZTT", "TTT", "VVT", "ZL", "TTL", "VVL"]], mt_processes["data"], friend_directory=mt_friend_directory+[ff_friend_directory]))
+    mt_processes["FAKESEMB"] = Process("jetFakesEMB", NewFakeEstimationLT(era, directory, mt, [mt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], mt_processes["data"], friend_directory=mt_friend_directory+[ff_friend_directory]))
     mt_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTL", "TTJ", "VVT", "VVL", "VVJ"]], mt_processes["data"], extrapolation_factor=1.17))
+    mt_processes["QCDEMB"] = Process("QCDEMB", QCDEstimation_SStoOS_MTETEM(era, directory, mt, [mt_processes[process] for process in ["EMB", "ZJ", "ZL", "W", "TTL", "TTJ", "VVL", "VVJ"]], mt_processes["data"], extrapolation_factor=1.17))
       
     
     
@@ -226,8 +226,11 @@ def main(args):
     for qqH_htxs in qqHEstimation.htxs_dict:
         et_processes[qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, et, friend_directory=et_friend_directory))
 
-    et_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, et, [et_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], et_processes["data"], friend_directory=[et_friend_directory, ff_friend_directory]))
+    et_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, et, [et_processes[process] for process in ["ZTT", "TTT", "VVT", "ZL", "TTL", "VVL"]], et_processes["data"], friend_directory=et_friend_directory+[ff_friend_directory]))
+    et_processes["FAKESEMB"] = Process("jetFakesEMB", NewFakeEstimationLT(era, directory, et, [et_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], et_processes["data"], friend_directory=et_friend_directory+[ff_friend_directory]))
+
     et_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, et, [et_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTL", "TTJ", "VVT", "VVL", "VVJ"]], et_processes["data"], extrapolation_factor=1.17))
+    et_processes["QCDEMB"] = Process("QCDEMB", QCDEstimation_SStoOS_MTETEM(era, directory, et, [et_processes[process] for process in ["EMB", "ZJ", "ZL", "W", "TTL", "TTJ", "VVL", "VVJ"]], et_processes["data"], extrapolation_factor=1.17))
 
 
 
@@ -258,8 +261,11 @@ def main(args):
     for qqH_htxs in qqHEstimation.htxs_dict:
         tt_processes[qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, tt, friend_directory=tt_friend_directory))
    
-    tt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationTT(era, directory, tt, [tt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], tt_processes["data"], friend_directory=[tt_friend_directory, ff_friend_directory]))
+    tt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationTT(era, directory, tt, [tt_processes[process] for process in ["ZTT", "TTT", "VVT", "ZL", "TTL", "VVL"]], tt_processes["data"], friend_directory=tt_friend_directory+[ff_friend_directory]))
+    tt_processes["FAKESEMB"] = Process("jetFakesEMB", NewFakeEstimationTT(era, directory, tt, [tt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], tt_processes["data"], friend_directory=tt_friend_directory+[ff_friend_directory]))
+
     tt_processes["QCD"] = Process("QCD", QCDEstimationTT(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZJ", "ZL", "W", "TTT", "TTJ", "VVT", "VVL", "VVJ"]], tt_processes["data"]))
+    tt_processes["QCDEMB"] = Process("QCDEMB", QCDEstimationTT(era, directory, tt, [tt_processes[process] for process in ["EMB", "ZJ", "ZL", "W", "TTJ", "VVL", "VVJ"]], tt_processes["data"]))
 
     em = EMSM2016()
     if args.QCD_extrap_fit:
@@ -289,7 +295,8 @@ def main(args):
     for qqH_htxs in qqHEstimation.htxs_dict:
         em_processes[qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, em, friend_directory=em_friend_directory))
    
-    em_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, em_directory, em, [em_processes[process] for process in ["ZTT", "ZL", "W", "TTT", "VVT", "VVL"]], em_processes["data"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
+    em_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, em, [em_processes[process] for process in ["ZTT", "ZL", "W", "TTT", "VVT", "VVL"]], em_processes["data"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
+    em_processes["QCDEMB"] = Process("QCDEMB", QCDEstimation_SStoOS_MTETEM(era, directory, em, [em_processes[process] for process in ["EMB", "ZL", "W", "VVL"]], em_processes["data"], extrapolation_factor=1.17, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
 
     # Variables and categories
     binning = yaml.load(open(args.binning))
@@ -1193,7 +1200,7 @@ def main(args):
     # tttautau_process_em = Process(
     #     "TTTT",
     #     TTTEstimation(
-    #         era, em_directory, em, friend_directory=em_friend_directory))
+    #         era, directory, em, friend_directory=em_friend_directory))
     # if 'mt' in [args.gof_channel] + args.channels:
     #     for category in mt_categories:
     #         mt_processes['ZTTpTTTauTauDown'] = Process(
@@ -1287,7 +1294,7 @@ def main(args):
     #         em_processes['ZTTpTTTauTauDown'] = Process(
     #             "ZTTpTTTauTauDown",
     #             AddHistogramEstimationMethod(
-    #                 "AddHistogram", "nominal", era, em_directory, em,
+    #                 "AddHistogram", "nominal", era, directory, em,
     #                 [em_processes["EMB"], tttautau_process_em], [1.0, -0.1]))
     #         systematics.add(
     #             Systematic(
@@ -1301,7 +1308,7 @@ def main(args):
     #         em_processes['ZTTpTTTauTauUp'] = Process(
     #             "ZTTpTTTauTauUp",
     #             AddHistogramEstimationMethod(
-    #                 "AddHistogram", "nominal", era, em_directory, em,
+    #                 "AddHistogram", "nominal", era, directory, em,
     #                 [em_processes["EMB"], tttautau_process_em], [1.0, 0.1]))
     #         systematics.add(
     #             Systematic(
