@@ -19,33 +19,32 @@ function waitForAll() {
 function multirun() {
 	run=$1
     shift
-	fifoL=""
+	tmpFileL=""
 	pidL=""
 
     for (( j = 0; j < $i; j++ )); do
-        if [[ ! $PARALLEL==1 ]]; then
-            $run $1 $2 &> $fifo
+        if [[ $PARALLEL != 1 ]]; then
+            $run $1 $2
         else
-            fifo=$(mktemp fifo-$1-$2.XXXX)
-            fifoL+=" $fifo"
-            #$run $1 $2 &> $fifo &
+            tmpFile=$(mktemp tmpFile-$1-$2.XXXX)
+            tmpFileL+=" $tmpFile"
+            $run $1 $2 &> $tmpFile &
             # Test correct behaviour
-            a=$(( ( RANDOM % 25 )  + 1 ))
-            ( echo $a; sleep $a; echo $a ) &>$fifo &
-            #trap "rm $fifo; kill $!" INT
+            #a=$(( ( RANDOM % 25 )  + 1 ))
+            #( echo $a; sleep $a; echo $a ) &>$tmpFile &
+            #trap "rm $tmpFile; kill $!" INT
             pidL+=" $!"
         fi
         shift 2
     done
 
-    if [[ $PARALLEL==1 ]]; then
+    if [[ $PARALLEL = 1 ]]; then
     #set -o xtrace
-    #trap "rm $fifoL; kill $(ps -s $$ -o pid=)" INT
-    ### if the process
-    #trap "rm -i $fifoL; kill 0" INT EXIT TERM
-    trap "kill 0; rm $fifoL" INT EXIT TERM
+    #trap "rm $tmpFileL; kill $(ps -s $$ -o pid=)" INT
+    ### if the process dies, kill the children and remove the tempfiles
+    trap "kill 0; rm $tmpFileL" INT EXIT TERM
     waitForAll $pidL &
-    lastfifo=""
-	tail -f $fifoL --pid $!
+    lasttmpFile=""
+	tail -f $tmpFileL --pid $!
     fi
 }
