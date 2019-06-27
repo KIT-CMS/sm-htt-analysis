@@ -7,4 +7,5 @@ CHANNEL=$2
 #./ml/sum_training_weights.sh $ERA
 ./ml/run_training.sh $ERA $CHANNEL
 ./ml/run_testing.sh $ERA $CHANNEL
+./ml/export_for_application.sh $ERA $CHANNEL
 ./ml/run_application.sh $ERA $CHANNEL

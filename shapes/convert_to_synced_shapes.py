@@ -42,6 +42,8 @@ def main(args):
     # Loop over shapes of input ROOT file and create map of input/output names
     hist_map = {}
     for key in file_input.GetListOfKeys():
+        if key.GetName() == "output_tree":
+            continue
         # Read name and extract shape properties
         name = key.GetName()
         properties = [x for x in name.split("#") if not x == ""]

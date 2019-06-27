@@ -18,6 +18,7 @@ from shape_producer.channel import MTSM2017 as MT
 from shape_producer.channel import ETSM2017 as ET
 from shape_producer.channel import TTSM2017 as TT
 from shape_producer.channel import EMSM2017 as EM
+from shape_producer.channel import MMSM2017 as MM
 
 from itertools import product
 
@@ -51,6 +52,14 @@ def parse_arguments():
         type=str,
         help="Directory with Artus outputs.")
     parser.add_argument(
+        "--mm-friend-directory",
+        type=str,
+        default=[],
+        nargs='+',
+        help=
+        "Directories arranged as Artus output and containing a friend tree for mm."
+    )
+    parser.add_argument(
         "--et-friend-directory",
         type=str,
         default=[],
@@ -67,13 +76,6 @@ def parse_arguments():
         "Directories arranged as Artus output and containing a friend tree for mt."
     )
     parser.add_argument(
-        "--fake-factor-friend-directory",
-        default=None,
-        type=str,
-        help=
-        "Directory arranged as Artus output and containing friend trees to data files with fake factors."
-    )
-    parser.add_argument(
         "--tt-friend-directory",
         type=str,
         default=[],
@@ -88,6 +90,13 @@ def parse_arguments():
         nargs='+',
         help=
         "Directories arranged as Artus output and containing a friend tree for em."
+    )
+    parser.add_argument(
+        "--fake-factor-friend-directory",
+        default=None,
+        type=str,
+        help=
+        "Directory arranged as Artus output and containing friend trees to data files with fake factors."
     )
     parser.add_argument(
         "--datasets", required=True, type=str, help="Kappa datsets database.")
@@ -129,6 +138,7 @@ def main(args):
     systematics_et = Systematics("shapes_et.root", num_threads=args.num_threads, find_unique_objects=True)
     systematics_tt = Systematics("shapes_tt.root", num_threads=args.num_threads, find_unique_objects=True)
     systematics_em = Systematics("shapes_em.root", num_threads=args.num_threads, find_unique_objects=True)
+    systematics_mm = Systematics("shapes_mm.root", num_threads=args.num_threads, find_unique_objects=True)
 
     # Era
     era = Run2017(args.datasets)
@@ -140,6 +150,7 @@ def main(args):
     mt_friend_directory = args.mt_friend_directory
     tt_friend_directory = args.tt_friend_directory
     em_friend_directory = args.em_friend_directory
+    mm_friend_directory = args.mm_friend_directory
 
     ff_friend_directory = args.fake_factor_friend_directory
 
@@ -260,6 +271,21 @@ def main(args):
     em_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, em, [em_processes[process] for process in ["ZTT", "ZL", "W", "TTT", "VVT", "VVL"]], em_processes["data"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
     em_processes["QCDEMB"] = Process("QCDEMB", QCDEstimation_SStoOS_MTETEM(era, directory, em, [em_processes[process] for process in ["EMB", "ZL", "W", "VVL"]], em_processes["data"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
 
+    mm = MM()
+    mm_processes = {
+        "data"  : Process("data_obs", DataEstimation      (era, directory, mm, friend_directory=mm_friend_directory)),
+        "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, mm, friend_directory=mm_friend_directory)),
+        "ZL"    : Process("ZL",       ZLEstimation        (era, directory, mm, friend_directory=mm_friend_directory)),
+        "TTT"   : Process("TTT",      TTTEstimation       (era, directory, mm, friend_directory=mm_friend_directory)),
+        "TTL"   : Process("TTL",      TTLEstimation       (era, directory, mm, friend_directory=mm_friend_directory)),
+        "VVT"   : Process("VVT",      VVTEstimation       (era, directory, mm, friend_directory=mm_friend_directory)),
+        "VVL"   : Process("VVL",      VVLEstimation       (era, directory, mm, friend_directory=mm_friend_directory)),
+        "W"     : Process("W",        WEstimation         (era, directory, mm, friend_directory=mm_friend_directory)),
+        }
+    mm_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, mm,
+            [mm_processes[process] for process in ["ZTT", "ZL", "W", "TTT", "TTL", "VVT", "VVL"]],
+            mm_processes["data"], friend_directory=mm_friend_directory, extrapolation_factor=2.0))
+
 
     # Variables and categories
     binning = yaml.load(open(args.binning))
@@ -268,25 +294,36 @@ def main(args):
     et_categories = []
     tt_categories = []
     em_categories = []
+    mm_categories = []
 
     variable_names = [
         "m_vis", "ptvis",
+        "DiTauDeltaR",
+
         "m_sv", "pt_sv", "eta_sv",
+        "m_sv_puppi", "pt_sv_puppi", "eta_sv_puppi",
         "m_fastmtt", "pt_fastmtt", "eta_fastmtt",
+        "m_fastmtt_puppi", "pt_fastmtt_puppi", "eta_fastmtt_puppi",
+
         "ME_D", "ME_vbf", "ME_z2j_1", "ME_z2j_2", "ME_q2v1", "ME_q2v2", "ME_costheta1", "ME_costheta2", "ME_costhetastar", "ME_phi", "ME_phi1",
-        "njets", "jpt_1", "jpt_2", "jeta_1", "jeta_2",
-        "met",
+
         "pt_1", "pt_2", "eta_1", "eta_2",
+
         "mjj", "jdeta", "dijetpt",
-        "mt_1", "mt_2", "pt_tt",
-        "pt_ttjj",
+        "njets", "jpt_1", "jpt_2", "jeta_1", "jeta_2",
         "nbtag", "bpt_1", "bpt_2", "beta_1", "beta_2",
+
+       "met", "mt_1", "mt_2", "pt_tt", "pZetaMissVis", "pt_ttjj", "mt_tot", "mTdileptonMET",
+        "puppimet", "mt_1_puppi", "mt_2_puppi", "pt_tt_puppi", "pZetaPuppiMissVis", "pt_ttjj_puppi", "mt_tot_puppi", "mTdileptonMET_puppi",
+    #    "NNrecoil_pt", "nnmet", "mt_1_nn", "mt_2_nn", "pt_tt_nn", "pZetaNNMissVis", "pt_ttjj_nn", "mt_tot_nn", "mTdileptonMET_nn",
+
+    #    "metParToZ", "metPerpToZ",
+    #    "puppimetParToZ", "puppimetPerpToZ",
     ]
-    #variable_names = ["m_vis"]
 
     if "mt" in args.channels:
         variables = [Variable(v,VariableBinning(binning["control"]["mt"][v]["bins"]), expression=binning["control"]["mt"][v]["expression"]) for v in variable_names]
-        cuts = Cuts(Cut("!((jpt_1 < 50 && abs(jeta_1) < 3.139 && abs(jeta_1) > 2.65) || (jpt_2 < 50 && abs(jeta_2) < 3.139 && abs(jeta_2) > 2.65))","eenoise_preliminary"))
+        cuts = Cuts()
         for name, var in zip(variable_names, variables):
             mt_categories.append(
                 Category(
@@ -297,7 +334,7 @@ def main(args):
 
     if "et" in args.channels:
         variables = [Variable(v,VariableBinning(binning["control"]["et"][v]["bins"]), expression=binning["control"]["et"][v]["expression"]) for v in variable_names]
-        cuts = Cuts(Cut("!((jpt_1 < 50 && abs(jeta_1) < 3.139 && abs(jeta_1) > 2.65) || (jpt_2 < 50 && abs(jeta_2) < 3.139 && abs(jeta_2) > 2.65))","eenoise_preliminary"))
+        cuts = Cuts()
         for name, var in zip(variable_names, variables):
             et_categories.append(
                 Category(
@@ -308,7 +345,7 @@ def main(args):
 
     if "tt" in args.channels:
         variables = [Variable(v,VariableBinning(binning["control"]["tt"][v]["bins"]), expression=binning["control"]["tt"][v]["expression"]) for v in variable_names]
-        cuts = Cuts(Cut("!((jpt_1 < 50 && abs(jeta_1) < 3.139 && abs(jeta_1) > 2.65) || (jpt_2 < 50 && abs(jeta_2) < 3.139 && abs(jeta_2) > 2.65))","eenoise_preliminary"))
+        cuts = Cuts()
         for name, var in zip(variable_names, variables):
             tt_categories.append(
                 Category(
@@ -319,13 +356,32 @@ def main(args):
 
     if "em" in args.channels:
         variables = [Variable(v,VariableBinning(binning["control"]["em"][v]["bins"]), expression=binning["control"]["em"][v]["expression"]) for v in variable_names]
-        cuts = Cuts(Cut("!((jpt_1 < 50 && abs(jeta_1) < 3.139 && abs(jeta_1) > 2.65) || (jpt_2 < 50 && abs(jeta_2) < 3.139 && abs(jeta_2) > 2.65))","eenoise_preliminary"))
+        cuts = Cuts()
         for name, var in zip(variable_names, variables):
             em_categories.append(
                 Category(
                     name,
                     em,
                     cuts,
+                    variable=var))
+
+    if "mm" in args.channels:
+        variables = [Variable(v,VariableBinning(binning["control"]["mm"][v]["bins"]), expression=binning["control"]["mm"][v]["expression"]) for v in variable_names]
+        variables.append(Variable("m_vis_high",ConstantBinning(19,50.0,1000.0),expression="m_vis"))
+        variable_names.append("m_vis_high")
+        cuts = Cuts()
+        for name, var in zip(variable_names, variables):
+            mm_categories.append(
+                Category(
+                    name,
+                    mm,
+                    cuts,
+                    variable=var))
+            mm_categories.append(
+                Category(
+                    name+"_peak",
+                    mm,
+                    Cuts(Cut("m_vis > 70 && m_vis < 110","m_vis_peak")),
                     variable=var))
 
     # Nominal histograms
@@ -373,12 +429,24 @@ def main(args):
                     variation=Nominal(),
                     mass="125"))
 
+    if "mm" in args.channels:
+        for process, category in product(mm_processes.values(), mm_categories):
+            systematics_mm.add(
+                Systematic(
+                    category=category,
+                    process=process,
+                    analysis="smhtt",
+                    era=era,
+                    variation=Nominal(),
+                    mass="125"))
+
 
     # Produce histograms
     if "mt" in args.channels: systematics_mt.produce()
     if "et" in args.channels: systematics_et.produce()
     if "tt" in args.channels: systematics_tt.produce()
     if "em" in args.channels: systematics_em.produce()
+    if "mm" in args.channels: systematics_mm.produce()
 
 
 if __name__ == "__main__":

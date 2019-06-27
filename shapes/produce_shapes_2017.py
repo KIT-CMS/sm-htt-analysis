@@ -86,6 +86,11 @@ def parse_arguments():
         "Directories arranged as Artus output and containing a friend tree for em."
     )
     parser.add_argument(
+        "--QCD-extrap-fit",
+        default=False,
+        action='store_true',
+        help="Create shapes for QCD extrapolation factor determination.")
+    parser.add_argument(
         "--datasets", required=True, type=str, help="Kappa datsets database.")
     parser.add_argument(
         "--binning", required=True, type=str, help="Binning configuration.")
@@ -152,9 +157,11 @@ def main(args):
     mt_friend_directory = args.mt_friend_directory
     tt_friend_directory = args.tt_friend_directory
     em_friend_directory = args.em_friend_directory
-
     ff_friend_directory = args.fake_factor_friend_directory
     mt = MTSM2017()
+    if args.QCD_extrap_fit:
+        mt.cuts.remove("muon_iso")
+        mt.cuts.add(Cut("(iso_1<0.5)*(iso_1>=0.15)", "muon_iso_loose"))
     mt_processes = {
         "data"  : Process("data_obs", DataEstimation      (era, directory, mt, friend_directory=mt_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
