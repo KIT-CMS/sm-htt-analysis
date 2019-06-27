@@ -39,6 +39,7 @@ python ml/write_dataset_config.py \
     --tree-path ${CHANNEL}_nominal/ntuple \
     --event-branch event \
     --training-weight-branch training_weight \
+    --training-z-estimation-method emb \
     --output-config ml/${ERA}_${CHANNEL}/dataset_config.yaml
 
 # Create dataset files from config

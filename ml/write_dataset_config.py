@@ -43,6 +43,10 @@ def parse_arguments():
     parser.add_argument(
         "--event-branch", required=True, help="Branch with event numbers")
     parser.add_argument(
+        "--training-z-estimation-method",
+        required=True,
+        help="Estimate the Z bkg with emb (embedding) or mc (Monte Carlo) ?")
+    parser.add_argument(
         "--training-weight-branch",
         required=True,
         help="Branch with training weights")
@@ -71,9 +75,9 @@ def main(args):
 
         from shape_producer.era import Run2016
         era = Run2016(args.database)
+
     elif "2017" in args.era:
         from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZJEstimation, ZLEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, VVLEstimation, WEstimation, ggHEstimation, qqHEstimation, EWKZEstimation, ZTTEmbeddedEstimation
-
 
         from shape_producer.era import Run2017
         era = Run2017(args.database)
@@ -81,633 +85,170 @@ def main(args):
         logger.fatal("Era {} is not implemented.".format(args.era))
         raise Exception
 
-    ############################################################################
-
-    # Era: 2016, Channel: mt
-    if "2016" in args.era and args.channel == "mt":
-        channel = MTSM2016()
-
-        # Set up `processes` part of config
-        output_config["processes"] = {}
-
-        # Additional cuts
-        additional_cuts = Cuts()
-        logger.warning("Use additional cuts for mt: %s",
-                       additional_cuts.expand())
-
-        # MC-driven processes
-        # NOTE: Define here the mappig of the process estimations to the training classes
+    def estimationMethodAndClassMapGenerator():
+        ###### common processes
         classes_map = {
             "ggH": "ggh",
             "qqH": "qqh",
-            "ZTT": "ztt",
-            "EMB": "ztt",
-            "ZL": "zll",
-            "ZJ": "zll",
-            "TTT": "tt",
-            "TTL": "tt",
-            "TTJ": "tt",
-            "W": "w",
-            "EWKWp": "w",
-            "EWKWm": "w",
-            "VV": "misc",
-            "EWKZ": "misc",
-        }
-        for estimation in [
-                ggHEstimation(era, args.base_path, channel),
-                qqHEstimation(era, args.base_path, channel),
-                ZTTEstimation(era, args.base_path, channel),
-                ZLEstimation(era, args.base_path, channel),
-                ZJEstimation(era, args.base_path, channel),
-                TTTEstimation(era, args.base_path, channel),
-                #TTLEstimation(era, args.base_path, channel),
-                TTJEstimation(era, args.base_path, channel),
-                WEstimationRaw(era, args.base_path, channel),
-                EWKWpEstimation(era, args.base_path, channel),
-                EWKWmEstimation(era, args.base_path, channel),
-                VVEstimation(era, args.base_path, channel),
-                EWKZEstimation(era, args.base_path, channel),
-        ]:
-            output_config["processes"][estimation.name] = {
-                "files": [
-                    str(f).replace(args.base_path.rstrip("/") + "/", "")
-                    for f in estimation.get_files()
-                ],
-                "cut_string": (estimation.get_cuts() + channel.cuts +
-                               additional_cuts).expand(),
-                "weight_string":
-                estimation.get_weights().extract(),
-                "class":
-                classes_map[estimation.name]
-            }
-
-        # Same sign selection for data-driven QCD
-        estimation = DataEstimation(era, args.base_path, channel)
-        estimation.name = "QCD"
-        channel_ss = copy.deepcopy(channel)
-        channel_ss.cuts.get("os").invert()
-        output_config["processes"][estimation.name] = {
-            "files": [
-                str(f).replace(args.base_path.rstrip("/") + "/", "")
-                for f in estimation.get_files()
-            ],
-            "cut_string": (estimation.get_cuts() + channel_ss.cuts +
-                           additional_cuts).expand(),
-            "weight_string":
-            estimation.get_weights().extract(),
-            "class":
-            "ss"
-        }
-
-    ############################################################################
-
-    # Era: 2017, Channel: mt
-    if "2017" in args.era and args.channel == "mt":
-        channel = MTSM2017()
-
-        # Set up `processes` part of config
-        output_config["processes"] = {}
-
-        # Additional cuts
-        additional_cuts = Cuts()
-        logger.warning("Use additional cuts for mt: %s",
-                       additional_cuts.expand())
-
-        # MC-driven processes
-        # NOTE: Define here the mappig of the process estimations to the training classes
-        classes_map = {
-            "ggH": "ggh",
-            "qqH": "qqh",
-            "ZTT": "ztt",
-            "ZL": "zll",
-            "ZJ": "zll",
-            "TTT": "tt",
-            "TTL": "tt",
-            "TTJ": "tt",
-            "W": "w",
-            "VVJ": "misc",
-            "VVT": "misc",
-            "VVL": "misc",
             "EWKZ": "misc"
         }
-        for estimation in [
-                ggHEstimation("ggH", era, args.base_path, channel),
-                qqHEstimation("qqH", era, args.base_path, channel),
+        estimationMethodList = [
+            ggHEstimation("ggH", era, args.base_path, channel),
+            qqHEstimation("qqH", era, args.base_path, channel),
+            EWKZEstimation(era, args.base_path, channel),
+            WEstimation(era, args.base_path, channel),
+            VVLEstimation(era, args.base_path, channel)
+        ]
+        ######## Check for emb vs MC
+        if args.training_z_estimation_method=="emb":
+            classes_map["EMB"]="ztt"
+            estimationMethodList.extend([
+                ZTTEmbeddedEstimation(era, args.base_path, channel)])
+
+        elif args.training_z_estimation_method=="mc":
+            classes_map["ZTT"]="ztt"
+            estimationMethodList.extend([
                 ZTTEstimation(era, args.base_path, channel),
-                ZLEstimation(era, args.base_path, channel),
-                ZJEstimation(era, args.base_path, channel),
                 TTTEstimation(era, args.base_path, channel),
-                TTLEstimation(era, args.base_path, channel),
-                TTJEstimation(era, args.base_path, channel),
-                WEstimation(era, args.base_path, channel),
+                VVTEstimation(era, args.base_path, channel)
+            ])
+        else:
+            logger.fatal("No valid training-z-estimation-method! Options are emb, mc. Argument was {}".format(args.training_z_estimation_method))
+            raise Exception
+
+
+        ##### TT* zl,zj processes
+        estimationMethodList.extend([
+            TTLEstimation(era, args.base_path, channel),
+            ZLEstimation(era, args.base_path, channel)
+        ])
+        # less data-> less categories for tt
+        if args.channel == "tt":
+            classes_map.update({
+                "TTT": "misc",
+                "TTL": "misc",
+                "TTJ": "misc",
+                "ZL": "misc",
+                "ZJ": "misc"
+            })
+            estimationMethodList.extend([
+                        ZJEstimation(era, args.base_path, channel),
+                        TTJEstimation(era, args.base_path, channel)
+            ])
+        ## not TTJ,ZJ for em
+        elif args.channel== "em":
+            classes_map.update({
+                "TTT": "tt",
+                "TTL": "tt",
+                "ZL": "misc"
+            })
+        else:
+            classes_map.update({
+                "TTT": "tt",
+                "TTL": "tt",
+                "TTJ": "tt",
+                "ZL": "zll",
+                "ZJ": "zll"
+            })
+            estimationMethodList.extend([
+                ZJEstimation(era, args.base_path, channel),
+                TTJEstimation(era, args.base_path, channel)
+            ])
+        ###w:
+        # estimation metho already included, just different mapping fror et and mt
+        if args.channel in ["et","mt"]:
+            classes_map["W"]="w"
+        else:
+            classes_map["W"]="misc"
+
+        #####  VV/[VVT,VVL,VVJ] split
+        # VVL in common, VVT in "EMBvsMC"
+        if args.channel=="em":
+            classes_map.update({
+                "VVT": "db",
+                "VVL": "db"
+            })
+        else:
+            classes_map.update({
+                "VVT": "misc",
+                "VVL": "misc",
+                "VVJ": "misc"
+            })
+            estimationMethodList.extend([
                 VVJEstimation(era, args.base_path, channel),
-                VVTEstimation(era, args.base_path, channel),
-                VVLEstimation(era, args.base_path, channel),
-                EWKZEstimation(era, args.base_path, channel),
-        ]:
-            output_config["processes"][estimation.name] = {
-                "files": [
-                    str(f).replace(args.base_path.rstrip("/") + "/", "")
-                    for f in estimation.get_files()
-                ],
-                "cut_string": (estimation.get_cuts() + channel.cuts +
-                               additional_cuts).expand(),
-                "weight_string":
-                estimation.get_weights().extract(),
-                "class":
-                classes_map[estimation.name]
-            }
+            ])
+        ### QCD class
 
-        # Same sign selection for data-driven QCD
-        estimation = DataEstimation(era, args.base_path, channel)
-        estimation.name = "QCD"
-        channel_ss = copy.deepcopy(channel)
-        channel_ss.cuts.get("os").invert()
+        if args.channel =="tt":
+            classes_map["QCD"]="noniso"
+        else:
+            classes_map["QCD"]="ss"
+        return([classes_map,estimationMethodList])
+
+
+    channelDict={}
+    channelDict["2016"]={"mt":MTSM2016(),"et":ETSM2016(), "tt":TTSM2016(), "em":EMSM2016()}
+    channelDict["2017"]={"mt":MTSM2017(),"et":ETSM2017(), "tt":TTSM2017(), "em":EMSM2017()}
+
+    channel=channelDict[args.era][args.channel]
+
+    # Set up `processes` part of config
+    output_config["processes"] = {}
+
+    # Additional cuts
+    additional_cuts = Cuts()
+    logger.warning("Use additional cuts for mt: %s", additional_cuts.expand())
+
+    classes_map,estimationMethodList = estimationMethodAndClassMapGenerator()
+
+    ##MC+/Embedding Processes
+    for estimation in estimationMethodList:
         output_config["processes"][estimation.name] = {
             "files": [
                 str(f).replace(args.base_path.rstrip("/") + "/", "")
                 for f in estimation.get_files()
             ],
-            "cut_string": (estimation.get_cuts() + channel_ss.cuts +
+            "cut_string": (estimation.get_cuts() + channel.cuts +
                            additional_cuts).expand(),
             "weight_string":
             estimation.get_weights().extract(),
             "class":
-            "ss"
+            classes_map[estimation.name]
         }
+    ###
+    # Same sign selection for data-driven QCD
+    estimation = DataEstimation(era, args.base_path, channel)
+    estimation.name = "QCD"
+    channel_qcd = copy.deepcopy(channel)
 
-    ############################################################################
-
-    # Era: 2016, Channel: et
-    if "2016" in args.era and args.channel == "et":
-        channel = ETSM2016()
-
-        # Set up `processes` part of config
-        output_config["processes"] = {}
-
-        # Additional cuts
-        additional_cuts = Cuts()
-        logger.warning("Use additional cuts for et: %s",
-                       additional_cuts.expand())
-
-        # MC-driven processes
-        # NOTE: Define here the mappig of the process estimations to the training classes
-        classes_map = {
-            "ggH": "ggh",
-            "qqH": "qqh",
-            "ZTT": "ztt",
-            "EMB": "ztt",
-            "ZL": "zll",
-            "ZJ": "zll",
-            "TTT": "tt",
-            "TTL": "tt",
-            "TTJ": "tt",
-            "W": "w",
-            "EWKWp": "w",
-            "EWKWm": "w",
-            "VV": "misc",
-            "EWKZ": "misc"
-        }
-        for estimation in [
-                ggHEstimation(era, args.base_path, channel),
-                qqHEstimation(era, args.base_path, channel),
-                ZTTEstimation(era, args.base_path, channel),
-                ZLEstimation(era, args.base_path, channel),
-                ZJEstimation(era, args.base_path, channel),
-                TTTEstimation(era, args.base_path, channel),
-                #TTLEstimation(era, args.base_path, channel),
-                TTJEstimation(era, args.base_path, channel),
-                WEstimationRaw(era, args.base_path, channel),
-                EWKWpEstimation(era, args.base_path, channel),
-                EWKWmEstimation(era, args.base_path, channel),
-                VVEstimation(era, args.base_path, channel),
-                EWKZEstimation(era, args.base_path, channel),
-        ]:
-            output_config["processes"][estimation.name] = {
-                "files": [
-                    str(f).replace(args.base_path.rstrip("/") + "/", "")
-                    for f in estimation.get_files()
-                ],
-                "cut_string": (estimation.get_cuts() + channel.cuts +
-                               additional_cuts).expand(),
-                "weight_string":
-                estimation.get_weights().extract(),
-                "class":
-                classes_map[estimation.name]
-            }
-
-        # Same sign selection for data-driven QCD
-        estimation = DataEstimation(era, args.base_path, channel)
-        estimation.name = "QCD"
-        channel_ss = copy.deepcopy(channel)
-        channel_ss.cuts.get("os").invert()
-        output_config["processes"][estimation.name] = {
-            "files": [
-                str(f).replace(args.base_path.rstrip("/") + "/", "")
-                for f in estimation.get_files()
-            ],
-            "cut_string": (estimation.get_cuts() + channel_ss.cuts +
-                           additional_cuts).expand(),
-            "weight_string":
-            estimation.get_weights().extract(),
-            "class":
-            "ss"
-        }
-
-    ############################################################################
-
-    # Era: 2017, Channel: et
-    if "2017" in args.era and args.channel == "et":
-        channel = ETSM2017()
-
-        # Set up `processes` part of config
-        output_config["processes"] = {}
-
-        # Additional cuts
-        additional_cuts = Cuts()
-        logger.warning("Use additional cuts for et: %s",
-                       additional_cuts.expand())
-
-        # MC-driven processes
-        # NOTE: Define here the mappig of the process estimations to the training classes
-        classes_map = {
-            "ggH": "ggh",
-            "qqH": "qqh",
-            "ZTT": "ztt",
-            "ZL": "zll",
-            "ZJ": "zll",
-            "TTT": "tt",
-            "TTL": "tt",
-            "TTJ": "tt",
-            "W": "w",
-            "VVJ": "misc",
-            "VVT": "misc",
-            "VVL": "misc",
-            "EWKZ": "misc"
-        }
-        for estimation in [
-                ggHEstimation("ggH", era, args.base_path, channel),
-                qqHEstimation("qqH", era, args.base_path, channel),
-                ZTTEstimation(era, args.base_path, channel),
-                ZLEstimation(era, args.base_path, channel),
-                ZJEstimation(era, args.base_path, channel),
-                TTTEstimation(era, args.base_path, channel),
-                TTLEstimation(era, args.base_path, channel),
-                TTJEstimation(era, args.base_path, channel),
-                WEstimation(era, args.base_path, channel),
-                VVJEstimation(era, args.base_path, channel),
-                VVTEstimation(era, args.base_path, channel),
-                VVLEstimation(era, args.base_path, channel),
-                EWKZEstimation(era, args.base_path, channel),
-        ]:
-            output_config["processes"][estimation.name] = {
-                "files": [
-                    str(f).replace(args.base_path.rstrip("/") + "/", "")
-                    for f in estimation.get_files()
-                ],
-                "cut_string": (estimation.get_cuts() + channel.cuts +
-                               additional_cuts).expand(),
-                "weight_string":
-                estimation.get_weights().extract(),
-                "class":
-                classes_map[estimation.name]
-            }
-
-        # Same sign selection for data-driven QCD
-        estimation = DataEstimation(era, args.base_path, channel)
-        estimation.name = "QCD"
-        channel_ss = copy.deepcopy(channel)
-        channel_ss.cuts.get("os").invert()
-        output_config["processes"][estimation.name] = {
-            "files": [
-                str(f).replace(args.base_path.rstrip("/") + "/", "")
-                for f in estimation.get_files()
-            ],
-            "cut_string": (estimation.get_cuts() + channel_ss.cuts +
-                           additional_cuts).expand(),
-            "weight_string":
-            estimation.get_weights().extract(),
-            "class":
-            "ss"
-        }
-
-    ############################################################################
-
-    # Era: 2016, Channel: tt
-    if "2016" in args.era and args.channel == "tt":
-        channel = TTSM2016()
-
-        # Set up `processes` part of config
-        output_config["processes"] = {}
-
-        # Additional cuts
-        additional_cuts = Cuts()
-        logger.warning("Use additional cuts for tt: %s",
-                       additional_cuts.expand())
-
-        # MC-driven processes
-        # NOTE: Define here the mappig of the process estimations to the training classes
-        classes_map = {
-            "ggH": "ggh",
-            "qqH": "qqh",
-            "ZTT": "ztt",
-            "EMB": "ztt",
-            "ZL": "misc",
-            "ZJ": "misc",
-            "TTT": "misc",
-            "TTL": "misc",
-            "TTJ": "misc",
-            "W": "misc",
-            "EWKWp": "misc",
-            "EWKWm": "misc",
-            "VV": "misc",
-            "EWKZ": "misc"
-        }
-        for estimation in [
-                ggHEstimation(era, args.base_path, channel),
-                qqHEstimation(era, args.base_path, channel),
-                ZTTEstimation(era, args.base_path, channel),
-                ZLEstimation(era, args.base_path, channel),
-                ZJEstimation(era, args.base_path, channel),
-                TTTEstimation(era, args.base_path, channel),
-                #TTLEstimationTT(era, args.base_path, channel),
-                TTJEstimation(era, args.base_path, channel),
-                WEstimationRaw(era, args.base_path, channel),
-                EWKWpEstimation(era, args.base_path, channel),
-                EWKWmEstimation(era, args.base_path, channel),
-                VVEstimation(era, args.base_path, channel),
-                EWKZEstimation(era, args.base_path, channel),
-        ]:
-            output_config["processes"][estimation.name] = {
-                "files": [
-                    str(f).replace(args.base_path.rstrip("/") + "/", "")
-                    for f in estimation.get_files()
-                ],
-                "cut_string": (estimation.get_cuts() + channel.cuts +
-                               additional_cuts).expand(),
-                "weight_string":
-                estimation.get_weights().extract(),
-                "class":
-                classes_map[estimation.name]
-            }
-
-        # Same sign selection for data-driven QCD
-        estimation = DataEstimation(era, args.base_path, channel)
-        estimation.name = "QCD"
-        channel_iso = copy.deepcopy(channel)
-        channel_iso.cuts.remove("tau_2_iso")
-        channel_iso.cuts.add(
+    if args.channel != "tt":
+        ## os= opposite sign
+        channel_qcd.cuts.get("os").invert()
+    # Same sign selection for data-driven QCD
+    else:
+        channel_qcd.cuts.remove("tau_2_iso")
+        channel_qcd.cuts.add(
             Cut("byTightIsolationMVArun2v1DBoldDMwLT_2<0.5", "tau_2_iso"))
-        channel_iso.cuts.add(
-            Cut("byLooseIsolationMVArun2v1DBoldDMwLT_2>0.5",
-                "tau_2_iso_loose"))
-        output_config["processes"][estimation.name] = {
-            "files": [
-                str(f).replace(args.base_path.rstrip("/") + "/", "")
-                for f in estimation.get_files()
-            ],
-            "cut_string": (estimation.get_cuts() + channel_iso.cuts +
-                           additional_cuts).expand(),
-            "weight_string":
-            estimation.get_weights().extract(),
-            "class":
-            "noniso"
-        }
+        if args.era=="2016":
+            channel_qcd.cuts.add(
+                Cut("byLooseIsolationMVArun2v1DBoldDMwLT_2>0.5", "tau_2_iso_loose"))
+        elif args.era=="2017":
+            channel_qcd.cuts.add(
+                Cut("byLooseIsolationMVArun2017v2DBoldDMwLT2017_2>0.5", "tau_2_iso_loose"))
+    output_config["processes"][estimation.name] = {
+        "files": [
+            str(f).replace(args.base_path.rstrip("/") + "/", "")
+            for f in estimation.get_files()
+        ],
+        "cut_string": (estimation.get_cuts() + channel_qcd.cuts + additional_cuts).expand(),
+        "weight_string": estimation.get_weights().extract(),
+        "class":classes_map[estimation.name]
+    }
 
-    ############################################################################
-
-    # Era: 2017, Channel: tt
-    if "2017" in args.era and args.channel == "tt":
-        channel = TTSM2017()
-
-        # Set up `processes` part of config
-        output_config["processes"] = {}
-
-        # Additional cuts
-        additional_cuts = Cuts()
-        logger.warning("Use additional cuts for tt: %s",
-                       additional_cuts.expand())
-
-        # MC-driven processes
-        # NOTE: Define here the mappig of the process estimations to the training classes
-        classes_map = {
-            "ggH": "ggh",
-            "qqH": "qqh",
-            "ZTT": "ztt",
-            "ZJ": "misc",
-            "ZL": "misc",
-            "TTT": "misc",
-            "TTL": "misc",
-            "TTJ": "misc",
-            "W": "misc",
-            "VVT": "misc",
-            "VVJ": "misc",
-            "VVL": "misc",
-            "EWKZ": "misc",
-	    "EMB":"ztt"
-        }
-        for estimation in [
-                ggHEstimation("ggH", era, args.base_path, channel),
-                qqHEstimation("qqH", era, args.base_path, channel),
-		ZTTEmbeddedEstimation(era, args.base_path, channel),
-		##removed for embedding
-		#ZTTEstimation(era, args.base_path, channel),
-                ZLEstimation(era, args.base_path, channel),
-                ZJEstimation(era, args.base_path, channel),
-		##removed for embedding
-                #TTTEstimation(era, args.base_path, channel),
-		##next 2 were at some point removed for embedding, as recommened swozn
-                TTJEstimation(era, args.base_path, channel),
-                TTLEstimation(era, args.base_path, channel),
-                WEstimation(era, args.base_path, channel),
-                VVJEstimation(era, args.base_path, channel),
-		##removed for embedding
-                #VVTEstimation(era, args.base_path, channel),
-                VVLEstimation(era, args.base_path, channel),
-                EWKZEstimation(era, args.base_path, channel),
-        ]:
-            output_config["processes"][estimation.name] = {
-                "files": [
-                    str(f).replace(args.base_path.rstrip("/") + "/", "")
-                    for f in estimation.get_files()
-                ],
-                "cut_string": (estimation.get_cuts() + channel.cuts +
-                               additional_cuts).expand(),
-                "weight_string":
-                estimation.get_weights().extract(),
-                "class":
-                classes_map[estimation.name]
-            }
-
-        # Same sign selection for data-driven QCD
-        estimation = DataEstimation(era, args.base_path, channel)
-        estimation.name = "QCD"
-        channel_iso = copy.deepcopy(channel)
-        channel_iso.cuts.remove("tau_2_iso")
-        channel_iso.cuts.add(
-            Cut("byTightIsolationMVArun2v1DBoldDMwLT_2<0.5", "tau_2_iso"))
-        channel_iso.cuts.add(
-            Cut("byLooseIsolationMVArun2017v2DBoldDMwLT2017_2>0.5",
-                "tau_2_iso_loose"))
-        output_config["processes"][estimation.name] = {
-            "files": [
-                str(f).replace(args.base_path.rstrip("/") + "/", "")
-                for f in estimation.get_files()
-            ],
-            "cut_string": (estimation.get_cuts() + channel_iso.cuts +
-                           additional_cuts).expand(),
-            "weight_string":
-            estimation.get_weights().extract(),
-            "class":
-            "noniso"
-        }
-
-    ############################################################################
-
-    # Era: 2016, Channel: em
-    if "2016" in args.era and args.channel == "em":
-        channel = EMSM2016()
-
-        # Set up `processes` part of config
-        output_config["processes"] = {}
-
-        # Additional cuts
-        additional_cuts = Cuts()
-        logger.warning("Use additional cuts for em: %s",
-                       additional_cuts.expand())
-
-        # MC-driven processes
-        # NOTE: Define here the mappig of the process estimations to the training classes
-        classes_map = {
-            "ggH": "ggh",
-            "qqH": "qqh",
-            "ZTT": "ztt",
-            "EMB": "ztt",
-            "ZL": "misc",
-            "TTT": "tt",
-            "TTL": "tt",
-            "W": "misc",
-            "VVT": "db",
-            "VVL": "db",
-        }
-        for estimation in [
-                ggHEstimation(era, args.base_path, channel),
-                qqHEstimation(era, args.base_path, channel),
-                ZTTEstimation(era, args.base_path, channel),
-                ZLEstimation(era, args.base_path, channel),
-                TTTEstimation(era, args.base_path, channel),
-                TTLEstimation(era, args.base_path, channel),
-                WEstimation(era, args.base_path, channel),
-                VVLEstimation(era, args.base_path, channel),
-                VVTEstimation(era, args.base_path, channel),
-        ]:
-            output_config["processes"][estimation.name] = {
-                "files": [
-                    str(f).replace(args.base_path.rstrip("/") + "/", "")
-                    for f in estimation.get_files()
-                ],
-                "cut_string": (estimation.get_cuts() + channel.cuts +
-                               additional_cuts).expand(),
-                "weight_string":
-                estimation.get_weights().extract(),
-                "class":
-                classes_map[estimation.name]
-            }
-
-        # Same sign selection for data-driven QCD
-        estimation = DataEstimation(era, args.base_path, channel)
-        estimation.name = "QCD"
-        channel_ss = copy.deepcopy(channel)
-        channel_ss.cuts.get("os").invert()
-        output_config["processes"][estimation.name] = {
-            "files": [
-                str(f).replace(args.base_path.rstrip("/") + "/", "")
-                for f in estimation.get_files()
-            ],
-            "cut_string": (estimation.get_cuts() + channel_ss.cuts +
-                           additional_cuts).expand(),
-            "weight_string":
-            estimation.get_weights().extract(),
-            "class":
-            "ss"
-        }
-
-    ############################################################################
-
-    # Era: 2017, Channel: em
-    if "2017" in args.era and args.channel == "em":
-        channel = EMSM2017()
-
-        # Set up `processes` part of config
-        output_config["processes"] = {}
-
-        # Additional cuts
-        additional_cuts = Cuts()
-        logger.warning("Use additional cuts for em: %s",
-                       additional_cuts.expand())
-
-        # MC-driven processes
-        # NOTE: Define here the mappig of the process estimations to the training classes
-        classes_map = {
-            "ggH": "ggh",
-            "qqH": "qqh",
-            "ZTT": "ztt",
-            "EMB": "ztt",
-            "ZL": "misc",
-            "TTT": "tt",
-            "TTL": "tt",
-            "W": "misc",
-            "VVT": "db",
-            "VVL": "db",
-        }
-        for estimation in [
-                ggHEstimation("ggH", era, args.base_path, channel),
-                qqHEstimation("qqH", era, args.base_path, channel),
-                ZTTEstimation(era, args.base_path, channel),
-                ZLEstimation(era, args.base_path, channel),
-                TTTEstimation(era, args.base_path, channel),
-                TTLEstimation(era, args.base_path, channel),
-                WEstimation(era, args.base_path, channel),
-                VVLEstimation(era, args.base_path, channel),
-                VVTEstimation(era, args.base_path, channel),
-        ]:
-            output_config["processes"][estimation.name] = {
-                "files": [
-                    str(f).replace(args.base_path.rstrip("/") + "/", "")
-                    for f in estimation.get_files()
-                ],
-                "cut_string": (estimation.get_cuts() + channel.cuts +
-                               additional_cuts).expand(),
-                "weight_string":
-                estimation.get_weights().extract(),
-                "class":
-                classes_map[estimation.name]
-            }
-
-        # Same sign selection for data-driven QCD
-        estimation = DataEstimation(era, args.base_path, channel)
-        estimation.name = "QCD"
-        channel_ss = copy.deepcopy(channel)
-        channel_ss.cuts.get("os").invert()
-        output_config["processes"][estimation.name] = {
-            "files": [
-                str(f).replace(args.base_path.rstrip("/") + "/", "")
-                for f in estimation.get_files()
-            ],
-            "cut_string": (estimation.get_cuts() + channel_ss.cuts +
-                           additional_cuts).expand(),
-            "weight_string":
-            estimation.get_weights().extract(),
-            "class":
-            "ss"
-        }
-
-    ############################################################################
-
+    #####################################
     # Write output config
     logger.info("Write config to file: {}".format(args.output_config))
-    yaml.dump(
-        output_config, open(args.output_config, 'w'), default_flow_style=False)
+    yaml.dump(output_config, open(args.output_config, 'w'), default_flow_style=False)
 
 
 if __name__ == "__main__":
