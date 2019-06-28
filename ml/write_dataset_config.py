@@ -228,13 +228,10 @@ def main(args):
     else:
         channel_qcd.cuts.remove("tau_2_iso")
         channel_qcd.cuts.add(
-            Cut("byTightIsolationMVArun2v1DBoldDMwLT_2<0.5", "tau_2_iso"))
-        if args.era=="2016":
-            channel_qcd.cuts.add(
-                Cut("byLooseIsolationMVArun2v1DBoldDMwLT_2>0.5", "tau_2_iso_loose"))
-        elif args.era=="2017":
-            channel_qcd.cuts.add(
-                Cut("byLooseIsolationMVArun2017v2DBoldDMwLT2017_2>0.5", "tau_2_iso_loose"))
+            Cut("byTightIsolationMVArun2017v2DBoldDMwLT2017_2<0.5", "tau_2_iso"))
+        channel_qcd.cuts.add(
+            Cut("byLooseIsolationMVArun2017v2DBoldDMwLT2017_2>0.5", "tau_2_iso_loose"))
+
     output_config["processes"][estimation.name] = {
         "files": [
             str(f).replace(args.base_path.rstrip("/") + "/", "")
