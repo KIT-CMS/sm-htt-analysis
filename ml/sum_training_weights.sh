@@ -37,18 +37,7 @@ function run_procedure() {
          --write-weights True
 }
 
-CHANNELS=$(if [[ -z $CHANNEL ]]; then echo "tt" "mt" "et"; else echo $CHANNEL; fi)
-ERAS=$(if [[ -z $ERA ]]; then echo "2016" "2017"; else echo $ERA; fi)
-
-i=0 ## how many sets of arguments
-unset argslist
-for era in $ERAS
-do
-    for channel in $CHANNELS;do
-        argslist[$i]=" $era $channel"
-        i=$(($i+1))
-    done
-done
 
 source utils/multirun.sh
-multirun run_procedure ${argslist[@]}
+genArgsAndRun run_procedure $ERA $CHANNEL 
+
