@@ -1,64 +1,43 @@
 #!/bin/bash
-
 ERA=$1
+CHANNEL=$2
+
 
 source utils/setup_cvmfs_sft.sh
 
-PROCESSES="ggh qqh ztt tt ss misc db"
-CHANNEL=em
-for FOLD in 0 1
-do
-    python ./ml/sum_training_weights.py ml/${ERA}_${CHANNEL}/fold${FOLD}_training_dataset.root $PROCESSES
-    echo
-done
 
-hadd -f ml/${ERA}_${CHANNEL}/combined_training_dataset.root \
-    ml/${ERA}_${CHANNEL}/fold0_training_dataset.root \
-    ml/${ERA}_${CHANNEL}/fold1_training_dataset.root
-echo
-python ./ml/sum_training_weights.py ml/${ERA}_${CHANNEL}/combined_training_dataset.root $PROCESSES
-echo
+function run_procedure() {
+    SELERA=$1
+    SELCHANNEL=$2
+    datasetConfFile="ml/${SELERA}_${SELCHANNEL}/dataset_config.yaml"
+    ##print commands before executing
+    #set -o xtrace
 
-PROCESSES="ggh qqh ztt noniso misc"
-CHANNEL=tt
-for FOLD in 0 1
-do
-    python ./ml/sum_training_weights.py ml/${ERA}_${CHANNEL}/fold${FOLD}_training_dataset.root $PROCESSES
-    echo
-done
+    # for FOLD in 0 1
+    # do
+    #     python ./ml/sum_training_weights.py \
+    #         --era ${SELERA} \
+    #         --channel ${SELCHANNEL} \
+    #         --dataset ml/${SELERA}_${SELCHANNEL}/fold${FOLD}_training_dataset.root \
+    #         --dataset-config-file $datasetConfFile \
+    #         --channel $SELCHANNEL \
+    #         --write-weights False
+    #     echo
+    # done
+    hadd -f ml/${SELERA}_${SELCHANNEL}/combined_training_dataset.root \
+        ml/${SELERA}_${SELCHANNEL}/fold0_training_dataset.root \
+        ml/${SELERA}_${SELCHANNEL}/fold1_training_dataset.root
 
-hadd -f ml/${ERA}_${CHANNEL}/combined_training_dataset.root \
-    ml/${ERA}_${CHANNEL}/fold0_training_dataset.root \
-    ml/${ERA}_${CHANNEL}/fold1_training_dataset.root
-echo
-python ./ml/sum_training_weights.py ml/${ERA}_${CHANNEL}/combined_training_dataset.root $PROCESSES
-echo
+    python ./ml/sum_training_weights.py \
+        --era ${SELERA} \
+        --channel ${SELCHANNEL} \
+        --dataset ml/${SELERA}_${SELCHANNEL}/combined_training_dataset.root \
+        --dataset-config-file $datasetConfFile \
+        --channel $SELCHANNEL \
+         --write-weights True
+}
 
-PROCESSES="ggh qqh ztt zll w tt ss misc"
-CHANNEL=et
-for FOLD in 0 1
-do
-    python ./ml/sum_training_weights.py ml/${ERA}_${CHANNEL}/fold${FOLD}_training_dataset.root $PROCESSES
-    echo
-done
 
-hadd -f ml/${ERA}_${CHANNEL}/combined_training_dataset.root \
-    ml/${ERA}_${CHANNEL}/fold0_training_dataset.root \
-    ml/${ERA}_${CHANNEL}/fold1_training_dataset.root
-echo
-python ./ml/sum_training_weights.py ml/${ERA}_${CHANNEL}/combined_training_dataset.root $PROCESSES
-echo
+source utils/multirun.sh
+genArgsAndRun run_procedure $ERA $CHANNEL 
 
-CHANNEL=mt
-for FOLD in 0 1
-do
-    python ./ml/sum_training_weights.py ml/${ERA}_${CHANNEL}/fold${FOLD}_training_dataset.root $PROCESSES
-    echo
-done
-
-hadd -f ml/${ERA}_${CHANNEL}/combined_training_dataset.root \
-    ml/${ERA}_${CHANNEL}/fold0_training_dataset.root \
-    ml/${ERA}_${CHANNEL}/fold1_training_dataset.root
-echo
-python ./ml/sum_training_weights.py ml/${ERA}_${CHANNEL}/combined_training_dataset.root $PROCESSES
-echo

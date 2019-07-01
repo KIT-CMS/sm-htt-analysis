@@ -66,3 +66,4 @@ fi
 
 # Kappa database
 KAPPA_DATABASE=datasets/datasets.json
+

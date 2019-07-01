@@ -461,3 +461,4 @@ if __name__ == "__main__":
     args = parse_arguments()
     setup_logging("{}_plot_shapes.log".format(args.era), logging.INFO)
     main(args)
+
