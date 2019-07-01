@@ -1,0 +1,17 @@
+#!/bin/bash
+anaSSStep=0
+
+mc_ds_created=0
+emb_ds_created=0
+
+mc_sum_sum_training_weights=0
+emb_sum_sum_training_weights=0
+
+mc_training=0
+emb_training=0
+
+mc_NNApplication_started=0
+emb_NNApplication_started=0
+
+mc_NNApplication_ended=0
+emb_NNApplication_ended=0
