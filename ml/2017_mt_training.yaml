@@ -19,14 +19,14 @@ classes:
 
 # Set class weights
 class_weights:
-    ggh: 205.7
-    qqh: 1734.2
-    ztt: 1.8
-    zll: 15.9
-    w: 6.8
-    tt: 14.8
-    ss: 6.8
-    misc: 65.3
+    ggh:  297.2
+    qqh:  2432.6
+    ztt: 2.7
+    zll: 18.2
+    w: 3.7
+    tt: 7.9
+    ss: 6.4
+    misc:  40.0
 
 # Define global scale factor, which is multiplied to all event weights
 global_weight_scale: 1.0
@@ -36,26 +36,36 @@ event_weights: training_weight
 
 # Define list of variables to be used for training
 variables:
-    # pt_1      # Failed 1D GoF
+    - pt_1
     - pt_2
-    # iso_1     # Failed 1D GoF
-    # iso_2     # Failed 1D GoF
-    - jpt_1
-    - jpt_2
+    - eta_1
+    - eta_2
+    - m_vis
+    - ptvis
+    - pt_tt
+    - pt_ttjj
+    - m_sv
+    - eta_sv
+    - ME_D
+    - ME_costheta1
+    - ME_costheta2
+    - ME_costhetastar
+    - ME_phi
+    - ME_phi1
+    - ME_q2v1
+    - ME_q2v2
     - bpt_1
     - bpt_2
-    - njets
     - nbtag
-    - m_sv
-    - mt_1
-    # mt_2      # Failed 1D GoF
-    # ptvis     # Failed 2D GoF
-    - pt_tt
-    - mjj
+    - jpt_1
+    - jpt_2
+    - njets
     - jdeta
-    # m_vis     # Failed 1D GoF
+    - mjj
     - dijetpt
-    # met       # Failed 2D GoF
+    - met
+    - pZetaMissVis
+    - mTdileptonMET
 
 # Split of dataset in training and validation (in TMVA called training and testing)
 train_test_split: 0.75
