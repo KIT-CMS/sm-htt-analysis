@@ -20,7 +20,7 @@ source utils/setup_samples.sh $ERA
 
 python shapes/produce_shapes_${ERA}.py \
     --directory $ARTUS_OUTPUTS \
-    --em-directory $ARTUS_OUTPUTS_EM \
+    --em-friend-directory $ARTUS_FRIENDS_EM \
     --et-friend-directory $ARTUS_FRIENDS_ET \
     --mt-friend-directory $ARTUS_FRIENDS_MT \
     --tt-friend-directory $ARTUS_FRIENDS_TT \
@@ -30,5 +30,6 @@ python shapes/produce_shapes_${ERA}.py \
     --gof-channel $CHANNELS \
     --gof-variable $VARIABLE \
     --era $ERA \
+    --num-threads 20 \
     --tag ${ERA}_${CHANNELS}_${VARIABLE} \
 	--skip-systematic-variations true

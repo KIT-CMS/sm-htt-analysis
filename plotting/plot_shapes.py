@@ -101,7 +101,7 @@ def main(args):
         if args.categories == "stxs_stage0":
             for channel in ["et", "mt", "tt", "em"]:
                 channel_categories[channel] += ["1_A", "1_B", "1_C", "2_A", "2_B"]
-        elif args.categories == "stxs_stage1":
+        elif args.categories == "stxs_stage1p1":
             for channel in ["et", "mt", "tt", "em"]:
                 channel_categories[channel] += ["1_A", "1_B", "1_C", "2_A", "2_B"]
         elif args.categories == "stxs_stage1p1":
@@ -134,7 +134,7 @@ def main(args):
             "14": "qcd",
             "16": "misc",
             "17": "qcd",
-            "18": "single top",
+        #    "18": "single top",
             "19": "diboson"
         }
     if args.linear == True:
@@ -185,10 +185,9 @@ def main(args):
             if channel == "tt" and category=="2":
                     bkg_processes = [b for b in all_bkg_processes]
             elif channel == "em" and args.embedding:
-                # bkg_processes = ["ST", "VVL", "W", "TTL", "ZL", "QCD", "EMB"]
                 bkg_processes = ["VVL", "W", "TTL", "ZL", "QCD", "EMB"]
             elif channel == "em" and not args.embedding:
-                bkg_processes = ["ST", "VV", "W", "TT", "ZL", "QCD", "ZTT"]
+                bkg_processes = ["VVL", "W", "TTL", "ZL", "QCD", "ZTT"]
             else:
                 bkg_processes = [b for b in all_bkg_processes]
             legend_bkg_processes = copy.deepcopy(bkg_processes)
@@ -465,3 +464,4 @@ if __name__ == "__main__":
     args = parse_arguments()
     setup_logging("{}_plot_shapes.log".format(args.era), logging.INFO)
     main(args)
+

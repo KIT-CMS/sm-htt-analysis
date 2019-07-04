@@ -138,7 +138,7 @@ def main(args):
     systematics_et = Systematics("shapes_et.root", num_threads=args.num_threads, find_unique_objects=True)
     systematics_tt = Systematics("shapes_tt.root", num_threads=args.num_threads, find_unique_objects=True)
     systematics_em = Systematics("shapes_em.root", num_threads=args.num_threads, find_unique_objects=True)
-    #systematics_mm = Systematics("shapes_mm.root", num_threads=args.num_threads, find_unique_objects=True)
+    systematics_mm = Systematics("shapes_mm.root", num_threads=args.num_threads, find_unique_objects=True)
 
     # Era
     era = Run2017(args.datasets)
@@ -150,11 +150,7 @@ def main(args):
     mt_friend_directory = args.mt_friend_directory
     tt_friend_directory = args.tt_friend_directory
     em_friend_directory = args.em_friend_directory
-    #mm_friend_directory = args.mm_friend_directory
-    et_friend_directory = []
-    mt_friend_directory = []
-    tt_friend_directory = []
-    em_friend_directory = []
+    mm_friend_directory = args.mm_friend_directory
 
     ff_friend_directory = args.fake_factor_friend_directory
 
@@ -275,20 +271,20 @@ def main(args):
     em_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, em, [em_processes[process] for process in ["ZTT", "ZL", "W", "TTT", "VVT", "VVL"]], em_processes["data"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
     em_processes["QCDEMB"] = Process("QCDEMB", QCDEstimation_SStoOS_MTETEM(era, directory, em, [em_processes[process] for process in ["EMB", "ZL", "W", "VVL"]], em_processes["data"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
 
-    #mm = MM()
-    #mm_processes = {
-    #    "data"  : Process("data_obs", DataEstimation      (era, directory, mm, friend_directory=[])),
-    #    "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, mm, friend_directory=[])),
-    #    "ZL"    : Process("ZL",       ZLEstimation        (era, directory, mm, friend_directory=[])),
-    #    "TTT"   : Process("TTT",      TTTEstimation       (era, directory, mm, friend_directory=[])),
-    #    "TTL"   : Process("TTL",      TTLEstimation       (era, directory, mm, friend_directory=[])),
-    #    "VVT"   : Process("VVT",      VVTEstimation       (era, directory, mm, friend_directory=[])),
-    #    "VVL"   : Process("VVL",      VVLEstimation       (era, directory, mm, friend_directory=[])),
-    #    "W"     : Process("W",        WEstimation         (era, directory, mm, friend_directory=[])),
-    #    }
-    #mm_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, mm,
-    #        [mm_processes[process] for process in ["ZTT", "ZL", "W", "TTT", "TTL", "VVT", "VVL"]],
-    #        mm_processes["data"], friend_directory=[], extrapolation_factor=1.00))
+    mm = MM()
+    mm_processes = {
+        "data"  : Process("data_obs", DataEstimation      (era, directory, mm, friend_directory=mm_friend_directory)),
+        "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, mm, friend_directory=mm_friend_directory)),
+        "ZL"    : Process("ZL",       ZLEstimation        (era, directory, mm, friend_directory=mm_friend_directory)),
+        "TTT"   : Process("TTT",      TTTEstimation       (era, directory, mm, friend_directory=mm_friend_directory)),
+        "TTL"   : Process("TTL",      TTLEstimation       (era, directory, mm, friend_directory=mm_friend_directory)),
+        "VVT"   : Process("VVT",      VVTEstimation       (era, directory, mm, friend_directory=mm_friend_directory)),
+        "VVL"   : Process("VVL",      VVLEstimation       (era, directory, mm, friend_directory=mm_friend_directory)),
+        "W"     : Process("W",        WEstimation         (era, directory, mm, friend_directory=mm_friend_directory)),
+        }
+    mm_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, mm,
+            [mm_processes[process] for process in ["ZTT", "ZL", "W", "TTT", "TTL", "VVT", "VVL"]],
+            mm_processes["data"], friend_directory=mm_friend_directory, extrapolation_factor=2.0))
 
 
     # Variables and categories
@@ -298,24 +294,32 @@ def main(args):
     et_categories = []
     tt_categories = []
     em_categories = []
-    #mm_categories = []
+    mm_categories = []
 
     variable_names = [
         "m_vis", "ptvis",
-        #"m_sv", "pt_sv", "eta_sv",
-        #"m_fastmtt", "pt_fastmtt", "eta_fastmtt",
-        #"ME_D", "ME_vbf", "ME_z2j_1", "ME_z2j_2", "ME_q2v1", "ME_q2v2", "ME_costheta1", "ME_costheta2", "ME_costhetastar", "ME_phi", "ME_phi1",
-        "njets", "jpt_1", "jpt_2", "jeta_1", "jeta_2",
-        "met",
-        "pt_1", "pt_2", "eta_1", "eta_2",
-        "mjj", "jdeta", "dijetpt",
-        "mt_1", "mt_2", "pt_tt", "pZetaMissVis",# "mTdileptonMET",
-        "pt_ttjj",
-        "nbtag", "bpt_1", "bpt_2", "beta_1", "beta_2",
         "DiTauDeltaR",
+
+        "m_sv", "pt_sv", "eta_sv",
+        "m_sv_puppi", "pt_sv_puppi", "eta_sv_puppi",
+        "m_fastmtt", "pt_fastmtt", "eta_fastmtt",
+        "m_fastmtt_puppi", "pt_fastmtt_puppi", "eta_fastmtt_puppi",
+
+        "ME_D", "ME_vbf", "ME_z2j_1", "ME_z2j_2", "ME_q2v1", "ME_q2v2", "ME_costheta1", "ME_costheta2", "ME_costhetastar", "ME_phi", "ME_phi1",
+
+        "pt_1", "pt_2", "eta_1", "eta_2",
+
+        "mjj", "jdeta", "dijetpt",
+        "njets", "jpt_1", "jpt_2", "jeta_1", "jeta_2",
+        "nbtag", "bpt_1", "bpt_2", "beta_1", "beta_2",
+
+       "met", "mt_1", "mt_2", "pt_tt", "pZetaMissVis", "pt_ttjj", "mt_tot", "mTdileptonMET",
+        "puppimet", "mt_1_puppi", "mt_2_puppi", "pt_tt_puppi", "pZetaPuppiMissVis", "pt_ttjj_puppi", "mt_tot_puppi", "mTdileptonMET_puppi",
+    #    "NNrecoil_pt", "nnmet", "mt_1_nn", "mt_2_nn", "pt_tt_nn", "pZetaNNMissVis", "pt_ttjj_nn", "mt_tot_nn", "mTdileptonMET_nn",
+
+    #    "metParToZ", "metPerpToZ",
+    #    "puppimetParToZ", "puppimetPerpToZ",
     ]
-    #variable_names = ["m_vis"]
-    #variable_names +=["DiTauDeltaR"]
 
     if "mt" in args.channels:
         variables = [Variable(v,VariableBinning(binning["control"]["mt"][v]["bins"]), expression=binning["control"]["mt"][v]["expression"]) for v in variable_names]
@@ -351,9 +355,9 @@ def main(args):
                     variable=var))
 
     if "em" in args.channels:
-        variables = [Variable(v,VariableBinning(binning["control"]["em"][v]["bins"]), expression=binning["control"]["em"][v]["expression"]) for v in variable_names + ["mTdileptonMET"]]
+        variables = [Variable(v,VariableBinning(binning["control"]["em"][v]["bins"]), expression=binning["control"]["em"][v]["expression"]) for v in variable_names]
         cuts = Cuts()
-        for name, var in zip(variable_names +["mTdileptonMET"], variables):
+        for name, var in zip(variable_names, variables):
             em_categories.append(
                 Category(
                     name,
@@ -361,16 +365,24 @@ def main(args):
                     cuts,
                     variable=var))
 
-    #if "mm" in args.channels:
-    #    variables = [Variable(v,VariableBinning(binning["control"]["mm"][v]["bins"]), expression=binning["control"]["mm"][v]["expression"]) for v in variable_names]
-    #    cuts = Cuts()
-    #    for name, var in zip(variable_names, variables):
-    #        mm_categories.append(
-    #            Category(
-    #                name,
-    #                mm,
-    #                cuts,
-    #                variable=var))
+    if "mm" in args.channels:
+        variables = [Variable(v,VariableBinning(binning["control"]["mm"][v]["bins"]), expression=binning["control"]["mm"][v]["expression"]) for v in variable_names]
+        variables.append(Variable("m_vis_high",ConstantBinning(19,50.0,1000.0),expression="m_vis"))
+        variable_names.append("m_vis_high")
+        cuts = Cuts()
+        for name, var in zip(variable_names, variables):
+            mm_categories.append(
+                Category(
+                    name,
+                    mm,
+                    cuts,
+                    variable=var))
+            mm_categories.append(
+                Category(
+                    name+"_peak",
+                    mm,
+                    Cuts(Cut("m_vis > 70 && m_vis < 110","m_vis_peak")),
+                    variable=var))
 
     # Nominal histograms
     if "mt" in args.channels:
@@ -417,16 +429,16 @@ def main(args):
                     variation=Nominal(),
                     mass="125"))
 
-    #if "mm" in args.channels:
-    #    for process, category in product(mm_processes.values(), mm_categories):
-    #        systematics_mm.add(
-    #            Systematic(
-    #                category=category,
-    #                process=process,
-    #                analysis="smhtt",
-    #                era=era,
-    #                variation=Nominal(),
-    #                mass="125"))
+    if "mm" in args.channels:
+        for process, category in product(mm_processes.values(), mm_categories):
+            systematics_mm.add(
+                Systematic(
+                    category=category,
+                    process=process,
+                    analysis="smhtt",
+                    era=era,
+                    variation=Nominal(),
+                    mass="125"))
 
 
     # Produce histograms
@@ -434,7 +446,7 @@ def main(args):
     if "et" in args.channels: systematics_et.produce()
     if "tt" in args.channels: systematics_tt.produce()
     if "em" in args.channels: systematics_em.produce()
-    #if "mm" in args.channels: systematics_mm.produce()
+    if "mm" in args.channels: systematics_mm.produce()
 
 
 if __name__ == "__main__":

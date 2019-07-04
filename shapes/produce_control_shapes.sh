@@ -55,5 +55,4 @@ python shapes/produce_control_shapes.py \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
     --channels mm \
-    --mm-friend-directory $ARTUS_FRIENDS_MM \
     --num-threads 30
