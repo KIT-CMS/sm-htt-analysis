@@ -95,7 +95,8 @@ def main(args):
             "mt": ["12", "15", "11", "13", "14", "16"],
             #"tt": ["ztt", "noniso", "misc"]
             "tt": ["12", "17", "16"],
-            "em": ["12", "13", "14", "16", "18", "19"]
+            #"em": ["12", "13", "14", "16", "18", "19"]
+            "em": ["12", "13", "14", "16", "19"]
         }
         if args.categories == "stxs_stage0":
             for channel in ["et", "mt", "tt", "em"]:
@@ -184,7 +185,8 @@ def main(args):
             if channel == "tt" and category=="2":
                     bkg_processes = [b for b in all_bkg_processes]
             elif channel == "em" and args.embedding:
-                bkg_processes = ["ST", "VV", "W", "TT", "ZL", "QCD", "EMB"]
+                # bkg_processes = ["ST", "VVL", "W", "TTL", "ZL", "QCD", "EMB"]
+                bkg_processes = ["VVL", "W", "TTL", "ZL", "QCD", "EMB"]
             elif channel == "em" and not args.embedding:
                 bkg_processes = ["ST", "VV", "W", "TT", "ZL", "QCD", "ZTT"]
             else:

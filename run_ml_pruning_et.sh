@@ -4,19 +4,19 @@ ERA=$1
 LOSS=$2
 CHANNEL="et"
 
-#./ml/run_pruning.sh $ERA $CHANNEL ggh True
+./ml/run_pruning.sh $ERA $CHANNEL ggh True
 
-#for i in {1..18}
-#do
-#   ./ml/run_pruning.sh $ERA $CHANNEL ggh False
-#   ./ml/run_train_pruning.sh $ERA $CHANNEL $LOSS
-#   ./ml/run_test_pruning.sh $ERA $CHANNEL
-#done
+for i in {1..18}
+do
+   ./ml/run_pruning.sh $ERA $CHANNEL ggh False
+   ./ml/run_train_pruning.sh $ERA $CHANNEL $LOSS
+   ./ml/run_test_pruning.sh $ERA $CHANNEL
+done
 
-#./ml/run_plot_recall_precision.sh $ERA $CHANNEL
-#./ml/run_pruning.sh $ERA $CHANNEL ggh True
+./ml/run_plot_recall_precision.sh $ERA $CHANNEL
+./ml/run_pruning.sh $ERA $CHANNEL ggh True
 
-for i in {1..1}
+for i in {1..18}
 do
    ./ml/run_pruning.sh $ERA $CHANNEL qqh False
    ./ml/run_train_pruning.sh $ERA $CHANNEL $LOSS
@@ -25,14 +25,14 @@ done
 
 ./ml/run_plot_recall_precision.sh $ERA $CHANNEL
 #./ml/run_pruning.sh $ERA $CHANNEL qqh True
-
+#
 #for i in {1..18}
 #do
 #   ./ml/run_pruning.sh $ERA $CHANNEL ztt False
 #   ./ml/run_train_pruning.sh $ERA $CHANNEL $LOSS
 #   ./ml/run_test_pruning.sh $ERA $CHANNEL
 #done
-
+#
 #./ml/run_plot_recall_precision.sh $ERA $CHANNEL
 #./ml/run_pruning.sh $ERA $CHANNEL ztt True
 #

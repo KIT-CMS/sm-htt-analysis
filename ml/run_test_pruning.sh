@@ -38,3 +38,13 @@ python htt-ml/testing/keras_confusion_matrix.py \
 python htt-ml/testing/keras_confusion_matrix.py \
     ml/${ERA}_${CHANNEL}_training_pruning_1.yaml ml/${ERA}_${CHANNEL}_testing.yaml 1
 fi
+
+# Signifance on test data
+TEST_SIGNIFICANCE=1
+if [ -n "$TEST_SIGNIFICANCE" ]; then
+python htt-ml/testing/keras_significance.py \
+    ml/${ERA}_${CHANNEL}_training_pruning_0.yaml ml/${ERA}_${CHANNEL}_testing.yaml 0
+
+python htt-ml/testing/keras_significance.py \
+    ml/${ERA}_${CHANNEL}_training_pruning_1.yaml ml/${ERA}_${CHANNEL}_testing.yaml 1
+fi
