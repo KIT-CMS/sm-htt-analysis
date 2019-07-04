@@ -7,12 +7,24 @@ classifiers:
     - ml/2016_et/fold1_keras_model.h5
     - ml/2016_et/fold0_keras_model.h5
 
+weights:
+    - ml/2016_et/fold1_keras_weights.h5
+    - ml/2016_et/fold0_keras_weights.h5
+
 preprocessing:
     - ml/2016_et/fold1_keras_preprocessing.pickle
     - ml/2016_et/fold0_keras_preprocessing.pickle
+
+architecture_exports:
+    - ml/2016_et/fold1_keras_architecture.json
+    - ml/2016_et/fold0_keras_architecture.json
+
+variable_exports:
+    - ml/2016_et/fold1_keras_variables.json
+    - ml/2016_et/fold0_keras_variables.json
 
 # Branch prefix
 branch_prefix: et_
 
 # Output directory
-output_directory: /ceph/wunsch/Artus16_Nov/et_keras_20190124
+output_directory: /storage/9/sbrommer/htt_training/et_16

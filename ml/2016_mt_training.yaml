@@ -1,75 +1,52 @@
-# Training datasets for different folds
-datasets:
-    - ml/2016_mt/fold0_training_dataset.root
-    - ml/2016_mt/fold1_training_dataset.root
-
-# Base path for all output files
-output_path: ml/2016_mt
-
-# Define classes based on tree names in dataset file
-classes:
-    - ggh
-    - qqh
-    - ztt
-    - zll
-    - w
-    - tt
-    - ss
-    - misc
-
-# Set class weights
 class_weights:
-    ggh: 211.1
-    qqh: 1811.4
-    ztt: 1.6
-    zll: 18.6
-    w: 7.9
-    tt: 53.0
-    ss: 6.8
-    misc: 51.4
-
-# Define global scale factor, which is multiplied to all event weights
-global_weight_scale: 1.0
-
-# Set event weight variable
+#  ggh: 223318.85667015924
+  misc: 256.8364327109257
+  qqh: 1836.246024244309
+  ss: 6.616897459060372
+  tt: 18.00263337566449
+  w: 6.799547536309369
+  zll: 13.66888192361698
+  ztt: 1.7585377716013677
+classes:
+#- ggh
+- qqh
+- ztt
+- zll
+- w
+- tt
+- ss
+- misc
+datasets:
+- ml/2016_mt/fold0_training_dataset.root
+- ml/2016_mt/fold1_training_dataset.root
 event_weights: training_weight
-
-# Define list of variables to be used for training
-variables:
-    - pt_1
-    - pt_2
-    # iso_1     # Failed 1D GoF
-    # iso_2     # Failed 1D GoF
-    - jpt_1
-    - jpt_2
-    - bpt_1
-    - bpt_2
-    - njets
-    - nbtag
-    - m_sv
-    - mt_1
-    - mt_2
-    - ptvis
-    - pt_tt
-    - mjj
-    - jdeta
-    - m_vis
-    - dijetpt
-    - met
-
-# Split of dataset in training and validation (in TMVA called training and testing)
-train_test_split: 0.75
-
-# Define preprocessing
-preprocessing: standard_scaler
-
-# Set random seed for initialization of parameters and dataset splits
-seed: 1234
-
-# Define the model parameter
+global_weight_scale: 1.0
 model:
-    name: smhtt_dropout_tanh
-    batch_size: 100
-    epochs: 100000
-    early_stopping: 50
-    save_best_only: true
+  batch_size: 100
+  early_stopping: 50
+  epochs: 100000
+  name: smhtt_dropout_tanh
+  save_best_only: true
+output_path: ml/2016_mt
+preprocessing: standard_scaler
+seed: 1234
+train_test_split: 0.75
+variables:
+- pt_1
+- pt_2
+- jpt_1
+- jpt_2
+- bpt_1
+- bpt_2
+- njets
+- nbtag
+- m_fastmtt
+- mt_1
+- mt_2
+- ptvis
+- pt_tt
+- mjj
+- jdeta
+- m_vis
+- dijetpt
+- met
