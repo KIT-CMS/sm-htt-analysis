@@ -4,8 +4,8 @@ datasets:
     - ml/2017_mt/fold1_training_dataset.root
 
 # Base path for all output files
-output_path: ml/2017_mt_10_variables
-output_path_json: ml/2017_mt_10_variables
+output_path: ml/2017_mt_27_variables
+output_path_json: ml/2017_mt_27_variables
 
 # Define classes based on tree names in dataset file
 classes:
@@ -42,21 +42,21 @@ variables:
     # iso_1     # Failed 1D GoF
     # iso_2     # Failed 1D GoF
     - jpt_1
-    #- jpt_2
-    #- bpt_1
-    #- bpt_2
+    - jpt_2
+    - bpt_1
+    - bpt_2
     - njets
     - nbtag
     - m_sv
-    #- mt_1
-    #- mt_2      # Failed 1D GoF
+    - mt_1
+    - mt_2      # Failed 1D GoF
     - ptvis     # Failed 2D GoF
-    #- pt_tt
+    - pt_tt
     - mjj
-    #- jdeta
+    - jdeta
     - m_vis     # Failed 1D GoF
     - dijetpt
-    #- met       # Failed 2D GoF
+    - met       # Failed 2D GoF
 #    - ME_q2v1
 #    - ME_q2v2
 #    - ME_costheta1

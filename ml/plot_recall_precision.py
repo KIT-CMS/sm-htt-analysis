@@ -99,7 +99,7 @@ def main(args, config_train, json_content):
     ax.set_xlabel("Number of variables"), plt.ylabel("Recall/Efficiency")
     ax.set_xticks(x_values)
     ax.set_xticklabels(all_variables)
-    ax.legend()
+    ax.legend(ncol=2)
     fig.savefig(path_plot + ".png", bbox_inches="tight")
     fig.savefig(path_plot + ".pdf", bbox_inches="tight")
 
@@ -123,7 +123,7 @@ def main(args, config_train, json_content):
     ax.set_xlabel("Number of variables"), plt.ylabel("F1-Score")
     ax.set_xticks(x_values)
     ax.set_xticklabels(all_variables)
-    ax.legend()
+    ax.legend(ncol=2, prop={'size': 16})
     fig.savefig(path_plot + ".png", bbox_inches="tight")
     fig.savefig(path_plot + ".pdf", bbox_inches="tight")
 
@@ -146,7 +146,7 @@ def main(args, config_train, json_content):
     ax.set_xlabel("Number of variables"), plt.ylabel("Precision/Purity")
     ax.set_xticks(x_values)
     ax.set_xticklabels(all_variables)
-    ax.legend()
+    ax.legend(ncol=2)
     fig.savefig(path_plot + ".png", bbox_inches="tight")
     fig.savefig(path_plot + ".pdf", bbox_inches="tight")
 

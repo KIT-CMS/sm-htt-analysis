@@ -68,7 +68,7 @@ seed: 1234
 
 # Define the model parameter
 model:
-    name: smhtt_dropout_tanh
+    name: smhtt_dropout_relu
     batch_size: 100
     epochs: 100000
     early_stopping: 50

@@ -26,8 +26,8 @@ fi
 
 for fold in 0 1;
 do
-    python3 htt-ml/lwtnn/converters/keras2json.py ml/${ERA}_${CHANNEL}_10_variables/fold${fold}_keras_architecture.json  ml/${ERA}_${CHANNEL}_10_variables/fold${fold}_keras_variables.json ml/${ERA}_${CHANNEL}_10_variables/fold${fold}_keras_weights.h5 >  ml/${ERA}_${CHANNEL}_10_variables/fold${fold}_lwtnn.json
+    python3 htt-ml/lwtnn/converters/keras2json.py ml/${ERA}_${CHANNEL}_27_variables/fold${fold}_keras_architecture.json  ml/${ERA}_${CHANNEL}_27_variables/fold${fold}_keras_variables.json ml/${ERA}_${CHANNEL}_27_variables/fold${fold}_keras_weights.h5 >  ml/${ERA}_${CHANNEL}_27_variables/fold${fold}_lwtnn.json
 done
 
 echo "Created lwtnn .json files:"
-ls ml/${ERA}_${CHANNEL}_10_variables/*lwtnn.json -lrth
+ls ml/${ERA}_${CHANNEL}_27_variables/*lwtnn.json -lrth

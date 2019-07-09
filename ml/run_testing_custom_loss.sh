@@ -58,7 +58,7 @@ fi
 
 # Taylor analysis (ranking)
 export KERAS_BACKEND=tensorflow
-TEST_TAYLOR_RANKING=1
+#TEST_TAYLOR_RANKING=1
 if [ -n "$TEST_TAYLOR_RANKING" ]; then
 python htt-ml/testing/keras_taylor_ranking.py \
     ml/${ERA}_${CHANNEL}_training_custom_loss.yaml ml/${ERA}_${CHANNEL}_testing.yaml 0
