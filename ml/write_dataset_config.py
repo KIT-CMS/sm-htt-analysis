@@ -99,8 +99,6 @@ def main(args):
             VVLEstimation(era, args.base_path, channel),
 	    WEstimation(era, args.base_path, channel)
         ]
-        if args.era == "2016": # remove ggh for now as signal sample is broken TODO remove this swtich as soon as sample is fine !
-            estimationMethodList = estimationMethodList[1::]
         ######## Check for emb vs MC
         if args.training_z_estimation_method=="emb":
             classes_map["EMB"]="ztt"
