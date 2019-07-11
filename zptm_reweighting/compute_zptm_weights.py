@@ -1,8 +1,16 @@
 import ROOT as r
 import json
 import numpy as np
+import sys
+import Dumbledraw.styles as styles
 
-f = r.TFile.Open("counts_zptm.root")
+r.gROOT.SetBatch()
+r.gStyle.SetPaintTextFormat(".2f")
+styles.ModTDRStyle()
+
+fname = sys.argv[1]
+year = fname.split("_")[-1].replace(".root","")
+f = r.TFile.Open(fname)
 
 t = f.Get("output_tree")
 t.GetEntry(0)
@@ -49,12 +57,12 @@ for c in categories:
 corrected_total_weighted_mc_yield = sum([yields["ZL"][c]*yields["ratio"][c] for c in categories])
 print "corrected total weighted ZL yield: ",corrected_total_weighted_mc_yield
 
-with open("zpt.json","w") as out:
+with open("zptm_%s.json"%year,"w") as out:
     out.write(json.dumps(yields,sort_keys=True,indent=2)) 
 
 variable_bins = {
     "m_vis" : np.array([50.0, 100.0, 200.0, 500.0, 1000.0]),
-    "ptvis" : np.array([0.0, 10.0, 20.0, 50.0, 100.0, 150.0, 200.0, 300.0, 400.0, 1000.0]),
+    "ptvis" : np.array([0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 100.0, 150.0, 200.0, 300.0, 400.0, 1000.0]),
 }
 zptmass_histo = r.TH2D("zptmass_histo","zptmass_histo",len(variable_bins["m_vis"])-1,variable_bins["m_vis"],len(variable_bins["ptvis"])-1,variable_bins["ptvis"] )
 
@@ -63,6 +71,23 @@ for c in yields["ratio"]:
     pt_bin = int(c.split("_vs_")[1].split("_")[-1])
     zptmass_histo.SetBinContent(mass_bin+1,pt_bin+1, yields["ratio"][c])
 
-fout = r.TFile.Open("zpt_weights_2017_kit.root","recreate")
+fout = r.TFile.Open("zptm_weights_%s_kit.root"%year,"recreate")
 zptmass_histo.Write()
 fout.Close()
+
+variable_bins["ptvis"][0] = 4.0
+c = r.TCanvas("c","c",1200,800)
+c.cd()
+zptmass_histo_plot = r.TH2D("zptmass_histo","zptmass_histo",len(variable_bins["m_vis"])-1,variable_bins["m_vis"],len(variable_bins["ptvis"])-1,variable_bins["ptvis"] )
+for i in range(zptmass_histo.GetNcells()):
+    zptmass_histo_plot.SetBinContent(i, zptmass_histo.GetBinContent(i)) 
+zptmass_histo_plot.SetTitle("")
+zptmass_histo_plot.GetXaxis().SetTitle("Di-muon mass / GeV")
+zptmass_histo_plot.GetYaxis().SetTitle("Di-muon p_{T} / GeV")
+zptmass_histo_plot.GetYaxis().SetLimits(3.0, zptmass_histo.GetXaxis().GetXmax())
+zptmass_histo_plot.GetYaxis().SetMoreLogLabels()
+zptmass_histo_plot.Draw("col text")
+c.SetLogy()
+c.Update()
+c.SaveAs(str(fout.GetName()).replace(".root",".png"))
+c.SaveAs(str(fout.GetName()).replace(".root",".pdf"))
