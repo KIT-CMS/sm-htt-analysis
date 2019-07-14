@@ -1,5 +1,4 @@
-set -e
-
+source utils/bashFunctionCollection.sh
 function waitForAll() {
 	echo "pidList: $@"
 	#set +o xtrace
@@ -30,7 +29,7 @@ function multirun() {
 		if [[ $PARALLEL != 1 ]]; then
 			$run $1 $2
 		else
-			tmpFile=$(mktemp tmpFile-$1-$2.XXXX)
+			tmpFile=$(mktemp tmp-$1-$2.XXXX)
 			tmpFileL+=" $tmpFile"
 			$run $1 $2 &> $tmpFile &
 			# Test correct behaviour
@@ -46,10 +45,11 @@ function multirun() {
 	#set -o xtrace
 	#trap "rm $tmpFileL; kill $(ps -s $$ -o pid=)" INT
 	### if the process dies, kill the children and remove the tempfiles
-	trap "kill 0; rm $tmpFileL" INT EXIT TERM
+	trap "kill 0; rm $tmpFileL" INT TERM
+	trap "rm $tmpFileL" EXIT
 	waitForAll $pidL &
 	lasttmpFile=""
-	tail -f $tmpFileL --pid $!
+	tail -f $tmpFileL --pid $! | grep --color -E "==> [a-Z0-9\.\-]+ <==|$"
 	fi
 }
 
@@ -62,34 +62,39 @@ containsElement () {
 
 function genArgsAndRun {
 	run_procedure=$1
-	ERA=$2
-	CHANNEL=$3
+	shift
 
-	valideras=("" "2016" "2017" "2018")
-	validchannels=("" "tt" "mt" "et" "em")
+	IFS=',' read -r -a eras <<< $1
+	IFS=',' read -r -a channels <<< $2
+	echo ${eras[@]} ${channels[@]}
 
-	if [[ ! " ${valideras[@]} " =~ $ERA ]]; then
-	echo -e "$ERA is not a valid ERA! \n Valid ERAs are:  ${valideras[@]}"
-	exit 1
+	if [[ ! "" = $3 ]]; then
+	    logerror only takes 3 arguments, seperate multiple eras and channels by comma eg: 2016,2018 mt,em   or \"\" em
+	    exit 1
 	fi
+	for era in ${eras[@]}; do
+	    if [[ ! "  2016 2017 2018" =~ $era ]]; then
+	        logerror $era is not a valid era.
+			exit 1
+	    fi
+	done
+	for channel in ${channels[@]}; do
+	    if [[ ! "  em et tt mt" =~ $channel ]]; then
+	        logerror $channel is not a valid channel.
+			exit 1
+	    fi
+	done
 
-
-	if [[ ! " ${validchannels[@]} " =~ $CHANNEL ]]; then
-	echo -e "$CHANNEL is not a valid Channel! \n Valid Channels are: ${validchannels[@]}"
-	exit 1
-	fi
-
-	CHANNELS=$(if [[ -z $CHANNEL ]]; then echo "tt" "mt" "et" "em"; else echo $CHANNEL; fi)
-	ERAS=$(if [[ -z $ERA ]]; then echo "2016" "2017" "2018"; else echo $ERA; fi)
-
+	channels=$(if [[ -z "${channels[@]}" ]]; then echo "tt" "mt" "et" "em"; else echo "${channels[@]}"; fi)
+	eras=$(if [[ -z "${eras[@]}" ]]; then echo "2016" "2017" "2018"; else echo "${eras[@]}"; fi)
 	i=0 ## how many sets of arguments
 	unset argslist
-	for era in $ERAS; do
-			for channel in $CHANNELS;do
-				argslist[$i]=" $era $channel"
+	for era in $eras; do
+		for channel in $channels;do
+			argslist[$i]=" $era $channel"
 			i=$(($i+1))
+		done
 	done
-	done
-
-	multirun run_procedure ${argslist[@]}
+	loginfo "multirun $run_procedure ${argslist[@]}"
+	multirun $run_procedure ${argslist[@]}
 }
