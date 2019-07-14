@@ -11,10 +11,10 @@ from shape_producer.binning import ConstantBinning, VariableBinning
 from shape_producer.variable import Variable
 from shape_producer.systematic_variations import Nominal, DifferentPipeline, SquareAndRemoveWeight, create_systematic_variations
 from shape_producer.process import Process
-from shape_producer.estimation_methods_2017 import *
+from shape_producer.estimation_methods_2016 import *
 from shape_producer.estimation_methods import AddHistogramEstimationMethod
-from shape_producer.era import Run2017
-from shape_producer.channel import MMSM2017 as MM
+from shape_producer.era import Run2016
+from shape_producer.channel import MMSM2016 as MM
 
 from itertools import product
 
@@ -61,20 +61,21 @@ def parse_arguments():
 
 def main(args):
     # Container for all distributions to be drawn
-    systematics_mm = Systematics("shapes_mm_recoil.root", num_threads=args.num_threads, find_unique_objects=True)
+    systematics_mm = Systematics("shapes_mm_recoil_2016.root", num_threads=args.num_threads, find_unique_objects=True)
 
     # Era
-    era = Run2017(args.datasets)
+    era = Run2016(args.datasets)
 
     # Channels and processes
     # yapf: disable
     directory = args.directory
 
+    zptm_path = "/portal/ekpbms1/home/akhmet/workdir/FriendTreeProductionMain/CMSSW_10_2_14/src/ZPtMReweighting_workdir/ZPtMReweighting_collected/"
     mm = MM()
     mm_processes = {
         "data"  : Process("data_obs", DataEstimation      (era, directory, mm, friend_directory=[])),
-        "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, mm, friend_directory=[])),
-        "ZL"    : Process("ZL",       ZLEstimation        (era, directory, mm, friend_directory=[])),
+        "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, mm, friend_directory=[zptm_path])),
+        "ZL"    : Process("ZL",       ZLEstimation        (era, directory, mm, friend_directory=[zptm_path])),
         "TTT"   : Process("TTT",      TTTEstimation       (era, directory, mm, friend_directory=[])),
         "TTL"   : Process("TTL",      TTLEstimation       (era, directory, mm, friend_directory=[])),
         "VVT"   : Process("VVT",      VVTEstimation       (era, directory, mm, friend_directory=[])),
@@ -145,5 +146,5 @@ def main(args):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    setup_logging("produce_shapes.log", logging.INFO)
+    setup_logging("produce_shapes_recoil_2016.log", logging.INFO)
     main(args)

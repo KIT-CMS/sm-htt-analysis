@@ -86,33 +86,6 @@ def main(info):
         "mt": "#mu#tau_{h}",
         "tt": "#tau_{h}#tau_{h}"
     }
-    channel_signal_scaling = {
-        "mm": {
-            "ggH" : 0.0,
-            "qqH" : 0.0,
-            "VH" : 0.0,
-        },
-        "et": {
-            "ggH" : 80.0,
-            "qqH" : 800.0,
-            "VH" : 8000.0,
-        },
-        "em": {
-            "ggH" : 150.0,
-            "qqH" : 1500.0,
-            "VH" : 7500.0,
-        },
-        "mt": {
-            "ggH" : 100.0,
-            "qqH" : 1000.0,
-            "VH" : 8000.0,
-        },
-        "tt": {
-            "ggH" : 30.0,
-            "qqH" : 100.0,
-            "VH" : 1500.0,
-        },
-    }
     if args.linear == True:
         split_value = 0
     else:
@@ -146,6 +119,8 @@ def main(info):
         era = "Run2016"
     elif "2017" in args.era:
         era = "Run2017"
+    elif "2018" in args.era:
+        era = "Run2018"
     else:
         logger.critical("Era {} is not implemented.".format(args.era))
         raise Exception
@@ -153,7 +128,7 @@ def main(info):
     category = "_".join([channel, variable])
     if args.category_postfix is not None:
         category += "_%s"%args.category_postfix
-    rootfile = rootfile_parser.Rootfile_parser(args.input.replace(".root","_"+channel+".root"), "smhtt", era, variable, "125")
+    rootfile = rootfile_parser.Rootfile_parser(args.input.replace(".root","_"+channel+"_"+args.era+".root"), "smhtt", era, variable, "125")
     bkg_processes = [b for b in all_bkg_processes]
     if "em" in channel:
         if not args.embedding:
@@ -207,6 +182,12 @@ def main(info):
         fillcolor=styles.color_dict["unc"],
         linecolor=0)
 
+    plot.add_hist(rootfile.get(channel, category, "data_obs"), "data_obs")
+    data_norm = plot.subplot(0).get_hist("data_obs").Integral()
+    plot.subplot(0).get_hist("data_obs").GetXaxis().SetMaxDigits(4)
+    plot.subplot(0).setGraphStyle("data_obs", "e0")
+    plot.subplot(0).setGraphStyle("data_obs", "e0")
+
     if "mm" not in channel:
         # get signal histograms
         plot_idx_to_add_signal = [0,2] if args.linear else [1,2]
@@ -214,10 +195,13 @@ def main(info):
             ggH = rootfile.get(channel, category, "ggH125").Clone()
             qqH = rootfile.get(channel, category, "qqH125").Clone()
             VH = rootfile.get(channel, category, "VH125").Clone()
+            ggH_scale = 0.75*data_norm/ggH.Integral()
+            qqH_scale = 0.75*data_norm/qqH.Integral()
+            VH_scale =  0.5*data_norm/VH.Integral()
             if i in [0,1]:
-                ggH.Scale(channel_signal_scaling[channel]["ggH"])
-                qqH.Scale(channel_signal_scaling[channel]["qqH"])
-                VH.Scale(channel_signal_scaling[channel]["VH"])
+                ggH.Scale(ggH_scale)
+                qqH.Scale(qqH_scale)
+                VH.Scale(VH_scale)
             plot.subplot(i).add_hist(ggH, "ggH")
             plot.subplot(i).add_hist(ggH, "ggH_top")
             plot.subplot(i).add_hist(qqH, "qqH")
@@ -225,9 +209,6 @@ def main(info):
             plot.subplot(i).add_hist(VH, "VH")
             plot.subplot(i).add_hist(VH, "VH_top")
 
-    plot.add_hist(rootfile.get(channel, category, "data_obs"), "data_obs")
-
-    plot.subplot(0).setGraphStyle("data_obs", "e0")
     if "mm" not in channel:
         plot.subplot(0 if args.linear else 1).setGraphStyle(
             "ggH", "hist", linecolor=styles.color_dict["ggH"], linewidth=3)
@@ -279,11 +260,17 @@ def main(info):
         plot.subplot(1).normalizeByBinWidth()
 
     # set axes limits and labels
-    #plot.subplot(0).setLogY()
     plot.subplot(0).setYlims(
         split_dict[channel],
         max(2 * plot.subplot(0).get_hist("data_obs").GetMaximum(),
             split_dict[channel] * 2))
+
+    log_quantities = ["ME_ggh","ME_vbf","ME_z2j_1","ME_z2j_2","ME_q2v1","ME_q2v2","ME_vbf_vs_ggh","ME_ggh_vs_Z"]
+    if variable in log_quantities:
+        plot.subplot(0).setLogY()
+        plot.subplot(0).setYlims(
+            1.0,
+            1000 * plot.subplot(0).get_hist("data_obs").GetMaximum())
 
     plot.subplot(2).setYlims(0.45, 2.05)
     if category in ["2"]:
@@ -364,9 +351,9 @@ def main(info):
                 0, process, styles.legend_label_dict[process.replace("TTL", "TT").replace("VVL", "VV")], 'f')
         plot.legend(i).add_entry(0, "total_bkg", "Bkg. stat. unc.", 'f')
         if "mm" not in channel:
-            plot.legend(i).add_entry(0 if args.linear else 1, "ggH%s" % suffix[i], "%d #times gg#rightarrowH"%int(channel_signal_scaling[channel]["ggH"]), 'l')
-            plot.legend(i).add_entry(0 if args.linear else 1, "qqH%s" % suffix[i], "%d #times qq#rightarrowH"%int(channel_signal_scaling[channel]["qqH"]), 'l')
-            plot.legend(i).add_entry(0 if args.linear else 1, "VH%s" % suffix[i], "%d #times qq#rightarrowVH"%int(channel_signal_scaling[channel]["VH"]), 'l')
+            plot.legend(i).add_entry(0 if args.linear else 1, "ggH%s" % suffix[i], "%s #times gg#rightarrowH"%str(int(ggH_scale)), 'l')
+            plot.legend(i).add_entry(0 if args.linear else 1, "qqH%s" % suffix[i], "%s #times qq#rightarrowH"%str(int(qqH_scale)), 'l')
+            plot.legend(i).add_entry(0 if args.linear else 1, "VH%s" % suffix[i], "%s #times qq#rightarrowVH"%str(int(VH_scale)), 'l')
         plot.legend(i).add_entry(0, "data_obs", "Data", 'PE')
         plot.legend(i).setNColumns(3)
     plot.legend(0).Draw()
@@ -394,6 +381,8 @@ def main(info):
         plot.DrawLumi("35.9 fb^{-1} (2016, 13 TeV)")
     elif "2017" in args.era:
         plot.DrawLumi("41.5 fb^{-1} (2017, 13 TeV)")
+    elif "2018" in args.era:
+        plot.DrawLumi("59.7  fb^{-1} (2018, 13 TeV)")
     else:
         logger.critical("Era {} is not implemented.".format(args.era))
         raise Exception
@@ -425,8 +414,6 @@ if __name__ == "__main__":
     args = parse_arguments()
     setup_logging("{}_plot_shapes.log".format(args.era), logging.INFO)
     variables = args.variables.split(",")
-    print variables
-    #channels = ["mt", "et", "tt", "em"]
     channels = args.channels.split(",")
     infolist = []
 

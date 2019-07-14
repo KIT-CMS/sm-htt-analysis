@@ -71,8 +71,8 @@ def main(args):
 
     # Define era
     if "2016" in args.era:
-        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, qqHEstimation, VHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimationRaw, TTTEstimation, TTJEstimation, VVEstimation, QCDEstimationMT, QCDEstimationET, QCDEstimationTT, ZTTEmbeddedEstimation, TTLEstimation, EWKWpEstimation, EWKWmEstimation, EWKZEstimation
-
+        from shape_producer.estimation_methods_2016 import DataEstimation, ggHEstimation, qqHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimation, TTTEstimation, TTJEstimation, ZTTEmbeddedEstimation, TTLEstimation, EWKZEstimation, VVLEstimation, VVJEstimation, VVEstimation, VVTEstimation
+        #QCDEstimation_SStoOS_MTETEM, QCDEstimationTT, EWKWpEstimation, EWKWmEstimation, , VHEstimation, HTTEstimation,
         from shape_producer.era import Run2016
         era = Run2016(args.database)
 
@@ -96,8 +96,8 @@ def main(args):
             ggHEstimation("ggH", era, args.base_path, channel),
             qqHEstimation("qqH", era, args.base_path, channel),
             EWKZEstimation(era, args.base_path, channel),
-            WEstimation(era, args.base_path, channel),
-            VVLEstimation(era, args.base_path, channel)
+            VVLEstimation(era, args.base_path, channel),
+	    WEstimation(era, args.base_path, channel)
         ]
         ######## Check for emb vs MC
         if args.training_z_estimation_method=="emb":

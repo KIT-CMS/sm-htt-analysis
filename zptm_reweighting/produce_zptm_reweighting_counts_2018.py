@@ -11,10 +11,9 @@ from shape_producer.binning import ConstantBinning, VariableBinning
 from shape_producer.variable import Variable
 from shape_producer.systematic_variations import Nominal, DifferentPipeline, SquareAndRemoveWeight, create_systematic_variations
 from shape_producer.process import Process
-from shape_producer.estimation_methods_2017 import *
-from shape_producer.estimation_methods import AddHistogramEstimationMethod
-from shape_producer.era import Run2017
-from shape_producer.channel import MMSM2017 as MM
+from shape_producer.estimation_methods_2018 import *
+from shape_producer.era import Run2018
+from shape_producer.channel import MMSM2018 as MM
 
 from itertools import product
 
@@ -59,10 +58,10 @@ def parse_arguments():
 
 def main(args):
     # Container for all distributions to be drawn
-    systematics_mm = Systematics("counts_zptm.root", num_threads=args.num_threads, find_unique_objects=True)
+    systematics_mm = Systematics("counts_zptm_2018.root", num_threads=args.num_threads, find_unique_objects=True)
 
     # Era
-    era = Run2017(args.datasets)
+    era = Run2018(args.datasets)
 
     # Channels and processes
     # yapf: disable
@@ -89,7 +88,7 @@ def main(args):
 
     variable_bins = {
         "m_vis" : [50, 100, 200, 500, 1000],
-        "ptvis" : [0, 10, 20, 50, 100, 150, 200, 300, 400, 1000],
+        "ptvis" : [0, 10, 20, 30, 40, 50, 100, 150, 200, 300, 400, 1000],
     }
 
     for mass_bin in range(len(variable_bins["m_vis"]) - 1):
@@ -105,6 +104,8 @@ def main(args):
 
     # Nominal histograms
     for process, category in product(mm_processes.values(), mm_categories):
+        #if process.name in ["ZTT","ZLL"]:
+        #    process.estimation_method.get_weights().remove("zPtReweightWeight")
         systematics_mm.add(
             Systematic(
                 category=category,
@@ -121,5 +122,5 @@ def main(args):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    setup_logging("produce_shapes.log", logging.INFO)
+    setup_logging("counts_zpt_2018.log", logging.INFO)
     main(args)

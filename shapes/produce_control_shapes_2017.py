@@ -134,11 +134,11 @@ def parse_arguments():
 
 def main(args):
     # Container for all distributions to be drawn
-    systematics_mt = Systematics("shapes_mt.root", num_threads=args.num_threads, find_unique_objects=True)
-    systematics_et = Systematics("shapes_et.root", num_threads=args.num_threads, find_unique_objects=True)
-    systematics_tt = Systematics("shapes_tt.root", num_threads=args.num_threads, find_unique_objects=True)
-    systematics_em = Systematics("shapes_em.root", num_threads=args.num_threads, find_unique_objects=True)
-    systematics_mm = Systematics("shapes_mm.root", num_threads=args.num_threads, find_unique_objects=True)
+    systematics_mt = Systematics("shapes_mt_2017.root", num_threads=args.num_threads, find_unique_objects=True)
+    systematics_et = Systematics("shapes_et_2017.root", num_threads=args.num_threads, find_unique_objects=True)
+    systematics_tt = Systematics("shapes_tt_2017.root", num_threads=args.num_threads, find_unique_objects=True)
+    systematics_em = Systematics("shapes_em_2017.root", num_threads=args.num_threads, find_unique_objects=True)
+    systematics_mm = Systematics("shapes_mm_2017.root", num_threads=args.num_threads, find_unique_objects=True)
 
     # Era
     era = Run2017(args.datasets)
@@ -297,24 +297,26 @@ def main(args):
     mm_categories = []
 
     variable_names = [
-        "m_vis", "ptvis",
-        "DiTauDeltaR",
+    #    "m_vis", "ptvis",
+    #    "DiTauDeltaR",
 
-        "m_sv", "pt_sv", "eta_sv",
-        "m_sv_puppi", "pt_sv_puppi", "eta_sv_puppi",
-        "m_fastmtt", "pt_fastmtt", "eta_fastmtt",
-        "m_fastmtt_puppi", "pt_fastmtt_puppi", "eta_fastmtt_puppi",
+    #    "m_sv", "pt_sv", "eta_sv",
+    #    "m_sv_puppi", "pt_sv_puppi", "eta_sv_puppi",
+    #    "m_fastmtt", "pt_fastmtt", "eta_fastmtt",
+    #    "m_fastmtt_puppi", "pt_fastmtt_puppi", "eta_fastmtt_puppi",
 
-        "ME_D", "ME_vbf", "ME_z2j_1", "ME_z2j_2", "ME_q2v1", "ME_q2v2", "ME_costheta1", "ME_costheta2", "ME_costhetastar", "ME_phi", "ME_phi1",
+        "ME_ggh", "ME_vbf", "ME_z2j_1", "ME_z2j_2",
+        "ME_q2v1", "ME_q2v2", "ME_costheta1", "ME_costheta2", "ME_costhetastar", "ME_phi", "ME_phi1",
+        "ME_ggh_vs_Z", "ME_vbf_vs_Z", "ME_vbf_vs_ggh",
 
-        "pt_1", "pt_2", "eta_1", "eta_2",
+    #    "pt_1", "pt_2", "eta_1", "eta_2",
 
-        "mjj", "jdeta", "dijetpt",
-        "njets", "jpt_1", "jpt_2", "jeta_1", "jeta_2",
-        "nbtag", "bpt_1", "bpt_2", "beta_1", "beta_2",
+    #    "mjj", "jdeta", "dijetpt",
+    #    "njets", "jpt_1", "jpt_2", "jeta_1", "jeta_2",
+    #    "nbtag", "bpt_1", "bpt_2", "beta_1", "beta_2",
 
-       "met", "mt_1", "mt_2", "pt_tt", "pZetaMissVis", "pt_ttjj", "mt_tot", "mTdileptonMET",
-        "puppimet", "mt_1_puppi", "mt_2_puppi", "pt_tt_puppi", "pZetaPuppiMissVis", "pt_ttjj_puppi", "mt_tot_puppi", "mTdileptonMET_puppi",
+    #   "met", "mt_1", "mt_2", "pt_tt", "pZetaMissVis", "pt_ttjj", "mt_tot", "mTdileptonMET",
+    #    "puppimet", "mt_1_puppi", "mt_2_puppi", "pt_tt_puppi", "pZetaPuppiMissVis", "pt_ttjj_puppi", "mt_tot_puppi", "mTdileptonMET_puppi",
     #    "NNrecoil_pt", "nnmet", "mt_1_nn", "mt_2_nn", "pt_tt_nn", "pZetaNNMissVis", "pt_ttjj_nn", "mt_tot_nn", "mTdileptonMET_nn",
 
     #    "metParToZ", "metPerpToZ",

@@ -39,7 +39,8 @@ def main(args):
 
     # Define era
     if "2016" in args.era:
-        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, qqHEstimation, VHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimationRaw, TTTEstimation, TTJEstimation, VVEstimation, QCDEstimationMT, QCDEstimationET, QCDEstimationTT, ZTTEmbeddedEstimation, TTLEstimation, EWKZEstimation, EWKWpEstimation, EWKWmEstimation
+        from shape_producer.estimation_methods_2016 import DataEstimation, ggHEstimation, qqHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimation, TTTEstimation, TTJEstimation, ZTTEmbeddedEstimation, TTLEstimation, EWKZEstimation, VVLEstimation, VVJEstimation, VVEstimation, VVTEstimation, VHEstimation,  EWKWpEstimation, EWKWmEstimation, ttHEstimation
+        #QCDEstimation_SStoOS_MTETEM, QCDEstimationTT, HTTEstimation,
 
         from shape_producer.era import Run2016
         era = Run2016(args.database)
@@ -61,8 +62,9 @@ def main(args):
     if "2016" in args.era and args.channel == "mt":
         channel = MTSM2016()
         for estimation in [
-                ggHEstimation(era, args.directory, channel),
-                qqHEstimation(era, args.directory, channel),
+                ggHEstimation("ggH", era, args.directory, channel),
+                qqHEstimation("qqH", era, args.directory, channel),    
+                ttHEstimation(era, args.directory, channel),
                 VHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
                 ZTTEmbeddedEstimation(era, args.directory, channel),
@@ -71,7 +73,7 @@ def main(args):
                 TTTEstimation(era, args.directory, channel),
                 TTLEstimation(era, args.directory, channel),
                 TTJEstimation(era, args.directory, channel),
-                WEstimationRaw(era, args.directory, channel),
+                WEstimation(era, args.directory, channel),
                 VVEstimation(era, args.directory, channel),
                 EWKZEstimation(era, args.directory, channel),
                 EWKWpEstimation(era, args.directory, channel),
@@ -148,8 +150,9 @@ def main(args):
     if "2016" in args.era and args.channel == "et":
         channel = ETSM2016()
         for estimation in [
-                ggHEstimation(era, args.directory, channel),
-                qqHEstimation(era, args.directory, channel),
+                ggHEstimation("ggH", era, args.directory, channel),
+                qqHEstimation("qqH", era, args.directory, channel),    
+                ttHEstimation(era, args.directory, channel),
                 VHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
                 ZTTEmbeddedEstimation(era, args.directory, channel),
@@ -158,7 +161,7 @@ def main(args):
                 TTTEstimation(era, args.directory, channel),
                 TTLEstimation(era, args.directory, channel),
                 TTJEstimation(era, args.directory, channel),
-                WEstimationRaw(era, args.directory, channel),
+                WEstimation(era, args.directory, channel),
                 VVEstimation(era, args.directory, channel),
                 EWKZEstimation(era, args.directory, channel),
                 EWKWpEstimation(era, args.directory, channel),
@@ -235,8 +238,9 @@ def main(args):
     if "2016" in args.era and args.channel == "tt":
         channel = TTSM2016()
         for estimation in [
-                ggHEstimation(era, args.directory, channel),
-                qqHEstimation(era, args.directory, channel),
+                ggHEstimation("ggH", era, args.directory, channel),
+                qqHEstimation("qqH", era, args.directory, channel),    
+                ttHEstimation(era, args.directory, channel),
                 VHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
                 ZTTEmbeddedEstimation(era, args.directory, channel),
@@ -245,7 +249,7 @@ def main(args):
                 TTTEstimation(era, args.directory, channel),
                 TTLEstimation(era, args.directory, channel),
                 TTJEstimation(era, args.directory, channel),
-                WEstimationRaw(era, args.directory, channel),
+                WEstimation(era, args.directory, channel),
                 VVEstimation(era, args.directory, channel),
                 EWKZEstimation(era, args.directory, channel),
                 EWKWpEstimation(era, args.directory, channel),
@@ -322,15 +326,16 @@ def main(args):
     if "2016" in args.era and args.channel == "em":
         channel = EMSM2016()
         for estimation in [
-                ggHEstimation(era, args.directory, channel),
-                qqHEstimation(era, args.directory, channel),
+                ggHEstimation("ggH", era, args.directory, channel),
+                qqHEstimation("qqH", era, args.directory, channel),    
+                ttHEstimation(era, args.directory, channel),
                 VHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
                 ZTTEmbeddedEstimation(era, args.directory, channel),
                 ZLEstimation(era, args.directory, channel),
                 TTTEstimation(era, args.directory, channel),
                 TTLEstimation(era, args.directory, channel),
-                WEstimationRaw(era, args.directory, channel),
+                WEstimation(era, args.directory, channel),
                 VVEstimation(era, args.directory, channel),
                 EWKZEstimation(era, args.directory, channel),
                 EWKWpEstimation(era, args.directory, channel),

@@ -210,6 +210,32 @@ stxs_stage1:
         # 205
         - "(jpt_1>200)"
 
+stxs_stage1p1:
+    ggh:
+        - "(njets==0)&&(0<1)"
+        - "(pt_tt<120)&&(njets==1)"
+        - "(pt_tt>=120)&&(njets==1)"
+        - "(njets>=2)&&(mjj<350)"
+        - "(njets>=2)&&(mjj>=350)"
+    qqh:
+        - "(njets<=1)"
+        - "(njets>=2)&&(mjj<350)"
+        - "(pt_tt<200)&&(njets>=2)&&(mjj>=350)"
+        - "(pt_tt>=200)&&(njets>=2)&&(mjj>=350)"
+
+stxs_stage1p1_puppi:
+    ggh:
+        - "(njets==0)&&(0<1)"
+        - "(pt_tt_puppi<120)&&(njets==1)"
+        - "(pt_tt_puppi>=120)&&(njets==1)"
+        - "(njets>=2)&&(mjj<350)"
+        - "(njets>=2)&&(mjj>=350)"
+    qqh:
+        - "(njets<=1)"
+        - "(njets>=2)&&(mjj<350)"
+        - "(pt_tt_puppi<200)&&(njets>=2)&&(mjj>=350)"
+        - "(pt_tt_puppi>=200)&&(njets>=2)&&(mjj>=350)"
+
 # Control plot binnings
 gof:
   mt:

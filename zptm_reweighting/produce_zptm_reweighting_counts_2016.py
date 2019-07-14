@@ -11,10 +11,9 @@ from shape_producer.binning import ConstantBinning, VariableBinning
 from shape_producer.variable import Variable
 from shape_producer.systematic_variations import Nominal, DifferentPipeline, SquareAndRemoveWeight, create_systematic_variations
 from shape_producer.process import Process
-from shape_producer.estimation_methods_2017 import *
-from shape_producer.estimation_methods import AddHistogramEstimationMethod
-from shape_producer.era import Run2017
-from shape_producer.channel import MMSM2017 as MM
+from shape_producer.estimation_methods_2016 import *
+from shape_producer.era import Run2016
+from shape_producer.channel import MMSM2016 as MM
 
 from itertools import product
 
@@ -40,7 +39,7 @@ def setup_logging(output_file, level=logging.DEBUG):
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
-        description="Produce shapes for 2017 Standard Model analysis.")
+        description="Produce shapes for 2016 Standard Model analysis.")
 
     parser.add_argument(
         "--directory",
@@ -49,8 +48,6 @@ def parse_arguments():
         help="Directory with Artus outputs.")
     parser.add_argument(
         "--datasets", required=True, type=str, help="Kappa datsets database.")
-    parser.add_argument(
-        "--binning", required=True, type=str, help="Binning configuration.")
     parser.add_argument(
         "--num-threads",
         default=20,
@@ -61,21 +58,20 @@ def parse_arguments():
 
 def main(args):
     # Container for all distributions to be drawn
-    systematics_mm = Systematics("shapes_mm_recoil_2017.root", num_threads=args.num_threads, find_unique_objects=True)
+    systematics_mm = Systematics("counts_zptm_2016.root", num_threads=args.num_threads, find_unique_objects=True)
 
     # Era
-    era = Run2017(args.datasets)
+    era = Run2016(args.datasets)
 
     # Channels and processes
     # yapf: disable
     directory = args.directory
 
-    zptm_path = "/portal/ekpbms1/home/akhmet/workdir/FriendTreeProductionMain/CMSSW_10_2_14/src/ZPtMReweighting_workdir/ZPtMReweighting_collected/"
     mm = MM()
     mm_processes = {
         "data"  : Process("data_obs", DataEstimation      (era, directory, mm, friend_directory=[])),
-        "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, mm, friend_directory=[zptm_path])),
-        "ZL"    : Process("ZL",       ZLEstimation        (era, directory, mm, friend_directory=[zptm_path])),
+        "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, mm, friend_directory=[])),
+        "ZL"    : Process("ZL",       ZLEstimation        (era, directory, mm, friend_directory=[])),
         "TTT"   : Process("TTT",      TTTEstimation       (era, directory, mm, friend_directory=[])),
         "TTL"   : Process("TTL",      TTLEstimation       (era, directory, mm, friend_directory=[])),
         "VVT"   : Process("VVT",      VVTEstimation       (era, directory, mm, friend_directory=[])),
@@ -86,50 +82,30 @@ def main(args):
             [mm_processes[process] for process in ["ZTT", "ZL", "W", "TTT", "TTL", "VVT", "VVL"]],
             mm_processes["data"], friend_directory=[], extrapolation_factor=2.0))
 
+
     # Variables and categories
-    binning = yaml.load(open(args.binning))
     mm_categories = []
 
     variable_bins = {
-        "njets" : [0, 1, 2],
-        "ptvis" : [0, 10, 20, 30, 50],
+        "m_vis" : [50, 100, 200, 500, 1000],
+        "ptvis" : [0, 10, 20, 30, 40, 50, 100, 150, 200, 300, 400, 1000],
     }
-    variable_names = [
-        "metParToZ", "metPerpToZ",
-        "puppimetParToZ", "puppimetPerpToZ",
-#        "recoilParToZ", "recoilPerpToZ",
-#        "puppirecoilParToZ", "puppirecoilPerpToZ",
-    ]
 
-    for njets_bin in range(len(variable_bins["njets"])):
-        for pt_bin in range(len(variable_bins["ptvis"])):
-            name = "njets_bin_%s_vs_ptvis_bin_%s"%(str(njets_bin),str(pt_bin))
-            category_njets = ""
-            category_pt = ""
-            if njets_bin == (len(variable_bins["njets"]) - 1):
-                category_njets = "njets >= %s"%str(variable_bins["njets"][njets_bin])
-            else:
-                category_njets = "njets == %s"%str(variable_bins["njets"][njets_bin])
-            if pt_bin == (len(variable_bins["ptvis"]) - 1):
-                category_pt = "ptvis > %s"%str(variable_bins["ptvis"][pt_bin])
-            else:
-                category_pt= "ptvis > %s && ptvis <= %s"%(str(variable_bins["ptvis"][pt_bin]),str(variable_bins["ptvis"][pt_bin+1]))
-            print category_njets, category_pt
-            cuts = Cuts(
-                Cut(category_njets,"njets_category"),
-                Cut(category_pt,"ptvis_category"),
-                Cut("m_vis > 70 && m_vis < 110","z_peak")
-            )
-            for v in variable_names:
-                mm_categories.append(
-                    Category(
-                        name,
-                        mm,
-                        cuts,
-                        variable=Variable(v,VariableBinning(binning["control"]["mm"][v]["bins"]), expression=binning["control"]["mm"][v]["expression"])))
+    for mass_bin in range(len(variable_bins["m_vis"]) - 1):
+        for pt_bin in range(len(variable_bins["ptvis"]) - 1):
+            name = "%s_bin_%s_vs_%s_bin_%s"%("m_vis",str(mass_bin),"ptvis",str(pt_bin))
+            cuts = Cuts(Cut("(m_vis > %s && m_vis < %s) && (ptvis > %s && ptvis < %s)"%(str(variable_bins["m_vis"][mass_bin]),str(variable_bins["m_vis"][mass_bin+1]),str(variable_bins["ptvis"][pt_bin]),str(variable_bins["ptvis"][pt_bin+1])),"zptm_category"))
+            mm_categories.append(
+                Category(
+                    name,
+                    mm,
+                    cuts,
+                    variable=None))
 
     # Nominal histograms
     for process, category in product(mm_processes.values(), mm_categories):
+        #if process.name in ["ZTT","ZLL"]:
+        #    process.estimation_method.get_weights().remove("zPtReweightWeight")
         systematics_mm.add(
             Systematic(
                 category=category,
@@ -146,5 +122,5 @@ def main(args):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    setup_logging("produce_shapes_recoil_2017.log", logging.INFO)
+    setup_logging("counts_zpt_2016.log", logging.INFO)
     main(args)

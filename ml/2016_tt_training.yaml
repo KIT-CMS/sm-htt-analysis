@@ -1,70 +1,45 @@
-# Training datasets for different folds
-datasets:
-    - ml/2016_tt/fold0_training_dataset.root
-    - ml/2016_tt/fold1_training_dataset.root
-
-# Base path for all output files
-output_path: ml/2016_tt
-
-# Define classes based on tree names in dataset file
-classes:
-    - ggh
-    - qqh
-    - ztt
-    - noniso
-    - misc
-
-# Set class weights
 class_weights:
-    ggh: 171.2
-    qqh: 534.4
-    ztt: 3.4
-    noniso: 1.7
-    misc: 10.4
-
-# Define global scale factor, which is multiplied to all event weights
-global_weight_scale: 1.0
-
-# Set event weight variable
+  ggh: 241.36803191752904
+  misc: 10.526449079155576
+  noniso: 1.52653125620745
+  qqh: 590.1229311109338
+  ztt: 4.096956063741624
+classes:
+- ggh
+- qqh
+- ztt
+- noniso
+- misc
+datasets:
+- ml/2016_tt/fold0_training_dataset.root
+- ml/2016_tt/fold1_training_dataset.root
 event_weights: training_weight
-
-# Define list of variables to be used for training
-# NOTE: Outcommented lines are not passing the 1D GoF test.
-variables:
-    - pt_1
-    - pt_2
-    # iso_1     # Failed 1D GoF
-    # iso_2     # Failed 1D GoF
-    - jpt_1
-    - jpt_2
-    - bpt_1
-    - bpt_2
-    # njets     # Failed 1D GoF
-    - nbtag
-    - m_sv
-    - mt_1
-    - mt_2
-    - ptvis
-    - pt_tt
-    - mjj
-    - jdeta
-    - m_vis
-    - dijetpt
-    - met
-
-# Split of dataset in training and validation (in TMVA called training and testing)
-train_test_split: 0.75
-
-# Define preprocessing
-preprocessing: standard_scaler
-
-# Set random seed for initialization of parameters and dataset splits
-seed: 1234
-
-# Define the model parameter
+global_weight_scale: 1.0
 model:
-    name: smhtt_dropout_tanh
-    batch_size: 100
-    epochs: 100000
-    early_stopping: 50
-    save_best_only: true
+  batch_size: 100
+  early_stopping: 50
+  epochs: 100000
+  name: smhtt_dropout_tanh
+  save_best_only: true
+output_path: ml/2016_tt
+preprocessing: standard_scaler
+seed: 1234
+train_test_split: 0.75
+variables:
+- pt_1
+- pt_2
+- jpt_1
+- jpt_2
+- bpt_1
+- bpt_2
+- nbtag
+- m_sv
+- mt_1
+- mt_2
+- ptvis
+- pt_tt
+- mjj
+- jdeta
+- m_vis
+- dijetpt
+- met

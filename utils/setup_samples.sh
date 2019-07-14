@@ -4,6 +4,7 @@ ERA=$1
 
 basedir="/ceph/htautau"
 # Samples Run2016
+
 ARTUS_OUTPUTS_2016="$basedir/2016/ntuples"
 NNScore_Friends_2016="$basedir/2016/nnscore_friends"
 SVFit_Friends_2016="$basedir/2016/svfit_friends"

@@ -141,7 +141,7 @@ def main(args):
 
     # Era selection
     if "2017" in args.era:
-        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT
+        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, HWWEstimation, ggHWWEstimation, qqHWWEstimation
 
         from shape_producer.era import Run2017
         era = Run2017(args.datasets)
@@ -180,6 +180,9 @@ def main(args):
         "WH125"    : Process("WH125",    WHEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
         "ZH125"    : Process("ZH125",    ZHEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
         "ttH125"   : Process("ttH125",   ttHEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
+
+        "ggHWW125" : Process("ggHWW125", ggHWWEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
+        "qqHWW125" : Process("qqHWW125", qqHWWEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         }
 
     # Stage 0 and 1.1 signals for ggH & qqH
@@ -213,6 +216,9 @@ def main(args):
         "WH125"    : Process("WH125",    WHEstimation        (era, directory, et, friend_directory=et_friend_directory)),
         "ZH125"    : Process("ZH125",    ZHEstimation        (era, directory, et, friend_directory=et_friend_directory)),
         "ttH125"   : Process("ttH125",   ttHEstimation       (era, directory, et, friend_directory=et_friend_directory)),
+
+        "ggHWW125" : Process("ggHWW125", ggHWWEstimation       (era, directory, et, friend_directory=et_friend_directory)),
+        "qqHWW125" : Process("qqHWW125", qqHWWEstimation       (era, directory, et, friend_directory=et_friend_directory)),
         }
     
     # Stage 0 and 1.1 signals for ggH & qqH
@@ -246,6 +252,9 @@ def main(args):
         "WH125"    : Process("WH125",    WHEstimation        (era, directory, tt, friend_directory=tt_friend_directory)),
         "ZH125"    : Process("ZH125",    ZHEstimation        (era, directory, tt, friend_directory=tt_friend_directory)),
         "ttH125"   : Process("ttH125",   ttHEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
+
+        "ggHWW125" : Process("ggHWW125", ggHWWEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
+        "qqHWW125" : Process("qqHWW125", qqHWWEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
         }
     
     # Stage 0 and 1.1 signals for ggH & qqH
@@ -275,6 +284,9 @@ def main(args):
         "WH125"    : Process("WH125",    WHEstimation        (era, directory, em, friend_directory=em_friend_directory)),
         "ZH125"    : Process("ZH125",    ZHEstimation        (era, directory, em, friend_directory=em_friend_directory)),
         "ttH125"   : Process("ttH125",   ttHEstimation       (era, directory, em, friend_directory=em_friend_directory)),
+
+        "ggHWW125" : Process("ggHWW125", ggHWWEstimation       (era, directory, em, friend_directory=em_friend_directory)),
+        "qqHWW125" : Process("qqHWW125", qqHWWEstimation       (era, directory, em, friend_directory=em_friend_directory)),
         }
 
     # Stage 0 and 1.1 signals for ggH & qqH
@@ -305,23 +317,18 @@ def main(args):
                         Cut("et_max_index=={index}".format(index=i), "exclusive_score")),
                     variable=score))
             if label in ["ggh", "qqh"]:
-                expression = ""
-                for i_e, e in enumerate(binning["stxs_stage1"]["lt"][label]):
-                    offset = (binning["analysis"]["et"][label][-1]-binning["analysis"]["et"][label][0])*i_e
-                    expression += "{STXSBIN}*(et_max_score+{OFFSET})".format(STXSBIN=e, OFFSET=offset)
-                    if not e is binning["stxs_stage1"]["lt"][label][-1]:
-                        expression += " + "
-                score_unrolled = Variable(
-                    "et_max_score_unrolled",
-                     VariableBinning(binning["analysis"]["et"][label+"_unrolled"]),
-                     expression=expression)
-                et_categories.append(
-                    Category(
-                        "{}_unrolled".format(label),
-                        et,
-                        Cuts(Cut("et_max_index=={index}".format(index=i), "exclusive_score"),
-                             Cut("et_max_score>{}".format(1.0/len(classes_et)), "protect_unrolling")),
-                        variable=score_unrolled))
+                stxs = 100 if label == "ggh" else 200
+                for i_e, e in enumerate(binning["stxs_stage1p1"][label]):
+                    score = Variable(
+                        "et_max_score",
+                         VariableBinning(binning["analysis"]["et"][label]))
+                    et_categories.append(
+                        Category(
+                            "{}_{}".format(label,str(stxs+i_e)),
+                            et,
+                            Cuts(Cut("et_max_index=={index}".format(index=i), "exclusive_score"),
+                                 Cut(e, "stxs_stage1p1_cut")),
+                            variable=score))
     # Goodness of fit shapes
     elif args.gof_channel == "et":
         score = Variable(
@@ -355,23 +362,18 @@ def main(args):
                         Cut("mt_max_index=={index}".format(index=i), "exclusive_score")),
                     variable=score))
             if label in ["ggh", "qqh"]:
-                expression = ""
-                for i_e, e in enumerate(binning["stxs_stage1"]["lt"][label]):
-                    offset = (binning["analysis"]["mt"][label][-1]-binning["analysis"]["mt"][label][0])*i_e
-                    expression += "{STXSBIN}*(mt_max_score+{OFFSET})".format(STXSBIN=e, OFFSET=offset)
-                    if not e is binning["stxs_stage1"]["lt"][label][-1]:
-                        expression += " + "
-                score_unrolled = Variable(
-                    "mt_max_score_unrolled",
-                     VariableBinning(binning["analysis"]["mt"][label+"_unrolled"]),
-                     expression=expression)
-                mt_categories.append(
-                    Category(
-                        "{}_unrolled".format(label),
-                        mt,
-                        Cuts(Cut("mt_max_index=={index}".format(index=i), "exclusive_score"),
-                             Cut("mt_max_score>{}".format(1.0/len(classes_mt)), "protect_unrolling")),
-                        variable=score_unrolled))
+                stxs = 100 if label == "ggh" else 200
+                for i_e, e in enumerate(binning["stxs_stage1p1"][label]):
+                    score = Variable(
+                        "mt_max_score",
+                         VariableBinning(binning["analysis"]["mt"][label]))
+                    mt_categories.append(
+                        Category(
+                            "{}_{}".format(label,str(stxs+i_e)),
+                            mt,
+                            Cuts(Cut("mt_max_index=={index}".format(index=i), "exclusive_score"),
+                                 Cut(e, "stxs_stage1p1_cut")),
+                            variable=score))
     # Goodness of fit shapes
     elif args.gof_channel == "mt":
         score = Variable(
@@ -405,23 +407,18 @@ def main(args):
                         Cut("tt_max_index=={index}".format(index=i), "exclusive_score")),
                     variable=score))
             if label in ["ggh", "qqh"]:
-                expression = ""
-                for i_e, e in enumerate(binning["stxs_stage1"]["tt"][label]):
-                    offset = (binning["analysis"]["tt"][label][-1]-binning["analysis"]["tt"][label][0])*i_e
-                    expression += "{STXSBIN}*(tt_max_score+{OFFSET})".format(STXSBIN=e, OFFSET=offset)
-                    if not e is binning["stxs_stage1"]["tt"][label][-1]:
-                        expression += " + "
-                score_unrolled = Variable(
-                    "tt_max_score_unrolled",
-                     VariableBinning(binning["analysis"]["tt"][label+"_unrolled"]),
-                     expression=expression)
-                tt_categories.append(
-                    Category(
-                        "{}_unrolled".format(label),
-                        tt,
-                        Cuts(Cut("tt_max_index=={index}".format(index=i), "exclusive_score"),
-                             Cut("tt_max_score>{}".format(1.0/len(classes_tt)), "protect_unrolling")),
-                        variable=score_unrolled))
+                stxs = 100 if label == "ggh" else 200
+                for i_e, e in enumerate(binning["stxs_stage1p1"][label]):
+                    score = Variable(
+                        "tt_max_score",
+                         VariableBinning(binning["analysis"]["tt"][label]))
+                    tt_categories.append(
+                        Category(
+                            "{}_{}".format(label,str(stxs+i_e)),
+                            tt,
+                            Cuts(Cut("tt_max_index=={index}".format(index=i), "exclusive_score"),
+                                 Cut(e, "stxs_stage1p1_cut")),
+                            variable=score))
     # Goodness of fit shapes
     elif args.gof_channel == "tt":
         score = Variable(
@@ -454,23 +451,18 @@ def main(args):
                         Cut("em_max_index=={index}".format(index=i), "exclusive_score")),
                     variable=score))
             if label in ["ggh", "qqh"]:
-                expression = ""
-                for i_e, e in enumerate(binning["stxs_stage1"]["lt"][label]):
-                    offset = (binning["analysis"]["em"][label][-1]-binning["analysis"]["em"][label][0])*i_e
-                    expression += "{STXSBIN}*(em_max_score+{OFFSET})".format(STXSBIN=e, OFFSET=offset)
-                    if not e is binning["stxs_stage1"]["lt"][label][-1]:
-                        expression += " + "
-                score_unrolled = Variable(
-                    "em_max_score_unrolled",
-                     VariableBinning(binning["analysis"]["em"][label+"_unrolled"]),
-                     expression=expression)
-                em_categories.append(
-                    Category(
-                        "{}_unrolled".format(label),
-                        em,
-                        Cuts(Cut("em_max_index=={index}".format(index=i), "exclusive_score"),
-                             Cut("em_max_score>{}".format(1.0/len(classes_em)), "protect_unrolling")),
-                        variable=score_unrolled))
+                stxs = 100 if label == "ggh" else 200
+                for i_e, e in enumerate(binning["stxs_stage1p1"][label]):
+                    score = Variable(
+                        "em_max_score",
+                         VariableBinning(binning["analysis"]["em"][label]))
+                    em_categories.append(
+                        Category(
+                            "{}_{}".format(label,str(stxs+i_e)),
+                            em,
+                            Cuts(Cut("em_max_index=={index}".format(index=i), "exclusive_score"),
+                                 Cut(e, "stxs_stage1p1_cut")),
+                            variable=score))
     # Goodness of fit shapes
     elif args.gof_channel == "em":
         score = Variable(
@@ -489,10 +481,11 @@ def main(args):
                 variable=score))
     # Nominal histograms
     signal_nicks = ["WH125", "ZH125", "VH125", "ttH125"]
+    ww_nicks = ["ggHWW125", "qqHWW125"]
     if args.gof_channel == None:
-        signal_nicks += [ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict] + [qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict]
+        signal_nicks += [ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict] + [qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict] + ww_nicks
     else:
-        signal_nicks +=  ["ggH125", "qqH125"]
+        signal_nicks +=  ["ggH125", "qqH125"] + ww_nicks
 
     # yapf: enable
     if "et" in [args.gof_channel] + args.channels:
@@ -1505,7 +1498,7 @@ def main(args):
                       Weight("(1.0/{})".format(unc), "{}_weight".format(unc)),
                       "Down"))
     for variation in ggh_variations:
-        for process_nick in [nick for nick in signal_nicks if "ggH" in nick]:
+        for process_nick in [nick for nick in signal_nicks if "ggH" in nick and "HWW" not in nick]:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
