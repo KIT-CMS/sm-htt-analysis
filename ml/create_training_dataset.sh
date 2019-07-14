@@ -1,15 +1,13 @@
 #!/bin/bash
-
-ERA=$1
-CHANNEL=$2
+set -e 
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
-source utils/setup_samples.sh $ERA
 
 function run_procedure() {
     SELERA=$1
     SELCHANNEL=$2
+    source utils/setup_samples.sh $SELERA
     mkdir -p ml/${SELERA}_${SELCHANNEL}
 
     ARTUS_FRIENDS=""
@@ -41,7 +39,7 @@ function run_procedure() {
         --tree-path ${SELCHANNEL}_nominal/ntuple \
         --event-branch event \
         --training-weight-branch training_weight \
-        --training-z-estimation-method emb \
+        --training-z-estimation-method mc \
         --output-config ml/${SELERA}_${SELCHANNEL}/dataset_config.yaml
 
     # Create dataset files from config
@@ -56,4 +54,4 @@ function run_procedure() {
 }
 
 source utils/multirun.sh
-genArgsAndRun run_procedure $ERA $CHANNEL 
+genArgsAndRun run_procedure $@

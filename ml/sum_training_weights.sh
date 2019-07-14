@@ -1,10 +1,5 @@
 #!/bin/bash
-ERA=$1
-CHANNEL=$2
-
-
 source utils/setup_cvmfs_sft.sh
-
 
 function run_procedure() {
     SELERA=$1
@@ -37,7 +32,5 @@ function run_procedure() {
          --write-weights True
 }
 
-
 source utils/multirun.sh
-genArgsAndRun run_procedure $ERA $CHANNEL 
-
+genArgsAndRun run_procedure $@
