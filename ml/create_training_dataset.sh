@@ -39,7 +39,7 @@ function run_procedure() {
         --tree-path ${SELCHANNEL}_nominal/ntuple \
         --event-branch event \
         --training-weight-branch training_weight \
-        --training-z-estimation-method mc \
+        --training-z-estimation-method emb \
         --output-config ml/${SELERA}_${SELCHANNEL}/dataset_config.yaml
 
     # Create dataset files from config
