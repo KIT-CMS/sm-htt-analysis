@@ -198,6 +198,24 @@ for v in variables:
         fdata.Write()
         fmc.Write()
 
+for f in [foutpuppi, fout]:
+    f.cd()
+    projH = r.TH1D("projH","projH",2,0.0,2.0)
+    for index, name in  enumerate(["recoilZPerp", "recoilZParal"]):
+        projH.GetXaxis().SetBinLabel(index+1, name)
+    projH.Write()
+
+    nJetBinsH = r.TH1D("nJetBinsH","nJetBinsH",3,0.0,3.0)
+    for index, name in  enumerate(["NJet0", "NJet1", "NJetGe2"]):
+        nJetBinsH.GetXaxis().SetBinLabel(index+1, name)
+    nJetBinsH.Write()
+
+    ZPtBinsH = r.TH1D("ZPtBinsH","ZPtBinsH",5,0.0,5.0)
+    for index, name in  enumerate(["Pt0to10","Pt10to20", "Pt20to30", "Pt30to50",  "PtGt50"]):
+        ZPtBinsH.GetXaxis().SetBinLabel(index+1, name)
+    ZPtBinsH.Write()
+
+
 with open("%s/recoil.json"%outfoldername,"w") as jsonout:
     jsonout.write(json.dumps(mean_reso_dict, sort_keys=True, indent=2))
     jsonout.close()
