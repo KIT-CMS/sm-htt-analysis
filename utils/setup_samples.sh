@@ -4,20 +4,20 @@ ERA=$1
 
 # Samples Run2016
 ARTUS_OUTPUTS_2016=/storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13
-ARTUS_FRIENDS_ET_2016="/storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_MELA_friends /storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_fastmtt_friends"
-ARTUS_FRIENDS_MT_2016="/storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_MELA_friends /storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_fastmtt_friends"
-ARTUS_FRIENDS_TT_2016="/storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_MELA_friends /storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_fastmtt_friends"
-ARTUS_FRIENDS_EM_2016="/storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_MELA_friends /storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_fastmtt_friends"
+ARTUS_FRIENDS_ET_2016="/storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_MELA_friends /storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_SVFit_friends"
+ARTUS_FRIENDS_MT_2016="/storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_MELA_friends /storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_SVFit_friends /storage/9/sbrommer/htt_training/16"
+ARTUS_FRIENDS_TT_2016="/storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_MELA_friends /storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_SVFit_friends"
+ARTUS_FRIENDS_EM_2016="/storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_MELA_friends /storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_SVFit_friends"
 ARTUS_FRIENDS_FAKE_FACTOR_2016=/storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_fake_factor_friends
 ARTUS_FRIENDS_FAKE_FACTOR_INCL_2016=$ARTUS_FRIENDS_FAKE_FACTOR_2016
 
 # Samples Run2017
 NNScore=/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_NNScore/NNScore_collected/
 ARTUS_OUTPUTS_2017="/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis/"
-#ARTUS_FRIENDS_ET_2017="/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_MELA/MELA_collected/ /storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_SVFit/SVFit_collected/ ${NNScore}"
-#ARTUS_FRIENDS_MT_2017="/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_MELA/MELA_collected/ /storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_SVFit/SVFit_collected/ ${NNScore}"
-#ARTUS_FRIENDS_TT_2017="/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_MELA/MELA_collected/ /storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_SVFit/SVFit_collected/ ${NNScore}"
-#ARTUS_FRIENDS_EM_2017="/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_MELA/MELA_collected/ /storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_SVFit/SVFit_collected/ ${NNScore}"
+ARTUS_FRIENDS_ET_2017="/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_MELA/MELA_collected/ /storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_SVFit/SVFit_collected/ ${NNScore}"
+ARTUS_FRIENDS_MT_2017="/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_MELA/MELA_collected/ /storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_SVFit/SVFit_collected/ ${NNScore}"
+ARTUS_FRIENDS_TT_2017="/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_MELA/MELA_collected/ /storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_SVFit/SVFit_collected/ ${NNScore}"
+ARTUS_FRIENDS_EM_2017="/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_MELA/MELA_collected/ /storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_SVFit/SVFit_collected/ ${NNScore}"
 #ARTUS_FRIENDS_ET_2017=/storage/b/sjoerger/pruning/et/complete_analysis/6_variables/
 #ARTUS_FRIENDS_EM_2017=/storage/b/sjoerger/pruning/em/complete_analysis/18_variables/
 #ARTUS_FRIENDS_TT_2017=/storage/b/sjoerger/pruning/tt/complete_analysis/7_variables/
@@ -30,10 +30,10 @@ ARTUS_OUTPUTS_2017="/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_anal
 #ARTUS_FRIENDS_EM_2017=/storage/b/sjoerger/pruning/combined/pruned
 #ARTUS_FRIENDS_TT_2017=/storage/b/sjoerger/pruning/combined/pruned
 #ARTUS_FRIENDS_MT_2017=/storage/b/sjoerger/pruning/combined/pruned
-ARTUS_FRIENDS_ET_2017=/storage/b/sjoerger/pruning/combined/11variables
-ARTUS_FRIENDS_EM_2017=/storage/b/sjoerger/pruning/combined/11variables
-ARTUS_FRIENDS_TT_2017=/storage/b/sjoerger/pruning/combined/11variables
-ARTUS_FRIENDS_MT_2017=/storage/b/sjoerger/pruning/combined/11variables
+#ARTUS_FRIENDS_ET_2017=/storage/b/sjoerger/pruning/combined/11variables
+#ARTUS_FRIENDS_EM_2017=/storage/b/sjoerger/pruning/combined/11variables
+#ARTUS_FRIENDS_TT_2017=/storage/b/sjoerger/pruning/combined/11variables
+#ARTUS_FRIENDS_MT_2017=/storage/b/sjoerger/pruning/combined/11variables
 ARTUS_FRIENDS_FAKE_FACTOR_2017="/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_FakeFactors/FakeFactors_collected/"
 ARTUS_FRIENDS_FAKE_FACTOR_INCL_2017=$ARTUS_FRIENDS_FAKE_FACTOR_2017
 ARTUS_OUTPUTS_EM_2017=blank

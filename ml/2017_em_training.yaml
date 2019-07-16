@@ -1,95 +1,68 @@
-# Training datasets for different folds
-datasets:
-    - ml/2017_em/fold0_training_dataset.root
-    - ml/2017_em/fold1_training_dataset.root
-
-# Base path for all output files
-output_path: ml/2017_em_27_variables
-output_path_json: ml/2017_em_27_variables
-
-# Define classes based on tree names in dataset file
-classes:
-    - ggh
-    - qqh
-    - ztt
-    - tt
-    - ss
-    - misc
-    - db
-
-# Set class weights
 class_weights:
-    ggh: 337.4
-    qqh: 2898.4
-    ztt: 1.5
-    tt: 15.3
-    ss: 5.5
-    misc: 23.8
-    db: 26.4
+  db: 17.253056535891872
+  ggh: 346.5932531182222
+  misc: 21.589786879317202
+  qqh: 2977.8359856616285
+  ss: 5.688666329188941
+  tt: 15.763093580334802
+  ztt: 1.5307546202198048
 
-# Define global scale factor, which is multiplied to all event weights
-global_weight_scale: 1.0
+datasets:
+  - ml/2017_em/fold0_training_dataset.root
+  - ml/2017_em/fold1_training_dataset.root
 
-# Set event weight variable
 event_weights: training_weight
-
-# Define list of variables to be used for training
-variables:
-    - pt_1      # Failed 1D GoF
-    - pt_2
-    # iso_1     # Failed 1D GoF
-    # iso_2     # Failed 1D GoF
-    - jpt_1
-    - jpt_2
-    - bpt_1
-    - bpt_2
-    - njets
-    - nbtag
-    - m_sv
-    - mt_1
-    - mt_2
-    - ptvis
-    - pt_tt
-    - mjj
-    - jdeta
-    - m_vis
-    - dijetpt
-    - met
-    - dr_tt
-    - jeta_1
-    - jeta_2
-    - pZetaMiss
-    - pZetaVis
-    - mt_max
-    - dzeta
-    #- mTemu
-    - pt_sv
-    - pt_ttjj
-#    - ME_q2v1
-#    - ME_q2v2
-#    - ME_costheta1
-#    - ME_costheta2
-#    - ME_costhetastar
-#    - ME_phi1
-#    - ME_phi
-#    - ME_D
-#    - ME_vbf
-#    - ME_z2j_1
-#    - ME_z2j_2
-
-# Split of dataset in training and validation (in TMVA called training and testing)
+preprocessing: standard_scaler
+seed: 1234
 train_test_split: 0.75
 
-# Define preprocessing
-preprocessing: standard_scaler
+output_path: ml/2017_em_10_variables
+output_path_json: ml/2017_em_10_variables
 
-# Set random seed for initialization of parameters and dataset splits
-seed: 1234
+classes:
+  - ggh
+  - qqh
+  - ztt
+  - tt
+  - ss
+  - misc
+  - db
 
-# Define the model parameter
+variables:
+  - pt_1
+  - pt_2
+  #- jpt_1
+  - jpt_2
+  #- bpt_1
+  #- bpt_2
+  - njets
+  - nbtag
+  - m_sv
+  #- mt_1
+  #- mt_2
+  - ptvis
+  #- pt_tt
+  - mjj
+  #- jdeta
+  - m_vis
+  - dijetpt
+  #- met
+#  - dr_tt
+#  - jeta_1
+#  - jeta_2
+#  - pZetaMiss
+#  - pZetaVis
+#  - mt_max
+#  - dzeta
+#  - pt_sv
+#  - pt_ttjj
+
+global_weight_scale: 1.0
+
 model:
-    name: smhtt_dropout_relu
-    batch_size: 100
-    epochs: 100000
-    early_stopping: 50
-    save_best_only: true
+  batch_size: 100
+  early_stopping: 50
+  epochs: 100000
+  name: smhtt_dropout_relu
+  save_best_only: true
+

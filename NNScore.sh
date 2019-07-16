@@ -14,21 +14,21 @@ cd $THIS_PWD
 ulimit -s unlimited
 
 job_management.py --executable NNScore \
-                  --batch_cluster lxplus \
-                  --command submit \
-                  --input_ntuples_directory "/storage/b/akhmet/merged_files_from_naf/Full_2017_test_all-channels/" \
+                  --batch_cluster etp6 \
+                  --command collect \
+                  --input_ntuples_directory "/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis/" \
                   --walltime 1800  \
                   --events_per_job 200000 \
-                  --friend_ntuples_directories "/storage/b/akhmet/merged_files_from_naf/SVFit_collected/" "/storage/b/akhmet/merged_files_from_naf/MELA_collected/" \
+                  --friend_ntuples_directories "/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_SVFit/SVFit_collected/" "/storage/b/akhmet/merged_files_from_naf/07-06-2019_full_analysis_MELA/MELA_collected/" \
                   --cores 50 \
                   #--restrict_to_channels "mt"
                   #--custom_workdir_path "/storage/b/sjoerger/pruning/mt/complete_analysis/18_variables" \
 
 #NNScore --input_friends /storage/b/akhmet/merged_files_from_naf/SVFit_collected/W2JetsToLNu_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_madgraph-pythia8_v4/W2JetsToLNu_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_madgraph-pythia8_v4.root /storage/b/akhmet/merged_files_from_naf/MELA_collected/W2JetsToLNu_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_madgraph-pythia8_v4/W2JetsToLNu_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_madgraph-pythia8_v4.root --tree ntuple --last_entry 23223 --first_entry 0 --input /storage/b/akhmet/merged_files_from_naf/Full_2017_test_all-channels/W2JetsToLNu_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_madgraph-pythia8_v4/W2JetsToLNu_RunIIFall17MiniAODv2_PU2017_13TeV_MINIAOD_madgraph-pythia8_v4.root --folder mt_btagMistagDown
 
-cd CMSSW_10_2_14/src/NNScore_workdir/
-
-condor_submit condor_NNScore_0.jdl
+#cd CMSSW_10_2_14/src/NNScore_workdir/
+#
+#condor_submit condor_NNScore_0.jdl
 
 #cd CMSSW_10_2_14/src/NNScore_workdir
 #condor_submit condor_NNScore_resubmit.jdl

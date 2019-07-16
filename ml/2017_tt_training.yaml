@@ -1,83 +1,55 @@
-# Training datasets for different folds
-datasets:
-    - ml/2017_tt/fold0_training_dataset.root
-    - ml/2017_tt/fold1_training_dataset.root
-
-# Base path for all output files
-output_path: ml/2017_tt_27_variables
-output_path_json: ml/2017_27_variables
-
-# Define classes based on tree names in dataset file
-classes:
-    - ggh
-    - qqh
-    - ztt
-    - noniso
-    - misc
-
-# Set class weights
 class_weights:
-    ggh: 200.2
-    qqh: 625.2
-    ztt: 4.7
-    noniso: 1.4
-    misc: 12.8
+  ggh: 194.4478588110794
+  misc: 12.820116495768385
+  noniso: 1.4373483972743835
+  qqh: 600.2050650645273
+  ztt: 4.556573048498282
 
-# Define global scale factor, which is multiplied to all event weights
-global_weight_scale: 1.0
+classes:
+  - ggh
+  - qqh
+  - ztt
+  - noniso
+  - misc
 
-# Set event weight variable
-event_weights: training_weight
+datasets:
+  - ml/2017_tt/fold0_training_dataset.root
+  - ml/2017_tt/fold1_training_dataset.root
 
-# Define list of variables to be used for training
+
+output_path: ml/2017_tt_10_variables
+output_path_json: ml/2017_27_10_variables
+
 variables:
-    - pt_1
-    - pt_2      # Failed 2D GoF
-    # iso_1     # Failed 1D GoF
-    # iso_2     # Failed 1D GoF
-    - jpt_1     # Failed 2D GoF
-    - jpt_2
-    - bpt_1
-    - bpt_2
-    - njets
-    - nbtag
-    - m_sv
-    - mt_1
-    - mt_2
-    - ptvis     # Failed 1D GoF
-    - pt_tt
-    - mjj
-    - jdeta
-    - m_vis
-    - dijetpt
-    - met       # Failed 1D GoF
-#    - ME_q2v1
-#    - ME_q2v2
-#    - ME_costheta1
-#    - ME_costheta2
-#    - ME_costhetastar
-#    - ME_phi1
-#    - ME_phi
-#    - ME_D
-#    - ME_vbf
-#    - ME_z2j_1
-#    - ME_z2j_2
+  - pt_1
+  - pt_2
+  #- jpt_1
+  - jpt_2
+  #- bpt_1
+  #- bpt_2
+  - njets
+  - nbtag
+  - m_sv
+  #- mt_1
+  #- mt_2
+  - ptvis
+  #- pt_tt
+  - mjj
+  #- jdeta
+  - m_vis
+  - dijetpt
+  #- met
 
-
-# Split of dataset in training and validation (in TMVA called training and testing)
+event_weights: training_weight
+global_weight_scale: 1.0
+preprocessing: standard_scaler
+seed: 1234
 train_test_split: 0.75
 
-# Define preprocessing
-preprocessing: standard_scaler
-
-# Set random seed for initialization of parameters and dataset splits
-seed: 1234
-
-# Define the model parameter
 model:
-    name: smhtt_dropout_relu
-    batch_size: 100
-    epochs: 100000
-    learning_rate: 1e-3
-    early_stopping: 50
-    save_best_only: true
+  batch_size: 100
+  early_stopping: 50
+  epochs: 100000
+  learning_rate: 1e-3
+  name: smhtt_dropout_relu
+  save_best_only: true
