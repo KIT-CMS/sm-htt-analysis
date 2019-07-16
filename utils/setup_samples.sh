@@ -3,12 +3,12 @@
 ERA=$1
 
 # Samples Run2016
-ARTUS_OUTPUTS_2016=/storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13
-ARTUS_FRIENDS_ET_2016="/storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_MELA_friends /storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_SVFit_friends"
-ARTUS_FRIENDS_MT_2016="/storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_MELA_friends /storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_SVFit_friends /storage/9/sbrommer/htt_training/16"
-ARTUS_FRIENDS_TT_2016="/storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_MELA_friends /storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_SVFit_friends"
-ARTUS_FRIENDS_EM_2016="/storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_MELA_friends /storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_SVFit_friends"
-ARTUS_FRIENDS_FAKE_FACTOR_2016=/storage/9/sbrommer/artus_outputs/2016_samples/2019_06_13_fake_factor_friends
+ARTUS_OUTPUTS_2016=/ceph/sbrommer/artus_ntuple/2016_samples/2019_06_13
+ARTUS_FRIENDS_ET_2016="/ceph/sbrommer/artus_ntuple/2016_samples/2019_06_13_MELA_friends /ceph/sbrommer/artus_ntuple/2016_samples/2019_06_13_SVFit_friends"
+ARTUS_FRIENDS_MT_2016="/ceph/sbrommer/artus_ntuple/2016_samples/2019_06_13_MELA_friends /ceph/sbrommer/artus_ntuple/2016_samples/2019_06_13_SVFit_friends"
+ARTUS_FRIENDS_TT_2016="/ceph/sbrommer/artus_ntuple/2016_samples/2019_06_13_MELA_friends /ceph/sbrommer/artus_ntuple/2016_samples/2019_06_13_SVFit_friends"
+ARTUS_FRIENDS_EM_2016="/ceph/sbrommer/artus_ntuple/2016_samples/2019_06_13_MELA_friends /ceph/sbrommer/artus_ntuple/2016_samples/2019_06_13_SVFit_friends"
+ARTUS_FRIENDS_FAKE_FACTOR_2016=/ceph/sbrommer/artus_ntuple/2016_samples/2019_06_13_fake_factor_friends
 ARTUS_FRIENDS_FAKE_FACTOR_INCL_2016=$ARTUS_FRIENDS_FAKE_FACTOR_2016
 
 # Samples Run2017

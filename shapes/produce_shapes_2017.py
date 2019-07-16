@@ -1498,7 +1498,7 @@ def main(args):
                       Weight("(1.0/{})".format(unc), "{}_weight".format(unc)),
                       "Down"))
     for variation in ggh_variations:
-        for process_nick in [nick for nick in signal_nicks if "ggH125" in nick]: #TODO currently not implemented for ggHWW, to be updated for next ggHWW ntuples
+        for process_nick in [nick for nick in signal_nicks if "ggH" in nick and "HWW" not in nick]:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,

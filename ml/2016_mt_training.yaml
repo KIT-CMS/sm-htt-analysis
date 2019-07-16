@@ -1,4 +1,25 @@
+<<<<<<< HEAD
 # Training datasets for different folds
+=======
+class_weights:
+  ggh: 257.7432062127747
+  misc: 405.57693541882827
+  qqh: 1825.8597822061026
+  ss: 6.579470721224369
+  tt: 17.900806221189537
+  w: 6.761087686414547
+  zll: 14.634881669756334
+  ztt: 1.7574060901775446
+classes:
+- ggh
+- qqh
+- ztt
+- zll
+- w
+- tt
+- ss
+- misc
+>>>>>>> master
 datasets:
     - ml/2016_mt/fold0_training_dataset.root
     - ml/2016_mt/fold1_training_dataset.root
@@ -65,6 +86,7 @@ preprocessing: standard_scaler
 
 # Set random seed for initialization of parameters and dataset splits
 seed: 1234
+<<<<<<< HEAD
 
 # Define the model parameter
 model:
@@ -73,3 +95,25 @@ model:
     epochs: 100000
     early_stopping: 50
     save_best_only: true
+=======
+train_test_split: 0.75
+variables:
+- pt_1
+- pt_2
+- jpt_1
+- jpt_2
+- bpt_1
+- bpt_2
+- njets
+- nbtag
+- m_sv
+- mt_1
+- mt_2
+- ptvis
+- pt_tt
+- mjj
+- jdeta
+- m_vis
+- dijetpt
+- met
+>>>>>>> master

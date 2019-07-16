@@ -1,4 +1,19 @@
+<<<<<<< HEAD
 # Training datasets for different folds
+=======
+class_weights:
+  ggh: 241.36803191752904
+  misc: 10.526449079155576
+  noniso: 1.52653125620745
+  qqh: 590.1229311109338
+  ztt: 4.096956063741624
+classes:
+- ggh
+- qqh
+- ztt
+- noniso
+- misc
+>>>>>>> master
 datasets:
     - ml/2016_tt/fold0_training_dataset.root
     - ml/2016_tt/fold1_training_dataset.root
