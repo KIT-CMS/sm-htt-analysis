@@ -11,7 +11,7 @@ do
 done
 
 # Clean-up workspace
-./utils/clean.sh
+#./utils/clean.sh
 
 # Parse arguments
 ERA=$1               # options: 2016, 2017
