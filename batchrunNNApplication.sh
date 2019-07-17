@@ -12,7 +12,7 @@ source utils/bashFunctionCollection.sh
 #export SCRAM_ARCH="slc6_amd64_gcc700"
 export VO_CMS_SW_DIR="/cvmfs/cms.cern.ch"
 source $VO_CMS_SW_DIR/cmsset_default.sh
-export sm_htt_analysis_dir="/portal/ekpbms3/home/mscham/sm-htt-analysis"
+export sm_htt_analysis_dir="/portal/ekpbms3/home/${USER}/sm-htt-analysis"
 
 
 if [[ ! "submit check collect" =~ $modus || -z $modus ]]; then
@@ -26,8 +26,8 @@ fi
 
 if [[ $cluster = "etp" ]]; then
     #### use local resources
-    export sw_src_dir="/portal/ekpbms3/home/mscham/CMSSW_10_2_14/src"
-    export batch_out="/portal/ekpbms3/home/mscham/batch-out"
+    export sw_src_dir="/portal/ekpbms3/home/${USER}/CMSSW_10_2_14/src"
+    export batch_out="/portal/ekpbms3/home/${USER}/batch-out"
 
     #### Path pick ntuples + friend tree paths here
     source $sm_htt_analysis_dir/utils/setup_samples.sh $era
@@ -68,8 +68,8 @@ elif [[ $cluster == "lxplus" ]]; then
             ;;
     esac
 
-    export sw_src_dir="/afs/cern.ch/user/m/mscham/CMSSW_10_2_14/src"
-    export batch_out="/afs/cern.ch/work/m/mscham/batch-out"
+    export sw_src_dir="/afs/cern.ch/user/${USER::1}/${USER}/CMSSW_10_2_14/src"
+    export batch_out="/afs/cern.ch/work/${USER::1}/${USER}/batch-out"
 fi
 export workdir=$batch_out/$outdir
 
@@ -142,4 +142,4 @@ fi
 
 
 
-###rsync -avhP /afs/cern.ch/work/m/mscham/batch-out /eos/user/m/mscham/batch-out/
+###rsync -avhP /afs/cern.ch/work/${USER::1}/${USER}/batch-out /eos/user/${USER::1}/${USER}/batch-out/

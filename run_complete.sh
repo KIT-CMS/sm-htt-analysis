@@ -6,9 +6,9 @@ shopt -s checkjobs # wait for all jobs before exiting
 export PARALLEL=1
 export USE_BATCH_SYSTEM=1
 export cluster=lxplus
-export sm_htt_analysis_dir="/portal/ekpbms3/home/mscham/sm-htt-analysis" ### local sm-htt repo !
-export cmssw_src_local="/portal/ekpbms3/home/mscham/CMSSW_10_2_14/src" ### local CMSSW !
-export batch_out_local="/portal/ekpbms3/home/mscham/batch-out"
+export sm_htt_analysis_dir="/portal/ekpbms3/home/${USER}/sm-htt-analysis" ### local sm-htt repo !
+export cmssw_src_local="/portal/ekpbms3/home/${USER}/CMSSW_10_2_14/src" ### local CMSSW !
+export batch_out_local="/portal/ekpbms3/home/${USER}/batch-out"
 source utils/bashFunctionCollection.sh
 
 
@@ -16,8 +16,8 @@ if [[ $USE_BATCH_SYSTEM == "1" ]]; then
     if [[ $cluster == "etp" ]]; then
         export batch_out=$batch_out_local
     elif [[ $cluster == "lxplus" ]]; then
-        export batch_out="/afs/cern.ch/work/m/mscham/batch-out"
-        export cmssw_src_dir="/afs/cern.ch/user/m/mscham/CMSSW_10_2_14/src" ## Remote CMSSW!
+        export batch_out="/afs/cern.ch/work/${USER::1}/${USER}/batch-out"
+        export cmssw_src_dir="/afs/cern.ch/user/${USER::1}/${USER}/CMSSW_10_2_14/src" ## Remote CMSSW!
     fi
 fi
 
