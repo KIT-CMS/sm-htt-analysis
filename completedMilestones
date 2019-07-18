@@ -12,6 +12,9 @@ emb_sum_training_weights=0
 mc_training=0
 emb_training=0
 
+mc_testing=0
+emb_testing=0
+
 mc_models_exported=0
 emb_models_exported=0
 
@@ -29,8 +32,8 @@ emb_NNApplication_synced=0
 
 ### for run_complete
 
-ds_created=1
-sum_training_weights=1
+ds_created=0
+sum_training_weights=0
 training=0
 models_exported=0
 NNApplication_started=0

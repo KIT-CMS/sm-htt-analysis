@@ -66,20 +66,28 @@ def main(args):
         training_config_dict=yaml.load(open(training_config_filename, "r"))
 
         logger.info( "{}-{}: Class weights before update: {}".format(args.era, args.channel,dictToString(training_config_dict["class_weights"])))
-
+	
+    newWeightsDict={}
+    for i, name in enumerate(classes):
+        newWeightsDict[name]=sum_all / counts[i]
+        
+    
+    if set(training_config_dict["class_weights"].keys())==set(newWeightsDict.keys()):
+        ### Warning for big changes
         for i, name in enumerate(classes):
             oldweight=training_config_dict["class_weights"][name]
-            newweight=sum_all / counts[i]
-            
-            ### Warning for big changes
+            newweight=newWeightsDict[name]
             if newweight/oldweight > 2 or newweight/oldweight < .5:
-                logger.warning( "{}-{}: Class weights for {} changing by more than a factor of 2".format(args.era, args.channel,name))
-            training_config_dict["class_weights"][name]=newweight
+                    logger.warning( "{}-{}: Class weights for {} changing by more than a factor of 2".format(args.era, args.channel,name))
+    else:
+        logger.warn("Training classes in {} and {} differ".format(args.dataset_config_file,training_config_filename))
+    training_config_dict["classes"]=newWeightsDict.keys()
+    training_config_dict["class_weights"]=newWeightsDict
+    with open(training_config_filename,"w") as f:
+        yaml.dump(training_config_dict, f, default_flow_style=False)
 
-        with open(training_config_filename,"w") as f:
-            yaml.dump(training_config_dict, f, default_flow_style=False)
 
-        logger.info( "{}-{}: Class weights after update: {}".format(args.era, args.channel,dictToString(training_config_dict["class_weights"])))
+    logger.info( "{}-{}: Class weights after update: {}".format(args.era, args.channel,dictToString(training_config_dict["class_weights"])))
 
 if __name__ == "__main__":
     args = parse_arguments()

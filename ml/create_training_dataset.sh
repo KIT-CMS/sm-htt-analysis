@@ -1,6 +1,14 @@
 #!/bin/bash
 set -e 
 
+export LCG_RELEASE=95
+if uname -a | grep ekpdeepthought
+then
+    #source /cvmfs/sft.cern.ch/lcg/views/LCG_94/x86_64-ubuntu1604-gcc54-opt/setup.sh
+    #source /cvmfs/sft.cern.ch/lcg/views/LCG_95/x86_64-ubuntu1804-gcc8-opt/setup.sh
+    echo "Not possible here"
+    exit 1
+fi
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
 
@@ -13,15 +21,15 @@ function run_procedure() {
     ARTUS_FRIENDS=""
     if [ ${SELCHANNEL} == 'mt' ]
     then
-        ARTUS_FRIENDS=${ARTUS_FRIENDS_MT}
+        ARTUS_FRIENDS="${ARTUS_FRIENDS_MT} $FF_Friends_2017"
     fi
     if [ ${SELCHANNEL} == 'et' ]
     then
-        ARTUS_FRIENDS=${ARTUS_FRIENDS_ET}
+        ARTUS_FRIENDS="${ARTUS_FRIENDS_ET} $FF_Friends_2017"
     fi
     if [ ${SELCHANNEL} == 'tt' ]
     then
-        ARTUS_FRIENDS=${ARTUS_FRIENDS_TT}
+        ARTUS_FRIENDS="${ARTUS_FRIENDS_TT} $FF_Friends_2017"
     fi
     if [ ${SELCHANNEL} == 'em' ]
     then
@@ -40,6 +48,7 @@ function run_procedure() {
         --event-branch event \
         --training-weight-branch training_weight \
         --training-z-estimation-method mc \
+	--training-jetfakes-estimation-method ff \
         --output-config ml/${SELERA}_${SELCHANNEL}/dataset_config.yaml
 
     # Create dataset files from config

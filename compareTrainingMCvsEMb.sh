@@ -259,6 +259,20 @@ function main() {
             else
                 loginfo Skipping $m training
             fi
+            ### Run testings ml/era_channel_testing.yaml
+            if [[ ! $( getPar completedMilestones ${m}_testing  ) == 1  ]]; then
+                for era in ${eras[@]}; do
+                    for channel in ${channels[@]}; do
+                        loginfo ./ml/run_testing.sh $era $channel
+                        ./ml/run_testing.sh $era $channel
+                    done
+                done
+                overridePar completedMilestones ${m}_testing 1
+                loginfo All $m testings completed
+            else
+                loginfo Skipping $m testing
+            fi
+
             if [[ $USE_BATCH_SYSTEM == 1 ]]; then
                 ### convert the models to lwtnn format ml/era_channel/foldX_keras_model.h5 -> ml/era_channel/foldX_lwtnn.json
                 if [[ ! $( getPar completedMilestones ${m}_models_exported  ) == 1  ]]; then
@@ -274,7 +288,6 @@ function main() {
                     fi
                     overridePar completedMilestones ${m}_models_exported 1
                     loginfo Models for $m application exported
-			exit 0
                 else
                     loginfo Skipping $m model export
                 fi

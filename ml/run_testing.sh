@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 ERA=$1
 CHANNEL=$2
