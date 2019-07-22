@@ -22,3 +22,6 @@
 [submodule "datasets"]
 	path = datasets
 	url = git@github.com:KIT-CMS/datasets.git
+[submodule "TauIDSF_measurement"]
+	path = TauIDSF_measurement
+	url = git@github.com:KIT-CMS/TauIDSF_measurement.git
