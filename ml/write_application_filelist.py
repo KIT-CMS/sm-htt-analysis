@@ -67,7 +67,7 @@ def main(args):
                 ttHEstimation(era, args.directory, channel),
                 VHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
-                ZTTEmbeddedEstimation(era, args.directory, channel),
+                #ZTTEmbeddedEstimation(era, args.directory, channel), #TODO include EMB again once samples are there
                 ZLEstimation(era, args.directory, channel),
                 ZJEstimation(era, args.directory, channel),
                 TTTEstimation(era, args.directory, channel),
@@ -155,7 +155,7 @@ def main(args):
                 ttHEstimation(era, args.directory, channel),
                 VHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
-                ZTTEmbeddedEstimation(era, args.directory, channel),
+                #ZTTEmbeddedEstimation(era, args.directory, channel), #TODO include EMB again once samples are there
                 ZLEstimation(era, args.directory, channel),
                 ZJEstimation(era, args.directory, channel),
                 TTTEstimation(era, args.directory, channel),
@@ -243,7 +243,7 @@ def main(args):
                 ttHEstimation(era, args.directory, channel),
                 VHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
-                ZTTEmbeddedEstimation(era, args.directory, channel),
+                #ZTTEmbeddedEstimation(era, args.directory, channel), #TODO include EMB again once samples are there
                 ZLEstimation(era, args.directory, channel),
                 ZJEstimation(era, args.directory, channel),
                 TTTEstimation(era, args.directory, channel),
@@ -331,7 +331,7 @@ def main(args):
                 ttHEstimation(era, args.directory, channel),
                 VHEstimation(era, args.directory, channel),
                 ZTTEstimation(era, args.directory, channel),
-                ZTTEmbeddedEstimation(era, args.directory, channel),
+                #ZTTEmbeddedEstimation(era, args.directory, channel), #TODO include EMB again once samples are there
                 ZLEstimation(era, args.directory, channel),
                 TTTEstimation(era, args.directory, channel),
                 TTLEstimation(era, args.directory, channel),
