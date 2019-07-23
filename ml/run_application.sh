@@ -28,4 +28,4 @@ python ml/run_application.py \
     --training-config ml/${ERA}_${CHANNEL}_training.yaml \
     --application-config ml/${ERA}_${CHANNEL}_application.yaml \
     --filelist ml/${ERA}_${CHANNEL}/application_filelist.yaml \
-    --num-processes 20
+    --num-processes 10
