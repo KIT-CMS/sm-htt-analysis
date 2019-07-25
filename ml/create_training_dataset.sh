@@ -6,7 +6,7 @@ if uname -a | grep ekpdeepthought
 then
     #source /cvmfs/sft.cern.ch/lcg/views/LCG_94/x86_64-ubuntu1604-gcc54-opt/setup.sh
     #source /cvmfs/sft.cern.ch/lcg/views/LCG_95/x86_64-ubuntu1804-gcc8-opt/setup.sh
-    echo "Not possible here"
+    echo "Not possible here, use another machine"
     exit 1
 fi
 source utils/setup_cvmfs_sft.sh
@@ -48,7 +48,7 @@ function run_procedure() {
         --event-branch event \
         --training-weight-branch training_weight \
         --training-z-estimation-method mc \
-	--training-jetfakes-estimation-method ff \
+        --training-jetfakes-estimation-method ff \
         --output-config ml/${SELERA}_${SELCHANNEL}/dataset_config.yaml
 
     # Create dataset files from config

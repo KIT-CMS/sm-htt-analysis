@@ -134,7 +134,7 @@ def main(args):
             })
         ######## Check for emb vs MC
         if args.training_z_estimation_method=="emb":
-            classes_map["EMB"]="ztt"
+            classes_map["EMB"]="emb"
             estimationMethodList.extend([
                 ZTTEmbeddedEstimation(era, args.base_path, channel)])
         elif args.training_z_estimation_method=="mc":

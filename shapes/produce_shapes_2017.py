@@ -122,6 +122,10 @@ def parse_arguments():
         type=str,
         help="Backend. Use classic or tdf.")
     parser.add_argument(
+        "--train-method",
+        default="",
+        type=str)
+    parser.add_argument(
         "--tag", default="ERA_CHANNEL", type=str, help="Tag of output files.")
     parser.add_argument(
         "--skip-systematic-variations",
@@ -301,10 +305,20 @@ def main(args):
     # Variables and categories
     binning = yaml.load(open(args.binning))
 
+    def readclasses(c):
+        if args.train_method == "":
+            logger.debug("Parse config ml/2017_{}/dataset_config.yaml".format(c))
+            confdict= yaml.load(open("ml/2017_{}/dataset_config.yaml".format(c), "r"))
+        else:
+            logger.debug("Parse config ml/2017_{}_{}/dataset_config.yaml".format(c,args.train_method))
+            confdict= yaml.load(open("ml/2017_{}_{}/dataset_config.yaml".format(c,args.train_method), "r"))
+        return list(set([confdict["processes"][key]["class"] for key in confdict["processes"].keys()]))
+
     et_categories = []
     # Analysis shapes
     if "et" in args.channels:
-        classes_et = ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]
+        #classes_et = ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]
+        classes_et = readclasses("et")
         for i, label in enumerate(classes_et):
             score = Variable(
                 "et_max_score",
@@ -349,7 +363,8 @@ def main(args):
     mt_categories = []
     # Analysis shapes
     if "mt" in args.channels:
-        classes_mt = ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]
+        #classes_mt = ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]
+        classes_mt = readclasses("mt")
         for i, label in enumerate(classes_mt):
             score = Variable(
                 "mt_max_score",
@@ -394,7 +409,8 @@ def main(args):
     tt_categories = []
     # Analysis shapes
     if "tt" in args.channels:
-        classes_tt = ["ggh", "qqh", "ztt", "noniso", "misc"]
+        #classes_tt = ["ggh", "qqh", "ztt", "noniso", "misc"]
+        classes_tt = readclasses("tt")
         for i, label in enumerate(classes_tt):
             score = Variable(
                 "tt_max_score",
@@ -438,7 +454,8 @@ def main(args):
     em_categories = []
     # Analysis shapes
     if "em" in args.channels:
-        classes_em = ["ggh", "qqh", "ztt", "tt", "ss", "misc", "db"]
+        #classes_em = ["ggh", "qqh", "ztt", "tt", "ss", "misc", "db"]
+        classes_em = readclasses("em")
         for i, label in enumerate(classes_em):
             score = Variable(
                 "em_max_score",

@@ -28,10 +28,10 @@ def parse_arguments():
     parser = argparse.ArgumentParser(
         description="Convert shapes from the shape producer to the sync format."
     )
-
-    parser.add_argument("era", type=str, help="Experiment era.")
-    parser.add_argument("input", type=str, help="Path to single input ROOT file.")
-    parser.add_argument("output", type=str, help="Path to output directory.")
+    parser.add_argument("--era", required=True, type=str, help="Analysis era")
+    parser.add_argument("--input", required=True, type=str, help="Path to single input ROOT file.")
+    parser.add_argument("--output", required=True, type=str, help="Path to output directory")
+    parser.add_argument("--outmidname", required=False, type=str, help="Name to add to the output filename")
     return parser.parse_args()
 
 
@@ -75,9 +75,14 @@ def main(args):
 
     # Loop over map once and create respective output files
     for channel in hist_map:
-        filename_output = os.path.join(
-            args.output,
-            "htt_{CHANNEL}.inputs-sm-Run{ERA}-ML.root").format(CHANNEL=channel, ERA=args.era)
+        if args.outmidname == None and args.outmidname != "":
+            filename_output = os.path.join(
+                args.output,
+                "htt_{CHANNEL}.inputs-sm-Run{ERA}-ML.root").format(CHANNEL=channel, ERA=args.era)
+        else:
+            filename_output = os.path.join(
+                args.output,
+                "htt_{CHANNEL}_{MN}.inputs-sm-Run{ERA}-ML.root").format(CHANNEL=channel,MN=args.outmidname, ERA=args.era)
         if not os.path.exists(args.output):
             os.mkdir(args.output)
         file_output = ROOT.TFile(filename_output, "RECREATE")
