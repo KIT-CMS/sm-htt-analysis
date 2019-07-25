@@ -55,25 +55,26 @@ done
 for DIRECTORY in shapes datacards combine plotting utils
 do
     if [ ! -d "$DIRECTORY" ]; then
-        logerr "Directory $DIRECTORY not found, you are not in the top-level directory of the analysis repository?"
+        logerror "Directory $DIRECTORY not found, you are not in the top-level directory of the analysis repository?"
         exit 1
     fi
 done
 ############################################
+methods=("mc_mc" "emb_mc")
 
 
 ############# Ensure all folders and files are available for mc and emb
-for m in "mc" "emb"; do
+for m in ${methods[@]}; do
     for era in ${eras[@]}; do
         for channel in ${channels[@]}; do
-            mldir=ml/${era}_${channel}_${m}
-            trainingConfFile=ml/${era}_${channel}_training_${m}.yaml
+            mldir=$sm_htt_analysis_dir/ml/${era}_${channel}_${m}
+            trainingConfFile=$sm_htt_analysis_dir/ml/${era}_${channel}_training_${m}.yaml
             if [[ ! -d $mldir ]]; then
                 mkdir $mldir
                 loginfo "Creating $mldir"
             fi
             if [[ ! -f $trainingConfFile ]]; then
-                cp ml/${era}_${channel}_training.yaml $trainingConfFile
+                cp $sm_htt_analysis_dir/ml/${era}_${channel}_training.yaml $trainingConfFile
                 loginfo "copying ml/${era}_${channel}_training.yaml to $trainingConfFile "
             fi
         done
@@ -88,7 +89,11 @@ source completedMilestones
 function setmethod () {
     m=$1
     loginfo Setting Zττ estimation method to $m, switching symlinks
-    overridePar ml/create_training_dataset.sh "training-z-estimation-method" $m
+    if [[ $m == *"emb"* ]]; then
+        overridePar ml/create_training_dataset.sh "training-z-estimation-method" emb
+    else
+        overridePar ml/create_training_dataset.sh "training-z-estimation-method" mc
+    fi
     for era in ${eras[@]}; do
         for channel in ${channels[@]}; do
         	updateSymlink $sm_htt_analysis_dir/ml/${era}_${channel}_${m} $sm_htt_analysis_dir/ml/${era}_${channel}
@@ -145,17 +150,14 @@ function runana() {
 }
 
 function genshapes() {
-    for m in "mc" "emb"; do
+    for m in ${methods[@]}; do
         cd $sm_htt_analysis_dir
         setmethod $m
         for era in ${eras[@]}; do
             redoConversion=0
-	    lf=$sm_htt_analysis_dir/${era}_shapes.root
-	    rf=$batch_out_local/${era}_${m}/${era}_shapes.root
             if [[ ! -f $rf  ]]; then
-                updateSymlink $rf $lf
-                loginfo Producing shapes for $era ${channels[@]}
-                ./shapes/produce_shapes.sh $era ${channels[@]}
+                loginfo Producing shapes for $era $m ${channels[@]}
+                ./shapes/produce_shapes.sh $era $m ${channels[@]}
                 rm normalize_shifts.log
                 redoConversion=1
             else
@@ -223,7 +225,7 @@ function compareSignRes {
 #################################################################################################
 
 function main() {
-    if [[ $anaSSStep < 1 ]]; then
+    if [[ $( getPar completedMilestones anaSSStep ) < 1 ]]; then
         for m in "mc" "emb"; do
             setmethod $m
             ##### Create training dataset:
@@ -333,10 +335,10 @@ function main() {
                     if [[ $cluster == etp ]]; then
                             loginfo Cluster is ept, no need to sync.
                     elif [[ $cluster == lxplus ]]; then
-                        read -p "Sync files from $USER@lxplus.cern.ch:$batch_out/${era}_${m} to $batch_out/${era}_${m} now? y/[n]" yn
+                        read -p "Sync files from  $USER@lxplus.cern.ch:$batch_out/${era}_${m}/NNScore_workdir/NNScore_collected/ to $batch_out_local/${era}_${m}/NNScore_workdir/NNScore_collected now? y/[n]" yn
                         if [[ ! $yn == "y" ]]; then
                             logerror "!=y \n aborting"
-                            exit 0
+                            exit 1
                         fi
 
                         for era in ${eras[@]}; do
@@ -347,6 +349,7 @@ function main() {
                     fi
                     overridePar completedMilestones ${m}_NNApplication_synced 1
                     loginfo $m NNScore FriendTree sync completed
+                    exit 0
                 else
                     loginfo Skipping $m NNScore FriendTree sync
                 fi
@@ -359,16 +362,14 @@ function main() {
             fi
         done ## for m in mc, emb
         overridePar completedMilestones anaSSStep 1
-        anaSSStep=1
     fi
     loginfo reached analysis!
-    if [[ $anaSSStep < 2 ]]; then
+    if [[ $( getPar completedMilestones anaSSStep ) < 2 ]]; then
         runStages
-	loginfo completed stages
+	    loginfo completed stages
         overridePar completedMilestones anaSSStep 2
-        anaSSStep=2
     fi
-    if [[ $anaSSStep < 3 ]]; then
+    if [[ $( getPar completedMilestones anaSSStep ) < 3 ]]; then
         compareSignRes
         read -p "Run finished. Start new run? y/[n]" yn
         if [[ $yn == "y" ]]; then

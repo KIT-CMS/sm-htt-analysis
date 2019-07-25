@@ -16,15 +16,18 @@ function overridePar() {
 function getPar() {
     file=$1
     arg=$2
-    if [[ "" = $( grep -e "$arg" $file ) ]]; then
+    lines=$( grep -E "(^|\s|--)$arg" $file  )
+    nlines=$( echo $lines | grep -c . )
+
+    if [[ $nlines == 0 ]]; then
         logerror $arg is not in $file
         exit 2
     fi
-    if [[ $( grep -e $arg $file | grep -c . ) >1 ]]; then
+    if [[ $nlines >1 ]]; then
         logerror $arg appears multiple times in $file, aborting.
         exit 2
     fi
-    grep -e  "$arg" $file | sed -r "s@.*$arg(\s+|=)(\w+).*@\2@"
+    echo $lines | sed -E "s@(^|\s|--)($arg)(\s+|=)(\w+).*@\4@"
 }
 
 function updateSymlink() {
@@ -60,4 +63,8 @@ function logwarn {
 }
 function logerror {
     echo -e "\e[41m[ERROR]\e[0m" $( date +"%y-%m-%d %R" ): $@
+}
+function logandrun() {
+    loginfo $@
+    $@
 }
