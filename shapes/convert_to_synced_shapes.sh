@@ -10,6 +10,6 @@ set -x
 python shapes/convert_to_synced_shapes.py \
     --era ${ERA} \
     --outmidname $METHOD \
-    --input ${ERA}_${m}_shapes.root \
+    --input ${ERA}_${METHOD}_shapes.root \
     --output .
 )

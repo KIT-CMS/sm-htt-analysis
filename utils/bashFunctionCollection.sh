@@ -56,7 +56,7 @@ function recommendCPUs() {
 
 
 function loginfo {
-    echo -e "\e[42m[INFO]\e[0m" $( date +"%y-%m-%d %R" ): $@
+    echo -e "\e[46m[INFO]\e[0m" $( date +"%y-%m-%d %R" ): $@
 }
 function logwarn {
     echo -e "\e[45m[WARN]\e[0m" $( date +"%y-%m-%d %R" ): $@
@@ -65,6 +65,7 @@ function logerror {
     echo -e "\e[41m[ERROR]\e[0m" $( date +"%y-%m-%d %R" ): $@
 }
 function logandrun() {
-    loginfo $@
+    echo -e "\e[43m[RUN]\e[0m" $( date +"%y-%m-%d %R" ): $@
     $@
+    echo -e "\e[42m[COMPLETE]\e[0m" $( date +"%y-%m-%d %R" ): $@
 }

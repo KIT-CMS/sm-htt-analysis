@@ -11,20 +11,22 @@ else
     source /cvmfs/sft.cern.ch/lcg/views/LCG_${LCG_RELEASE}/x86_64-slc6-gcc8-opt/setup.sh
 fi
 
+method=$3 ##Dont set this var if not needed
 
 function run_procedure() {
     SELERA=$1
     SELCHANNEL=$2
-    datasetConfFile="ml/${SELERA}_${SELCHANNEL}/dataset_config.yaml"
-    hadd -f ml/${SELERA}_${SELCHANNEL}/combined_training_dataset.root \
-        ml/${SELERA}_${SELCHANNEL}/fold0_training_dataset.root \
-        ml/${SELERA}_${SELCHANNEL}/fold1_training_dataset.root
+    [[ $method == "" ]] && outdir=ml/out/${SELERA}_${SELCHANNEL} ||  outdir=ml/out/${SELERA}_${SELCHANNEL}_${method}
+
+    hadd -f $outdir/combined_training_dataset.root \
+        $outdir/fold0_training_dataset.root \
+        $outdir/fold1_training_dataset.root
 
     python ./ml/sum_training_weights.py \
         --era ${SELERA} \
         --channel ${SELCHANNEL} \
-        --dataset ml/${SELERA}_${SELCHANNEL}/combined_training_dataset.root \
-        --dataset-config-file $datasetConfFile \
+        --dataset $outdir/combined_training_dataset.root \
+        --dataset-config-file "$outdir/dataset_config.yaml" \
         --channel $SELCHANNEL \
          --write-weights True
 }

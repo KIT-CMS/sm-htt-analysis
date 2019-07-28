@@ -307,12 +307,12 @@ def main(args):
 
     def readclasses(c):
         if args.train_method == "":
-            logger.debug("Parse config ml/2017_{}/dataset_config.yaml".format(c))
-            confdict= yaml.load(open("ml/2017_{}/dataset_config.yaml".format(c), "r"))
+            logger.debug("Parse classes from ml/2017_{}_training.yaml".format(c))
+            confdict= yaml.load(open("ml/2017_{}_training.yaml".format(c), "r"))
         else:
-            logger.debug("Parse config ml/2017_{}_{}/dataset_config.yaml".format(c,args.train_method))
-            confdict= yaml.load(open("ml/2017_{}_{}/dataset_config.yaml".format(c,args.train_method), "r"))
-        return list(set([confdict["processes"][key]["class"] for key in confdict["processes"].keys()]))
+            logger.debug("Parse classes from ml/2017_{}_training_{}.yaml".format(c,args.train_method))
+            confdict= yaml.load(open("ml/2017_{}_training_{}.yaml".format(c,args.train_method), "r"))
+        return confdict["classes"]
 
     et_categories = []
     # Analysis shapes

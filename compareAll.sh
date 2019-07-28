@@ -81,15 +81,15 @@ done
 for method in ${methods[@]}; do
     for era in ${eras[@]}; do
         for channel in ${channels[@]}; do
-            mldir=$sm_htt_analysis_dir/ml/${era}_${channel}_${method}
-            trainingConfFile=$sm_htt_analysis_dir/ml/${era}_${channel}_training_${method}.yaml
+            mldir=$sm_htt_analysis_dir/ml/out/${era}_${channel}_${method}
+            trainingConfFile=$sm_htt_analysis_dir/ml/templates/${era}_${channel}_${method}_training.yaml
             if [[ ! -d $mldir ]]; then
                 mkdir $mldir
                 loginfo "Creating $mldir"
             fi
             if [[ ! -f $trainingConfFile ]]; then
-                cp $sm_htt_analysis_dir/ml/${era}_${channel}_training.yaml $trainingConfFile
-                loginfo "copying ml/${era}_${channel}_training.yaml to $trainingConfFile "
+                cp $sm_htt_analysis_dir/ml/templates/${era}_${channel}_training.yaml $trainingConfFile
+                loginfo "copying ml/templates/${era}_${channel}_training.yaml to $trainingConfFile "
             fi
         done
     done
@@ -101,25 +101,25 @@ source completedMilestones
 
 ############ Hack for switching between MC and EMB sample ################
 function setmethod () {
-    m=$1
-    loginfo Setting Zττ estimation method to $method, switching symlinks
-    if [[ $method == *"emb"* ]]; then
-        overridePar ml/create_training_dataset.sh "training-z-estimation-method" emb
-    else
-        overridePar ml/create_training_dataset.sh "training-z-estimation-method" mc
-    fi
-    if [[ $method == *"ff"* ]]; then
-        overridePar ml/create_training_dataset.sh "training-jetfakes-estimation-method" ff
-    else
-        overridePar ml/create_training_dataset.sh "training-jetfakes-estimation-method" mc
-    fi
-    for era in ${eras[@]}; do
-        for channel in ${channels[@]}; do
-        	updateSymlink $sm_htt_analysis_dir/ml/${era}_${channel}_${method} $sm_htt_analysis_dir/ml/${era}_${channel}
-        	updateSymlink $sm_htt_analysis_dir/ml/${era}_${channel}_training_${method}.yaml $sm_htt_analysis_dir/ml/${era}_${channel}_training.yaml
-        done
-        updateSymlink $batch_out_local/${era}_${method} $batch_out_local/${era}
-    done
+    # m=$1
+    # loginfo Setting Zττ estimation method to $method, switching symlinks
+    # # if [[ $method == *"emb"* ]]; then
+    # #     overridePar ml/create_training_dataset.sh "training-z-estimation-method" emb
+    # # else
+    # #     overridePar ml/create_training_dataset.sh "training-z-estimation-method" mc
+    # # fi
+    # # if [[ $method == *"ff"* ]]; then
+    # #     overridePar ml/create_training_dataset.sh "training-jetfakes-estimation-method" ff
+    # # else
+    # #     overridePar ml/create_training_dataset.sh "training-jetfakes-estimation-method" mc
+    # # fi
+    # for era in ${eras[@]}; do
+    #     for channel in ${channels[@]}; do
+    #     	updateSymlink $sm_htt_analysis_dir/ml/${era}_${channel}_${method} $sm_htt_analysis_dir/ml/${era}_${channel}
+    #     	updateSymlink $sm_htt_analysis_dir/ml/${era}_${channel}_${method}_training.yaml $sm_htt_analysis_dir/ml/${era}_${channel}_training.yaml
+    #     done
+    #     updateSymlink $batch_out_local/${era}_${method} $batch_out_local/${era}
+    # done
 
 }
 
@@ -130,11 +130,12 @@ function exportForApplication {
     ./ml/translate_models.sh $era $channel
     ./ml/export_lwtnn.sh $era $channel
     ### Supply the generated models in the hard-coded path in the friendProducer
+    ### lxrsync will dereference this symlink
     llwtnndir=$cmssw_src_local/HiggsAnalysis/friend-tree-producer/data/inputs_lwtnn
     [[ ! -d $llwtnndir/${era}/${channel} ]] && mkdir -p $llwtnndir/${era}/${channel}
     for fold in 0 1;
     do
-        updateSymlink $sm_htt_analysis_dir/ml/${era}_${channel}/fold${fold}_lwtnn.json  $llwtnndir/${era}/${channel}/fold${fold}_lwtnn.json
+        updateSymlink $sm_htt_analysis_dir/ml/out/${era}_${channel}/fold${fold}_lwtnn.json  $llwtnndir/${era}/${channel}/fold${fold}_lwtnn.json
     done
 }
 
@@ -153,10 +154,10 @@ function runana() {
         ./datacards/produce_datacard.sh $era $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING $method ${channels[@]} > /dev/null
     fi
     ./datacards/produce_workspace.sh ${era} $STXS_FIT > /dev/null
-    echo "writing to $method-$STXS_SIGNALS-$STXS_FIT.txt"
+    echo "writing to signal-strength-${channelsarg}-$method-$STXS_SIGNALS-$STXS_FIT.txt"
     temp_file=$(mktemp)
     ./combine/signal_strength.sh $era $STXS_FIT > $temp_file
-    cat $temp_file | sed -n -e '/ --- MultiDimFit ---/,$p'| sed  "/Printing Message Summary/q" | head -n -2 | grep -v INFO:  | tee "signal-strength-tt-$method-$STXS_SIGNALS-$STXS_FIT.txt"
+    cat $temp_file | sed -n -e '/ --- MultiDimFit ---/,$p'| sed  "/Printing Message Summary/q" | head -n -2 | grep -v INFO:  | tee "signal-strength-${channelsarg}-$method-$STXS_SIGNALS-$STXS_FIT.txt"
     ### add more analysis scripts here
     PROD_NEW_DATACARDS=0
 }
@@ -238,35 +239,40 @@ function compareSignRes {
 
 function compenv() {
     varnames=(era channel method eras  channels  methods erasarg channelsarg methodsarg mldir trainingConfFile anaSSStep  llwtnndir temp_file PROD_NEW_DATACARDS redoConversion fn JETFAKES EMBEDDING CATEGORIES METHOD PROD_NEW_DATACARDS STXS_SIGNALS STXS_FIT USE_BATCH_SYSTEM)
-    vars=($era $channel $method $eras $channels $methods $erasarg $channelsarg $methodsarg $mldir $trainingConfFile $anaSSStep $llwtnndir $temp_file $PROD_NEW_DATACARDS $redoConversion $fn $JETFAKES $EMBEDDING $CATEGORIES $METHOD $PROD_NEW_DATACARDS $STXS_SIGNALS $STXS_FIT $USE_BATCH_SYSTEM)
+    vars=(${era[@]} ${channel[@]} ${method[@]} ${eras[@]} ${channels[@]} ${methods[@]} ${erasarg[@]} ${channelsarg[@]} ${methodsarg[@]} ${mldir[@]} ${trainingConfFile[@]} ${anaSSStep[@]} ${llwtnndir[@]} ${temp_file[@]} ${PROD_NEW_DATACARDS[@]} ${redoConversion[@]} ${fn[@]} ${JETFAKES[@]} ${EMBEDDING[@]} ${CATEGORIES[@]} ${METHOD[@]} ${PROD_NEW_DATACARDS[@]} ${STXS_SIGNALS[@]} ${STXS_FIT[@]} $USE_BATCH_SYSTEM)
     for (( i=0; i<${#vars[@]}; i++ )); do
         echo "${varnames[$i]}=${vars[$i]}"
     done
 }
 
 function create_training_dataset() {
-    logandrun ./ml/create_training_dataset.sh $erasarg $channelsarg
+    for method in ${methods[@]}; do
+        logandrun ./ml/create_training_dataset.sh $erasarg $channelsarg $method
+    done
     loginfo All $method datasets created
 }
 function sum_training_weights() {
-    logandrun ./ml/sum_training_weights.sh $erasarg $channelsarg
-    loginfo All $method class weights calculated
+    for method in ${methods[@]}; do
+        logandrun ./ml/sum_training_weights.sh $erasarg $channelsarg $method
+    done
 }
 
 function mltrain() {
-    for era in ${eras[@]}; do
-        for channel in ${channels[@]}; do
-            loginfo ./ml/run_training.sh $era $channel
-            ./ml/run_training.sh $era $channel
+    for method in ${methods[@]}; do
+        for era in ${eras[@]}; do
+            for channel in ${channels[@]}; do
+                logandrun ./ml/run_training.sh $era $channel $method
+            done
         done
     done
 }
 
 function mltest() {
-    for era in ${eras[@]}; do
-        for channel in ${channels[@]}; do
-            loginfo ./ml/run_testing.sh $era $channel
-            ./ml/run_testing.sh $era $channel
+    for method in ${methods[@]}; do
+        for era in ${eras[@]}; do
+            for channel in ${channels[@]}; do
+                logandrun ./ml/run_testing.sh $era $channel $method
+            done
         done
     done
 }
@@ -399,16 +405,12 @@ function main() {
     fi
     loginfo reached analysis!
     if [[ $anaSSStep < 2 ]]; then
-    	loginfo generating shapes
-        genshapes
-        loginfo Done generating and syncing shapes
+    	logandrun genshapes
         overridePar completedMilestones anaSSStep 2
         anaSSStep=2
     fi
     if [[ $anaSSStep < 3 ]]; then
-        loginfo running stages
-        runstages
-	    loginfo completed stages
+        logandrun runstages
         overridePar completedMilestones anaSSStep 3
         anaSSStep=3
     fi
