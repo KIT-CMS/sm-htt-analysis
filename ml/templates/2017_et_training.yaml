@@ -4,7 +4,7 @@ datasets:
     - ml/2017_et/fold1_training_dataset.root
 
 # Base path for all output files
-output_path: ml/2017_et
+
 
 # Define classes based on tree names in dataset file
 classes:

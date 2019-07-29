@@ -25,7 +25,7 @@ model:
   epochs: 100000
   name: smhtt_dropout_tanh
   save_best_only: true
-output_path: ml/2016_em
+
 preprocessing: standard_scaler
 seed: 1234
 train_test_split: 0.75
