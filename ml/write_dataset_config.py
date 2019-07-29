@@ -304,7 +304,7 @@ def main(args):
             "class":classes_map[estimation.name]
         }
 
-
+    output_config["datasets"]=[args.output_path+"/fold"+fold+"_training_dataset.root" for fold in ["0" ,"1"] ]
     #####################################
     # Write output config
     logger.info("Write config to file: {}".format(args.output_config))

@@ -6,9 +6,10 @@
 ([[ -n $ZSH_EVAL_CONTEXT && $ZSH_EVAL_CONTEXT =~ :file$ ]] ||
  [[ -n $KSH_VERSION && $(cd "$(dirname -- "$0")" &&
     printf '%s' "${PWD%/}/")$(basename -- "$0") != "${.sh.file}" ]] ||
- [[ -n $BASH_VERSION ]] && (return 0 2>/dev/null)) && sourced=1 || sourced=0
+ [[ -n $BASH_VERSION ]] && (return 0 2>/dev/null)) && export sourced=1 || export sourced=0
 
-[[ $sourced != 1 ]] && set -ex # quit on error
+[[ $sourced != 1 ]] && set -euo pipefail
+IFS=$','
 
 shopt -s checkjobs # wait for all jobs before exiting
 export PARALLEL=1
@@ -41,7 +42,7 @@ methodsarg=$3
 [[ "" = $( echo $channels ) ]] && channels=("em" "et" "tt" "mt") channelsarg="em,et,tt,mt"
 [[ "" = $( echo $methods ) ]] && methods=("mc_mc" "emb_mc" "mc_ff" "emb_ff") methodsarg="mc_mc,emb_mc,mc_ff,emb_ff"
 
-loginfo Eras: $erasarg  Channels: $channelsarg
+loginfo Eras: $erasarg  Channels: $channelsarg   Training Dataset Generation Method: $methodsarg
 
 if [[ ! "" = $4 ]]; then
     logerror only takes 3 arguments, seperate multiple eras and channels by comma eg: 2016,2018 mt,em   or \"\" em
@@ -75,53 +76,26 @@ do
     fi
 done
 ############################################
-
-
 ############# Ensure all folders and files are available for mc and emb
 for method in ${methods[@]}; do
     for era in ${eras[@]}; do
         for channel in ${channels[@]}; do
             mldir=$sm_htt_analysis_dir/ml/out/${era}_${channel}_${method}
-            trainingConfFile=$sm_htt_analysis_dir/ml/templates/${era}_${channel}_${method}_training.yaml
+            #trainingConfFile=$sm_htt_analysis_dir/ml/templates/${era}_${channel}_${method}_training.yaml
             if [[ ! -d $mldir ]]; then
                 mkdir $mldir
                 loginfo "Creating $mldir"
             fi
-            if [[ ! -f $trainingConfFile ]]; then
-                cp $sm_htt_analysis_dir/ml/templates/${era}_${channel}_training.yaml $trainingConfFile
-                loginfo "copying ml/templates/${era}_${channel}_training.yaml to $trainingConfFile "
-            fi
+            # if [[ ! -f $trainingConfFile ]]; then
+            #     cp $sm_htt_analysis_dir/ml/templates/${era}_${channel}_training.yaml $trainingConfFile
+            #     loginfo "copying ml/templates/${era}_${channel}_training.yaml to $trainingConfFile "
+            # fi
         done
     done
 done
 
 
 source completedMilestones
-#trap "echo \"Current completed State: \$anaSSStep=$anaSSStep\"; echo $anaSSStep > completedMilestones " INT KILL FAIL EXIT
-
-############ Hack for switching between MC and EMB sample ################
-function setmethod () {
-    # m=$1
-    # loginfo Setting Zττ estimation method to $method, switching symlinks
-    # # if [[ $method == *"emb"* ]]; then
-    # #     overridePar ml/create_training_dataset.sh "training-z-estimation-method" emb
-    # # else
-    # #     overridePar ml/create_training_dataset.sh "training-z-estimation-method" mc
-    # # fi
-    # # if [[ $method == *"ff"* ]]; then
-    # #     overridePar ml/create_training_dataset.sh "training-jetfakes-estimation-method" ff
-    # # else
-    # #     overridePar ml/create_training_dataset.sh "training-jetfakes-estimation-method" mc
-    # # fi
-    # for era in ${eras[@]}; do
-    #     for channel in ${channels[@]}; do
-    #     	updateSymlink $sm_htt_analysis_dir/ml/${era}_${channel}_${method} $sm_htt_analysis_dir/ml/${era}_${channel}
-    #     	updateSymlink $sm_htt_analysis_dir/ml/${era}_${channel}_${method}_training.yaml $sm_htt_analysis_dir/ml/${era}_${channel}_training.yaml
-    #     done
-    #     updateSymlink $batch_out_local/${era}_${method} $batch_out_local/${era}
-    # done
-
-}
 
 #### converts models to the form needed for submission to a batch system
 function exportForApplication {
@@ -165,7 +139,6 @@ function runana() {
 function genshapes() {
     for method in ${methods[@]}; do
         cd $sm_htt_analysis_dir
-        setmethod $m
         for era in ${eras[@]}; do
             redoConversion=0
             if [[ ! -f ${era}_${method}_shapes.root  ]]; then
@@ -200,8 +173,6 @@ function runstages() {
     CATEGORIES="stxs_stage1p1"
     for method in ${methods[@]}; do
         cd $sm_htt_analysis_dir
-        METHOD=$m
-        setmethod $m
         for s in "stxs_stage0" "stxs_stage1p1"; do
             PROD_NEW_DATACARDS=1 ## "inclusive" "stxs_stage0" can use the same datacards
             STXS_SIGNALS=$s
@@ -238,8 +209,8 @@ function compareSignRes {
 #################################################################################################
 
 function compenv() {
-    varnames=(era channel method eras  channels  methods erasarg channelsarg methodsarg mldir trainingConfFile anaSSStep  llwtnndir temp_file PROD_NEW_DATACARDS redoConversion fn JETFAKES EMBEDDING CATEGORIES METHOD PROD_NEW_DATACARDS STXS_SIGNALS STXS_FIT USE_BATCH_SYSTEM)
-    vars=(${era[@]} ${channel[@]} ${method[@]} ${eras[@]} ${channels[@]} ${methods[@]} ${erasarg[@]} ${channelsarg[@]} ${methodsarg[@]} ${mldir[@]} ${trainingConfFile[@]} ${anaSSStep[@]} ${llwtnndir[@]} ${temp_file[@]} ${PROD_NEW_DATACARDS[@]} ${redoConversion[@]} ${fn[@]} ${JETFAKES[@]} ${EMBEDDING[@]} ${CATEGORIES[@]} ${METHOD[@]} ${PROD_NEW_DATACARDS[@]} ${STXS_SIGNALS[@]} ${STXS_FIT[@]} $USE_BATCH_SYSTEM)
+    varnames=(era channel method eras  channels  methods erasarg channelsarg methodsarg mldir trainingConfFile anaSSStep  llwtnndir temp_file PROD_NEW_DATACARDS redoConversion fn JETFAKES EMBEDDING CATEGORIES PROD_NEW_DATACARDS STXS_SIGNALS STXS_FIT USE_BATCH_SYSTEM)
+    vars=(${era[@]} ${channel[@]} ${method[@]} ${eras[@]} ${channels[@]} ${methods[@]} ${erasarg[@]} ${channelsarg[@]} ${methodsarg[@]} ${mldir[@]} ${trainingConfFile[@]} ${anaSSStep[@]} ${llwtnndir[@]} ${temp_file[@]} ${PROD_NEW_DATACARDS[@]} ${redoConversion[@]} ${fn[@]} ${JETFAKES[@]} ${EMBEDDING[@]} ${CATEGORIES[@]} ${PROD_NEW_DATACARDS[@]} ${STXS_SIGNALS[@]} ${STXS_FIT[@]} $USE_BATCH_SYSTEM)
     for (( i=0; i<${#vars[@]}; i++ )); do
         echo "${varnames[$i]}=${vars[$i]}"
     done
@@ -247,18 +218,21 @@ function compenv() {
 
 function create_training_dataset() {
     for method in ${methods[@]}; do
-        logandrun ./ml/create_training_dataset.sh $erasarg $channelsarg $method
+        export method
+        logandrun ./ml/create_training_dataset.sh $erasarg $channelsarg
     done
     loginfo All $method datasets created
 }
-function sum_training_weights() {
-    for method in ${methods[@]}; do
-        logandrun ./ml/sum_training_weights.sh $erasarg $channelsarg $method
-    done
-}
+# function sum_training_weights() {
+#     for method in ${methods[@]}; do
+#         export method
+#         logandrun ./ml/sum_training_weights.sh $erasarg $channelsarg
+#     done
+# }
 
 function mltrain() {
     for method in ${methods[@]}; do
+    export method
         for era in ${eras[@]}; do
             for channel in ${channels[@]}; do
                 logandrun ./ml/run_training.sh $era $channel $method
@@ -269,6 +243,7 @@ function mltrain() {
 
 function mltest() {
     for method in ${methods[@]}; do
+    export method
         for era in ${eras[@]}; do
             for channel in ${channels[@]}; do
                 logandrun ./ml/run_testing.sh $era $channel $method
@@ -280,7 +255,7 @@ function mltest() {
 function main() {
     if [[ $anaSSStep < 1 ]]; then
         for method in ${methods[@]}; do
-            setmethod $m
+
             ##### Create training dataset:
             if [[ ! $( getPar completedMilestones ${method}_ds_created ) == 1  ]]; then
                 create_training_dataset
@@ -290,13 +265,13 @@ function main() {
                 loginfo Skipping $method training dataset creation
             fi
 
-            #### Correct the class weight in ml/era_channel_training.yaml
-            if [[ ! $( getPar completedMilestones ${method}_sum_training_weights ) == 1  ]]; then
-                sum_training_weights
-                overridePar completedMilestones ${method}_sum_training_weights 1
-            else
-                loginfo Skipping $method class weight calculation
-            fi
+            # #### Correct the class weight in ml/era_channel_training.yaml
+            # if [[ ! $( getPar completedMilestones ${method}_sum_training_weights ) == 1  ]]; then
+            #     sum_training_weights
+            #     overridePar completedMilestones ${method}_sum_training_weights 1
+            # else
+            #     loginfo Skipping $method class weight calculation
+            # fi
 
             ### Run trainings ml/era_channel_training.yaml ml/era_channel/merge_foldX_*.root -> ml/era_channel/foldX_keras_model.h5
             if [[ ! $( getPar completedMilestones ${method}_training  ) == 1  ]]; then
@@ -383,8 +358,7 @@ function main() {
 
                         for era in ${eras[@]}; do
                             [[ ! -d $batch_out_local/${era}_${method}/NNScore_workdir/NNScore_collected  ]] && mkdir -p $batch_out_local/${era}_${method}/NNScore_workdir/NNScore_collected
-                            loginfo lxrsync $USER@lxplus.cern.ch:$batch_out/${era}_${method}/NNScore_workdir/NNScore_collected/ $batch_out_local/${era}_${method}/NNScore_workdir/NNScore_collected
-                            lxrsync $USER@lxplus.cern.ch:$batch_out/${era}_${method}/NNScore_workdir/NNScore_collected/ $batch_out_local/${era}_${method}/NNScore_workdir/NNScore_collected
+                            logandrun lxrsync $USER@lxplus.cern.ch:$batch_out/${era}_${method}/NNScore_workdir/NNScore_collected/ $batch_out_local/${era}_${method}/NNScore_workdir/NNScore_collected
                         done
                     fi
                     overridePar completedMilestones ${method}_NNApplication_synced 1
