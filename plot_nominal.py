@@ -218,7 +218,7 @@ def main(args):
                 config["x_label"] = args.x_label
             else:
                 config["x_label"] = "_".join([channel, variable])
-            config["title"] = "_".join(["channel", channel, category])
+            config["title"] = "_".join(["channel", channel])
             config["stacks"] = ["mc"] * len(bkg_processes_names) + signal_names + [
                 "data"
             ] + [x+"Ratio" for x in signal_names] + config["stacks"]
