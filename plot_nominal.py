@@ -114,31 +114,27 @@ logvars = ["nbtag","njets","jpt_1","jpt_2"]
 
 
 def main(args):
+    
+    signal_names=["ggh","qqh"]
+    signal=["ggH125","qqH125"]
 
     if args.emb and args.ff:
         bkg_processes_names = [
          "emb", "zll", "ttl", "vvl", "fakes"
         ]
-        signal=["ggH125","qqH125"]
-        signal_names=["ggh","qqh"]
-
-        bkg_processes = ["EMB", "ZL", "TTL", "VVL", "jetFakes"]  # names in ROOT file
+        bkg_processes = ["EMB", "ZL", "TTL", "VVL", "jetFakes"] 
     elif args.emb:
         bkg_processes_names = ["emb", "zll","zj", "ttl", "ttj","vvl", "vvj", "w", "qcd"]
-        signal_names=["ggh","qqh"]
         bkg_processes = ["EMB", "ZL", "ZJ","TTL", "TTJ","VVL", "VVJ", "W", "QCD"]
-        signal=["ggH125","qqH125"]
     elif args.ff:
         bkg_processes_names = [
-            "ztt", "zll", "ttt", "ttl", "vvt", "vvl", "ewk", "fakes"
+            "ztt", "zll", "ttt", "ttl", "vvt", "vvl", "fakes"
         ]  # enforced by HarryPlotter
-        bkg_processes = ["ZTT", "ZL", "TTT", "TTL", "VVT", "VVL", "EWK", "jetFakes"]  # names in ROOT file
+        bkg_processes = ["ZTT", "ZL", "TTT", "TTL", "VVT", "VVL", "jetFakes"] 
     else:
         bkg_processes_names = [
             "ztt", "zll","zj","ttl", "ttt","ttj","vvl","vvt","vvj","w","qcd"]
-        signal_names=["ggh","qqh"]
         bkg_processes = ["ZTT", "ZL", "ZJ","TTL","TTT", "TTJ", "VVL","VVT","VVJ","W","QCD"]
-        signal=["ggH125","qqH125"]
     channels = args.channels
     analysis = args.analysis
     era = args.era
