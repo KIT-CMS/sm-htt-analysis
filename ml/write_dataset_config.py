@@ -81,6 +81,12 @@ def main(args):
 
         from shape_producer.era import Run2017
         era = Run2017(args.database)
+
+    elif "2018" in args.era:
+        from shape_producer.estimation_methods_2018 import DataEstimation, ZTTEstimation, ZJEstimation, ZLEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, VVLEstimation, WEstimation, ggHEstimation, qqHEstimation, EWKZEstimation, ZTTEmbeddedEstimation
+
+        from shape_producer.era import Run2018
+        era = Run2018(args.database)
     else:
         logger.fatal("Era {} is not implemented.".format(args.era))
         raise Exception
@@ -189,6 +195,7 @@ def main(args):
     channelDict={}
     channelDict["2016"]={"mt":MTSM2016(),"et":ETSM2016(), "tt":TTSM2016(), "em":EMSM2016()}
     channelDict["2017"]={"mt":MTSM2017(),"et":ETSM2017(), "tt":TTSM2017(), "em":EMSM2017()}
+    channelDict["2018"]={"mt":MTSM2018(),"et":ETSM2018(), "tt":TTSM2018(), "em":EMSM2018()}
 
     channel=channelDict[args.era][args.channel]
 

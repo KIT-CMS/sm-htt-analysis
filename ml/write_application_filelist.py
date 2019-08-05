@@ -49,6 +49,12 @@ def main(args):
 
         from shape_producer.era import Run2017
         era = Run2017(args.database)
+    elif "2018" in args.era:
+        from shape_producer.estimation_methods_2018 import DataEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, VVLEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, EWKZEstimation, ZTTEmbeddedEstimation, ttHEstimation
+
+        from shape_producer.era import Run2018
+        era = Run2018(args.database)
+
     else:
         logger.fatal("Era {} is not implemented.".format(args.era))
         raise Exception
@@ -146,6 +152,51 @@ def main(args):
 
     ############################################################################
 
+    # Era: 2018, Channel: mt
+    if "2018" in args.era and args.channel == "mt":
+        channel = MTSM2018()
+        for estimation in [
+                ggHEstimation("ggH", era, args.directory, channel),
+                qqHEstimation("qqH", era, args.directory, channel),
+                ttHEstimation(era, args.directory, channel),
+                VHEstimation(era, args.directory, channel),
+                ZTTEstimation(era, args.directory, channel),
+                ZTTEmbeddedEstimation(era, args.directory, channel),
+                ZLEstimation(era, args.directory, channel),
+                ZJEstimation(era, args.directory, channel),
+                TTTEstimation(era, args.directory, channel),
+                TTJEstimation(era, args.directory, channel),
+                TTLEstimation(era, args.directory, channel),
+                WEstimation(era, args.directory, channel),
+                VVJEstimation(era, args.directory, channel),
+                VVTEstimation(era, args.directory, channel),
+                VVLEstimation(era, args.directory, channel),
+                EWKZEstimation(era, args.directory, channel),
+                DataEstimation(era, args.directory, channel)
+        ]:  
+            # Get files for estimation method
+            logger.debug("Get files for estimation method %s.",
+                         estimation.name)
+            files = [str(f) for f in estimation.get_files()]
+
+            # Go through files and get folders for channel
+            for f in files:
+                if not os.path.exists(f):
+                    logger.fatal("File does not exist: %s", f)
+                    raise Exception
+
+                folders = []
+                f_ = ROOT.TFile(f)
+                for k in f_.GetListOfKeys():
+                    if "{}_".format(args.channel) in k.GetName():
+                        folders.append(k.GetName())
+                f_.Close()
+
+                filelist[f] = folders
+
+
+    ############################################################################
+
     # Era: 2016, Channel: et
     if "2016" in args.era and args.channel == "et":
         channel = ETSM2016()
@@ -212,6 +263,50 @@ def main(args):
                 EWKZEstimation(era, args.directory, channel),
                 DataEstimation(era, args.directory, channel)
         ]:
+            # Get files for estimation method
+            logger.debug("Get files for estimation method %s.",
+                         estimation.name)
+            files = [str(f) for f in estimation.get_files()]
+
+            # Go through files and get folders for channel
+            for f in files:
+                if not os.path.exists(f):
+                    logger.fatal("File does not exist: %s", f)
+                    raise Exception
+
+                folders = []
+                f_ = ROOT.TFile(f)
+                for k in f_.GetListOfKeys():
+                    if "{}_".format(args.channel) in k.GetName():
+                        folders.append(k.GetName())
+                f_.Close()
+
+                filelist[f] = folders
+
+    ############################################################################
+
+    # Era: 2018, Channel: et
+    if "2018" in args.era and args.channel == "et":
+        channel = ETSM2018()
+        for estimation in [
+                ggHEstimation("ggH", era, args.directory, channel),
+                qqHEstimation("qqH", era, args.directory, channel),
+                ttHEstimation(era, args.directory, channel),
+                VHEstimation(era, args.directory, channel),
+                ZTTEstimation(era, args.directory, channel),
+                ZTTEmbeddedEstimation(era, args.directory, channel),
+                ZLEstimation(era, args.directory, channel),
+                ZJEstimation(era, args.directory, channel),
+                TTTEstimation(era, args.directory, channel),
+                TTJEstimation(era, args.directory, channel),
+                TTLEstimation(era, args.directory, channel),
+                WEstimation(era, args.directory, channel),
+                VVJEstimation(era, args.directory, channel),
+                VVTEstimation(era, args.directory, channel),
+                VVLEstimation(era, args.directory, channel),
+                EWKZEstimation(era, args.directory, channel),
+                DataEstimation(era, args.directory, channel)
+        ]:  
             # Get files for estimation method
             logger.debug("Get files for estimation method %s.",
                          estimation.name)
@@ -322,6 +417,51 @@ def main(args):
 
     ############################################################################
 
+    # Era 2018, Channel: tt
+    if "2018" in args.era and args.channel == "tt":
+        channel = TTSM2018()
+        for estimation in [
+                ggHEstimation("ggH", era, args.directory, channel),
+                qqHEstimation("qqH", era, args.directory, channel),
+                ttHEstimation(era, args.directory, channel),
+                VHEstimation(era, args.directory, channel),
+                ZTTEstimation(era, args.directory, channel),
+                ZTTEmbeddedEstimation(era, args.directory, channel),
+                ZLEstimation(era, args.directory, channel),
+                ZJEstimation(era, args.directory, channel),
+                TTTEstimation(era, args.directory, channel),
+                TTJEstimation(era, args.directory, channel),
+                TTLEstimation(era, args.directory, channel),
+                WEstimation(era, args.directory, channel),
+                VVJEstimation(era, args.directory, channel),
+                VVTEstimation(era, args.directory, channel),
+                VVLEstimation(era, args.directory, channel),
+                EWKZEstimation(era, args.directory, channel),
+                DataEstimation(era, args.directory, channel)
+        ]:
+            # Get files for estimation method
+            logger.debug("Get files for estimation method %s.",
+                         estimation.name)
+            files = [str(f) for f in estimation.get_files()]
+
+            # Go through files and get folders for channel
+            for f in files:
+                if not os.path.exists(f):
+                    logger.fatal("File does not exist: %s", f)
+                    raise Exception
+
+                folders = []
+                f_ = ROOT.TFile(f)
+                for k in f_.GetListOfKeys():
+                    if "{}_".format(args.channel) in k.GetName():
+                        folders.append(k.GetName())
+                f_.Close()
+
+                filelist[f] = folders
+
+
+    ############################################################################
+
     # Era: 2016, Channel: em
     if "2016" in args.era and args.channel == "em":
         channel = EMSM2016()
@@ -367,6 +507,47 @@ def main(args):
     # Era: 2017, Channel: em
     if "2017" in args.era and args.channel == "em":
         channel = EMSM2017()
+        for estimation in [
+                ggHEstimation("ggH", era, args.directory, channel),
+                qqHEstimation("qqH", era, args.directory, channel),
+                ttHEstimation(era, args.directory, channel),
+                VHEstimation(era, args.directory, channel),
+                ZTTEstimation(era, args.directory, channel),
+                ZTTEmbeddedEstimation(era, args.directory, channel),
+                ZLEstimation(era, args.directory, channel),
+                TTTEstimation(era, args.directory, channel),
+                TTLEstimation(era, args.directory, channel),
+                WEstimation(era, args.directory, channel),
+                VVTEstimation(era, args.directory, channel),
+                VVLEstimation(era, args.directory, channel),
+                EWKZEstimation(era, args.directory, channel),
+                DataEstimation(era, args.directory, channel)
+        ]:
+            # Get files for estimation method
+            logger.debug("Get files for estimation method %s.",
+                         estimation.name)
+            files = [str(f) for f in estimation.get_files()]
+
+            # Go through files and get folders for channel
+            for f in files:
+                if not os.path.exists(f):
+                    logger.fatal("File does not exist: %s", f)
+                    raise Exception
+
+                folders = []
+                f_ = ROOT.TFile(f)
+                for k in f_.GetListOfKeys():
+                    if "{}_".format(args.channel) in k.GetName():
+                        folders.append(k.GetName())
+                f_.Close()
+
+                filelist[f] = folders
+
+    ############################################################################
+
+    # Era: 2018, Channel: em
+    if "2018" in args.era and args.channel == "em":
+        channel = EMSM2018()
         for estimation in [
                 ggHEstimation("ggH", era, args.directory, channel),
                 qqHEstimation("qqH", era, args.directory, channel),

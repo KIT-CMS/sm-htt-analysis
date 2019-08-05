@@ -106,8 +106,9 @@ def main(args):
                             or "_1ProngPi0Eff_" in name_output
                             or "_3ProngEff_" in name_output
                             or ("_ff_" in name_output and "_syst_" in name_output)):
-                        hist.SetTitle(name_output.replace("_Run2016", "").replace("_Run2017", ""))
-                        hist.SetName(name_output.replace("_Run2016", "").replace("_Run2017", ""))
+                        hist.SetTitle(name_output.replace("_Run2016", "").replace("_Run2017", "").replace("_Run2018", ""))
+                        hist.SetName(name_output.replace("_Run2016", "").replace("_Run2017", "").replace("_Run2018", ""))
+                        
                         hist.Write()
         file_output.Close()
 

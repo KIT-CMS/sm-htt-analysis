@@ -153,11 +153,12 @@ def main(args):
     # Channels and processes
     # yapf: disable
     directory = args.directory
-    et_friend_directory = []#args.et_friend_directory ## Add when available
-    mt_friend_directory = []#args.mt_friend_directory ## Add when available
+    et_friend_directory = args.et_friend_directory
+    mt_friend_directory = args.mt_friend_directory 
     tt_friend_directory = args.tt_friend_directory
-    em_friend_directory = []#args.em_friend_directory ## Add when available
+    em_friend_directory = args.em_friend_directory
     ff_friend_directory = args.fake_factor_friend_directory 
+
     mt = MTSM2018()
     if args.QCD_extrap_fit:
         mt.cuts.remove("muon_iso")
@@ -1303,7 +1304,7 @@ def main(args):
                     era=era,
                     variation=Relabel("CMS_htt_emb_ttbar_Run2018", "Up"),
                     mass="125"))
-    """
+    
     # jetfakes
     fake_factor_variations_et = []
     fake_factor_variations_mt = []
@@ -1376,7 +1377,7 @@ def main(args):
                     "CMS_%s" % (systematic_shift.format(ch='_tt', shift="").replace("_dm0", "")),
                     "fake_factor",
                     Weight(
-                        "(0.5*ff1_{syst}*(byTightIsolationMVArun2018v2DBoldDMwLT2018_1<0.5)+0.5*ff2_{syst}*(byTightIsolationMVArun2018v2DBoldDMwLT2018_2<0.5))".
+                        "(0.5*ff1_{syst}*(byTightIsolationMVArun2017v2DBoldDMwLT2017_1<0.5)+0.5*ff2_{syst}*(byTightIsolationMVArun2017v2DBoldDMwLT2017_2<0.5))".
                         format(
                             syst=systematic_shift.format(
                                 ch="", shift="_%s" % shift_direction.lower())
@@ -1389,7 +1390,7 @@ def main(args):
                 process=tt_processes["FAKES"],
                 channel=tt,
                 era=era)
-    """
+    
     # QCD for em
     qcd_variations = []
     qcd_variations.append(ReplaceWeight(
