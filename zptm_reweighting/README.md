@@ -54,4 +54,4 @@ do
 done
 ```
 
-This will create root files with 2D-histograms named `zptm_weights_${year}_kit.root` and corresponding plots. These files can then be integrated into a workspace which is used by the [ZPtReweightProducer](https://github.com/KIT-CMS/KITHiggsToTauTau/blob/reduced_trigger_objects/python/data/ArtusConfigs/Run2LegacyAnalysis_base.py#L133-L135). The corresponding translation software is [CorrectionWorkspace](https://github.com/KIT-CMS/CorrectionsWorkspace).
+This will create root files with 2D-histograms named `zptm_weights_${year}_kit.root` and corresponding plots. These files can then be integrated into a workspace which is used by the [ZPtReweightProducer](https://github.com/KIT-CMS/KITHiggsToTauTau/blob/reduced_trigger_objects/python/data/ArtusConfigs/Run2LegacyAnalysis_base.py#L133-L135). The corresponding translation software is [CorrectionsWorkspace](https://github.com/KIT-CMS/CorrectionsWorkspace).
