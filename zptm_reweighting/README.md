@@ -7,7 +7,7 @@ At first you need the n-tuples for `mm` channel aligned with the `mt` selection 
 ```bash
 HiggsToTauTauAnalysis.py -i <collection_with_background_mc>.txt HiggsAnalysis/KITHiggsToTauTau/data/Samples/Run201?/SingleMuon*.txt -a HiggsAnalysis/KITHiggsToTauTau/python/data/ArtusConfigs/Run2LegacyAnalysis_base.py --no-run -b naf --wall-time 03:00:00 --memory 2000 --files-per-job 15 --se-path srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/<dCacheUserName>/31-07-2019_NoMetRecoil -c mm --pipelines nominal
 ```
-The following adaption with respect to the commited cofiguration is required:
+The following adaption with respect to the commited configuration is required:
 
 Disable recoil corrections, so in particular, replace this line:
 
