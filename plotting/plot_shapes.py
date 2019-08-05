@@ -4,6 +4,7 @@
 import Dumbledraw.dumbledraw as dd
 import Dumbledraw.rootfile_parser as rootfile_parser
 import Dumbledraw.styles as styles
+import ROOT
 
 import argparse
 import copy
@@ -80,12 +81,13 @@ def setup_logging(output_file, level=logging.DEBUG):
 
 
 def main(args):
+    stxs_stage1p1_cats = [str(100+i) for i in range(4)] + [str(200+i) for i in range(4)]
     if args.gof_variable != None:
         channel_categories = {
-            "et": ["100"],
-            "mt": ["100"],
-            "tt": ["100"],
-            "em": ["100"]
+            "et": ["300"],
+            "mt": ["300"],
+            "tt": ["300"],
+            "em": ["300"]
         }
     else:
         channel_categories = {
@@ -100,10 +102,12 @@ def main(args):
         }
         if args.categories == "stxs_stage0":
             for channel in ["et", "mt", "tt", "em"]:
-                channel_categories[channel] += ["1_A", "1_B", "1_C", "2_A", "2_B"]
+                channel_categories[channel] += ["1", "2"]
         elif args.categories == "stxs_stage1p1":
             for channel in ["et", "mt", "tt", "em"]:
-                channel_categories[channel] += ["1_A", "1_B", "1_C", "2_A", "2_B"]
+                channel_categories[channel] += stxs_stage1p1_cats
+        elif args.categories == "backgrounds":
+            pass
         else:
             logger.critical("Selected unkown STXS categorization {}",
                             args.categories)
@@ -117,13 +121,19 @@ def main(args):
         "tt": "#tau_{h}#tau_{h}"
     }
     if args.gof_variable != None:
-        category_dict = {"100": "inclusive"}
+        category_dict = {"300": "inclusive"}
     else:
         category_dict = {
-            "1": "ggH",
-            "2": "qqH",
-            "3": "ggH, unrolled",
-            "4": "qqH, unrolled",
+            "1": "ggh",
+            "100": "ggh 0-jet",
+            "101": "ggh 1-jet p_{T}^{H} [0,120]",
+            "102": "ggh 1-jet p_{T}^{H} [120,#infty]",
+            "103": "ggh #geq 2-jet",
+            "2": "qqh",
+            "200": "qqh #leq 1-jet",
+            "201": "qqh #geq 2-jet m_{jj} [0,350]",
+            "202": "qqh #geq 2-jet m_{jj} [350,#infty] p_{T}^{H} [0,200]",
+            "203": "qqh #geq 2-jet m_{jj} [350,#infty] p_{T}^{H} [200,#infty]",
             "12": "ztt",
             "15": "zll",
             "11": "wjets",
@@ -131,7 +141,6 @@ def main(args):
             "14": "qcd",
             "16": "misc",
             "17": "qcd",
-        #    "18": "single top",
             "19": "diboson"
         }
     if args.linear == True:
@@ -167,6 +176,8 @@ def main(args):
         era = "Run2016"
     elif "2017" in args.era:
         era = "Run2017"
+    elif "2018" in args.era:
+        era = "Run2018"
     else:
         logger.critical("Era {} is not implemented.".format(args.era))
         raise Exception
@@ -174,14 +185,9 @@ def main(args):
     plots = []
     for channel in args.channels:
         for category in channel_categories[channel]:
+            print "Plot for category: ",category
             rootfile = rootfile_parser.Rootfile_parser(args.input)
-            tranche = None
-            if "_" in category:
-                tranche = category.split("_")[1]
-                category = category.split("_")[0]
-            if channel == "tt" and category=="2":
-                    bkg_processes = [b for b in all_bkg_processes]
-            elif channel == "em" and args.embedding:
+            if channel == "em" and args.embedding:
                 bkg_processes = ["VVL", "W", "TTL", "ZL", "QCD", "EMB"]
             elif channel == "em" and not args.embedding:
                 bkg_processes = ["VVL", "W", "TTL", "ZL", "QCD", "ZTT"]
@@ -191,9 +197,6 @@ def main(args):
             legend_bkg_processes.reverse()
             # create plot
             width = 600
-            if args.categories == "stxs_stage1":
-                if category == "2" or (category == "1" and tranche != "A"):
-                    width = 1200
             if args.linear == True:
                 plot = dd.Plot(
                     [0.3, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14, width=width)
@@ -203,26 +206,52 @@ def main(args):
 
             # get background histograms
             for process in bkg_processes:
-                plot.add_hist(
-                    rootfile.get(era, channel, category, process), process, "bkg")
-                plot.setGraphStyle(
-                    process, "hist", fillcolor=styles.color_dict[process])
+                try:
+                    plot.add_hist(
+                        rootfile.get(era, channel, category, process), process, "bkg")
+                    plot.setGraphStyle(
+                        process, "hist", fillcolor=styles.color_dict[process])
+                except:
+                    pass
 
             # get signal histograms
             plot_idx_to_add_signal = [0,2] if args.linear else [1,2]
             for i in plot_idx_to_add_signal:
-                plot.subplot(i).add_hist(
-                    rootfile.get(era, channel, category, "ggH"), "ggH")
-                plot.subplot(i).add_hist(
-                    rootfile.get(era, channel, category, "ggH"), "ggH_top")
-                plot.subplot(i).add_hist(
-                    rootfile.get(era, channel, category, "qqH"), "qqH")
-                plot.subplot(i).add_hist(
-                    rootfile.get(era, channel, category, "qqH"), "qqH_top")
-                VHhist = rootfile.get(era, channel, category, "ZH125").Clone("VH")
-                VHhist.Add(rootfile.get(era, channel, category, "WH125"))
-                plot.subplot(i).add_hist(VHhist, "VH")
-                plot.subplot(i).add_hist(VHhist, "VH_top")
+                try:
+                    plot.subplot(i).add_hist(
+                        rootfile.get(era, channel, category, "ggH"), "ggH")
+                    plot.subplot(i).add_hist(
+                        rootfile.get(era, channel, category, "ggH"), "ggH_top")
+                    plot.subplot(i).add_hist(
+                        rootfile.get(era, channel, category, "qqH"), "qqH")
+                    plot.subplot(i).add_hist(
+                        rootfile.get(era, channel, category, "qqH"), "qqH_top")
+                    if isinstance(rootfile.get(era, channel, category, "ZH125"), ROOT.TH1):
+                        VHhist = rootfile.get(era, channel, category, "ZH125").Clone("VH")
+                    WHhist = rootfile.get(era, channel, category, "WH125")
+                    if isinstance(WHhist,ROOT.TH1) and VHhist:
+                        VHhist.Add(WHhist)
+                    elif WHhist:
+                        VHhist = WHhist
+                    plot.subplot(i).add_hist(VHhist, "VH")
+                    plot.subplot(i).add_hist(VHhist, "VH_top")
+
+                    if isinstance(rootfile.get(era, channel, category, "ttH125"), ROOT.TH1):
+                        plot.subplot(i).add_hist(rootfile.get(era, channel, category, "ttH125"), "ttH")
+                        plot.subplot(i).add_hist(rootfile.get(era, channel, category, "ttH125"), "ttH_top")
+
+                    HWWhist = rootfile.get(era, channel, category, "ggHWW125")
+                    if isinstance(rootfile.get(era, channel, category, "ggHWW125"), ROOT.TH1):
+                        HWWhist = rootfile.get(era, channel, category, "ggHWW125").Clone("ggHWW125")
+                    qqHWWhist = rootfile.get(era, channel, category, "qqHWW125")
+                    if isinstance(qqHWWhist,ROOT.TH1) and HWWhist:
+                        HWWhist.Add(qqHWWhist)
+                    elif qqHWWhist:
+                        HWWhist = qqHWWhist
+                    plot.subplot(i).add_hist(HWWhist, "HWW")
+                    plot.subplot(i).add_hist(HWWhist, "HWW_top")
+                except:
+                    pass
 
             # get observed data and total background histograms
             # NOTE: With CMSSW_8_1_0 the TotalBkg definition has changed.
@@ -232,7 +261,8 @@ def main(args):
             ggHHist = rootfile.get(era, channel, category, "ggH")
             qqHHist = rootfile.get(era, channel, category, "qqH")
             total_bkg.Add(ggHHist, -1)
-            total_bkg.Add(qqHHist, -1)
+            if qqHHist:
+                total_bkg.Add(qqHHist, -1)
             plot.add_hist(total_bkg, "total_bkg")
 
             plot.subplot(0).setGraphStyle("data_obs", "e0")
@@ -245,6 +275,12 @@ def main(args):
             plot.subplot(0 if args.linear else 1).setGraphStyle(
                 "VH", "hist", linecolor=styles.color_dict["VH"], linewidth=3)
             plot.subplot(0 if args.linear else 1).setGraphStyle("VH_top", "hist", linecolor=0)
+            plot.subplot(0 if args.linear else 1).setGraphStyle(
+                "ttH", "hist", linecolor=styles.color_dict["ttH"], linewidth=3)
+            plot.subplot(0 if args.linear else 1).setGraphStyle("ttH_top", "hist", linecolor=0)
+            plot.subplot(0 if args.linear else 1).setGraphStyle(
+                "HWW", "hist", linecolor=styles.color_dict["HWW"], linewidth=3)
+            plot.subplot(0 if args.linear else 1).setGraphStyle("HWW_top", "hist", linecolor=0)
             plot.setGraphStyle(
                 "total_bkg",
                 "e2",
@@ -255,16 +291,13 @@ def main(args):
             # assemble ratio
             bkg_ggH = plot.subplot(2).get_hist("ggH")
             bkg_qqH = plot.subplot(2).get_hist("qqH")
-            bkg_VH = plot.subplot(2).get_hist("VH")
             bkg_ggH.Add(plot.subplot(2).get_hist("total_bkg"))
-            bkg_qqH.Add(plot.subplot(2).get_hist("total_bkg"))
-            bkg_VH.Add(plot.subplot(2).get_hist("total_bkg"))
+            if bkg_qqH:
+                bkg_qqH.Add(plot.subplot(2).get_hist("total_bkg"))
             plot.subplot(2).add_hist(bkg_ggH, "bkg_ggH")
             plot.subplot(2).add_hist(bkg_ggH, "bkg_ggH_top")
             plot.subplot(2).add_hist(bkg_qqH, "bkg_qqH")
             plot.subplot(2).add_hist(bkg_qqH, "bkg_qqH_top")
-            plot.subplot(2).add_hist(bkg_VH, "bkg_VH")
-            plot.subplot(2).add_hist(bkg_VH, "bkg_VH_top")
             plot.subplot(2).setGraphStyle(
                 "bkg_ggH",
                 "hist",
@@ -277,16 +310,10 @@ def main(args):
                 linecolor=styles.color_dict["qqH"],
                 linewidth=3)
             plot.subplot(2).setGraphStyle("bkg_qqH_top", "hist", linecolor=0)
-            plot.subplot(2).setGraphStyle(
-                "bkg_VH",
-                "hist",
-                linecolor=styles.color_dict["VH"],
-                linewidth=3)
-            plot.subplot(2).setGraphStyle("bkg_VH_top", "hist", linecolor=0)
 
             plot.subplot(2).normalize([
                 "total_bkg", "bkg_ggH", "bkg_ggH_top", "bkg_qqH",
-                "bkg_qqH_top", "bkg_VH", "bkg_VH_top", "data_obs"
+                "bkg_qqH_top", "data_obs"
             ], "total_bkg")
 
             # stack background processes
@@ -304,13 +331,11 @@ def main(args):
                     split_dict[channel] * 2))
 
             plot.subplot(2).setYlims(0.45, 2.05)
-            if category in ["2"]:
-                plot.subplot(2).setYlims(0.45, 2.05)
-            if category in ["1", "2"]:
+            if category in ["1", "2"] + stxs_stage1p1_cats:
                 plot.subplot(0).setLogY()
-                plot.subplot(0).setYlims(0.1, 150000000) #15000000 if channel in ["et", "mt"] and category=="1" and tranche=="A" else 150000)
+                plot.subplot(0).setYlims(0.1, 150000000)
                 if channel == "em":
-                    plot.subplot(0).setYlims(1, 15000000)
+                    plot.subplot(0).setYlims(1, 150000000)
 
             if args.linear != True:
                 plot.subplot(1).setYlims(0.1, split_dict[channel])
@@ -342,42 +367,16 @@ def main(args):
 
             #plot.subplot(2).setNYdivisions(3, 5)
 
-            if args.categories == "stxs_stage1":
-                if not channel == "tt":
-                    plot.subplot(2).changeXLabels([" ", "0.25", " ", "0.50", " ", "0.75", " ", " "])
-                if category in ["1"]:
-                    selection = None
-                    if tranche == "A":
-                        selection = [0]
-                    elif tranche == "B":
-                        selection = [1,2,3,4] if channel=="tt" else [1,2,3]
-                    elif tranche == "C":
-                        selection = [5,6,7,8] if channel=="tt" else [5,6,7] if channel=="em" else [4,5,6]
-                    if not channel == "tt":
-                        plot.setNXdivisions(7, 0, 4, False)
-                    #else:
-                    #    plot.setNXdivisions(4, 0, 0, False)
-                    #plot.scaleXLabelSize(0.5)
-                    plot.unroll(["0J", "1J_PTH_0_60", "1J_PTH_60_120", "1J_PTH_120_200", "1J_PTH_GT200", "GE2J_PTH_0_60", "GE2J_PTH_60_120"] + ([] if (channel=="et" or channel=="mt") else ["GE2J_PTH_120_200", "GE2J_PTH_GT200"]), ur_label_size = 0.5, pads_to_print_labels=[], selection=selection)
-                if category in ["2"]:
-                    selection = None
-                    if tranche == "A":
-                        selection = [0,1]
-                    elif tranche == "B":
-                        selection = [2,3,4]
-                    if not channel == "tt":
-                        plot.setNXdivisions(7, 0, 4, False)
-                    plot.unroll(["VBFTOPO_JET3VETO", "VBFTOPO_JET3", "VH2JET", "REST", "PTJET1_GT200"], ur_label_size = 0.9, pads_to_print_labels=[], selection=selection)
-            if not channel == "tt" and category in ["11", "12", "13", "14", "15", "16"]:
-                plot.subplot(2).changeXLabels(["0.2", "0.4", "0.6", "0.8", "1.0"])
+            #if not channel == "tt" and category in ["11", "12", "13", "14", "15", "16"]:
+            #    plot.subplot(2).changeXLabels(["0.2", "0.4", "0.6", "0.8", "1.0"])
 
             # draw subplots. Argument contains names of objects to be drawn in corresponding order.
-            procs_to_draw = ["stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top", "VH", "VH_top", "data_obs"] if args.linear else ["stack", "total_bkg", "data_obs"]
+            procs_to_draw = ["stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top", "VH", "VH_top", "ttH", "ttH_top", "HWW", "HWW_top", "data_obs"] if args.linear else ["stack", "total_bkg", "data_obs"]
             plot.subplot(0).Draw(procs_to_draw)
             if args.linear != True:
                 plot.subplot(1).Draw([
                     "stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top",
-                    "VH", "VH_top", "data_obs"
+                    "VH", "VH_top", "ttH", "ttH_top", "HWW", "HWW_top", "data_obs"
                 ])
             plot.subplot(2).Draw([
                 "total_bkg", "bkg_ggH", "bkg_ggH_top", "bkg_qqH",
@@ -388,14 +387,22 @@ def main(args):
             suffix = ["", "_top"]
             for i in range(2):
 
-                plot.add_legend(width=0.3 if args.categories == "stxs_stage1" and (category=="2" or (category=="1" and tranche!="A")) else 0.6, height=0.15)
+                plot.add_legend(width=0.6, height=0.15)
                 for process in legend_bkg_processes:
-                    plot.legend(i).add_entry(
-                        0, process, styles.legend_label_dict[process.replace("TTL", "TT").replace("VVL", "VV")], 'f')
+                    try:
+                        plot.legend(i).add_entry(
+                            0, process, styles.legend_label_dict[process.replace("TTL", "TT").replace("VVL", "VV")], 'f')
+                    except:
+                        pass
                 plot.legend(i).add_entry(0, "total_bkg", "Bkg. unc.", 'f')
                 plot.legend(i).add_entry(0 if args.linear else 1, "ggH%s" % suffix[i], "gg#rightarrowH", 'l')
                 plot.legend(i).add_entry(0 if args.linear else 1, "qqH%s" % suffix[i], "qq#rightarrowH", 'l')
                 plot.legend(i).add_entry(0 if args.linear else 1, "VH%s" % suffix[i], "qq#rightarrowVH", 'l')
+                try:
+                    plot.legend(i).add_entry(0 if args.linear else 1, "ttH%s" % suffix[i], "ttH", 'l')
+                    plot.legend(i).add_entry(0 if args.linear else 1, "HWW%s" % suffix[i], "H#rightarrowWW", 'l')
+                except:
+                    pass
                 plot.legend(i).add_entry(0, "data_obs", "Data", 'PE')
                 plot.legend(i).setNColumns(3)
             plot.legend(0).Draw()
@@ -435,23 +442,19 @@ def main(args):
                 plot.DrawLumi("35.9 fb^{-1} (2016, 13 TeV)")
             elif "2017" in args.era:
                 plot.DrawLumi("41.5 fb^{-1} (2017, 13 TeV)")
+            elif "2018" in args.era:
+                plot.DrawLumi("59.7 fb^{-1} (2018, 13 TeV)")
             else:
                 logger.critical("Era {} is not implemented.".format(args.era))
                 raise Exception
 
-            posChannelCategoryLabelLeft = None
-            if args.categories == "stxs_stage1":
-                if category in ["1", "2"]:
-                    posChannelCategoryLabelLeft = 0.075
             plot.DrawChannelCategoryLabel(
                 "%s, %s" % (channel_dict[channel], category_dict[category]),
-                begin_left=posChannelCategoryLabelLeft)
+                begin_left=None)
 
             # save plot
             postfix = "prefit" if "prefit" in args.input else "postfit" if "postfit" in args.input else "undefined"
-            plot.save("%s_plots/%s_%s_%s_%s.%s" % (args.era, args.era, channel, args.gof_variable if args.gof_variable is not None else category if tranche==None else "_".join([category, tranche]),
-                                                postfix, "png"
-                                                if args.png else "pdf"))
+            plot.save("%s_plots/%s_%s_%s_%s.%s" % (args.era, args.era, channel, args.gof_variable if args.gof_variable is not None else category, postfix, "png" if args.png else "pdf"))
             plots.append(
                 plot
             )  # work around to have clean up seg faults only at the end of the script
