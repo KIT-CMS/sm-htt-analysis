@@ -20,18 +20,18 @@ config["MetCorrectionMethod"] = "none"
 ```
 
 ### Having a look at control plots
-To check the general Data/Expectation agreement, it is useful to create control plots for the mm channel without `Z(p_T, mass)` reweighting and without MET recoil corrections
+To check the general Data/Expectation agreement, it is useful to create control plots for the `mm` channel without `Z(p_T, mass)` reweighting and without MET recoil corrections
 
 In order to create shapes, some modifications are needed:
 
  * Update `mm` ntuples for [2016](https://github.com/KIT-CMS/sm-htt-analysis/blob/master/utils/setup_samples.sh#L8), [2017](https://github.com/KIT-CMS/sm-htt-analysis/blob/master/utils/setup_samples.sh#L28) and [2018](https://github.com/KIT-CMS/sm-htt-analysis/blob/master/utils/setup_samples.sh#L43)
- * Disable `Z(p_T, mass)` reweighting for [2016](https://github.com/KIT-CMS/shape-producer/blob/master/shape_producer/estimation_methods_2016.py#L690), [2017](https://github.com/KIT-CMS/shape-producer/blob/master/shape_producer/estimation_methods_2017.py#L564), [2018](https://github.com/KIT-CMS/shape-producer/blob/master/shape_producer/estimation_methods_2018.py#L545)
+ * Disable `Z(p_T, mass)` reweighting for [2016](https://github.com/KIT-CMS/shape-producer/blob/master/shape_producer/estimation_methods_2016.py#L690), [2017](https://github.com/KIT-CMS/shape-producer/blob/master/shape_producer/estimation_methods_2017.py#L564) and [2018](https://github.com/KIT-CMS/shape-producer/blob/master/shape_producer/estimation_methods_2018.py#L545)
  * Choose appropriate set of interesting variables. This set should consist of:
-  * `m_vis`, `ptvis`
-  * `pt_1, `pt_2`, `eta_1`, `eta_2
-  * `njets`, `jpt_1`, `jpt_2`, `jeta_1`, `jeta_2`
-  * `met`, `metphi`, `pupppimet`, `puppimetphi`
-  * `metParToZ`, `metPerpToZ`, `puppimetParToZ`, `puppimetPerpToZ`
+   * `m_vis`, `ptvis`
+   * `pt_1, `pt_2`, `eta_1`, `eta_2`
+   * `njets`, `jpt_1`, `jpt_2`, `jeta_1`, `jeta_2`
+   * `met`, `metphi`, `pupppimet`, `puppimetphi`
+   * `metParToZ`, `metPerpToZ`, `puppimetParToZ`, `puppimetPerpToZ`
 
 After these adpations, the following command should executed:
 
@@ -44,14 +44,14 @@ done
 
 ### Computing correction weights
 
-This is a two-fold procedure. With the configuration for control plots mentioned above, the following command should be executed to produce files with yields in different categories (`Z(p_T, mass)` bins):
+This is a two-step procedure. With the configuration for control plots mentioned above, the following command should be executed to produce files with yields in different categories (`Z(p_T, mass)` bins) and then corresponding weights:
 
 ```bash
 for year in 2016 2017 2018;
 do
-    zptm_reweighting/produce_zptm_reweighting_counts.sh ${year}
-    zptm_reweighting/compute_zptm_weights.sh ${year}
+    zptm_reweighting/produce_zptm_reweighting_counts.sh ${year} # step 1: yield production
+    zptm_reweighting/compute_zptm_weights.sh ${year} # step 2: computation of correction weights
 done
 ```
 
-This will create root files with 2D-histograms named `zptm_weights_${year}_kit.root`. These files can then be integrated into a workspace which is used by the [ZPtReweightProducer](https://github.com/KIT-CMS/KITHiggsToTauTau/blob/reduced_trigger_objects/python/data/ArtusConfigs/Run2LegacyAnalysis_base.py#L133-L135). The corresponding translation software is [CorrectionWorkspace](https://github.com/KIT-CMS/CorrectionsWorkspace).
+This will create root files with 2D-histograms named `zptm_weights_${year}_kit.root` and corresponding plots. These files can then be integrated into a workspace which is used by the [ZPtReweightProducer](https://github.com/KIT-CMS/KITHiggsToTauTau/blob/reduced_trigger_objects/python/data/ArtusConfigs/Run2LegacyAnalysis_base.py#L133-L135). The corresponding translation software is [CorrectionWorkspace](https://github.com/KIT-CMS/CorrectionsWorkspace).
