@@ -28,7 +28,7 @@ In order to create shapes, some modifications are needed:
  * Disable `Z(p_T, mass)` reweighting for [2016](https://github.com/KIT-CMS/shape-producer/blob/master/shape_producer/estimation_methods_2016.py#L690), [2017](https://github.com/KIT-CMS/shape-producer/blob/master/shape_producer/estimation_methods_2017.py#L564) and [2018](https://github.com/KIT-CMS/shape-producer/blob/master/shape_producer/estimation_methods_2018.py#L545)
  * Choose appropriate set of interesting variables. This set should consist of:
    * `m_vis`, `ptvis`
-   * `pt_1, `pt_2`, `eta_1`, `eta_2`
+   * `pt_1`, `pt_2`, `eta_1`, `eta_2`
    * `njets`, `jpt_1`, `jpt_2`, `jeta_1`, `jeta_2`
    * `met`, `metphi`, `pupppimet`, `puppimetphi`
    * `metParToZ`, `metPerpToZ`, `puppimetParToZ`, `puppimetPerpToZ`
