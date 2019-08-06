@@ -137,6 +137,7 @@ def parse_arguments():
 
 def main(args):
     # Container for all distributions to be drawn
+    logger.info(str(args))
     logger.info("Set up shape variations.")
     systematics = Systematics(
         "{}_shapes.root".format(args.tag),
@@ -307,17 +308,16 @@ def main(args):
 
     def readclasses(c):
         if args.train_method == "":
-            logger.debug("Parse classes from ml/2017_{}_training.yaml".format(c))
-            confdict= yaml.load(open("ml/2017_{}_training.yaml".format(c), "r"))
+            confFileName="ml/out/2017_{}/dataset_config.yaml".format(c,args.train_method)
         else:
-            logger.debug("Parse classes from ml/2017_{}_training_{}.yaml".format(c,args.train_method))
-            confdict= yaml.load(open("ml/2017_{}_training_{}.yaml".format(c,args.train_method), "r"))
+            confFileName="ml/out/2017_{}_{}/dataset_config.yaml".format(c,args.train_method)
+        logger.debug("Parse classes from "+confFileName)
+        confdict= yaml.load(open(confFileName, "r"))
+        logger.debug("Classes for {} loaded: {}".format(c, str(confdict["classes"])))
         return confdict["classes"]
 
     et_categories = []
-    # Analysis shapes
     if "et" in args.channels:
-        #classes_et = ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]
         classes_et = readclasses("et")
         for i, label in enumerate(classes_et):
             score = Variable(
@@ -363,7 +363,6 @@ def main(args):
     mt_categories = []
     # Analysis shapes
     if "mt" in args.channels:
-        #classes_mt = ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]
         classes_mt = readclasses("mt")
         for i, label in enumerate(classes_mt):
             score = Variable(
@@ -409,7 +408,6 @@ def main(args):
     tt_categories = []
     # Analysis shapes
     if "tt" in args.channels:
-        #classes_tt = ["ggh", "qqh", "ztt", "noniso", "misc"]
         classes_tt = readclasses("tt")
         for i, label in enumerate(classes_tt):
             score = Variable(
@@ -454,7 +452,6 @@ def main(args):
     em_categories = []
     # Analysis shapes
     if "em" in args.channels:
-        #classes_em = ["ggh", "qqh", "ztt", "tt", "ss", "misc", "db"]
         classes_em = readclasses("em")
         for i, label in enumerate(classes_em):
             score = Variable(

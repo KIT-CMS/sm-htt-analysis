@@ -105,7 +105,7 @@ job_management.py --executable NNScore \\
                   --batch_cluster $cluster \\
                   --command $modus \\
                   --input_ntuples_directory $input_ntuples_dir  \\
-                  --walltime 1800  \\
+                  --walltime 600  \\
                   --events_per_job 200000 \\
                   --friend_ntuples_directories $friendTrees \\
                   --cores 5 \\

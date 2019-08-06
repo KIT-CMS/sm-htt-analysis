@@ -39,7 +39,7 @@ function updateSymlink() {
         [[ -d $target ]] && rmdir $target
         ln -sn $source $target
     elif [[ -f $source ]]; then
-        [[ -f $target ]]  && rm $target
+        [[ -f $target || -L $target ]]  && rm $target
         ln -s $source $target
     else
         logerror "Invalid source: $source"
@@ -73,5 +73,5 @@ function logandrun() {
     else
         logerror $@
     fi
-    [[ $sourced ]] || exit $exit_code
+    #[[ -z $sourced || $sourced =="0" ]] && exit $exit_code
 }

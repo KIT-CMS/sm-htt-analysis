@@ -2,9 +2,7 @@
 
 import ROOT
 ROOT.PyConfig.IgnoreCommandLineOptions = True
-
 import argparse
-import yaml
 import logging
 logger = logging.getLogger("sum_training_weights")
 logger.setLevel(logging.INFO)
@@ -13,6 +11,19 @@ formatter = logging.Formatter("%(name)s - %(levelname)s - %(message)s")
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
+### YAML + ORDERED DICT MAGIC
+from collections import OrderedDict
+import yaml
+from yaml import Loader, Dumper
+from yaml.representer import SafeRepresenter
+
+def dict_representer(dumper, data):
+   return dumper.represent_dict(data.iteritems())
+Dumper.add_representer(OrderedDict, dict_representer)
+
+def dict_constructor(loader, node):
+    return OrderedDict(loader.construct_pairs(node))
+Loader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, dict_constructor)
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Sum training weights of classes in training dataset.")
@@ -79,9 +90,20 @@ def main(args):
     else:
         logger.warn("Training classes in {} and {} differ".format(args.dataset_config_file,args.training_template))
 
-    ## set the classes / classweights to the "new" dict
-    dsConfDict["classes"]=newWeightsDict.keys()
-    dsConfDict["class_weights"]=newWeightsDict
+    ## Sort the clases, so testing plots/... are easierer to compare
+    priolist=["qqh","ggh","emb","ztt","tt","db","misc","zll","w","noniso","ss","ff"]
+    odDict=OrderedDict({})
+    for key in priolist:
+        if key in newWeightsDict:
+            odDict[key]=newWeightsDict[key]
+            del newWeightsDict[key]
+    ## add classes that are not in the priolist at the end
+    for key in newWeightsDict:
+        odDict[key]=newWeightsDict[key]
+    del newWeightsDict
+
+    dsConfDict["classes"]=odDict.keys()
+    dsConfDict["class_weights"]=odDict
 
     ## check if the dataset_config.yaml is overwriting no permitted values in the template dict
     diffkeys=[key for key in trainingTemplateDict if key in dsConfDict and trainingTemplateDict[key]!=dsConfDict[key] and not key in ["classes", "class_weights","datasets"]  ]
@@ -96,8 +118,7 @@ def main(args):
                 logger.warn("Overwriting template key {} with value {} with {}".format(key, str(trainingTemplateDict[key]),str(dsConfDict[key])))
             trainingTemplateDict[key]=dsConfDict[key]
     with open(args.dataset_config_file,"w") as f:
-        yaml.dump(trainingTemplateDict, f, default_flow_style=False)
-
+        yaml.dump(trainingTemplateDict, f,Dumper=Dumper, default_flow_style=False)
 
     logger.info( "{}-{}: Class weights after update: {}".format(args.era, args.channel,dictToString(trainingTemplateDict["class_weights"])))
 

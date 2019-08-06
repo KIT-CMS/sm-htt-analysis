@@ -109,6 +109,7 @@ analysis:
     tt:           *fine_binning_8classes
     ss:           *fine_binning_8classes
     ff:           *fine_binning_8classes
+    emb:           *fine_binning_8classes
     misc:         *fine_binning_8classes
     db:           *fine_binning_8classes
     ggh_unrolled: *ggh_fine_full_unrolling_8classes
@@ -120,6 +121,7 @@ analysis:
     zll:          *fine_binning_8classes
     w:            *fine_binning_8classes
     ff:           *fine_binning_8classes
+    emb:           *fine_binning_8classes
     tt:           *fine_binning_8classes
     ss:           *fine_binning_8classes
     misc:         *fine_binning_8classes
@@ -132,6 +134,7 @@ analysis:
     zll:          *fine_binning_8classes
     w:            *fine_binning_8classes
     ff:           *fine_binning_8classes
+    emb:           *fine_binning_8classes
     tt:           *fine_binning_8classes
     ss:           *fine_binning_8classes
     misc:         *fine_binning_8classes
@@ -142,6 +145,7 @@ analysis:
     qqh:          *fine_binning_5classes
     ztt:          *fine_binning_5classes
     ff:           *fine_binning_8classes
+    emb:           *fine_binning_8classes
     noniso:       *fine_binning_5classes
     misc:         *fine_binning_5classes
     ggh_unrolled: *ggh_fine_full_unrolling_5classes

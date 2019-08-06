@@ -8,9 +8,11 @@
     printf '%s' "${PWD%/}/")$(basename -- "$0") != "${.sh.file}" ]] ||
  [[ -n $BASH_VERSION ]] && (return 0 2>/dev/null)) && export sourced=1 || export sourced=0
 
-[[ $sourced != 1 ]] && set -euo pipefail
-IFS=$','
+[[ $sourced != 1 ]] && set -e
+#set -uo pipefail
 
+unset PYTHONPATH
+unset PYTHONUSERBASE
 shopt -s checkjobs # wait for all jobs before exiting
 export PARALLEL=1
 export USE_BATCH_SYSTEM=1
@@ -42,28 +44,28 @@ methodsarg=$3
 [[ "" = $( echo $channels ) ]] && channels=("em" "et" "tt" "mt") channelsarg="em,et,tt,mt"
 [[ "" = $( echo $methods ) ]] && methods=("mc_mc" "emb_mc" "mc_ff" "emb_ff") methodsarg="mc_mc,emb_mc,mc_ff,emb_ff"
 
-loginfo Eras: $erasarg  Channels: $channelsarg   Training Dataset Generation Method: $methodsarg
+loginfo Eras: $erasarg  Channels: $channelsarg   Training Dataset Generation Method: $methodsarg Sourced: $sourced
 
-if [[ ! "" = $4 ]]; then
+if [[ ! -z ${4:-} ]]; then
     logerror only takes 3 arguments, seperate multiple eras and channels by comma eg: 2016,2018 mt,em   or \"\" em
-    exit 1
+    [[ $sourced != 1 ]] && exit 1
 fi
 for era in ${eras[@]}; do
     if [[ ! "2016 2017 2018" =~ $era ]]; then
         logerror $era is not a valid era.
-        exit 1
+        [[ $sourced != 1 ]] && exit 1
     fi
 done
 for channel in ${channels[@]}; do
     if [[ ! "em et tt mt" =~ $channel ]]; then
         logerror $channel is not a valid channel.
-        exit 1
+        [[ $sourced != 1 ]] && exit 1
     fi
 done
 for method in ${methods[@]}; do
     if [[ ! "mc_mc emb_mc mc_ff emb_ff" =~ $method ]]; then
         logerror $method is not a valid method.
-        exit 1
+        [[ $sourced != 1 ]] && exit 1
     fi
 done
 
@@ -72,7 +74,7 @@ for DIRECTORY in shapes datacards combine plotting utils
 do
     if [ ! -d "$DIRECTORY" ]; then
         logerror "Directory $DIRECTORY not found, you are not in the top-level directory of the analysis repository?"
-        exit 1
+        [[ $sourced != 1 ]] && exit 1
     fi
 done
 ############################################
@@ -97,44 +99,136 @@ done
 
 source completedMilestones
 
-#### converts models to the form needed for submission to a batch system
-function exportForApplication {
-    era=$1
-    channel=$2
-    ./ml/translate_models.sh $era $channel
-    ./ml/export_lwtnn.sh $era $channel
-    ### Supply the generated models in the hard-coded path in the friendProducer
-    ### lxrsync will dereference this symlink
-    llwtnndir=$cmssw_src_local/HiggsAnalysis/friend-tree-producer/data/inputs_lwtnn
-    [[ ! -d $llwtnndir/${era}/${channel} ]] && mkdir -p $llwtnndir/${era}/${channel}
-    for fold in 0 1;
-    do
-        updateSymlink $sm_htt_analysis_dir/ml/out/${era}_${channel}/fold${fold}_lwtnn.json  $llwtnndir/${era}/${channel}/fold${fold}_lwtnn.json
+
+function compenv() {
+    varnames=(era channel method eras  channels  methods erasarg channelsarg methodsarg mldir trainingConfFile anaSSStep  llwtnndir temp_file PROD_NEW_DATACARDS redoConversion fn JETFAKES EMBEDDING CATEGORIES PROD_NEW_DATACARDS STXS_SIGNALS STXS_FIT USE_BATCH_SYSTEM)
+    IFS='°' read -r -a vars <<< "${era[@]}"°"${channel[@]}"°"${method[@]}"°"${eras[@]}"°"${channels[@]}"°"${methods[@]}"°"${erasarg[@]}"°"${channelsarg[@]}"°"${methodsarg[@]}"°"${mldir[@]}"°"${trainingConfFile[@]}"°"${anaSSStep[@]}"°"${llwtnndir[@]}"°"${temp_file[@]}"°"${PROD_NEW_DATACARDS[@]}"°"${redoConversion[@]}"°"${fn[@]}"°"${JETFAKES[@]}"°"${EMBEDDING[@]}"°"${CATEGORIES[@]}"°"${PROD_NEW_DATACARDS[@]}"°"${STXS_SIGNALS[@]}"°"${STXS_FIT[@]}"°$USE_BATCH_SYSTEM
+    for (( i=0; i<${#vars[@]}; i++ )); do
+        echo "${varnames[$i]}=${vars[$i]}"
     done
 }
 
-### Subroutine called by runstages
-function runana() {
-    echo "analysis for:"
-    echo '$era $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING $method ${channels[@]}'
-    echo "$era $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING $method ${channels[@]}"
-
-    if [[ $PROD_NEW_DATACARDS == 1 ]]; then
-        echo "Prodcing datacard:"
-        ## one could produce a datacard for stage1p1 and then just select the right one upon produce_workspace :)
-        for channel in ${channels[@]}; do
-            updateSymlink htt_${channel}_${method}.inputs-sm-Run${era}-ML.root htt_${channel}.inputs-sm-Run${era}-ML.root
-        done
-        ./datacards/produce_datacard.sh $era $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING $method ${channels[@]} > /dev/null
-    fi
-    ./datacards/produce_workspace.sh ${era} $STXS_FIT > /dev/null
-    echo "writing to signal-strength-${channelsarg}-$method-$STXS_SIGNALS-$STXS_FIT.txt"
-    temp_file=$(mktemp)
-    ./combine/signal_strength.sh $era $STXS_FIT > $temp_file
-    cat $temp_file | sed -n -e '/ --- MultiDimFit ---/,$p'| sed  "/Printing Message Summary/q" | head -n -2 | grep -v INFO:  | tee "signal-strength-${channelsarg}-$method-$STXS_SIGNALS-$STXS_FIT.txt"
-    ### add more analysis scripts here
-    PROD_NEW_DATACARDS=0
+function create_training_dataset() {
+    for method in ${methods[@]}; do
+        export method
+        logandrun ./ml/create_training_dataset.sh $erasarg $channelsarg
+    done
+    loginfo All $method datasets created
 }
+
+function mltrain() {
+    for method in ${methods[@]}; do
+    export method
+        for era in ${eras[@]}; do
+            for channel in ${channels[@]}; do
+                logandrun ./ml/run_training.sh $era $channel $method
+            done
+        done
+    done
+}
+
+function mltest() {
+    for method in ${methods[@]}; do
+    export method
+        for era in ${eras[@]}; do
+            for channel in ${channels[@]}; do
+                logandrun ./ml/run_testing.sh $era $channel $method
+            done
+        done
+    done
+}
+
+#### converts models to the form needed for submission to a batch system
+function exportForApplication {
+    for method in ${methods[@]}; do
+    export method
+    for era in ${eras[@]}; do
+        for channel in ${channels[@]}; do
+            logandrun ./ml/translate_models.sh $era $channel
+            logandrun ./ml/export_lwtnn.sh $era $channel
+        done
+    done
+    done
+}
+
+function provideCluster() {
+    if [[ ! "mc_mc emb_mc mc_ff emb_ff" =~ $1 || -z $1 ]]; then
+        logerror Needs exactly one method as argument, eg mc_mc instead of "$1"
+        [[ $sourced != 1 ]] && exit 1 || exit 0
+    else
+        method=$1
+    fi
+    for era in ${eras[@]}; do
+        for channel in ${channels[@]}; do
+            ### Supply the generated models in the hard-coded path in the friendProducer
+            ### lxrsync will dereference this symlink
+            llwtnndir=$cmssw_src_local/HiggsAnalysis/friend-tree-producer/data/inputs_lwtnn
+            [[ ! -d $llwtnndir/${era}/${channel} ]] && mkdir -p $llwtnndir/${era}/${channel}
+            for fold in 0 1;
+            do
+                updateSymlink $sm_htt_analysis_dir/ml/out/${era}_${channel}_${method}/fold${fold}_lwtnn.json  $llwtnndir/${era}/${channel}/fold${fold}_lwtnn.json
+            done
+        done
+    done
+    updateSymlink $sm_htt_analysis_dir/datasets/datasets.json $cmssw_src_local/HiggsAnalysis/friend-tree-producer/data/input_params/datasets.json
+    if [[ $cluster == lxplus ]]; then
+        loginfo lxrsync ${cmssw_src_local}/HiggsAnalysis/friend-tree-producer/data/ lxplus.cern.ch:${cmssw_src_dir}/HiggsAnalysis/friend-tree-producer/data
+        lxrsync ${cmssw_src_local}/HiggsAnalysis/friend-tree-producer/data/ lxplus.cern.ch:${cmssw_src_dir}/HiggsAnalysis/friend-tree-producer/data
+    fi
+}
+
+function submitCluster(){
+    if [[ ! "mc_mc emb_mc mc_ff emb_ff" =~ $1 || -z $1 ]]; then
+        logerror Needs exactly one method as argument, eg mc_mc instead of "$1"
+        [[ $sourced != 1 ]] && exit 1
+    else
+        method=$1
+    fi
+    for era in ${eras[@]}; do
+        logandrun ./batchrunNNApplication.sh ${era} $channelsarg $cluster "submit" ${era}_${method}
+    done
+}
+function resubmitCluster() {
+    if [[ ! "mc_mc emb_mc mc_ff emb_ff" =~ $1 ]]; then
+        logerror Needs exactly one method as argument, eg mc_mc instead of "$1"
+        [[ $sourced != 1 ]] && exit 1
+    else
+        method=$1
+    fi
+    for era in ${eras[@]}; do
+        logandrun ./batchrunNNApplication.sh ${era} $channelsarg $cluster "check" ${era}_${method}
+    done
+}
+function collectCluster() {
+    if [[ ! "mc_mc emb_mc mc_ff emb_ff" =~ $1 ]]; then
+        logerror Needs exactly one method as argument, eg mc_mc instead of "$1"
+        [[ $sourced != 1 ]] && exit 1
+    else
+        method=$1
+    fi
+    for era in ${eras[@]}; do
+        logandrun ./batchrunNNApplication.sh ${era} $channelsarg $cluster "collect" ${era}_${method}
+    done
+}
+
+function copyFromCluster() {
+    if [[ $cluster == etp ]]; then
+            loginfo Cluster is ept, no need to sync.
+    elif [[ $cluster == lxplus ]]; then
+        read -p "Sync files from $USER@lxplus.cern.ch:$batch_out/${era}_${method} to $batch_out_local/${era}_${method} now? y/[n]" yn
+        if [[ ! $yn == "y" ]]; then
+            logerror "!=y \n aborting"
+            [[ $sourced != 1 ]] && exit 0
+        fi
+
+        for era in ${eras[@]}; do
+            [[ ! -d $batch_out_local/${era}_${method}/NNScore_workdir/NNScore_collected  ]] && mkdir -p $batch_out_local/${era}_${method}/NNScore_workdir/NNScore_collected
+            logandrun lxrsync $USER@lxplus.cern.ch:$batch_out/${era}_${method}/NNScore_workdir/NNScore_collected/ $batch_out_local/${era}_${method}/NNScore_workdir/NNScore_collected
+        done
+    fi
+}
+
+
 
 function genshapes() {
     for method in ${methods[@]}; do
@@ -143,7 +237,7 @@ function genshapes() {
             redoConversion=0
             if [[ ! -f ${era}_${method}_shapes.root  ]]; then
                 loginfo Producing shapes for $era $method ${channels[@]}
-                ./shapes/produce_shapes.sh $era $method ${channels[@]}
+                logandrun ./shapes/produce_shapes.sh $era $method ${channels[@]}
                 redoConversion=1
             else
                 loginfo Skipping shape generation as ${era}_${method}_shapes.root exists
@@ -157,13 +251,27 @@ function genshapes() {
             done
             if [[ $redoConversion == 1 ]]; then
                 loginfo Syncing shapes for $era ${channels[@]}
-                ./shapes/convert_to_synced_shapes.sh $era $method
+                logandrun ./shapes/convert_to_synced_shapes.sh $era $method
             fi
         done
     done
 }
-
-
+### Subroutine called by runstages
+function runana() {
+    if [[ $PROD_NEW_DATACARDS == 1 ]]; then
+        echo "Producing datacard:"
+        ## one could produce a datacard for stage1p1 and then just select the right one upon produce_workspace :)
+        for channel in ${channels[@]}; do
+            updateSymlink htt_${channel}_${method}.inputs-sm-Run${era}-ML.root htt_${channel}.inputs-sm-Run${era}-ML.root
+        done
+        logandrun ./datacards/produce_datacard.sh $era $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING $method ${channels[@]} > datacard-${era}-$STXS_SIGNALS-$CATEGORIES-$JETFAKES-$EMBEDDING--$method-${channelsarg}.log
+    fi
+    logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT | tee workspace-${era}-$STXS_SIGNALS-$CATEGORIES-$JETFAKES-$EMBEDDING--$method-${channelsarg}.log
+    logandrun ./combine/signal_strength.sh $era $STXS_FIT | tee "signal-strength-${channelsarg}-$method-$STXS_SIGNALS-$STXS_FIT.txt"
+    #| sed -n -e '/ --- MultiDimFit ---/,$p' | sed  "/Printing Message Summary/q" | head -n -2 | grep -v INFO:
+    ### add more analysis scripts here
+    PROD_NEW_DATACARDS=0
+}
 
 ### run the analysis for mc and emb and all stages
 function runstages() {
@@ -173,11 +281,11 @@ function runstages() {
     CATEGORIES="stxs_stage1p1"
     for method in ${methods[@]}; do
         cd $sm_htt_analysis_dir
-        for s in "stxs_stage0" "stxs_stage1p1"; do
+        for s in "stxs_stage0"; do # "stxs_stage1p1"; do
             PROD_NEW_DATACARDS=1 ## "inclusive" "stxs_stage0" can use the same datacards
             STXS_SIGNALS=$s
             if [[ "$s" == "stxs_stage0" ]]; then
-                for f in "inclusive" "stxs_stage0"; do
+                for f in "inclusive"; do  # "stxs_stage0"; do
                     STXS_FIT=$f
                     runana
                 done
@@ -208,50 +316,6 @@ function compareSignRes {
 ### in the beginning and overwriting variables upon completion of the step
 #################################################################################################
 
-function compenv() {
-    varnames=(era channel method eras  channels  methods erasarg channelsarg methodsarg mldir trainingConfFile anaSSStep  llwtnndir temp_file PROD_NEW_DATACARDS redoConversion fn JETFAKES EMBEDDING CATEGORIES PROD_NEW_DATACARDS STXS_SIGNALS STXS_FIT USE_BATCH_SYSTEM)
-    vars=(${era[@]} ${channel[@]} ${method[@]} ${eras[@]} ${channels[@]} ${methods[@]} ${erasarg[@]} ${channelsarg[@]} ${methodsarg[@]} ${mldir[@]} ${trainingConfFile[@]} ${anaSSStep[@]} ${llwtnndir[@]} ${temp_file[@]} ${PROD_NEW_DATACARDS[@]} ${redoConversion[@]} ${fn[@]} ${JETFAKES[@]} ${EMBEDDING[@]} ${CATEGORIES[@]} ${PROD_NEW_DATACARDS[@]} ${STXS_SIGNALS[@]} ${STXS_FIT[@]} $USE_BATCH_SYSTEM)
-    for (( i=0; i<${#vars[@]}; i++ )); do
-        echo "${varnames[$i]}=${vars[$i]}"
-    done
-}
-
-function create_training_dataset() {
-    for method in ${methods[@]}; do
-        export method
-        logandrun ./ml/create_training_dataset.sh $erasarg $channelsarg
-    done
-    loginfo All $method datasets created
-}
-# function sum_training_weights() {
-#     for method in ${methods[@]}; do
-#         export method
-#         logandrun ./ml/sum_training_weights.sh $erasarg $channelsarg
-#     done
-# }
-
-function mltrain() {
-    for method in ${methods[@]}; do
-    export method
-        for era in ${eras[@]}; do
-            for channel in ${channels[@]}; do
-                logandrun ./ml/run_training.sh $era $channel $method
-            done
-        done
-    done
-}
-
-function mltest() {
-    for method in ${methods[@]}; do
-    export method
-        for era in ${eras[@]}; do
-            for channel in ${channels[@]}; do
-                logandrun ./ml/run_testing.sh $era $channel $method
-            done
-        done
-    done
-}
-
 function main() {
     if [[ $anaSSStep < 1 ]]; then
         for method in ${methods[@]}; do
@@ -264,15 +328,6 @@ function main() {
             else
                 loginfo Skipping $method training dataset creation
             fi
-
-            # #### Correct the class weight in ml/era_channel_training.yaml
-            # if [[ ! $( getPar completedMilestones ${method}_sum_training_weights ) == 1  ]]; then
-            #     sum_training_weights
-            #     overridePar completedMilestones ${method}_sum_training_weights 1
-            # else
-            #     loginfo Skipping $method class weight calculation
-            # fi
-
             ### Run trainings ml/era_channel_training.yaml ml/era_channel/merge_foldX_*.root -> ml/era_channel/foldX_keras_model.h5
             if [[ ! $( getPar completedMilestones ${method}_training  ) == 1  ]]; then
                 mltrain
@@ -293,16 +348,8 @@ function main() {
             if [[ $USE_BATCH_SYSTEM == 1 ]]; then
                 ### convert the models to lwtnn format ml/era_channel/foldX_keras_model.h5 -> ml/era_channel/foldX_lwtnn.json
                 if [[ ! $( getPar completedMilestones ${method}_models_exported  ) == 1  ]]; then
-                    for era in ${eras[@]}; do
-                        for channel in ${channels[@]}; do
-                            exportForApplication $era $channel
-                        done
-                    done
-                    updateSymlink $sm_htt_analysis_dir/datasets/datasets.json $cmssw_src_local/HiggsAnalysis/friend-tree-producer/data/input_params/datasets.json
-                    if [[ $cluster == lxplus ]]; then
-                        loginfo lxrsync ${cmssw_src_local}/HiggsAnalysis/friend-tree-producer/data/ lxplus.cern.ch:${cmssw_src_dir}/HiggsAnalysis/friend-tree-producer/data
-                        lxrsync ${cmssw_src_local}/HiggsAnalysis/friend-tree-producer/data/ lxplus.cern.ch:${cmssw_src_dir}/HiggsAnalysis/friend-tree-producer/data
-                    fi
+                    exportForApplication
+                    provideCluster $method
                     overridePar completedMilestones ${method}_models_exported 1
                     loginfo Models for $method application exported
                 else
@@ -311,35 +358,25 @@ function main() {
 
                 ### Apply the model ml/era_channel/foldX_keras_model.h5 oder ml/era_channel/foldX_lwtnn.json + ntuples -> NNScore friendTree
                 if [[ ! $( getPar completedMilestones ${method}_NNApplication_started  ) == 1  ]]; then
-                    ## NNScore Friend Tree Production on the etp
-                    cd $sm_htt_analysis_dir
-                    for era in ${eras[@]}; do
-                        ./batchrunNNApplication.sh ${era} $channelsarg $cluster "submit" ${era}_${method}
-                    done
+                    submitCluster $method
                     overridePar completedMilestones ${method}_NNApplication_started 1
                     loginfo "Jobs for $method application created. Submit the jobs and, in completedMilestones, set ${method}_NNApplication_ended to 1 if the jobs ran successfull or you need to resubmit"
-                    exit 0
+                    [[ $sourced != 1 ]] && exit 0
                 else
                     loginfo Skipping $method batch submission for NNScore FriendTrees
                 fi
 
                 ### check if finished resubmit if needed
                 if [[ $( getPar completedMilestones ${method}_NNApplication_started  ) == "1"  ]] && [[ $( getPar completedMilestones ${method}_NNApplication_ended  ) == "0"  ]] ; then
-                    cd $sm_htt_analysis_dir
-                    for era in ${eras[@]}; do
-                        ./batchrunNNApplication.sh ${era} $channelsarg $cluster "check" ${era}_${method}
-                    done
+                    resubmitCluster $method
                     loginfo  In completedMilestones set ${method}_NNApplication_ended to 1 if the jobs ran successfull
-                    exit 0
+                    [[ $sourced != 1 ]] && exit 0
                 else
                     loginfo Skipping $method NNScore FriendTree batch resubmission
                 fi
 
                 if [[ ! $( getPar completedMilestones ${method}_NNApplication_collected  ) == 1  ]]; then
-                    cd $sm_htt_analysis_dir
-                    for era in ${eras[@]}; do
-                        ./batchrunNNApplication.sh ${era} $channelsarg $cluster "collect" ${era}_${method}
-                    done
+                    collectCluster $method
                     overridePar completedMilestones ${method}_NNApplication_collected 1
                     loginfo Jobs for $method application completed and collected. Move outputs now!
                 else
@@ -347,20 +384,7 @@ function main() {
                 fi
 
                 if [[ ! $( getPar completedMilestones ${method}_NNApplication_synced ) = 1  ]]; then
-                    if [[ $cluster == etp ]]; then
-                            loginfo Cluster is ept, no need to sync.
-                    elif [[ $cluster == lxplus ]]; then
-                        read -p "Sync files from $USER@lxplus.cern.ch:$batch_out/${era}_${method} to $batch_out/${era}_${method} now? y/[n]" yn
-                        if [[ ! $yn == "y" ]]; then
-                            logerror "!=y \n aborting"
-                            exit 0
-                        fi
-
-                        for era in ${eras[@]}; do
-                            [[ ! -d $batch_out_local/${era}_${method}/NNScore_workdir/NNScore_collected  ]] && mkdir -p $batch_out_local/${era}_${method}/NNScore_workdir/NNScore_collected
-                            logandrun lxrsync $USER@lxplus.cern.ch:$batch_out/${era}_${method}/NNScore_workdir/NNScore_collected/ $batch_out_local/${era}_${method}/NNScore_workdir/NNScore_collected
-                        done
-                    fi
+                    copyFromCluster ${method}
                     overridePar completedMilestones ${method}_NNApplication_synced 1
                     loginfo $method NNScore FriendTree sync completed
                 else

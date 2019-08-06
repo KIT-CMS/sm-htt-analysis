@@ -22,4 +22,4 @@ export PATH=$HOME/.local/pylibs-$(hostname)/bin:$PATH
 mkdir -p $outdir
 
 logandrun python htt-ml/training/keras_training.py $outdir/dataset_config.yaml 0
-logandrun htt-ml/training/keras_training.py $outdir/dataset_config.yaml 1
+logandrun python htt-ml/training/keras_training.py $outdir/dataset_config.yaml 1

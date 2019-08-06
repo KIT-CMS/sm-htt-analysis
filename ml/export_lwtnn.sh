@@ -21,11 +21,12 @@ if [ ! -d "htt-ml/lwtnn" ]; then
     exit 1
 fi
 
+[[ -z $method ]] && outdir=ml/out/${ERA}_${CHANNEL} || outdir=ml/out/${ERA}_${CHANNEL}_${method}
 for fold in 0 1;
 do
-    python3 htt-ml/lwtnn/converters/keras2json.py ml/${ERA}_${CHANNEL}/fold${fold}_keras_architecture.json  ml/${ERA}_${CHANNEL}/fold${fold}_keras_variables.json ml/${ERA}_${CHANNEL}/fold${fold}_keras_weights.h5 >  ml/${ERA}_${CHANNEL}/fold${fold}_lwtnn.json
+    python3 htt-ml/lwtnn/converters/keras2json.py ${outdir}/fold${fold}_keras_architecture.json  ${outdir}/fold${fold}_keras_variables.json ${outdir}/fold${fold}_keras_weights.h5 >  ${outdir}/fold${fold}_lwtnn.json
 done
 
 echo "Created lwtnn .json files:"
-ls ml/${ERA}_${CHANNEL}/*lwtnn.json -lrth
+ls ${outdir}/*lwtnn.json -lrth
 exit $!

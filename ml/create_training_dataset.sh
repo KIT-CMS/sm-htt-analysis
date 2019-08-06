@@ -64,7 +64,7 @@ function run_procedure() {
         --training-jetfakes-estimation-method $jetEstimation \
         --output-config $outdir/dataset_config.yaml
 
-    # Create dataset files from config
+    # # Create dataset files from config
     logandrun ./htt-ml/dataset/create_training_dataset.py $outdir/dataset_config.yaml
     # Reweight STXS stage 1 signals so that each stage 1 signal is weighted equally but
     # conserve the overall weight of the stage 0 signal
@@ -86,8 +86,6 @@ function run_procedure() {
         --training-template "ml/templates/${SELERA}_${SELCHANNEL}_training.yaml" \
         --channel $SELCHANNEL \
         --write-weights True
-    )
 }
-
 source utils/multirun.sh
 genArgsAndRun run_procedure $@

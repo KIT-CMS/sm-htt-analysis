@@ -2,6 +2,7 @@
 set -e
 source utils/setup_cmssw.sh
 source utils/setup_python.sh
+source utils/bashFunctionCollection.sh
 
 ERA=$1
 STXS_SIGNALS=$2
@@ -29,10 +30,8 @@ rm -rf output/${ERA}_smhtt
 
 trap 'exit $?' TRAP KILL EXIT
 
-(
-set -x
 # Create datacards
-$CMSSW_BASE/bin/slc7_amd64_gcc700/MorphingSMRun2Legacy \
+logandrun $CMSSW_BASE/bin/slc7_amd64_gcc700/MorphingSMRun2Legacy \
     --base_path=$PWD \
     --input_folder_mt="/" \
     --input_folder_et="/" \
@@ -44,7 +43,7 @@ $CMSSW_BASE/bin/slc7_amd64_gcc700/MorphingSMRun2Legacy \
     --jetfakes=$JETFAKES \
     --embedding=$EMBEDDING \
     --postfix="-ML" \
-    --channel="${CHANNELS}" \
+    --channel=$( echo ${CHANNELS} | tr " " ",")  \
     --auto_rebin=true \
     --stxs_signals=$STXS_SIGNALS \
     --categories=$CATEGORIES \
@@ -52,7 +51,6 @@ $CMSSW_BASE/bin/slc7_amd64_gcc700/MorphingSMRun2Legacy \
     --output="${ERA}_smhtt" \
     --train_ff $TRAIN_FF \
     --train_emb $TRAIN_EMB
-)
 
 # Use Barlow-Beeston-lite approach for bin-by-bin systematics
 THIS_PWD=${PWD}
