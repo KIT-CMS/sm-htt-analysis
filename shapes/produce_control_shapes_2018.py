@@ -288,7 +288,7 @@ def main(args):
 
 
     # Variables and categories
-    binning = yaml.load(open(args.binning))
+    binning = yaml.load(open(args.binning), Loader=yaml.FullLoader)
 
     mt_categories = []
     et_categories = []

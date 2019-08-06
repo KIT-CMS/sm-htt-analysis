@@ -221,7 +221,7 @@ def main(args):
     }
 
     # Variables and categories
-    binning = yaml.load(open(args.binning))
+    binning = yaml.load(open(args.binning), Loader=yaml.FullLoader)
 
     variable_names = [
         "ME_D",
@@ -247,7 +247,7 @@ def main(args):
             for cut in cut_values:
                 categories[ch].append(Category("%s-less-%s"%(variable, str(cut).replace(".","p")),channels[ch], Cuts(Cut("%s < %s"%(variable, str(cut)))), variable=None))
                 categories[ch].append(Category("%s-greater-%s"%(variable, str(cut).replace(".","p")),channels[ch], Cuts(Cut("%s > %s"%(variable, str(cut)))), variable=None))
-        
+
 
     # Nominal histograms
     for ch in args.channels:
