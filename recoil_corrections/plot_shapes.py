@@ -20,6 +20,7 @@ def parse_arguments():
         ""
     )
     parser.add_argument("-e", "--era", type=str, required=True, help="Era")
+    parser.add_argument("-v", "--variable", type=str, required=True, help="Variable")
     parser.add_argument(
         "-i",
         "--input_dir",
@@ -103,7 +104,7 @@ def main(args):
                 linecolor=0)
 
             # assemble ratio
-            plot.subplot(2).normalize(["data_obs"], "total_procs")
+            plot.subplot(2).normalize(["data_obs", "total_procs"], "total_procs")
 
             # stack background processes
             plot.create_stack(processes, "stack")
@@ -165,8 +166,8 @@ def main(args):
                 begin_left=None)
 
             # save plot
-            plot.save("%s_plots_metrecoilfit/%s_%s_%s_%s.%s" % (args.era, args.era, "mm", category, plottype, "png"))
-            plot.save("%s_plots_metrecoilfit/%s_%s_%s_%s.%s" % (args.era, args.era, "mm", category, plottype, "pdf"))
+            plot.save("%s_plots_metrecoilfit/%s_%s_%s_%s.%s" % (args.era, args.variable, "mm", category, plottype, "png"))
+            plot.save("%s_plots_metrecoilfit/%s_%s_%s_%s.%s" % (args.era, args.variable, "mm", category, plottype, "pdf"))
             plots.append(plot)  # work around to have clean up seg faults only at the end of the script
 
 
