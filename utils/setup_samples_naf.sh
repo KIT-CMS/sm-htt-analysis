@@ -16,7 +16,7 @@ ARTUS_FRIENDS_EM_2016=$ARTUS_OUTPUTS_2016
 [[ ! -z "$SVFit_Friends_2016" ]] && SVFit_Friends_2016=$basedir_naf/SVFit_Friends_2016
 [[ ! -z "$MELA_Friends_2016" ]] && MELA_Friends_2016=$basedir_naf/MELA_Friends_2016
 [[ ! -z "$FF_Friends_2016" ]] && FF_Friends_2016=$basedir_naf/FF_Friends_2016
-[[ ! -z "$ARTUS_FRIENDS_2016" ]] && ARTUS_FRIENDS_2016=$basedir_naf/FF_Friends_2016
+[[ ! -z "$ARTUS_FRIENDS_2016" ]] && ARTUS_FRIENDS_2016=$basedir_naf/ARTUS_FRIENDS_2016
 if [[ ! -z "$ARTUS_FRIENDS_2016" ]]
 then
     ARTUS_FRIENDS_ET_2016=$ARTUS_FRIENDS_2016
@@ -29,10 +29,10 @@ ARTUS_FRIENDS_FAKE_FACTOR_INCL_2016=$ARTUS_FRIENDS_FAKE_FACTOR_2016
 
 # Samples Run2017
 [[ ! -z "$ARTUS_OUTPUTS_2017" ]] && ARTUS_OUTPUTS_2017="$basedir_naf/ARTUS_OUTPUTS_2017"
-[[ ! -z "$NNScore_Friends_2017" ]] && NNScore_Friends_2017="$basedir_naf/ARTUS_OUTPUTS_2017"
-[[ ! -z "$SVFit_Friends_2017" ]] && SVFit_Friends_2017="$basedir_naf/ARTUS_OUTPUTS_2017"
-[[ ! -z "$MELA_Friends_2017" ]] && MELA_Friends_2017="$basedir_naf/ARTUS_OUTPUTS_2017"
-[[ ! -z "$FF_Friends_2017" ]] && FF_Friends_2017="$basedir_naf/ARTUS_OUTPUTS_2017"
+[[ ! -z "$NNScore_Friends_2017" ]] && NNScore_Friends_2017="$basedir_naf/NNScore_Friends_2017"
+[[ ! -z "$SVFit_Friends_2017" ]] && SVFit_Friends_2017="$basedir_naf/SVFit_Friends_2017"
+[[ ! -z "$MELA_Friends_2017" ]] && MELA_Friends_2017="$basedir_naf/MELA_Friends_2017"
+[[ ! -z "$FF_Friends_2017" ]] && FF_Friends_2017="$basedir_naf/FF_Friends_2017"
 [[ ! -z "$ARTUS_FRIENDS_2017" ]] && ARTUS_FRIENDS_2017="$NNScore_Friends_2017 $SVFit_Friends_2017 $MELA_Friends_2017"
 ARTUS_FRIENDS_ET_2017=$ARTUS_FRIENDS_2017
 ARTUS_FRIENDS_MT_2017=$ARTUS_FRIENDS_2017
@@ -49,7 +49,7 @@ ARTUS_OUTPUTS_EM_2018=$ARTUS_OUTPUTS_2018
 [[ ! -z "$SVFit_Friends_2018" ]] && SVFit_Friends_2018="$basedir_naf/SVFit_Friends_2018"
 [[ ! -z "$MELA_Friends_2018" ]] && MELA_Friends_2018="$basedir_naf/MELA_Friends_2018"
 [[ ! -z "$FF_Friends_2018" ]] && FF_Friends_2018="$basedir_naf/FF_Friends_2018"
-[[ ! -z "$ARTUS_FRIENDS_2018" ]] && ARTUS_FRIENDS_2018="$NNScore_Friends_2018 $SVFit_Friends_2018 $MELA_Friends_2018/"
+[[ ! -z "$ARTUS_FRIENDS_2018" ]] && ARTUS_FRIENDS_2018="$NNScore_Friends_2018 $SVFit_Friends_2018 $MELA_Friends_2018"
 if [[ ! -z "$ARTUS_FRIENDS_2018" ]]
 then
     ARTUS_FRIENDS_ET_2018=$ARTUS_FRIENDS_2018
