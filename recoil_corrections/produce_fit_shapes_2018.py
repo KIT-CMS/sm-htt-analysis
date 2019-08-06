@@ -110,11 +110,11 @@ def main(args):
         "metParToZ", "metPerpToZ",
         "puppimetParToZ", "puppimetPerpToZ",
 
-        "recoilParToZ", "recoilPerpToZ",
-        "puppirecoilParToZ", "puppirecoilPerpToZ",
+#        "recoilParToZ", "recoilPerpToZ",
+#        "puppirecoilParToZ", "puppirecoilPerpToZ",
     ]
 
-    variables = [Variable(v,ConstantBinning(50,-200.0,200.0)) for v in variable_names]
+    variables = [Variable(v,ConstantBinning(25,-100.0,100.0)) for v in variable_names]
 
     cuts = [
         Cut("njets == 0", "0jet"),

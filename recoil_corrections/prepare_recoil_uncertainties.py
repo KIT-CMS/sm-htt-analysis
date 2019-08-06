@@ -102,7 +102,7 @@ for f in [foutpuppi, fout]:
             exit(1)
         uncertainties = json.loads(open(modecopy,"r").read())
         syst = r.TH2D("syst","syst",2,0.0,2.0,3,0.0,3.0)
-        types = ["CMS_htt_boson_scale_met_Run2017", "CMS_htt_boson_reso_met_Run2017"] # need exact the same order as in the histogram
+        types = ["CMS_htt_boson_scale_met_Run%s"%era, "CMS_htt_boson_reso_met_Run%s"%era] # need exact the same order as in the histogram
         categories = ["mm_0jet", "mm_1jet", "mm_ge2jet"] # need exact the same order as in the histogram
         for i in range(syst.GetNbinsX()):
             for j in range(syst.GetNbinsY()):

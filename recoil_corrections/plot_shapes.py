@@ -71,7 +71,9 @@ def main(args):
     for plottype in ["prefit", "postfit"]:
         for category in category_dict:
             filename = args.input_dir+ "/" + category + "/postfit_shapes.root"
-            rootfile = rootfile_parser.Rootfile_parser(filename, shapetype=plottype)
+            rootfile = rootfile_parser.Rootfile_parser(filename)
+            rootfile._hist_hash = "{category}{plottype}/{process}"
+            rootfile._type = plottype
 
             # create plot
             width = 600
