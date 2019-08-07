@@ -281,11 +281,11 @@ function runstages() {
     CATEGORIES="stxs_stage1p1"
     for method in ${methods[@]}; do
         cd $sm_htt_analysis_dir
-        for s in "stxs_stage0"; do # "stxs_stage1p1"; do
+        for s in "stxs_stage0" "stxs_stage1p1"; do
             PROD_NEW_DATACARDS=1 ## "inclusive" "stxs_stage0" can use the same datacards
             STXS_SIGNALS=$s
             if [[ "$s" == "stxs_stage0" ]]; then
-                for f in "inclusive"; do  # "stxs_stage0"; do
+                for f in "inclusive" "stxs_stage0"; do
                     STXS_FIT=$f
                     runana
                 done

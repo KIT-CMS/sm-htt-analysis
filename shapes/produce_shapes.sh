@@ -11,7 +11,7 @@ source utils/setup_python.sh
 source utils/setup_samples.sh $ERA
 source utils/bashFunctionCollection.sh
 
-ARTUS_FRIENDS=$HOME/data/run3/batch-out/${ERA}_${METHOD}/NNScore_workdir/NNScore_collected/
+ARTUS_FRIENDS=$HOME/batch-out/${ERA}_${METHOD}/NNScore_workdir/NNScore_collected/
 ARTUS_FRIENDS_ET=$ARTUS_FRIENDS
 ARTUS_FRIENDS_EM=$ARTUS_FRIENDS
 ARTUS_FRIENDS_MT=$ARTUS_FRIENDS
