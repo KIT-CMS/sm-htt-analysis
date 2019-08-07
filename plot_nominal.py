@@ -214,7 +214,7 @@ def main(args):
                 config["x_label"] = args.x_label
             else:
                 config["x_label"] = "_".join([channel, variable])
-            config["title"] = "_".join(["channel", channel, category])
+            config["title"] = "_".join(["channel", channel])
             config["stacks"] = ["mc"] * len(bkg_processes_names) + signal_names + [
                 "data"
             ] + [x+"Ratio" for x in signal_names] + config["stacks"]
@@ -231,7 +231,6 @@ def main(args):
                 config["colors"] = [bkg_processes_names[0]] + ["#C70039"] + bkg_processes_names[1:] + ["data"
                                                           ] + ["#B7B7B7", " #C70039 ", "#000000"]
 
-                                                          #~ ] + ["#B7B7B7", "#ce661c", "#000000"]
                 config["subplot_legend"] =  [
                                             0.195,
                                             0.77,
