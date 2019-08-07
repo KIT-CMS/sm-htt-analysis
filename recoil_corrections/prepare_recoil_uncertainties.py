@@ -23,8 +23,6 @@ if not os.path.exists(outfoldername):
 fout      = r.TFile.Open("%s/PFMETSys_%s.root"%(outfoldername,era),"recreate")
 foutpuppi = r.TFile.Open("%s/PuppiMETSys_%s.root"%(outfoldername,era),"recreate")
 
-r.gROOT.SetBatch()
-
 hist_names = sorted([k.GetName() for k in f.GetListOfKeys() if "_ss" not in k.GetName() and "output_tree" not in k.GetName() ])
 
 categories = set(sorted([k.strip("#").split("#")[1] for k in hist_names]))
@@ -62,6 +60,8 @@ for hist_name in hist_names:
     means[variable][category] = hist.GetMean()
     
 hists = {}
+canv = r.TCanvas("c","c",1000,1000)
+canv.cd()
 for v in variables:
     if "puppi" in v:
         foutpuppi.cd()
@@ -71,13 +71,21 @@ for v in variables:
     for jetbin in set([c["njets_bin"] for c in category_dict.values()]):
         hists[v][jetbin] = r.TH1D(jetbin,jetbin,len(ptbins)-1,ptbins)
         hists[v][jetbin].SetMinimum(0.0)
-        hists[v][jetbin].SetMaximum(2.0)
+        hists[v][jetbin].SetMaximum(1.2)
     
     for cat in categories:
         hists[v][category_dict[cat]["njets_bin"]].SetBinContent(hists[v][category_dict[cat]["njets_bin"]].FindBin(category_dict[cat]["pt_bin"]), means[v][cat])
 
     for jetbin in set([c["njets_bin"] for c in category_dict.values()]):
         hists[v][jetbin].Write()
+        canv.Clear()
+        hists[v][jetbin].SetLineColor(r.kBlue)
+        hists[v][jetbin].SetLineWidth(3)
+        hists[v][jetbin].GetXaxis().SetTitle("p_{T}^{gen}(Z)")
+        hists[v][jetbin].GetYaxis().SetTitle("<-H_{#parallel}/p_{T}^{gen}(Z)>")
+        hists[v][jetbin].Draw("hist")
+        canv.SaveAs("recoil_measurements_%s/%s_%s.png"%(era,v,jetbin))
+        canv.SaveAs("recoil_measurements_%s/%s_%s.pdf"%(era,v,jetbin))
 
 for f in [foutpuppi, fout]:
     f.cd()
