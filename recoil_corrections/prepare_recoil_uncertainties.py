@@ -10,6 +10,7 @@ r.gROOT.SetBatch()
 r.gStyle.SetOptStat(0)
 styles.ModTDRStyle()
 r.gStyle.SetTitleSize(0.045, 'XYZ')
+r.gStyle.SetPaintTextFormat(".4f")
 
 era = sys.argv[1]
 outfoldername = sys.argv[2]
@@ -102,8 +103,10 @@ for f in [foutpuppi, fout]:
     else:
         if "Puppi" in f.GetName():
             modecopy = mode.replace("puppi","").replace("metParToZ","puppimetParToZ")
+            v = "puppimetParToZ"
         else:
             modecopy = mode.replace("puppi","")
+            v = "metParToZ"
         print modecopy
         if not os.path.exists(modecopy):
             print "ERROR: cannot access specified uncertainty file:",modecopy,".Please provide a corresponding .json file"
@@ -116,3 +119,17 @@ for f in [foutpuppi, fout]:
             for j in range(syst.GetNbinsY()):
                 syst.SetBinContent(i+1,j+1,float(uncertainties[categories[j]][types[i]]))
         syst.Write()
+        canv.Clear()
+        canv.cd()
+        syst_for_plot = syst.Clone()
+        syst_for_plot.GetXaxis().SetBinLabel(1,"response")
+        syst_for_plot.GetXaxis().SetBinLabel(2,"resolution")
+        syst_for_plot.GetYaxis().SetBinLabel(1,"0-jet")
+        syst_for_plot.GetYaxis().SetBinLabel(2,"1-jet")
+        syst_for_plot.GetYaxis().SetBinLabel(3,"#geq 2-jet")
+        syst_for_plot.GetXaxis().SetLabelSize(0.09)
+        syst_for_plot.GetYaxis().SetLabelSize(0.09)
+        syst_for_plot.SetMarkerSize(3.0)
+        syst_for_plot.Draw("col text")
+        canv.SaveAs("recoil_measurements_%s/syst_%s.png"%(era,v))
+        canv.SaveAs("recoil_measurements_%s/syst_%s.pdf"%(era,v))
