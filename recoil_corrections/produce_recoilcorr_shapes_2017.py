@@ -86,7 +86,7 @@ def main(args):
             mm_processes["data"], friend_directory=[], extrapolation_factor=2.0))
 
     # Variables and categories
-    binning = yaml.load(open(args.binning), Loader=yaml.FullLoader)
+    binning = yaml.load(open(args.binning))
     mm_categories = []
 
     variable_bins = {

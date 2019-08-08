@@ -29,7 +29,7 @@ def main(args):
 
     # Build list of arguments
     arguments = []
-    binning = yaml.load(open(args.binning), Loader=yaml.FullLoader)
+    binning = yaml.load(open(args.binning))
     variables = yaml.load(open(args.variables))
 
     # 1D fits

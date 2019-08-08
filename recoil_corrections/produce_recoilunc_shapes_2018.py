@@ -76,7 +76,7 @@ def main(args):
         }
 
     # Variables and categories
-    binning = yaml.load(open(args.binning), Loader=yaml.FullLoader)
+    binning = yaml.load(open(args.binning))
     mm_categories = []
 
     variable_bins = {
