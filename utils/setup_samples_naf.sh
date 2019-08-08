@@ -44,21 +44,24 @@ ARTUS_FRIENDS_FAKE_FACTOR_INCL_2017=$FF_Friends_2017
 
 # Samples Run2018
 [[ ! -z "$ARTUS_OUTPUTS_2018" ]] && ARTUS_OUTPUTS_2018="$basedir_naf/ARTUS_OUTPUTS_2018"
-ARTUS_OUTPUTS_EM_2018=$ARTUS_OUTPUTS_2018
 [[ ! -z "$NNScore_Friends_2018" ]] && NNScore_Friends_2018="$basedir_naf/NNScore_Friends_2018"
 [[ ! -z "$SVFit_Friends_2018" ]] && SVFit_Friends_2018="$basedir_naf/SVFit_Friends_2018"
 [[ ! -z "$MELA_Friends_2018" ]] && MELA_Friends_2018="$basedir_naf/MELA_Friends_2018"
 [[ ! -z "$FF_Friends_2018" ]] && FF_Friends_2018="$basedir_naf/FF_Friends_2018"
-[[ ! -z "$ARTUS_FRIENDS_2018" ]] && ARTUS_FRIENDS_2018="$NNScore_Friends_2018 $SVFit_Friends_2018 $MELA_Friends_2018"
-if [[ ! -z "$ARTUS_FRIENDS_2018" ]]
-then
-    ARTUS_FRIENDS_ET_2018=$ARTUS_FRIENDS_2018
-    ARTUS_FRIENDS_MT_2018=$ARTUS_FRIENDS_2018
-    ARTUS_FRIENDS_TT_2018=$ARTUS_FRIENDS_2018
-    ARTUS_FRIENDS_EM_2018=$ARTUS_FRIENDS_2018
-fi
+[[ ! -z "$NNScore_Friends_ET_2018" ]] && NNScore_Friends_ET_2018="$basedir_naf/NNScore_Friends_ET_2018"
+[[ ! -z "$NNScore_Friends_MT_2018" ]] && NNScore_Friends_MT_2018="$basedir_naf/NNScore_Friends_MT_2018"
+[[ ! -z "$NNScore_Friends_TT_2018" ]] && NNScore_Friends_TT_2018="$basedir_naf/NNScore_Friends_TT_2018"
+[[ ! -z "$NNScore_Friends_EM_2018" ]] && NNScore_Friends_EM_2018="$basedir_naf/NNScore_Friends_EM_2018"
+ARTUS_FRIENDS_2018="$SVFit_Friends_2018 $MELA_Friends_2018 $NNScore_Friends_2018"
+ARTUS_FRIENDS_ET_2018="$SVFit_Friends_2018 $MELA_Friends_2018 $NNScore_Friends_ET_2018"
+ARTUS_FRIENDS_MT_2018="$SVFit_Friends_2018 $MELA_Friends_2018 $NNScore_Friends_MT_2018"
+ARTUS_FRIENDS_TT_2018="$SVFit_Friends_2018 $MELA_Friends_2018 $NNScore_Friends_TT_2018"
+ARTUS_FRIENDS_EM_2018="$SVFit_Friends_2018 $MELA_Friends_2018 $NNScore_Friends_EM_2018"
 [[ ! -z "$ARTUS_FRIENDS_FAKE_FACTOR_2018" ]] && ARTUS_FRIENDS_FAKE_FACTOR_2018="$basedir_naf/ARTUS_FRIENDS_FAKE_FACTOR_2018"
 [[ ! -z "$ARTUS_FRIENDS_FAKE_FACTOR_INCL_2018" ]] && ARTUS_FRIENDS_FAKE_FACTOR_INCL_2018="$basedir_naf/ARTUS_FRIENDS_FAKE_FACTOR_INCL_2018"
+
+
+
 
 
 ############ NO CHANGES AFTER THIS LINE EXPECTED ############

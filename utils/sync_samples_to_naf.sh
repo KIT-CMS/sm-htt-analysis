@@ -4,7 +4,6 @@ set +x
 basedir="/ceph/htautau"
 basedir_naf="/nfs/dust/cms/group/higgs-kit/ekp"
 
-
 flag=0
 while getopts 'r' opt; do
     case $opt in
@@ -21,30 +20,24 @@ if [[ $# -eq 0 ]] ; then
 else
     username=$1
 fi
+
 declare -A samples=(
     ["ARTUS_OUTPUTS_2016"]="/ceph/sbrommer/artus_ntuple/2016_samples/2019_07_19_merged/"
     ["FF_Friends_2016"]="/ceph/sbrommer/artus_ntuple/2016_samples/2019_07_19_FakeFactorFriends/FakeFactors_collected/"
-    ["ARTUS_FRIENDS_2016"]=""
     ["ARTUS_OUTPUTS_2017"]="$basedir/2017/ntuples/"
-    ["NNScore_Friends_2017"]=""
-    ["SVFit_Friends_2017"]=""
-    ["MELA_Friends_2017"]=""
     ["FF_Friends_2017"]="$basedir/2017/ff_friends/"
-    ["ARTUS_OUTPUTS_EM_2017"]=""
-    ["ARTUS_OUTPUTS_2018"]="$basedir/2018/ntuples/"
-    ["ARTUS_FRIENDS_ET_2018"]=""
-    ["ARTUS_FRIENDS_MT_2018"]=""
-    ["ARTUS_FRIENDS_TT_2018"]=""
-    ["ARTUS_FRIENDS_FAKE_FACTOR_2018"]=""
-    ["ARTUS_FRIENDS_FAKE_FACTOR_INCL_2018"]=""
-    ["SVFit_Friends_2018"]=""
-    ["MELA_Friends_2018"]=""
-    ["FF_Friends_2018"]="$basedir/2018/ff_friends/"
     ["NNScore_Friends_2017"]="$basedir/2017/nnscore_friends/"
     ["MELA_Friends_2017"]="$basedir/2017/mela_friends/"
-    ["MELA_Friends_2018"]="$basedir/2018/mela_friends/"
     ["SVFit_Friends_2017"]="$basedir/2017/svfit_friends/"
+    ["ARTUS_OUTPUTS_2018"]="$basedir/2018/ntuples/"
+    ["FF_Friends_2018"]="$basedir/2018/ff_friends/"
+    ["MELA_Friends_2018"]="$basedir/2018/mela_friends/"
     ["SVFit_Friends_2018"]="$basedir/2018/svfit_friends/"
+    ["NNScore_Friends_2018"]=""
+    ["NNScore_Friends_ET_2018"]="/ceph/jbechtel/artus_outputs/2018/friends/nn_scores_naf/et/"
+    ["NNScore_Friends_MT_2018"]="/ceph/jbechtel/artus_outputs/2018/friends/nn_scores_naf/mt/"
+    ["NNScore_Friends_TT_2018"]="/ceph/jbechtel/artus_outputs/2018/friends/nn_scores_naf/tt/"
+    ["NNScore_Friends_EM_2018"]="/ceph/jbechtel/artus_outputs/2018/friends/nn_scores_naf/em/"
 )
 
 

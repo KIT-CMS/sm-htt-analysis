@@ -41,15 +41,19 @@ ARTUS_OUTPUTS_EM_2017=""
 
 # Samples Run2018
 ARTUS_OUTPUTS_2018="$basedir/2018/ntuples/"
-NNScore_Friends_2018=blank 
+NNScore_Friends_2018=""
+NNScore_Friends_ET_2018="/ceph/jbechtel/artus_outputs/2018/friends/nn_scores_naf/et/"
+NNScore_Friends_MT_2018="/ceph/jbechtel/artus_outputs/2018/friends/nn_scores_naf/mt/"
+NNScore_Friends_TT_2018="/ceph/jbechtel/artus_outputs/2018/friends/nn_scores_naf/tt/"
+NNScore_Friends_EM_2018="/ceph/jbechtel/artus_outputs/2018/friends/nn_scores_naf/em/"
 SVFit_Friends_2018="$basedir/2018/svfit_friends/"
 MELA_Friends_2018="$basedir/2018/mela_friends/"
 FF_Friends_2018="$basedir/2018/ff_friends/"
-ARTUS_FRIENDS_2018="$SVFit_Friends_2018 $MELA_Friends_2018 $NNScore_Friends_2018" 
-ARTUS_FRIENDS_ET_2018="$SVFit_Friends_2018 $MELA_Friends_2018 /ceph/jbechtel/artus_outputs/2018/friends/nn_scores_naf/et/"
-ARTUS_FRIENDS_MT_2018="$SVFit_Friends_2018 $MELA_Friends_2018 /ceph/jbechtel/artus_outputs/2018/friends/nn_scores_naf/mt/"
-ARTUS_FRIENDS_TT_2018="$SVFit_Friends_2018 $MELA_Friends_2018 /ceph/jbechtel/artus_outputs/2018/friends/nn_scores_naf/tt/"
-ARTUS_FRIENDS_EM_2018="$SVFit_Friends_2018 $MELA_Friends_2018 /ceph/jbechtel/artus_outputs/2018/friends/nn_scores_naf/em/"
+ARTUS_FRIENDS_2018="$SVFit_Friends_2018 $MELA_Friends_2018 $NNScore_Friends_2018"
+ARTUS_FRIENDS_ET_2018="$SVFit_Friends_2018 $MELA_Friends_2018 $NNScore_Friends_ET_2018"
+ARTUS_FRIENDS_MT_2018="$SVFit_Friends_2018 $MELA_Friends_2018 $NNScore_Friends_MT_2018"
+ARTUS_FRIENDS_TT_2018="$SVFit_Friends_2018 $MELA_Friends_2018 $NNScore_Friends_TT_2018"
+ARTUS_FRIENDS_EM_2018="$SVFit_Friends_2018 $MELA_Friends_2018 $NNScore_Friends_EM_2018"
 ARTUS_FRIENDS_FAKE_FACTOR_2018=$FF_Friends_2018
 ARTUS_FRIENDS_FAKE_FACTOR_INCL_2018=$FF_Friends_2018
 
