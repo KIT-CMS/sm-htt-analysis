@@ -35,6 +35,8 @@ def parse_arguments():
     parser.add_argument("--channel", type=str, required=True, help="Channel")
     parser.add_argument(
         "--analysis", type=str, default="smhtt", help="Analysis")
+    parser.add_argument("--emb", action="store_true", help="Embedded prefix")
+    parser.add_argument("--ff", action="store_true", help="Use fake-factors")
     parser.add_argument(
         "--shapes",
         type=str,
@@ -53,6 +55,17 @@ def parse_arguments():
         default=1,
         help="Scale the signal yield by this factor")
 
+    parser.add_argument("--filename-prefix", type=str, default="", help="filename prefix")
+    parser.add_argument("--www", action="store_true", help="webplotting")
+    parser.add_argument("--www-dir", type=str, default=None,
+        help='Directory structure where the plots will be uploaded. {date} expressions will be replaced by date.')
+    parser.add_argument("--www-no-overwrite", action='store_true', default=False, help="Don't overwrite remote file. [Default: %(default)s]")
+    parser.add_argument("--no-overwrite", "--keep-both", "--keep", "-k", action='store_true', default=False, help="Don't overwrite output file. [Default: %(default)s]")
+    parser.add_argument("--log-level", default="debug", help="log level. [Default: %(default)s]")
+    parser.add_argument("--redo-cache", action="store_true",
+                        help="Do not use inputs from cached trees, but overwrite them. [Default: False for absolute paths, True for relative paths]")
+    parser.add_argument("--no-signal", action="store_true", help="Drop the signals")
+
     return parser.parse_args()
 
 
@@ -70,7 +83,7 @@ def setup_logging(output_file, level=logging.DEBUG):
 
 
 config_template = {
-    "colors": ["#000000", "#000000"],
+    "colors": ["#B7B7B7", "#000000"],
     "filename": "",
     "files": [None],
     "labels": ["", ""],
@@ -86,10 +99,12 @@ config_template = {
     "year": "2016",
     "analysis_modules": ["ScaleHistograms", "Ratio"],
     "ratio_result_nicks": ["ratio_Bkg", "ratio_Data"],
-    "y_subplot_lims": [0.0, 2.0],
+    "y_subplot_lims": [0.62, 1.5],
+    "subplot_lines": [0.8, 1.0, 1.2],
+    # "y_subplot_lims": [0.0, 2.0],
+    # "subplot_lines": [0.5, 1.0, 1.5]
     "y_rel_lims": [0.9, 1.3],
     "y_subplot_label": "#scale[0.8]{Ratio to Bkg.}",
-    "subplot_lines": [0.5, 1.0, 1.5]
 }
 
 
@@ -102,6 +117,28 @@ def main(args):
                               "qqh125"]  # enforced by HarryPlotter
     signal_processes = ["HTT", "qqH", "ggH"]  # name in ROOT file
 
+    if args.emb and args.ff:
+        bkg_processes_names = [
+         "emb", "zll", "ttl", "vvl", "fakes"
+        ]
+        bkg_processes = ["EMB", "ZL", "TTL", "VVL", "jetFakes"]
+    elif args.emb:
+        bkg_processes_names = ["emb", "zll","zj", "ttl", "ttj","vvl", "vvj", "w", "qcd"]
+        bkg_processes = ["EMB", "ZL", "ZJ","TTL", "TTJ","VVL", "VVJ", "W", "QCD"]
+    elif args.ff:
+        bkg_processes_names = [
+            "ztt", "zll", "ttt", "ttl", "vvt", "vvl", "fakes"
+        ]  # enforced by HarryPlotter
+        bkg_processes = ["ZTT", "ZL", "TTT", "TTL", "VVT", "VVL", "jetFakes"]
+    else:
+        bkg_processes_names = [
+            "ztt", "zll","zj","ttl", "ttt","ttj","vvl","vvt","vvj","w","qcd"]
+        bkg_processes = ["ZTT", "ZL", "ZJ","TTL","TTT", "TTJ", "VVL","VVT","VVJ","W","QCD"]
+
+    if args.no_signal:
+        signal_processes_names = []
+        signal_processes = []
+
     scale_signal = args.scale_signal
     config_template["scales"] = scale_signal
     config_template["scale_nicks"] = signal_processes_names
@@ -113,10 +150,35 @@ def main(args):
         label + postfix for label in signal_processes_names
     ]
 
+    if args.www:
+        config_template['www'] = ''
+    if args.www_dir:
+        config_template['www_dir'] = args.www_dir
+    if args.www_no_overwrite:
+        config_template['www_no_overwrite'] = True
+        config_template['no_overwrite'] = True
+    if args.no_overwrite:
+        config_template['no_overwrite'] = True
+    if args.redo_cache:
+        config_template['redo_cache'] = True
+
+    if args.filename_prefix != '':
+        args.filename_prefix = args.filename_prefix if args.filename_prefix[0] == '_' else '_' + args.filename_prefix
     categories = args.categories
     channel = args.channel
     analysis = args.analysis
     era = args.era
+
+    if "2016" in era:
+        config_template['lumi'] = [35.9]
+        config_template['year'] = '2016'
+    elif "2017" in era:
+        config_template['lumi'] = [41.5]
+        config_template['year'] = '2017'
+    elif "2018" in era:
+        config_template['lumi'] = [59.7]
+        config_template['year'] = '2018'
+
     mass = args.mass
     variables = args.variables
 
@@ -153,7 +215,7 @@ def main(args):
                 ]) + "#"
             ]
             config["filename"] = "_".join(
-                [channel, category, analysis, era, variable, mass])
+                [channel, category, analysis, era, variable, mass]) + args.filename_prefix
             if not args.x_label == None:
                 config["x_label"] = args.x_label
             else:
@@ -171,6 +233,7 @@ def main(args):
             ]
             configs.append(config)
 
+    config["colors"] = [x if (x != 'ttl') else "kit_blau_3" for x in config["colors"]]
     for key in configs[0]:
         print(key, configs[0][key])
     higgsplot.HiggsPlotter(
@@ -181,5 +244,9 @@ def main(args):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    setup_logging("plot_nominal.log", logging.DEBUG)
+    if args.log_level == 'debug':
+        ll = logging.DEBUG
+    else:
+        ll = logging.INFO
+    setup_logging("plot_control.log", ll)
     main(args)
