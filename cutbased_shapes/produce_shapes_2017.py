@@ -514,8 +514,8 @@ def main(args):
 
     # jetfakes
     for ch in args.channels:
+        fake_factor_variations = []
         if ch in ["mt", "et"]:
-            fake_factor_variations = []
             for systematic_shift in [
                     "ff_qcd{ch}_syst_Run2017{shift}",
                     "ff_qcd_dm0_njet0{ch}_stat_Run2017{shift}",
