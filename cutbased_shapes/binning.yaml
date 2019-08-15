@@ -1,0 +1,76 @@
+# Define STXS stage 1.1 categories for sub-categorization of 'signal_region' and 'nobtag' categories
+stxs_stage1p1:
+    boosted: "(pt_tt_puppi>=200)&&(njets<=1)"
+    0jet: "(pt_tt_puppi<200)&&(njets==0)"
+    1jetlowpt: "(pt_tt_puppi<120)&&(njets==1)"
+    1jethighpt: "(pt_tt_puppi<200)&&(pt_tt_puppi>=120)&&(njets==1)"
+    2jetlowmjj: "(njets>=2)&&(mjj<350)"
+    2jethighmjjlowpt: "(pt_tt_puppi<200)&&(njets>=2)&&(mjj>=350)"
+    2jethighmjjhighpt: "(pt_tt_puppi>=200)&&(njets>=2)&&(mjj>=350)"
+
+# Define main cut-based categories
+cutbased:
+    mt:
+        wjets_control: "(1>0)&&(mt_1_puppi>=70)"
+        signal_region: "(1>0)&&(mt_1_puppi<70)"
+        nobtag: "(mt_1_puppi<70)&&(nbtag==0)"
+        btag: "(mt_1_puppi<70)&&(nbtag>0)"
+        nobtag_tightmt: "(mt_1_puppi<40)&&(nbtag==0)"
+        btag_tightmt: "(mt_1_puppi<40)&&(nbtag>0)"
+        nobtag_loosemt: "(mt_1_puppi>=40)&&(mt_1_puppi<70)&&(nbtag==0)"
+        btag_loosemt: "(mt_1_puppi>=40)&&(mt_1_puppi<70)&&(nbtag>0)"
+    et:
+        wjets_control: "(1>0)&&(mt_1_puppi>=70)"
+        signal_region: "(1>0)&&(mt_1_puppi<70)"
+        nobtag: "(mt_1_puppi<70)&&(nbtag==0)"
+        btag: "(mt_1_puppi<70)&&(nbtag>0)"
+        nobtag_tightmt: "(mt_1_puppi<40)&&(nbtag==0)"
+        btag_tightmt: "(mt_1_puppi<40)&&(nbtag>0)"
+        nobtag_loosemt: "(mt_1_puppi>=40)&&(mt_1_puppi<70)&&(nbtag==0)"
+        btag_loosemt: "(mt_1_puppi>=40)&&(mt_1_puppi<70)&&(nbtag>0)"
+    tt:
+        signal_region: "(1>0)&&(1>0)"
+        nobtag: "(1>0)&&(nbtag==0)"
+        btag: "(1>0)&&(nbtag>0)"
+    em:
+        inclusive: "(1>0)&&(1>0)"
+        ttbar_control: "(1>0)&&(pZetaPuppiMissVis<-35)"
+        signal_region: "(1>0)&&(pZetaPuppiMissVis>=-35)"
+        nobtag: "(nbtag==0)&&(pZetaPuppiMissVis>=-35)"
+        btag: "(nbtag>0)&&(pZetaPuppiMissVis>=-35)"
+        nobtag_highdzeta: "(nbtag==0)&&(pZetaPuppiMissVis>=30)"
+        btag_highdzeta: "(nbtag>0)&&(pZetaPuppiMissVis>=30)"
+        nobtag_mediumdzeta: "(nbtag==0)&&(pZetaPuppiMissVis<30)&&(pZetaPuppiMissVis>=-10)"
+        btag_mediumdzeta: "(nbtag>0)&&(pZetaPuppiMissVis<30)&&(pZetaPuppiMissVis>=-10)"
+        nobtag_lowdzeta: "(nbtag==0)&&(pZetaPuppiMissVis>=-35)&&(pZetaPuppiMissVis<-10)"
+        btag_lowdzeta: "(nbtag>0)&&(pZetaPuppiMissVis>=-35)&&(pZetaPuppiMissVis<-10)"
+
+variables:
+  mt:
+    m_sv_puppi:
+      bins: [0,7.5,15,22.5,30,37.5,45,52.5,60,67.5,75,82.5,90,97.5,105,112.5,120,127.5,135,142.5,150,157.5,165,172.5,180,187.5,195,202.5,210,217.5,225]
+      expression: "m_sv_puppi"
+    mt_tot_puppi:
+      bins: [0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,4000]
+      expression: "mt_tot_puppi"
+  et:
+    m_sv_puppi:
+      bins: [0,7.5,15,22.5,30,37.5,45,52.5,60,67.5,75,82.5,90,97.5,105,112.5,120,127.5,135,142.5,150,157.5,165,172.5,180,187.5,195,202.5,210,217.5,225]
+      expression: "m_sv_puppi"
+    mt_tot_puppi:
+      bins: [0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,4000]
+      expression: "mt_tot_puppi"
+  tt:
+    m_sv_puppi:
+      bins: [0,7.5,15,22.5,30,37.5,45,52.5,60,67.5,75,82.5,90,97.5,105,112.5,120,127.5,135,142.5,150,157.5,165,172.5,180,187.5,195,202.5,210,217.5,225]
+      expression: "m_sv_puppi"
+    mt_tot_puppi:
+      bins: [0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,4000]
+      expression: "mt_tot_puppi"
+  em:
+    m_sv_puppi:
+      bins: [0,7.5,15,22.5,30,37.5,45,52.5,60,67.5,75,82.5,90,97.5,105,112.5,120,127.5,135,142.5,150,157.5,165,172.5,180,187.5,195,202.5,210,217.5,225]
+      expression: "m_sv_puppi"
+    mt_tot_puppi:
+      bins: [0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,4000]
+      expression: "mt_tot_puppi"
