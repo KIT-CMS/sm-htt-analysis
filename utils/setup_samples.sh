@@ -1,30 +1,26 @@
 #!/bin/bash
 
 ERA=$1
-
-basedir="/ceph/htautau"
 # Samples Run2016
-
-ARTUS_OUTPUTS_2016=/ceph/sbrommer/artus_ntuple/2016_samples/2019_07_19_merged/
-ARTUS_FRIENDS_ET_2016=$ARTUS_OUTPUTS_2016
-ARTUS_FRIENDS_MT_2016=$ARTUS_OUTPUTS_2016
-ARTUS_FRIENDS_TT_2016=$ARTUS_OUTPUTS_2016
-ARTUS_FRIENDS_EM_2016=$ARTUS_OUTPUTS_2016
-#NNScore_Friends_2016="$basedir/2016/nnscore_friends/"
+basedir="/ceph/sbrommer/artus_ntuple/2016_samples"
+ARTUS_OUTPUTS_2016="$basedir/2019_07_19_merged/"
+NNScore_Friends_2016="$basedir/2019_07_19_merged_NNScore_friends/NNScore_collected/"
 #SVFit_Friends_2016="$basedir/2016/svfit_friends/"
-#MELA_Friends_2016="$basedir/2016/mela_friends/"
-FF_Friends_2016="/ceph/sbrommer/artus_ntuple/2016_samples/2019_07_19_FakeFactorFriends/FakeFactors_collected/"
-#ARTUS_FRIENDS_2016=" " # TODO update once friends are produced
-#ARTUS_FRIENDS_ET_2016=$ARTUS_FRIENDS_2016
-#ARTUS_FRIENDS_MT_2016=$ARTUS_FRIENDS_2016
-#ARTUS_FRIENDS_TT_2016=$ARTUS_FRIENDS_2016
-#ARTUS_FRIENDS_EM_2016=$ARTUS_FRIENDS_2016
+MELA_Friends_2016="$basedir/2019_07_19_merged_MELA_friends/MELA_collected/"
+FF_Friends_2016="$basedir/2019_07_19_merged_FakeFactor_friends/FakeFactors_collected/"
+
+ARTUS_FRIENDS_2016="$NNScore_Friends_2016 $MELA_Friends_2016" # TODO update once friends are produced
+ARTUS_FRIENDS_ET_2016=$ARTUS_FRIENDS_2016
+ARTUS_FRIENDS_MT_2016=$ARTUS_FRIENDS_2016
+ARTUS_FRIENDS_TT_2016=$ARTUS_FRIENDS_2016
+ARTUS_FRIENDS_EM_2016=$ARTUS_FRIENDS_2016
 
 ARTUS_FRIENDS_FAKE_FACTOR_2016=$FF_Friends_2016
 ARTUS_FRIENDS_FAKE_FACTOR_INCL_2016=$ARTUS_FRIENDS_FAKE_FACTOR_2016
 
 
 # Samples Run2017
+basedir="/ceph/htautau"
 ARTUS_OUTPUTS_2017="$basedir/2017/ntuples/"
 NNScore_Friends_2017="$basedir/2017/nnscore_friends/"
 SVFit_Friends_2017="$basedir/2017/svfit_friends/"
