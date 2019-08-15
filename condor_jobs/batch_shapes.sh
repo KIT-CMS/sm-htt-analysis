@@ -21,7 +21,6 @@ python shapes/produce_shapes_$ERA.py \
     --channels $CHANNELS \
     --era $ERA \
     --tag ${ERA}_${CHANNELS} \
-    --skip-systematic-variations true \
     --num-threads 12
 
 # Normalize fake-factor shapes to nominal
