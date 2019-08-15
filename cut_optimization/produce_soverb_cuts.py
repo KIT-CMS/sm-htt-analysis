@@ -30,7 +30,7 @@ import logging
 logger = logging.getLogger("")
 
 def construct_binning(binning_configuration, variablename):
-    binning_structure = binning_configuration["variables"][variablename]["bins"]
+    binning_structure = binning_configuration[variablename]["bins"]
     return sorted(np.concatenate([np.arange(start, end, step) for start, end, step in binning_structure] + [np.array([end])]))
 
 def setup_logging(output_file, level=logging.DEBUG):
