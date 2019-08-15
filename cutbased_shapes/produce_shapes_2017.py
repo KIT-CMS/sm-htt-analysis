@@ -20,10 +20,18 @@ from itertools import product
 import argparse
 import yaml
 import copy
+import numpy as np
 
 import logging
 logger = logging.getLogger()
 
+
+def construct_variable(binning_configuration, variablename):
+    expression = binning_configuration["variables"][variablename]["expression"]
+    binning_structure = binning_configuration["variables"][variablename]["bins"]
+    end = 0.0
+    bins = np.concatenate([np.arange(start, end, step) for start, end, step in binning_structure] + [np.array([end])])
+    return Variable(variablename, sorted(bins), expression)
 
 def setup_logging(output_file, level=logging.DEBUG):
     logger.setLevel(level)
@@ -262,10 +270,7 @@ def main(args):
         "em" : [],
     }
     for ch in args.channels:
-        discriminator = Variable(
-                args.discriminator_variable,
-                VariableBinning(binning["variables"][ch][args.discriminator_variable]["bins"]),
-                expression=binning["variables"][ch][args.discriminator_variable]["expression"])
+        discriminator = construct_variable(binning, args.discriminator_variable)
         for category in binning["cutbased"][ch]:
             cuts = Cuts(Cut(binning["cutbased"][ch][category], category))
             categories[ch].append(
