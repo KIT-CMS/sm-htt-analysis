@@ -24,10 +24,14 @@ from itertools import product
 
 import argparse
 import yaml
+import numpy as np
 
 import logging
 logger = logging.getLogger("")
 
+def construct_variable(binning_configuration, variablename):
+    binning_structure = binning_configuration["variables"][variablename]["bins"]
+    return sorted(np.concatenate([np.arange(start, end, step) for start, end, step in binning_structure] + [np.array([end])]))
 
 def setup_logging(output_file, level=logging.DEBUG):
     logger.setLevel(level)
@@ -224,15 +228,15 @@ def main(args):
     binning = yaml.load(open(args.binning))
 
     variable_names = [
-        "ME_D",
+        "ME_vbf_vs_Z", "DiTauDeltaR",
         "dijetpt", "jdeta", "mjj",# "jpt_1", "jpt_2", "njets",
 #        "bpt_1", "bpt_2", "nbtag",
 #        "DiTauDeltaR", "ptvis", "pt_tt", "pt_tt_puppi", "pt_ttjj", "pt_ttjj_puppi", "eta_sv", "eta_fastmtt",
         "pt_tt", "pt_tt_puppi", "pt_ttjj", "pt_ttjj_puppi",
 #        "mt_1", "mt_2", "mTdileptonMET", "pZetaMissVis",
-        "mt_1", "pZetaMissVis",
+        "mt_1", "pZetaMissVis", "mTdileptonMET",
 #        "mt_1_puppi", "mt_2_puppi", "mTdileptonMET_puppi", "pZetaPuppiMissVis",
-        "mt_1_puppi", "pZetaPuppiMissVis",
+        "mt_1_puppi", "pZetaPuppiMissVis", "mTdileptonMET_puppi",
 #        "m_sv", "m_fastmtt", "m_vis",
     ]
     categories = {
@@ -243,7 +247,7 @@ def main(args):
     }
     for variable in variable_names:
         for ch in args.channels:
-            cut_values = binning["control"][ch][variable]["bins"]
+            cut_values = construct_binning(binning, variable)
             for cut in cut_values:
                 categories[ch].append(Category("%s-less-%s"%(variable, str(cut).replace(".","p")),channels[ch], Cuts(Cut("%s < %s"%(variable, str(cut)))), variable=None))
                 categories[ch].append(Category("%s-greater-%s"%(variable, str(cut).replace(".","p")),channels[ch], Cuts(Cut("%s > %s"%(variable, str(cut)))), variable=None))

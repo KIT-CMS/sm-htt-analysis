@@ -4,7 +4,7 @@ renice -n 19 -u `whoami`
 
 ERA=$1
 
-BINNING=shapes/binning.yaml
+BINNING=cut_optimization/binning.yaml
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
