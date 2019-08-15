@@ -168,97 +168,46 @@ def main(args):
 
     }
 
-    mt_processes = {
-        "data"  : Process("data_obs", DataEstimation      (era, directory, channel_dict["mt"], friend_directory=friend_directories["mt"])),
-        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation  (era, directory, channel_dict["mt"], friend_directory=friend_directories["mt"])),
-        "ZL"    : Process("ZL",       ZLEstimation        (era, directory, channel_dict["mt"], friend_directory=friend_directories["mt"])),
-        "TTL"   : Process("TTL",      TTLEstimation       (era, directory, channel_dict["mt"], friend_directory=friend_directories["mt"])),
-        "VVL"   : Process("VVL",      VVLEstimation       (era, directory, channel_dict["mt"], friend_directory=friend_directories["mt"])),
-
-        "VH125"    : Process("VH125",    VHEstimation        (era, directory, channel_dict["mt"], friend_directory=friend_directories["mt"])),
-        "WH125"    : Process("WH125",    WHEstimation        (era, directory, channel_dict["mt"], friend_directory=friend_directories["mt"])),
-        "ZH125"    : Process("ZH125",    ZHEstimation        (era, directory, channel_dict["mt"], friend_directory=friend_directories["mt"])),
-        "ttH125"   : Process("ttH125",   ttHEstimation       (era, directory, channel_dict["mt"], friend_directory=friend_directories["mt"])),
-
-        "ggH125" : Process("ggH125", ggHEstimation       ("ggH125", era, directory, channel_dict["mt"], friend_directory=friend_directories["mt"])),
-        "qqH125" : Process("qqH125", qqHEstimation       ("qqH125", era, directory, channel_dict["mt"], friend_directory=friend_directories["mt"])),
-
-        "ggHWW125" : Process("ggHWW125", ggHWWEstimation       (era, directory, channel_dict["mt"], friend_directory=friend_directories["mt"])),
-        "qqHWW125" : Process("qqHWW125", qqHWWEstimation       (era, directory, channel_dict["mt"], friend_directory=friend_directories["mt"])),
-        }
-    mt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, channel_dict["mt"], [mt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], mt_processes["data"], friend_directory=friend_directories["mt"]+[ff_friend_directory]))
-
-    et = ETMSSM2017()
-    et_processes = {
-        "data"  : Process("data_obs", DataEstimation      (era, directory, channel_dict["et"], friend_directory=friend_directories["et"])),
-        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation  (era, directory, channel_dict["et"], friend_directory=friend_directories["et"])),
-        "ZL"    : Process("ZL",       ZLEstimation        (era, directory, channel_dict["et"], friend_directory=friend_directories["et"])),
-        "TTL"   : Process("TTL",      TTLEstimation       (era, directory, channel_dict["et"], friend_directory=friend_directories["et"])),
-        "VVL"   : Process("VVL",      VVLEstimation       (era, directory, channel_dict["et"], friend_directory=friend_directories["et"])),
-
-        "VH125"    : Process("VH125",    VHEstimation        (era, directory, channel_dict["et"], friend_directory=friend_directories["et"])),
-        "WH125"    : Process("WH125",    WHEstimation        (era, directory, channel_dict["et"], friend_directory=friend_directories["et"])),
-        "ZH125"    : Process("ZH125",    ZHEstimation        (era, directory, channel_dict["et"], friend_directory=friend_directories["et"])),
-        "ttH125"   : Process("ttH125",   ttHEstimation       (era, directory, channel_dict["et"], friend_directory=friend_directories["et"])),
-
-        "ggH125" : Process("ggH125", ggHEstimation       ("ggH125", era, directory, channel_dict["et"], friend_directory=friend_directories["et"])),
-        "qqH125" : Process("qqH125", qqHEstimation       ("qqH125", era, directory, channel_dict["et"], friend_directory=friend_directories["et"])),
-
-        "ggHWW125" : Process("ggHWW125", ggHWWEstimation       (era, directory, channel_dict["et"], friend_directory=friend_directories["et"])),
-        "qqHWW125" : Process("qqHWW125", qqHWWEstimation       (era, directory, channel_dict["et"], friend_directory=friend_directories["et"])),
-        }
-    et_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, channel_dict["et"], [et_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], et_processes["data"], friend_directory=friend_directories["et"]+[ff_friend_directory]))
-
-    tt = TTMSSM2017()
-    tt_processes = {
-        "data"  : Process("data_obs", DataEstimation      (era, directory, channel_dict["tt"], friend_directory=friend_directories["tt"])),
-        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation  (era, directory, channel_dict["tt"], friend_directory=friend_directories["tt"])),
-        "ZL"    : Process("ZL",       ZLEstimation        (era, directory, channel_dict["tt"], friend_directory=friend_directories["tt"])),
-        "TTL"   : Process("TTL",      TTLEstimation       (era, directory, channel_dict["tt"], friend_directory=friend_directories["tt"])),
-        "VVL"   : Process("VVL",      VVLEstimation       (era, directory, channel_dict["tt"], friend_directory=friend_directories["tt"])),
-
-        "VH125"    : Process("VH125",    VHEstimation        (era, directory, channel_dict["tt"], friend_directory=friend_directories["tt"])),
-        "WH125"    : Process("WH125",    WHEstimation        (era, directory, channel_dict["tt"], friend_directory=friend_directories["tt"])),
-        "ZH125"    : Process("ZH125",    ZHEstimation        (era, directory, channel_dict["tt"], friend_directory=friend_directories["tt"])),
-        "ttH125"   : Process("ttH125",   ttHEstimation       (era, directory, channel_dict["tt"], friend_directory=friend_directories["tt"])),
-
-        "ggH125" : Process("ggH125", ggHEstimation       ("ggH125", era, directory, channel_dict["tt"], friend_directory=friend_directories["tt"])),
-        "qqH125" : Process("qqH125", qqHEstimation       ("qqH125", era, directory, channel_dict["tt"], friend_directory=friend_directories["tt"])),
-
-        "ggHWW125" : Process("ggHWW125", ggHWWEstimation       (era, directory, channel_dict["tt"], friend_directory=friend_directories["tt"])),
-        "qqHWW125" : Process("qqHWW125", qqHWWEstimation       (era, directory, channel_dict["tt"], friend_directory=friend_directories["tt"])),
-        }
-    tt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationTT(era, directory, channel_dict["tt"], [tt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], tt_processes["data"], friend_directory=friend_directories["tt"]+[ff_friend_directory]))
-    
-    em = EMMSSM2017()
-    em_processes = {
-        "data"  : Process("data_obs", DataEstimation      (era, directory, channel_dict["em"], friend_directory=friend_directories["em"])),
-        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation  (era, directory, channel_dict["em"], friend_directory=friend_directories["em"])),
-        "ZL"    : Process("ZL",       ZLEstimation        (era, directory, channel_dict["em"], friend_directory=friend_directories["em"])),
-        "TTL"   : Process("TTL",      TTLEstimation       (era, directory, channel_dict["em"], friend_directory=friend_directories["em"])),
-        "VVL"   : Process("VVL",      VVLEstimation       (era, directory, channel_dict["em"], friend_directory=friend_directories["em"])),
-        "W"     : Process("W",        WEstimation         (era, directory, channel_dict["em"], friend_directory=friend_directories["em"])),
-
-        "VH125"    : Process("VH125",    VHEstimation        (era, directory, channel_dict["em"], friend_directory=friend_directories["em"])),
-        "WH125"    : Process("WH125",    WHEstimation        (era, directory, channel_dict["em"], friend_directory=friend_directories["em"])),
-        "ZH125"    : Process("ZH125",    ZHEstimation        (era, directory, channel_dict["em"], friend_directory=friend_directories["em"])),
-        "ttH125"   : Process("ttH125",   ttHEstimation       (era, directory, channel_dict["em"], friend_directory=friend_directories["em"])),
-
-        "ggH125" : Process("ggH125", ggHEstimation       ("ggH125", era, directory, channel_dict["em"], friend_directory=friend_directories["em"])),
-        "qqH125" : Process("qqH125", qqHEstimation       ("qqH125", era, directory, channel_dict["em"], friend_directory=friend_directories["em"])),
-
-        "ggHWW125" : Process("ggHWW125", ggHWWEstimation       (era, directory, channel_dict["em"], friend_directory=friend_directories["em"])),
-        "qqHWW125" : Process("qqHWW125", qqHWWEstimation       (era, directory, channel_dict["em"], friend_directory=friend_directories["em"])),
-        }
-    em_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, channel_dict["em"], [em_processes[process] for process in ["EMB", "ZL", "W", "VVL", "TTL"]], em_processes["data"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
+    susyggH_contributions = ["A_i", "A_t", "A_b", "H_i", "H_t", "H_b", "h_i", "h_t", "h_b"]
+    susyggH_masses = [100, 110, 120, 130, 140, 180, 200, 250, 300, 350, 400, 450, 600, 700, 800, 900, 1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200]
+    susybbH_masses = [90, 110, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1800, 2000, 2300, 2600, 3200]
 
     processes = {
-        "mt" : mt_processes,
-        "et" : et_processes,
-        "tt" : tt_processes,
-        "em" : em_processes,
+        "mt" : {},
+        "et" : {},
+        "tt" : {},
+        "em" : {},
     }
-    
+
+    for ch in arg.channels:
+
+        # common processes
+        processes[ch]["data"] = Process("data_obs", DataEstimation         (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
+        processes[ch]["EMB"]  = Process("EMB",      ZTTEmbeddedEstimation  (era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
+        processes[ch]["ZL"]   = Process("ZL",       ZLEstimation           (era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
+        processes[ch]["TTL"]  = Process("TTL",      TTLEstimation          (era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
+        processes[ch]["VVL"]  = Process("VVL",      VVLEstimation          (era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
+
+        processes[ch]["VH125"]   = Process("VH125",    VHEstimation        (era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
+        processes[ch]["WH125"]   = Process("WH125",    WHEstimation        (era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
+        processes[ch]["ZH125"]   = Process("ZH125",    ZHEstimation        (era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
+        processes[ch]["ttH125"]  = Process("ttH125",   ttHEstimation       (era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
+
+        processes[ch]["ggH125"] = Process("ggH125", ggHEstimation       ("ggH125", era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
+        processes[ch]["qqH125"] = Process("qqH125", qqHEstimation       ("qqH125", era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
+
+        processes[ch]["ggHWW125"] = Process("ggHWW125", ggHWWEstimation       (era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
+        processes[ch]["qqHWW125"] = Process("qqHWW125", qqHWWEstimation       (era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
+
+        # channel-specific processes
+        if ch in ["mt", "et"]
+            processes[ch]["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, channel_dict[ch], [processes[ch][process] for process in ["EMB", "ZL", "TTL", "VVL"]], processes[ch]["data"], friend_directory=friend_directories[ch]+[ff_friend_directory]))
+        elif ch == "tt":
+            processes[ch]["FAKES"] = Process("jetFakes", NewFakeEstimationTT(era, directory, channel_dict[ch], [processes[ch][process] for process in ["EMB", "ZL", "TTL", "VVL"]], processes[ch]["data"], friend_directory=friend_directories[ch]+[ff_friend_directory]))
+        elif ch == "em":
+            processes[ch]["W"]   = Process("W",   WEstimation(era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
+            processes[ch]["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, channel_dict[ch], [processes[ch][process] for process in ["EMB", "ZL", "W", "VVL", "TTL"]], processes[ch]["data"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
+
     # Variables and categories
     binning = yaml.load(open(args.binning), Loader=yaml.FullLoader)
 
