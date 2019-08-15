@@ -39,7 +39,7 @@ def main(args):
 
     # Define era
     if "2016" in args.era:
-        from shape_producer.estimation_methods_2016 import DataEstimation, ggHEstimation, qqHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimation, TTTEstimation, TTJEstimation, ZTTEmbeddedEstimation, TTLEstimation, EWKZEstimation, VVLEstimation, VVJEstimation, VVEstimation, VVTEstimation, VHEstimation,  EWKWpEstimation, EWKWmEstimation, ttHEstimation
+        from shape_producer.estimation_methods_2016 import DataEstimation, ggHEstimation, qqHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimation, TTTEstimation, TTJEstimation, ZTTEmbeddedEstimation, TTLEstimation, EWKZEstimation, VVLEstimation, VVJEstimation, VVEstimation, VVTEstimation, VHEstimation,  EWKWpEstimation, EWKWmEstimation, ttHEstimation, ggHWWEstimation, qqHWWEstimation
         #QCDEstimation_SStoOS_MTETEM, QCDEstimationTT, HTTEstimation,
 
         from shape_producer.era import Run2016
@@ -84,7 +84,9 @@ def main(args):
                 EWKZEstimation(era, args.directory, channel),
                 EWKWpEstimation(era, args.directory, channel),
                 EWKWmEstimation(era, args.directory, channel),
-                DataEstimation(era, args.directory, channel)
+                DataEstimation(era, args.directory, channel),
+                ggHWWEstimation(era, args.directory, channel),
+                qqHWWEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method
             logger.debug("Get files for estimation method %s.",
@@ -217,7 +219,9 @@ def main(args):
                 EWKZEstimation(era, args.directory, channel),
                 EWKWpEstimation(era, args.directory, channel),
                 EWKWmEstimation(era, args.directory, channel),
-                DataEstimation(era, args.directory, channel)
+                DataEstimation(era, args.directory, channel),
+                ggHWWEstimation(era, args.directory, channel),
+                qqHWWEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method
             logger.debug("Get files for estimation method %s.",
@@ -349,7 +353,9 @@ def main(args):
                 EWKZEstimation(era, args.directory, channel),
                 EWKWpEstimation(era, args.directory, channel),
                 EWKWmEstimation(era, args.directory, channel),
-                DataEstimation(era, args.directory, channel)
+                DataEstimation(era, args.directory, channel),
+                ggHWWEstimation(era, args.directory, channel),
+                qqHWWEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method
             logger.debug("Get files for estimation method %s.",
@@ -480,7 +486,9 @@ def main(args):
                 EWKZEstimation(era, args.directory, channel),
                 EWKWpEstimation(era, args.directory, channel),
                 EWKWmEstimation(era, args.directory, channel),
-                DataEstimation(era, args.directory, channel)
+                DataEstimation(era, args.directory, channel),
+                ggHWWEstimation(era, args.directory, channel),
+                qqHWWEstimation(era, args.directory, channel)
         ]:
             # Get files for estimation method
             logger.debug("Get files for estimation method %s.",
