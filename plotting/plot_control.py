@@ -56,6 +56,10 @@ def parse_arguments():
         help="Scale the signal yield by this factor")
 
     parser.add_argument("--filename-prefix", type=str, default="", help="filename prefix")
+    parser.add_argument("--no-signal", action="store_true", help="Drop the signals")
+    parser.add_argument("--bg-proc", nargs='*', help="Drop the signals")
+
+    # Commands copied from HP
     parser.add_argument("--www", action="store_true", help="webplotting")
     parser.add_argument("--www-dir", type=str, default=None,
         help='Directory structure where the plots will be uploaded. {date} expressions will be replaced by date.')
@@ -63,8 +67,8 @@ def parse_arguments():
     parser.add_argument("--no-overwrite", "--keep-both", "--keep", "-k", action='store_true', default=False, help="Don't overwrite output file. [Default: %(default)s]")
     parser.add_argument("--log-level", default="debug", help="log level. [Default: %(default)s]")
     parser.add_argument("--redo-cache", action="store_true",
-                        help="Do not use inputs from cached trees, but overwrite them. [Default: False for absolute paths, True for relative paths]")
-    parser.add_argument("--no-signal", action="store_true", help="Drop the signals")
+        help="Do not use inputs from cached trees, but overwrite them. [Default: False for absolute paths, True for relative paths]")
+    parser.add_argument("--extra-text", type=str, nargs="?", default="", help="Extra text written on plot, e.g. \"Preliminary\" ")
 
     return parser.parse_args()
 
@@ -105,6 +109,7 @@ config_template = {
     # "subplot_lines": [0.5, 1.0, 1.5]
     "y_rel_lims": [0.9, 1.3],
     "y_subplot_label": "#scale[0.8]{Ratio to Bkg.}",
+    "color_scheme": 'kit_legacy'
 }
 
 
@@ -118,22 +123,26 @@ def main(args):
     signal_processes = ["HTT", "qqH", "ggH"]  # name in ROOT file
 
     if args.emb and args.ff:
-        bkg_processes_names = [
-         "emb", "zll", "ttl", "vvl", "fakes"
-        ]
-        bkg_processes = ["EMB", "ZL", "TTL", "VVL", "jetFakes"]
+        bkg_processes_names = ["emb", "zll", "ttl", "vvl", "fakes"]
+        bkg_processes = ["EMB", "ZL", "TTL", "VVL", "jetFakesEMB"]
     elif args.emb:
-        bkg_processes_names = ["emb", "zll","zj", "ttl", "ttj","vvl", "vvj", "w", "qcd"]
-        bkg_processes = ["EMB", "ZL", "ZJ","TTL", "TTJ","VVL", "VVJ", "W", "QCD"]
+        bkg_processes_names = ["emb", "zll", "zj", "ttl", "ttj", "vvl", "vvj", "w", "qcd"]
+        bkg_processes = ["EMB", "ZL", "ZJ", "TTL", "TTJ", "VVL", "VVJ", "W", "QCD"]
     elif args.ff:
-        bkg_processes_names = [
-            "ztt", "zll", "ttt", "ttl", "vvt", "vvl", "fakes"
-        ]  # enforced by HarryPlotter
+        bkg_processes_names = ["ztt", "zll", "ttt", "ttl", "vvt", "vvl", "fakes"]  # enforced by HarryPlotter
         bkg_processes = ["ZTT", "ZL", "TTT", "TTL", "VVT", "VVL", "jetFakes"]
     else:
-        bkg_processes_names = [
-            "ztt", "zll","zj","ttl", "ttt","ttj","vvl","vvt","vvj","w","qcd"]
-        bkg_processes = ["ZTT", "ZL", "ZJ","TTL","TTT", "TTJ", "VVL","VVT","VVJ","W","QCD"]
+        bkg_processes_names = ["ztt", "zll", "zj", "ttl", "ttt", "ttj", "vvl", "vvt", "vvj", "w", "qcd"]
+        bkg_processes = ["ZTT", "ZL", "ZJ", "TTL", "TTT", "TTJ", "VVL", "VVT", "VVJ", "W", "QCD"]
+    if args.bg_proc:
+        bkg_processes = args.bg_proc
+        bkg_processes_names = [i.lower() for i in bkg_processes]
+        bkg_processes_names = ['fakes' if i.startswith('jetfakes') else i for i in bkg_processes_names]
+        bkg_processes_names = ['qcd' if i.startswith('qcd') else i for i in bkg_processes_names]
+        bkg_processes_names = ['w' if i.startswith('w') else i for i in bkg_processes_names]
+        bkg_processes_names = ["zll" if i == 'zl' else i for i in bkg_processes_names]
+        logger.info('bkg_processes:' + ' '.join(bkg_processes))
+        logger.info('bkg_processes_names:' + ' '.bkg_processes_names)
 
     if args.no_signal:
         signal_processes_names = []
@@ -233,9 +242,8 @@ def main(args):
             ]
             configs.append(config)
 
-    config["colors"] = [x if (x != 'ttl') else "kit_blau_3" for x in config["colors"]]
-    for key in configs[0]:
-        print(key, configs[0][key])
+    import pprint as pp
+    pp.pprint(configs[0])
     higgsplot.HiggsPlotter(
         list_of_config_dicts=configs,
         list_of_args_strings=[""],
