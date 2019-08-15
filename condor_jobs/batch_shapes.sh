@@ -4,7 +4,6 @@ ERA=$2
 CHANNELS=${@:3}
 
 cd $PWD
-pwd
 BINNING=shapes/binning.yaml
 # ./shapes/produce_shapes.sh $ERA $CHANNELS
 source utils/setup_python.sh
@@ -21,9 +20,9 @@ python shapes/produce_shapes_$ERA.py \
     --binning $BINNING \
     --channels $CHANNELS \
     --era $ERA \
-    --tag $ERA \
+    --tag ${ERA}_${CHANNELS} \
     --skip-systematic-variations true \
-    --num-threads 20
+    --num-threads 12
 
 # Normalize fake-factor shapes to nominal
 #python fake-factor-application/normalize_shifts.py ${ERA}_shapes.root

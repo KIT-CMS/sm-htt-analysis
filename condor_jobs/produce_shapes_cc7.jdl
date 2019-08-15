@@ -10,6 +10,6 @@ Requirements = (TARGET.CLOUDSITE == "ekpsupermachines") && ( (Target.ProvidesCPU
 +ExperimentalJob = True
 RequestMemory = 20000
 request_disk = 204800
-RequestCpus = 20
+RequestCpus = 12
 accounting_group = higgs
 queue arguments from arguments.txt
