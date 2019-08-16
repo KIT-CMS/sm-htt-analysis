@@ -203,6 +203,8 @@ def main(args):
 
         processes[ch]["ggHWW125"] = Process("ggHWW125", ggHWWEstimation       (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
         processes[ch]["qqHWW125"] = Process("qqHWW125", qqHWWEstimation       (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
+
+        # mssm ggH and bbH signals
         if args.mssm_signals:
             for m in susyggH_masses:
                 for cont in susyggH_contributions:
@@ -211,6 +213,12 @@ def main(args):
             for m in susybbH_masses:
                 name = "bbH_" + str(m)
                 processes[ch][name] = Process(name, SUSYbbHEstimation(era, directory, channel_dict[ch], str(m), friend_directory=friend_directories[ch]))
+
+        # stage 1.1 ggh and qqh
+        for ggH_htxs in ggHEstimation.htxs_dict:
+            processes[ch][ggH_htxs] = Process(ggH_htxs, ggHEstimation(ggH_htxs, era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
+        for qqH_htxs in qqHEstimation.htxs_dict:
+            processes[ch][qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
 
         # channel-specific processes
         if ch in ["mt", "et"]:
