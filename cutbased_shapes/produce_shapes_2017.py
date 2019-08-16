@@ -322,12 +322,12 @@ def main(args):
     recoil_variations += create_systematic_variations( "CMS_htt_boson_scale_met_Run2017", "metRecoilResponse", DifferentPipeline)
 
     # Tau energy scale (general, MC-specific & EMB-specific), it is mt, et & tt specific
-    tau_variations = {}
+    tau_es_variations = {}
 
     for unctype in ["", "_mc", "_emb"]:
-        tau_variations[unctype] = create_systematic_variations("CMS_scale%s_t_3prong_Run2017"%unctype, "tauEsThreeProng", DifferentPipeline)
-        tau_variations[unctype] += create_systematic_variations("CMS_scale%s_t_1prong_Run2017"%unctype, "tauEsOneProng", DifferentPipeline)
-        tau_variations[unctype] += create_systematic_variations("CMS_scale%s_t_1prong1pizero_Run2017"%unctype, "tauEsOneProngOnePiZero", DifferentPipeline)
+        tau_es_variations[unctype] = create_systematic_variations("CMS_scale%s_t_3prong_Run2017"%unctype, "tauEsThreeProng", DifferentPipeline)
+        tau_es_variations[unctype] += create_systematic_variations("CMS_scale%s_t_1prong_Run2017"%unctype, "tauEsOneProng", DifferentPipeline)
+        tau_es_variations[unctype] += create_systematic_variations("CMS_scale%s_t_1prong1pizero_Run2017"%unctype, "tauEsOneProngOnePiZero", DifferentPipeline)
 
     # Ele energy scale & smear uncertainties (MC-specific), it is et & em specific
     ele_es_variations = create_systematic_variations("CMS_scale_mc_e", "eleScale", DifferentPipeline)
@@ -433,11 +433,11 @@ def main(args):
             channel_mc_nicks = signal_nicks
             channel_boson_mc_nicks = signal_nicks
     
-        channel_common_mc_variations = common_mc_variations
+        channel_mc_common_variations = common_mc_variations
         if ch in ["et", "em"]:
             channel_mc_common_variations += ele_es_variations
         if ch in ["et", "mt", "tt"]:
-            channel_mc_common_variations += tau_es_variations[""] + tau_es_variations["mc"]
+            channel_mc_common_variations += tau_es_variations[""] + tau_es_variations["_mc"]
         if ch in ["et", "mt"]:
             channel_mc_common_variations += lep_trigger_eff_variations[ch][""]
 
@@ -476,15 +476,15 @@ def main(args):
                     systematics.add_systematic_variation(variation=variation ,process=processes[ch]["QCD"], channel=channel_dict[ch], era=era)
 
             if ch in ["mt","et", "tt"]:
-                ff_variations = fake_factor_variations[ch] + tau_es_variations[""] + tau_es_variations["mc"] + tau_es_variations["emb"]
+                ff_variations = fake_factor_variations[ch] + tau_es_variations[""] + tau_es_variations["_mc"] + tau_es_variations["_emb"]
                 for variation in ff_variations:
                     systematics.add_systematic_variation(variation=variation, process=processes[ch]["FAKES"], channel=channel_dict[ch], era=era)
 
             emb_variations = []
             if ch in ["mt","et", "tt"]:
-                emb_variations += tau_es_variations[""] + tau_es_variations["emb"] + decayMode_variations
+                emb_variations += tau_es_variations[""] + tau_es_variations["_emb"] + decayMode_variations
             if ch in ["mt", "et"]:
-                emb_variations += lep_trigger_eff_variations[ch]["emb"]
+                emb_variations += lep_trigger_eff_variations[ch]["_emb"]
             if ch in ["et", "em"]:
                 emb_variations += ele_es_emb_variations
             for variation in emb_variations:
