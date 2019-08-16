@@ -4,7 +4,8 @@ renice -n 19 -u `whoami`
 BINNING=cutbased_shapes/binning.yaml
 ERA=$1
 VARIABLE=$2
-CHANNELS=${@:3}
+SHAPEGROUP=$3
+CHANNELS=${@:4}
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
@@ -23,8 +24,9 @@ python cutbased_shapes/produce_shapes_$ERA.py \
     --channels $CHANNELS \
     --discriminator-variable $VARIABLE \
     --era $ERA \
-    --tag $ERA \
-    --num-threads 28
+    --tag ${ERA}_${CHANNELS}_${SHAPEGROUP} \
+    --shape-group $SHAPEGROUP \
+    --num-threads 20
 
 # Normalize fake-factor shapes to nominal
 python fake-factor-application/normalize_shifts.py ${ERA}_cutbased_shapes_${VARIABLE}.root
