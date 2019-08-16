@@ -209,7 +209,7 @@ def main(args):
         if "gg" in args.shape_group:
             for m in susyggH_masses:
                 name = args.shape_group + "_" + str(m)
-                processes[ch][name] = Process(name, SUSYggHEstimation(era, directory, channel_dict[ch], str(m), cont, friend_directory=friend_directories[ch]))
+                processes[ch][name] = Process(name, SUSYggHEstimation(era, directory, channel_dict[ch], str(m), args.shape_group, friend_directory=friend_directories[ch]))
         if args.shape_group == "bbH":
             for m in susybbH_masses:
                 name = "bbH_" + str(m)
@@ -467,7 +467,7 @@ def main(args):
 
             zl_variations = zpt_variations
             if ch in ["et", "mt"]:
-                zl_variations += lep_fake_es_variations
+                zl_variations += lep_fake_es_variations[ch]
                 for variation in zl_variations:
                     systematics.add_systematic_variation(variation=variation, process=processes[ch]["ZL"], channel=channel_dict[ch], era=era)
 
