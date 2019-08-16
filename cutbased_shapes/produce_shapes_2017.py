@@ -31,7 +31,7 @@ def construct_variable(binning_configuration, variablename):
     binning_structure = binning_configuration["variables"][variablename]["bins"]
     end = 0.0
     bins = np.concatenate([np.arange(start, end, step) for start, end, step in binning_structure] + [np.array([end])])
-    return Variable(variablename, sorted(bins), expression)
+    return Variable(variablename, VariableBinning(sorted(bins)), expression)
 
 def setup_logging(output_file, level=logging.DEBUG):
     logger.setLevel(level)
@@ -125,7 +125,12 @@ def parse_arguments():
     parser.add_argument(
         "--skip-systematic-variations",
         default=False,
-        type=str,
+        action='store_true',
+        help="Do not produce the systematic variations.")
+    parser.add_argument(
+        "--mssm-signals",
+        default=False,
+        action='store_true',
         help="Do not produce the systematic variations.")
     return parser.parse_args()
 
@@ -140,7 +145,7 @@ def main(args):
 
     # Era selection
     if "2017" in args.era:
-        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, HWWEstimation, ggHWWEstimation, qqHWWEstimation
+        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, HWWEstimation, ggHWWEstimation, qqHWWEstimation, SUSYggHEstimation, SUSYbbHEstimation
 
         from shape_producer.era import Run2017
         era = Run2017(args.datasets)
@@ -179,28 +184,36 @@ def main(args):
         "em" : {},
     }
 
-    for ch in arg.channels:
+    for ch in args.channels:
 
         # common processes
         processes[ch]["data"] = Process("data_obs", DataEstimation         (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
-        processes[ch]["EMB"]  = Process("EMB",      ZTTEmbeddedEstimation  (era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
-        processes[ch]["ZL"]   = Process("ZL",       ZLEstimation           (era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
-        processes[ch]["TTL"]  = Process("TTL",      TTLEstimation          (era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
-        processes[ch]["VVL"]  = Process("VVL",      VVLEstimation          (era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
+        processes[ch]["EMB"]  = Process("EMB",      ZTTEmbeddedEstimation  (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
+        processes[ch]["ZL"]   = Process("ZL",       ZLEstimation           (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
+        processes[ch]["TTL"]  = Process("TTL",      TTLEstimation          (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
+        processes[ch]["VVL"]  = Process("VVL",      VVLEstimation          (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
 
-        processes[ch]["VH125"]   = Process("VH125",    VHEstimation        (era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
-        processes[ch]["WH125"]   = Process("WH125",    WHEstimation        (era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
-        processes[ch]["ZH125"]   = Process("ZH125",    ZHEstimation        (era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
-        processes[ch]["ttH125"]  = Process("ttH125",   ttHEstimation       (era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
+        processes[ch]["VH125"]   = Process("VH125",    VHEstimation        (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
+        processes[ch]["WH125"]   = Process("WH125",    WHEstimation        (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
+        processes[ch]["ZH125"]   = Process("ZH125",    ZHEstimation        (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
+        processes[ch]["ttH125"]  = Process("ttH125",   ttHEstimation       (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
 
-        processes[ch]["ggH125"] = Process("ggH125", ggHEstimation       ("ggH125", era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
-        processes[ch]["qqH125"] = Process("qqH125", qqHEstimation       ("qqH125", era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
+        processes[ch]["ggH125"] = Process("ggH125", ggHEstimation       ("ggH125", era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
+        processes[ch]["qqH125"] = Process("qqH125", qqHEstimation       ("qqH125", era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
 
-        processes[ch]["ggHWW125"] = Process("ggHWW125", ggHWWEstimation       (era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
-        processes[ch]["qqHWW125"] = Process("qqHWW125", qqHWWEstimation       (era, directory, channel_dict[ch], friend_directory=friend_directories[ch])),
+        processes[ch]["ggHWW125"] = Process("ggHWW125", ggHWWEstimation       (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
+        processes[ch]["qqHWW125"] = Process("qqHWW125", qqHWWEstimation       (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
+        if args.mssm_signals:
+            for m in susyggH_masses:
+                for cont in susyggH_contributions:
+                    name = "gg" + cont + "_" + str(m)
+                    processes[ch][name] = Process(name, SUSYggHEstimation(era, directory, channel_dict[ch], str(m), cont, friend_directory=friend_directories[ch]))
+            for m in susybbH_masses:
+                name = "bbH_" + str(m)
+                processes[ch][name] = Process(name, SUSYbbHEstimation(era, directory, channel_dict[ch], str(m), friend_directory=friend_directories[ch]))
 
         # channel-specific processes
-        if ch in ["mt", "et"]
+        if ch in ["mt", "et"]:
             processes[ch]["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, channel_dict[ch], [processes[ch][process] for process in ["EMB", "ZL", "TTL", "VVL"]], processes[ch]["data"], friend_directory=friend_directories[ch]+[ff_friend_directory]))
         elif ch == "tt":
             processes[ch]["FAKES"] = Process("jetFakes", NewFakeEstimationTT(era, directory, channel_dict[ch], [processes[ch][process] for process in ["EMB", "ZL", "TTL", "VVL"]], processes[ch]["data"], friend_directory=friend_directories[ch]+[ff_friend_directory]))
@@ -242,7 +255,16 @@ def main(args):
     # Nominal histograms
     signal_nicks = ["WH125", "ZH125", "VH125", "ttH125", "ggH125", "qqH125"]
     ww_nicks = ["ggHWW125", "qqHWW125"]
+    susy_signals = []
+    for m in susyggH_masses:
+        for cont in susyggH_contributions:
+            susy_signals.append("gg" + cont + "_" + str(m))
+    for m in susybbH_masses:
+        susy_signals.append( "bbH_" + str(m))
+
     signal_nicks += ww_nicks
+    if args.mssm_signals:
+        signal_nicks += susy_signals
 
     for ch in args.channels:
         for process, category in product(processes[ch].values(), categories[ch]):
@@ -542,7 +564,7 @@ def main(args):
                       "Down"))
     for variation in ggh_variations:
         for ch in args.channels:
-            for process_nick in [nick for nick in signal_nicks if "ggH" in nick and "HWW" not in nick]:
+            for process_nick in [nick for nick in signal_nicks if "ggH" in nick and "HWW" not in nick and "ggH_" not in nick]:
                 systematics.add_systematic_variation(
                     variation=variation,
                     process=processes[ch][process_nick],
