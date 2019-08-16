@@ -230,7 +230,8 @@ def main(args):
             processes[ch]["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, channel_dict[ch], [processes[ch][process] for process in ["EMB", "ZL", "W", "VVL", "TTL"]], processes[ch]["data"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
 
     # Variables and categories
-    binning = yaml.load(open(args.binning), Loader=yaml.FullLoader)
+    #binning = yaml.load(open(args.binning), Loader=yaml.FullLoader) # only after LCG 96 available
+    binning = yaml.load(open(args.binning))
 
     # Cut-based analysis shapes
     categories = {
@@ -268,8 +269,9 @@ def main(args):
         for cont in susyggH_contributions:
             susy_signals.append("gg" + cont + "_" + str(m))
     for m in susybbH_masses:
-        susy_signals.append( "bbH_" + str(m))
+        susy_signals.append("bbH_" + str(m))
 
+    signal_nicks += [ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict] + [qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict]
     signal_nicks += ww_nicks
     if args.mssm_signals:
         signal_nicks += susy_signals
