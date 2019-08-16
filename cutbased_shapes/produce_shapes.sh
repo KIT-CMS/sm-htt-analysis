@@ -29,4 +29,4 @@ python cutbased_shapes/produce_shapes_$ERA.py \
     --num-threads 20
 
 # Normalize fake-factor shapes to nominal
-python fake-factor-application/normalize_shifts.py ${ERA}_cutbased_shapes_${VARIABLE}.root
+python fake-factor-application/normalize_shifts.py ${ERA}_${CHANNELS}_${SHAPEGROUP}_cutbased_shapes_${VARIABLE}.root
