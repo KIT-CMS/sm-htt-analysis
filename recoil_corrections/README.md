@@ -75,7 +75,7 @@ After this step, the output files should be converted into a format suitable for
 ```bash
 for year in 2016 2017 2018;
 do
-    for var in metParToZ puppiMetParToZ;
+    for var in metParToZ puppimetParToZ;
     do
         ./recoil_corrections/convert_to_synced_shapes.sh ${year} ${var}
     done
