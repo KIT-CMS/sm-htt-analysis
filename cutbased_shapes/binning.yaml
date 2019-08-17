@@ -33,7 +33,6 @@ cutbased:
         nobtag: "(1>0)&&(nbtag==0)"
         btag: "(1>0)&&(nbtag>0)"
     em:
-        inclusive: "(1>0)&&(1>0)"
         ttbar_control: "(1>0)&&(pZetaPuppiMissVis<-35)"
         signal_region: "(1>0)&&(pZetaPuppiMissVis>=-35)"
         nobtag: "(nbtag==0)&&(pZetaPuppiMissVis>=-35)"
