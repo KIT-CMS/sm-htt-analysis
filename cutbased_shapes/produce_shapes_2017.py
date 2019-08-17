@@ -468,8 +468,8 @@ def main(args):
             zl_variations = zpt_variations
             if ch in ["et", "mt"]:
                 zl_variations += lep_fake_es_variations[ch]
-                for variation in zl_variations:
-                    systematics.add_systematic_variation(variation=variation, process=processes[ch]["ZL"], channel=channel_dict[ch], era=era)
+            for variation in zl_variations:
+                systematics.add_systematic_variation(variation=variation, process=processes[ch]["ZL"], channel=channel_dict[ch], era=era)
 
             if ch == "em":
                 for variation in qcd_variations:
