@@ -124,7 +124,7 @@ def main(args):
             infolist.append({"processes" : hist_map[channel][category], "channel" : channel, "category": category, "era" : args.era, "variable" : args.variable, "input" : args.input, "path" : args.output})
 
     file_input.Close()
-    #pool.map(create_synced_category_files, infolist)
+    pool.map(create_synced_category_files, infolist)
 
     # Merge files together per channel
     channelsinfo = [{"channel" : ch, "path" : args.output, "era" : args.era, "variable" : args.variable} for ch in hist_map]
