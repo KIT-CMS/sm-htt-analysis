@@ -2,7 +2,7 @@
 
 ERA=$1
 CHANNEL=$2
-
+[[ -z $3 ]] || method=$3
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
 

@@ -1,15 +1,14 @@
 #!/bin/bash
-
+set -e
 ERA=$1
-METHOD=$2
+CHANNELS=$2
+METHOD=$3
+
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
-(
-set -x
 python shapes/convert_to_synced_shapes.py \
     --era ${ERA} \
-    --outmidname $METHOD \
-    --input ${ERA}_${METHOD}_shapes.root \
-    --output .
-)
+    --train-method ${METHOD} \
+    --input output/shapes/${ERA}-${METHOD}-${CHANNELS}-shapes.root \
+    --output output/shapes

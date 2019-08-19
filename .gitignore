@@ -19,6 +19,7 @@ CMSSW_*/
 plots/
 ml/2016_??
 ml/2017_??
+ml/old
 .env
 .vscode
 *.code-workspace

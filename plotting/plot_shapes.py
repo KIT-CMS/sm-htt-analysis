@@ -29,6 +29,7 @@ def parse_arguments():
         required=True,
         help="Channels")
     parser.add_argument("-e", "--era", type=str, required=True, help="Era")
+    parser.add_argument("-o", "--outputfolder", type=str, required=True, help="...yourself")
     parser.add_argument(
         "-i",
         "--input",
@@ -454,7 +455,7 @@ def main(args):
 
             # save plot
             postfix = "prefit" if "prefit" in args.input else "postfit" if "postfit" in args.input else "undefined"
-            plot.save("%s_plots/%s_%s_%s_%s.%s" % (args.era, args.era, channel, args.gof_variable if args.gof_variable is not None else category, postfix, "png" if args.png else "pdf"))
+            plot.save("%s/%s_%s_%s_%s.%s" % (args.outputfolder, args.era, channel, args.gof_variable if args.gof_variable is not None else category, postfix, "png" if args.png else "pdf"))
             plots.append(
                 plot
             )  # work around to have clean up seg faults only at the end of the script

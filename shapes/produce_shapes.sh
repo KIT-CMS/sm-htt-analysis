@@ -2,8 +2,8 @@
 set -e
 
 ERA=$1
-METHOD=$2
-CHANNELS=${@:3}
+CHANNELS=$2
+METHOD=$3
 BINNING=shapes/binning.yaml
 
 source utils/setup_cvmfs_sft.sh
@@ -29,8 +29,7 @@ logandrun python shapes/produce_shapes_$ERA.py \
     --train-method ${METHOD} \
     --channels $CHANNELS \
     --era $ERA \
-    --tag ${ERA}_${METHOD} \
     --num-threads $(recommendCPUs)
 
 # Normalize fake-factor shapes to nominal
-logandrun python fake-factor-application/normalize_shifts.py ${ERA}_${METHOD}_shapes.root
+logandrun python fake-factor-application/normalize_shifts.py output/shapes/${ERA}-${METHOD}-${CHANNELS}-shapes.root

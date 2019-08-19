@@ -31,7 +31,7 @@ def parse_arguments():
     parser.add_argument("--era", required=True, type=str, help="Analysis era")
     parser.add_argument("--input", required=True, type=str, help="Path to single input ROOT file.")
     parser.add_argument("--output", required=True, type=str, help="Path to output directory")
-    parser.add_argument("--outmidname", required=False, type=str, help="Name to add to the output filename")
+    parser.add_argument("--train-method", required=False, type=str, help="Name to add to the output filename")
     return parser.parse_args()
 
 
@@ -75,14 +75,14 @@ def main(args):
 
     # Loop over map once and create respective output files
     for channel in hist_map:
-        if args.outmidname == None and args.outmidname != "":
+        if args.train_method in [None, ""]:
             filename_output = os.path.join(
                 args.output,
-                "htt_{CHANNEL}.inputs-sm-Run{ERA}-ML.root").format(CHANNEL=channel, ERA=args.era)
+                "{ERA}-{CHANNELS}-synced-ML.root").format(CHANNELS=channel, ERA=args.era)
         else:
             filename_output = os.path.join(
                 args.output,
-                "htt_{CHANNEL}_{MN}.inputs-sm-Run{ERA}-ML.root").format(CHANNEL=channel,MN=args.outmidname, ERA=args.era)
+                "{ERA}-{METHOD}-{CHANNELS}-synced-ML.root").format(CHANNELS=channel,METHOD=args.train_method, ERA=args.era)
         if not os.path.exists(args.output):
             os.mkdir(args.output)
         file_output = ROOT.TFile(filename_output, "RECREATE")
@@ -119,7 +119,6 @@ def main(args):
                             or ("_ff_" in name_output and "_syst_" in name_output)):
                         hist.SetTitle(name_output.replace("_Run2016", "").replace("_Run2017", "").replace("_Run2018", ""))
                         hist.SetName(name_output.replace("_Run2016", "").replace("_Run2017", "").replace("_Run2018", ""))
-                        
                         hist.Write()
         file_output.Close()
 

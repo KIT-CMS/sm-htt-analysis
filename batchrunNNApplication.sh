@@ -15,12 +15,12 @@ source $VO_CMS_SW_DIR/cmsset_default.sh
 export sm_htt_analysis_dir="/portal/ekpbms3/home/${USER}/sm-htt-analysis"
 
 
-if [[ ! "submit check collect" =~ $modus || -z $modus ]]; then
-    logerror "modus must be submit, check or collect but is $modus !"
+if [[ ! "submit check" =~ $modus || -z $modus ]]; then
+    logerror "modus must be submit or check but is $modus !"
     exit 1
 fi
-if [[ ! "etp lxplus" =~ $cluster || -z $cluster ]]; then
-    logerror "cluster must be etp, lxplus, but is $cluster!"
+if [[ ! "etp lxplus7" =~ $cluster || -z $cluster ]]; then
+    logerror "cluster must be etp, lxplus7, but is $cluster!"
     exit 1
 fi
 
@@ -51,10 +51,10 @@ if [[ $cluster = "etp" ]]; then
     done
     friendTrees=${ftarray[@]}
 
-elif [[ $cluster == "lxplus" ]]; then
+elif [[ $cluster == "lxplus7" ]]; then
     case $era in
         "2016" )
-            logerror No friend trees for $era on lxplus
+            logerror No friend trees for $era on lxplus7
             exit 1
             input_ntuples_dir="/eos/user/s/sbrommer/scratch/2019_06_13"
             ;;
@@ -63,7 +63,7 @@ elif [[ $cluster == "lxplus" ]]; then
             friendTrees="/eos/user/a/aakhmets/merged_ntuples/07-06-2019_full_analysis_MELA/MELA_collected /eos/user/a/aakhmets/merged_ntuples/07-06-2019_full_analysis_SVFit/SVFit_collected"
             ;;
         "2018" )
-            logerror No ntuples for $era on lxplus
+            logerror No ntuples for $era on lxplus7
             exit 1
             ;;
     esac
@@ -74,7 +74,7 @@ fi
 export workdir=$batch_out/$outdir
 
 
-
+set -x
 echo "run this on $cluster"
 tmp=$( mktemp )
 cat << eof > $tmp
@@ -115,24 +115,36 @@ job_management.py --executable NNScore \\
 cd $workdir/NNScore_workdir/
 if [[ $modus == submit ]]; then
     condor_submit condor_NNScore_0.jdl
-elif [[ $modus=="check" ]]; then
+elif [[ $modus == "check" ]]; then
     cat arguments_resubmit.txt
     condor_submit condor_NNScore_resubmit.jdl
+    if [[ "0" == \`cat arguments_resubmit.txt | wc -l\` ]]; then
+        job_management.py --executable NNScore \\
+            --batch_cluster $cluster \\
+            --command collect \\
+            --input_ntuples_directory $input_ntuples_dir  \\
+            --walltime 600  \\
+            --events_per_job 200000 \\
+            --friend_ntuples_directories $friendTrees \\
+            --cores 5 \\
+            --restrict_to_channels $channels \\
+            --custom_workdir_path $workdir
+    fi
 fi
 
 eof
 
 
-if [[ $cluster = etp ]]; then
+if [[ $cluster == etp ]]; then
     cat $tmp | bash
-elif [[ $cluster = lxplus ]]; then
-    loginfo "lxplus is executing:"
+elif [[ $cluster == lxplus7 ]]; then
+    loginfo "lxplus7 is executing:"
     lxrun $tmp
     #echo "Execute before submiting: cd $sw_src_dir; eval \`scramv1 runtime -sh\`; cd -"
 fi
 
 # # If command is submit:
-# echo On lxplus :
+# echo On lxplus7 :
 # echo "cd $sw_src_dir; eval \`scramv1 runtime -sh\` ; cd - "
 # if [[ $modus == "submit" ]]; then
 #     echo condor_submit NNScore_workdir/condor_NNScore_0.jdl

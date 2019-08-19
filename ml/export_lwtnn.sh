@@ -3,6 +3,7 @@ set -e
 
 ERA=$1
 CHANNEL=$2
+[[ -z $3 ]] || method=$3
 
 # source python3 LCG view
 LCG_RELEASE=94python3

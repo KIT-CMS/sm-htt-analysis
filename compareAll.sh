@@ -16,7 +16,7 @@ unset PYTHONUSERBASE
 shopt -s checkjobs # wait for all jobs before exiting
 export PARALLEL=1
 export USE_BATCH_SYSTEM=1
-export cluster=lxplus
+export cluster=lxplus7
 export sm_htt_analysis_dir="/portal/ekpbms3/home/${USER}/sm-htt-analysis" ### local sm-htt repo !
 export cmssw_src_local="/portal/ekpbms3/home/${USER}/CMSSW_10_2_14/src" ### local CMSSW !
 export batch_out_local="/portal/ekpbms3/home/${USER}/batch-out"
@@ -26,7 +26,7 @@ source utils/bashFunctionCollection.sh
 if [[ $USE_BATCH_SYSTEM == "1" ]]; then
     if [[ $cluster == "etp" ]]; then
         export batch_out=$batch_out_local
-    elif [[ $cluster == "lxplus" ]]; then
+    elif [[ $cluster == "lxplus7" ]]; then
         export batch_out="/afs/cern.ch/work/${USER::1}/${USER}/batch-out"
         export cmssw_src_dir="/afs/cern.ch/user/${USER::1}/${USER}/CMSSW_10_2_14/src" ## Remote CMSSW!
     fi
@@ -40,31 +40,31 @@ erasarg=$1
 channelsarg=$2
 methodsarg=$3
 
-[[ "" = $( echo $eras ) ]] && eras=("2016" "2017" "2018") erasarg="2016,2017,2018"
-[[ "" = $( echo $channels ) ]] && channels=("em" "et" "tt" "mt") channelsarg="em,et,tt,mt"
-[[ "" = $( echo $methods ) ]] && methods=("mc_mc" "emb_mc" "mc_ff" "emb_ff") methodsarg="mc_mc,emb_mc,mc_ff,emb_ff"
+[[ "" = $( echo ${eras} ) ]] && eras=("2016" "2017" "2018") erasarg="2016,2017,2018"
+[[ "" = $( echo ${channels} ) ]] && channels=("em" "et" "tt" "mt") channelsarg="em,et,mt,tt"
+[[ "" = $( echo ${methods} ) ]] && methods=("mc_mc" "emb_mc" "mc_ff" "emb_ff") methodsarg="mc_mc,emb_mc,mc_ff,emb_ff"
 
-loginfo Eras: $erasarg  Channels: $channelsarg   Training Dataset Generation Method: $methodsarg Sourced: $sourced
+loginfo Eras: ${erasarg}  Channels: ${channelsarg}   Training Dataset Generation Method: ${methodsarg} Sourced: $sourced
 
 if [[ ! -z ${4:-} ]]; then
     logerror only takes 3 arguments, seperate multiple eras and channels by comma eg: 2016,2018 mt,em   or \"\" em
     [[ $sourced != 1 ]] && exit 1
 fi
 for era in ${eras[@]}; do
-    if [[ ! "2016 2017 2018" =~ $era ]]; then
-        logerror $era is not a valid era.
+    if [[ ! "2016 2017 2018" =~ ${era} ]]; then
+        logerror ${era} is not a valid era.
         [[ $sourced != 1 ]] && exit 1
     fi
 done
 for channel in ${channels[@]}; do
-    if [[ ! "em et tt mt" =~ $channel ]]; then
-        logerror $channel is not a valid channel.
+    if [[ ! "em et tt mt" =~ ${channel} ]]; then
+        logerror ${channel} is not a valid channel.
         [[ $sourced != 1 ]] && exit 1
     fi
 done
 for method in ${methods[@]}; do
-    if [[ ! "mc_mc emb_mc mc_ff emb_ff" =~ $method ]]; then
-        logerror $method is not a valid method.
+    if [[ ! "mc_mc emb_mc mc_ff emb_ff" =~ ${method} ]]; then
+        logerror ${method} is not a valid method.
         [[ $sourced != 1 ]] && exit 1
     fi
 done
@@ -111,9 +111,9 @@ function compenv() {
 function create_training_dataset() {
     for method in ${methods[@]}; do
         export method
-        logandrun ./ml/create_training_dataset.sh $erasarg $channelsarg
+        logandrun ./ml/create_training_dataset.sh ${erasarg} ${channelsarg}
     done
-    loginfo All $method datasets created
+    loginfo All ${method} datasets created
 }
 
 function mltrain() {
@@ -121,7 +121,7 @@ function mltrain() {
     export method
         for era in ${eras[@]}; do
             for channel in ${channels[@]}; do
-                logandrun ./ml/run_training.sh $era $channel $method
+                logandrun ./ml/run_training.sh ${era} ${channel} ${method}
             done
         done
     done
@@ -132,7 +132,7 @@ function mltest() {
     export method
         for era in ${eras[@]}; do
             for channel in ${channels[@]}; do
-                logandrun ./ml/run_testing.sh $era $channel $method
+                logandrun ./ml/run_testing.sh ${era} ${channel} ${method}
             done
         done
     done
@@ -144,8 +144,8 @@ function exportForApplication {
     export method
     for era in ${eras[@]}; do
         for channel in ${channels[@]}; do
-            logandrun ./ml/translate_models.sh $era $channel
-            logandrun ./ml/export_lwtnn.sh $era $channel
+            logandrun ./ml/translate_models.sh ${era} ${channel}
+            logandrun ./ml/export_lwtnn.sh ${era} ${channel}
         done
     done
     done
@@ -171,7 +171,7 @@ function provideCluster() {
         done
     done
     updateSymlink $sm_htt_analysis_dir/datasets/datasets.json $cmssw_src_local/HiggsAnalysis/friend-tree-producer/data/input_params/datasets.json
-    if [[ $cluster == lxplus ]]; then
+    if [[ $cluster == lxplus7 ]]; then
         loginfo lxrsync ${cmssw_src_local}/HiggsAnalysis/friend-tree-producer/data/ lxplus.cern.ch:${cmssw_src_dir}/HiggsAnalysis/friend-tree-producer/data
         lxrsync ${cmssw_src_local}/HiggsAnalysis/friend-tree-producer/data/ lxplus.cern.ch:${cmssw_src_dir}/HiggsAnalysis/friend-tree-producer/data
     fi
@@ -185,7 +185,7 @@ function submitCluster(){
         method=$1
     fi
     for era in ${eras[@]}; do
-        logandrun ./batchrunNNApplication.sh ${era} $channelsarg $cluster "submit" ${era}_${method}
+        logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "submit" ${era}_${method}
     done
 }
 function resubmitCluster() {
@@ -196,7 +196,7 @@ function resubmitCluster() {
         method=$1
     fi
     for era in ${eras[@]}; do
-        logandrun ./batchrunNNApplication.sh ${era} $channelsarg $cluster "check" ${era}_${method}
+        logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "check" ${era}_${method}
     done
 }
 function collectCluster() {
@@ -207,14 +207,14 @@ function collectCluster() {
         method=$1
     fi
     for era in ${eras[@]}; do
-        logandrun ./batchrunNNApplication.sh ${era} $channelsarg $cluster "collect" ${era}_${method}
+        logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "collect" ${era}_${method}
     done
 }
 
 function copyFromCluster() {
     if [[ $cluster == etp ]]; then
             loginfo Cluster is ept, no need to sync.
-    elif [[ $cluster == lxplus ]]; then
+    elif [[ $cluster == lxplus7 ]]; then
         read -p "Sync files from $USER@lxplus.cern.ch:$batch_out/${era}_${method} to $batch_out_local/${era}_${method} now? y/[n]" yn
         if [[ ! $yn == "y" ]]; then
             logerror "!=y \n aborting"
@@ -228,73 +228,104 @@ function copyFromCluster() {
     fi
 }
 
-
+export JETFAKES=1 EMBEDDING=1 CATEGORIES="stxs_stage1p1"
 
 function genshapes() {
     for method in ${methods[@]}; do
         cd $sm_htt_analysis_dir
         for era in ${eras[@]}; do
             redoConversion=0
-            if [[ ! -f ${era}_${method}_shapes.root  ]]; then
-                loginfo Producing shapes for $era $method ${channels[@]}
-                logandrun ./shapes/produce_shapes.sh $era $method ${channels[@]}
+            if [[ ! -f output/shapes/${era}-${method}-${channelsarg}-shapes.root  ]]; then
+                logandrun ./shapes/produce_shapes.sh ${era} ${channelsarg} ${method}
                 redoConversion=1
             else
                 loginfo Skipping shape generation as ${era}_${method}_shapes.root exists
             fi
             for channel in ${channels[@]}; do
-		        fn=htt_${channel}_${method}.inputs-sm-Run${era}-ML.root
+		        fn=output/shapes/${era}-${method}-${channel}-synced-ML.root
                 if [[ ! -f $fn ]]; then
 			        [[ $redoConversion != 1 ]] && logwarn $fn does not exist: rerunning shape syncing
                     redoConversion=1
+                else
+                    loginfo Skipping shape syncing as $fn exists
                 fi
             done
             if [[ $redoConversion == 1 ]]; then
-                loginfo Syncing shapes for $era ${channels[@]}
-                logandrun ./shapes/convert_to_synced_shapes.sh $era $method
+                loginfo Syncing shapes for ${era} ${channels[@]}
+                logandrun ./shapes/convert_to_synced_shapes.sh ${era} ${method} ${channelsarg}
             fi
         done
     done
 }
-### Subroutine called by runstages
-function runana() {
-    if [[ $PROD_NEW_DATACARDS == 1 ]]; then
-        echo "Producing datacard:"
-        ## one could produce a datacard for stage1p1 and then just select the right one upon produce_workspace :)
-        for channel in ${channels[@]}; do
-            updateSymlink htt_${channel}_${method}.inputs-sm-Run${era}-ML.root htt_${channel}.inputs-sm-Run${era}-ML.root
+
+
+function gendatacards(){
+    for method in ${methods[@]}; do
+        export method
+        for era in ${eras[@]}; do
+            for STXS_SIGNALS in "stxs_stage0" "stxs_stage1p1"; do
+                    logandrun ./datacards/produce_datacard.sh ${era} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${method} ${channelsarg}
+            done
         done
-        logandrun ./datacards/produce_datacard.sh $era $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING $method ${channels[@]} > datacard-${era}-$STXS_SIGNALS-$CATEGORIES-$JETFAKES-$EMBEDDING--$method-${channelsarg}.log
-    fi
-    logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT | tee workspace-${era}-$STXS_SIGNALS-$CATEGORIES-$JETFAKES-$EMBEDDING--$method-${channelsarg}.log
-    logandrun ./combine/signal_strength.sh $era $STXS_FIT | tee "signal-strength-${channelsarg}-$method-$STXS_SIGNALS-$STXS_FIT.txt"
-    #| sed -n -e '/ --- MultiDimFit ---/,$p' | sed  "/Printing Message Summary/q" | head -n -2 | grep -v INFO:
-    ### add more analysis scripts here
-    PROD_NEW_DATACARDS=0
+    done
 }
 
-### run the analysis for mc and emb and all stages
-function runstages() {
-    #export STXS_SIGNALS STXS_FIT PROD_NEW_DATACARDS
-    JETFAKES=1                  # options: 0, 1
-    EMBEDDING=1                 # options: 0, 1
-    CATEGORIES="stxs_stage1p1"
+function genworkspaces(){
     for method in ${methods[@]}; do
-        cd $sm_htt_analysis_dir
-        for s in "stxs_stage0" "stxs_stage1p1"; do
-            PROD_NEW_DATACARDS=1 ## "inclusive" "stxs_stage0" can use the same datacards
-            STXS_SIGNALS=$s
-            if [[ "$s" == "stxs_stage0" ]]; then
-                for f in "inclusive" "stxs_stage0"; do
-                    STXS_FIT=$f
-                    runana
-                done
-            elif [[ "$s" == "stxs_stage1p1" ]]; then
-                STXS_FIT="stxs_stage1p1"
-                runana
-            fi
+    export method
+        for era in ${eras[@]}; do
+            for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do
+                fn="output/datacards/${era}-${method}-smhtt-ML/${STXS_SIGNALS}/cmb/125/${era}-${STXS_FIT}-workspace.root"
+                if [[ ! -f $fn ]]; then
+                    logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${method}
+                    [[ $? == 0 ]] || return $?
+                else
+                    loginfo "skipping workspace creation, as  $fn exists"
+                fi
+            done
         done
+    done
+}
 
+### Subroutine called by runstages
+### do not run this parallel! it writes to fit.root in the main dir and is then moved
+function runana() {
+    for method in ${methods[@]}; do
+    export method
+        for era in ${eras[@]}; do
+            for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do
+                if [[ $STXS_FIT == "inclusive" || $STXS_FIT == "stxs_stage0" ]]; then
+                    STXS_SIGNALS=stxs_stage0
+                elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
+                    STXS_SIGNALS=stxs_stage1p1
+                fi
+                #logandrun ./combine/signal_strength.sh ${era} $STXS_FIT output/datacards/${era}-${method}-smhtt-ML/${STXS_SIGNALS}/cmb/125 ${method}
+                [[ $? == 0 ]] || return $?
+            done
+            #[[ $? == 0 ]] || return $?
+            # #./combine/signal_strength.sh $ERA "robustHesse" | tee ${ERA}_signal_strength_robustHesse.log
+                STXS_SIGNALS="stxs_stage0"
+                mkdir -p ${era}-${method}_prefit-plots
+                FILE="${era}_datacard_shapes_prefit-${method}.root"
+                OPTION="--png"
+                (
+                source utils/setup_cvmfs_sft.sh
+                source utils/setup_python.sh
+                if [[ $method =~ "ff" ]]; then
+                    TRAINFF=True
+                else
+                    TRAINFF=False
+                fi
+                if [[ $method =~ "emb" ]]; then
+                    TRAINEMB=True
+                else
+                    TRAINEMB=False
+                fi
+                logandrun ./plotting/plot_shapes.py -i $FILE -o ${era}-${method}_prefit-plots -c ${channels[@]} -e $era $OPTION --categories $CATEGORIES $JETFAKES_ARG $EMBEDDING_ARG --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB
+                )
+            #logandrun ./combine/prefit_postfit_shapes.sh ${era} stxs_stage0 output/datacards/${era}-${method}-smhtt-ML/stxs_stage0/cmb/125 ${method}
+            # done
+        done
     done
 }
 
@@ -302,7 +333,7 @@ function runstages() {
 function compareSignRes {
     for channel in ${channels[@]}; do
         for x in stage0-inclusive stage0-stxs_stage0 stage1p1-stxs_stage1p1; do
-            echo signal-strength-$channel-mc_{mc,ff}-stxs_$x.txt | xargs ls
+            echo signal-strength-${channel}-mc_{mc,ff}-stxs_$x.txt | xargs ls
         done
     done
     # for mcfile in mc-stxs_stage*txt; do
@@ -317,109 +348,32 @@ function compareSignRes {
 #################################################################################################
 
 function main() {
-    if [[ $anaSSStep < 1 ]]; then
-        for method in ${methods[@]}; do
-
-            ##### Create training dataset:
-            if [[ ! $( getPar completedMilestones ${method}_ds_created ) == 1  ]]; then
-                create_training_dataset
-                overridePar completedMilestones ${method}_ds_created 1
-
-            else
-                loginfo Skipping $method training dataset creation
-            fi
-            ### Run trainings ml/era_channel_training.yaml ml/era_channel/merge_foldX_*.root -> ml/era_channel/foldX_keras_model.h5
-            if [[ ! $( getPar completedMilestones ${method}_training  ) == 1  ]]; then
-                mltrain
-                overridePar completedMilestones ${method}_training 1
-                loginfo All $method trainings completed
-            else
-                loginfo Skipping $method training
-            fi
-            ### Run testings ml/era_channel_testing.yaml
-            if [[ ! $( getPar completedMilestones ${method}_testing  ) == 1  ]]; then
-                mltest
-                overridePar completedMilestones ${method}_testing 1
-                loginfo All $method testings completed
-            else
-                loginfo Skipping $method testing
-            fi
-
-            if [[ $USE_BATCH_SYSTEM == 1 ]]; then
-                ### convert the models to lwtnn format ml/era_channel/foldX_keras_model.h5 -> ml/era_channel/foldX_lwtnn.json
-                if [[ ! $( getPar completedMilestones ${method}_models_exported  ) == 1  ]]; then
-                    exportForApplication
-                    provideCluster $method
-                    overridePar completedMilestones ${method}_models_exported 1
-                    loginfo Models for $method application exported
-                else
-                    loginfo Skipping $method model export
-                fi
-
-                ### Apply the model ml/era_channel/foldX_keras_model.h5 oder ml/era_channel/foldX_lwtnn.json + ntuples -> NNScore friendTree
-                if [[ ! $( getPar completedMilestones ${method}_NNApplication_started  ) == 1  ]]; then
-                    submitCluster $method
-                    overridePar completedMilestones ${method}_NNApplication_started 1
-                    loginfo "Jobs for $method application created. Submit the jobs and, in completedMilestones, set ${method}_NNApplication_ended to 1 if the jobs ran successfull or you need to resubmit"
-                    [[ $sourced != 1 ]] && exit 0
-                else
-                    loginfo Skipping $method batch submission for NNScore FriendTrees
-                fi
-
-                ### check if finished resubmit if needed
-                if [[ $( getPar completedMilestones ${method}_NNApplication_started  ) == "1"  ]] && [[ $( getPar completedMilestones ${method}_NNApplication_ended  ) == "0"  ]] ; then
-                    resubmitCluster $method
-                    loginfo  In completedMilestones set ${method}_NNApplication_ended to 1 if the jobs ran successfull
-                    [[ $sourced != 1 ]] && exit 0
-                else
-                    loginfo Skipping $method NNScore FriendTree batch resubmission
-                fi
-
-                if [[ ! $( getPar completedMilestones ${method}_NNApplication_collected  ) == 1  ]]; then
-                    collectCluster $method
-                    overridePar completedMilestones ${method}_NNApplication_collected 1
-                    loginfo Jobs for $method application completed and collected. Move outputs now!
-                else
-                    loginfo Skipping $method NNScore FriendTree Batch collection
-                fi
-
-                if [[ ! $( getPar completedMilestones ${method}_NNApplication_synced ) = 1  ]]; then
-                    copyFromCluster ${method}
-                    overridePar completedMilestones ${method}_NNApplication_synced 1
-                    loginfo $method NNScore FriendTree sync completed
-                else
-                    loginfo Skipping $method NNScore FriendTree sync
-                fi
-            else ## USE_BATCH_SYSTEM==0
-                for era in ${eras[@]}; do
-                    for channel in ${channels[@]}; do
-                        ./ml/run_application $era $channel
-                    done
-                done
-            fi
-        done ## for method in mc, emb
-        overridePar completedMilestones anaSSStep 1
-        anaSSStep=1
+    read -p " Start new run? y/[n]" yn
+    if [[ ! $yn == "y" ]]; then
+        exit 0
     fi
-    loginfo reached analysis!
-    if [[ $anaSSStep < 2 ]]; then
-    	logandrun genshapes
-        overridePar completedMilestones anaSSStep 2
-        anaSSStep=2
+    create_training_dataset
+    mltrain
+    mltest
+    if [[ $USE_BATCH_SYSTEM == 1 ]]; then
+        exportForApplication
+        provideCluster
+        submitCluster; exit
+        resubmitCluster; exit
+        collectCluster
+        copyFromCluster
+    else
+        for era in ${eras[@]}; do
+            for channel in ${channels[@]}; do
+                ./ml/run_application ${era} ${channel}
+            done
+        done
     fi
-    if [[ $anaSSStep < 3 ]]; then
-        logandrun runstages
-        overridePar completedMilestones anaSSStep 3
-        anaSSStep=3
-    fi
-    if [[ $anaSSStep < 4 ]]; then
-        compareSignRes
-        read -p "Run finished. Start new run? y/[n]" yn
-        if [[ $yn == "y" ]]; then
-            sed -E -r "s@(\w+)(\s+|=)\w+@\1\20@" completedMilestones
-            echo ""
-        fi
-    fi
+    genshapes
+    gendatacards
+    genworkspaces
+    runana
+    compareSignRes
 }
 
 [[ $sourced == 1 ]] && [[ ! "bash" =~ $0 ]] && logerror "shell is sourced by another shell than bash, aborting" && exit 1

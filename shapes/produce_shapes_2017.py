@@ -126,8 +126,6 @@ def parse_arguments():
         default="",
         type=str)
     parser.add_argument(
-        "--tag", default="ERA_CHANNEL", type=str, help="Tag of output files.")
-    parser.add_argument(
         "--skip-systematic-variations",
         default=False,
         type=str,
@@ -140,7 +138,7 @@ def main(args):
     logger.info(str(args))
     logger.info("Set up shape variations.")
     systematics = Systematics(
-        "{}_shapes.root".format(args.tag),
+        "output/shapes/{ERA}-{METHOD}-{CHANNELS}-shapes.root".format(ERA=args.era, METHOD=args.train_method, CHANNELS=",".join(args.channels)),
         num_threads=args.num_threads,
         skip_systematic_variations=args.skip_systematic_variations)
 
@@ -1544,5 +1542,5 @@ def main(args):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    setup_logging("{}_produce_shapes.log".format(args.tag), logging.INFO)
+    setup_logging("output/log/{}_{}_{}_shapes.log".format(args.era, args.train_method, ",".join(args.channels)), logging.INFO)
     main(args)
