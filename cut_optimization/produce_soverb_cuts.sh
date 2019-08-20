@@ -21,4 +21,4 @@ python cut_optimization/produce_soverb_cuts.py \
     --et-friend-directory $ARTUS_FRIENDS_ET \
     --tt-friend-directory $ARTUS_FRIENDS_TT \
     --em-friend-directory $ARTUS_FRIENDS_EM \
-    --num-threads 30
+    --num-threads 20

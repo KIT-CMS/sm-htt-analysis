@@ -49,6 +49,8 @@ def setup_logging(output_file, level=logging.DEBUG):
 def parse_arguments():
     parser = argparse.ArgumentParser(
         description="Produce shapes for 2016 Standard Model analysis.")
+    parser.add_argument(
+        "--tag", default="ERA_CHANNEL", type=str, help="Tag of output files.")
 
     parser.add_argument(
         "--directory",
@@ -99,6 +101,8 @@ def parse_arguments():
     parser.add_argument(
         "--binning", required=True, type=str, help="Binning configuration.")
     parser.add_argument(
+        "--variable", required=True, type=str, help="Variable configuration.")
+    parser.add_argument(
         "--channels",
         default=[],
         nargs='+',
@@ -130,8 +134,7 @@ def parse_arguments():
 
 def main(args):
     # Container for all distributions to be drawn
-    systematics = Systematics("counts_for_soverb.root", num_threads=args.num_threads, find_unique_objects=False)
-
+    systematics = Systematics("{}_counts_for_soverb_{}.root".format(args.tag,args.variable), num_threads=args.num_threads, find_unique_objects=False)
     # Era
     era = Run2017(args.datasets)
 
@@ -245,12 +248,11 @@ def main(args):
         "tt" : [],
         "em" : [],
     }
-    for variable in variable_names:
-        for ch in args.channels:
-            cut_values = construct_binning(binning, variable)
-            for cut in cut_values:
-                categories[ch].append(Category("%s-less-%s"%(variable, str(cut).replace(".","p")),channels[ch], Cuts(Cut("%s < %s"%(variable, str(cut)))), variable=None))
-                categories[ch].append(Category("%s-greater-%s"%(variable, str(cut).replace(".","p")),channels[ch], Cuts(Cut("%s > %s"%(variable, str(cut)))), variable=None))
+    for ch in args.channels:
+        cut_values = construct_binning(binning, args.variable)
+        for cut in cut_values:
+            categories[ch].append(Category("%s-less-%s"%(args.variable, str(cut).replace(".","p")),channels[ch], Cuts(Cut("%s < %s"%(args.variable, str(cut)))), variable=None))
+            categories[ch].append(Category("%s-greater-%s"%(args.variable, str(cut).replace(".","p")),channels[ch], Cuts(Cut("%s > %s"%(args.variable, str(cut)))), variable=None))
         
 
     # Nominal histograms
