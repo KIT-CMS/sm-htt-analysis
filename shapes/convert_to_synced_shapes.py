@@ -91,7 +91,13 @@ def main(args):
             file_output.cd(dir_name)
             for name in sorted(hist_map[channel][category]):
                 hist = file_input.Get(name)
+                if (not "ZTTpTTTauTau" in name) and ("CMS_htt_emb_ttbar" in name):
+                    continue
                 name_output = hist_map[channel][category][name]
+                if "ZTTpTTTauTauUp" in name_output:
+                    name_output = name_output.replace("ZTTpTTTauTauUp","EMB")
+                if "ZTTpTTTauTauDown" in name_output:
+                    name_output = name_output.replace("ZTTpTTTauTauDown","EMB")               
                 hist.SetTitle(name_output)
                 hist.SetName(name_output)
                 hist.Write()
