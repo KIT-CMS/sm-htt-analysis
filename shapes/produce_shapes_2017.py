@@ -141,7 +141,7 @@ def main(args):
 
     # Era selection
     if "2017" in args.era:
-        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, HWWEstimation, ggHWWEstimation, qqHWWEstimation
+        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, HWWEstimation, ggHWWEstimation, qqHWWEstimation, NMSSMEstimation
 
         from shape_producer.era import Run2017
         era = Run2017(args.datasets)
@@ -153,10 +153,10 @@ def main(args):
     # Channels and processes
     # yapf: disable
     directory = args.directory
-    et_friend_directory = args.et_friend_directory
-    mt_friend_directory = args.mt_friend_directory
-    tt_friend_directory = args.tt_friend_directory
-    em_friend_directory = args.em_friend_directory
+    et_friend_directory = []#args.et_friend_directory
+    mt_friend_directory = [] #args.mt_friend_directory
+    tt_friend_directory = []#args.tt_friend_directory
+    em_friend_directory = []#args.em_friend_directory
     ff_friend_directory = args.fake_factor_friend_directory
     mt = MTSM2017()
     if args.QCD_extrap_fit:
@@ -190,6 +190,13 @@ def main(args):
         mt_processes[ggH_htxs] = Process(ggH_htxs, ggHEstimation(ggH_htxs, era, directory, mt, friend_directory=mt_friend_directory))
     for qqH_htxs in qqHEstimation.htxs_dict:
         mt_processes[qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, mt, friend_directory=mt_friend_directory))
+
+    for heavy_mass in [320, 450]:
+        for light_mass in [60, 70, 75, 80, 85, 90, 95, 100, 110, 120, 130, 150, 170, 190, 250, 300]:
+            if light_mass+125>heavy_mass:
+                continue
+            mt_processes["NMSSM_{}_125_{}".format(heavy_mass,light_mass)] = Process("NMSSM_{}_125_{}".format(heavy_mass,light_mass), NMSSMEstimation(era,directory,mt,friend_directory=mt_friend_directory,heavy_mass=heavy_mass,light_mass=light_mass))
+
 
     mt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, mt, [mt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], mt_processes["data"], friend_directory=mt_friend_directory+[ff_friend_directory]))
     mt_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, mt,
@@ -231,6 +238,11 @@ def main(args):
     et_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, et,
             [et_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL"]],
             et_processes["data"], friend_directory=et_friend_directory, extrapolation_factor=1.00))
+    for heavy_mass in [320, 450]:
+        for light_mass in [60, 70, 75, 80, 85, 90, 95, 100, 110, 120, 130, 150, 170, 190, 250, 300]:
+            if light_mass+125>heavy_mass:
+                continue
+            et_processes["NMSSM_{}_125_{}".format(heavy_mass,light_mass)] = Process("NMSSM_{}_125_{}".format(heavy_mass,light_mass), NMSSMEstimation(era,directory,et,friend_directory=et_friend_directory,heavy_mass=heavy_mass,light_mass=light_mass))
     
 
     tt = TTSM2017()
@@ -267,7 +279,11 @@ def main(args):
     tt_processes["QCD"] = Process("QCD", QCDEstimation_ABCD_TT_ISO2(era, directory, tt,
             [tt_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL"]],
             tt_processes["data"], friend_directory=tt_friend_directory))
-    
+    for heavy_mass in [320, 450]:
+        for light_mass in [60, 70, 75, 80, 85, 90, 95, 100, 110, 120, 130, 150, 170, 190, 250, 300]:
+            if light_mass+125>heavy_mass:
+                continue
+            tt_processes["NMSSM_{}_125_{}".format(heavy_mass,light_mass)] = Process("NMSSM_{}_125_{}".format(heavy_mass,light_mass), NMSSMEstimation(era,directory,tt,friend_directory=tt_friend_directory,heavy_mass=heavy_mass,light_mass=light_mass))
     em = EMSM2017()
     em_processes = {
         "data"  : Process("data_obs", DataEstimation      (era, directory, em, friend_directory=em_friend_directory)),
@@ -297,7 +313,11 @@ def main(args):
 
     em_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, em, [em_processes[process] for process in ["ZTT", "ZL", "W", "TTT", "VVT", "VVL"]], em_processes["data"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
 
-    
+    for heavy_mass in [320, 450]:
+        for light_mass in [60, 70, 75, 80, 85, 90, 95, 100, 110, 120, 130, 150, 170, 190, 250, 300]:
+            if light_mass+125>heavy_mass:
+                continue
+            em_processes["NMSSM_{}_125_{}".format(heavy_mass,light_mass)] = Process("NMSSM_{}_125_{}".format(heavy_mass,light_mass), NMSSMEstimation(era,directory,em,friend_directory=em_friend_directory,heavy_mass=heavy_mass,light_mass=light_mass))
     # Variables and categories
     binning = yaml.load(open(args.binning))
 

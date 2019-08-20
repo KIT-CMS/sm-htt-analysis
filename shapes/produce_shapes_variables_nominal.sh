@@ -30,6 +30,6 @@ python shapes/produce_shapes_${ERA}.py \
     --gof-channel $CHANNELS \
     --gof-variable $VARIABLE \
     --era $ERA \
-    --num-threads 20 \
+    --num-threads 2 \
     --tag ${ERA}_${CHANNELS}_${VARIABLE} \
 	--skip-systematic-variations true

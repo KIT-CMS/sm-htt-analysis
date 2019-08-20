@@ -113,16 +113,21 @@ config_template = {
 logvars = ["nbtag","njets","jpt_1","jpt_2"]
 
 
-def main(args):
+def main(args,heavy_mass,light_mass):
+    signal=[]
+    signal_names=[]
 
+    # signal_names=["ggh","qqh"]
+    # signal=["ggH125","qqH125"]
+    signal.append("NMSSM_{}_125_{}".format(heavy_mass,light_mass))
+    signal_names.append("nmssm_{}_125_{}".format(heavy_mass,light_mass))
     if args.emb and args.ff:
         bkg_processes_names = [
          "emb", "zll", "ttl", "vvl", "fakes"
         ]
-        signal=["ggH125","qqH125"]
-        signal_names=["ggh","qqh"]
 
-        bkg_processes = ["EMB", "ZL", "TTL", "VVL", "jetFakes"]  # names in ROOT file
+        bkg_processes = ["EMB", "ZL", "TTL", "VVL", "jetFakes"]
+
     elif args.emb:
         bkg_processes_names = ["emb", "zll","zj", "ttl", "ttj","vvl", "vvj", "w", "qcd"]
         signal_names=["ggh","qqh"]
@@ -188,11 +193,14 @@ def main(args):
             config["y_rel_lims"] = [5, 500] if (variable in logvars) else [0.9, 1.5]
             config["markers"] = ["HIST"] * len(bkg_processes_names) + ["LINE"]*len(signal_names) + ["P"] + ["E2"] + ["LINE"]*len(signal_names) + ["P"]
             config["legend_markers"] = ["F"] * (len(bkg_processes_names))  +  ["LINE"]*len(signal_names) +  ["ELP"] + ["E2"] + ["L"]*len(signal_names) + ["P"]
-            config["labels"] = bkg_processes_names + signal_names + ["data"
+            signal_label = ["H({}) #rightarrow h(125)h#doublequote({}) #rightarrow #tau#tau bb (0.1 pb)".format(heavy_mass,light_mass)]
+            config["labels"] = bkg_processes_names + signal_label + ["data"
                                                       ] + [""]*len(signal_names) + config["labels"]
-            config["colors"] = bkg_processes_names + signal_names + ["data"
-                                                      ] + ["#B7B7B7"] + signal_names + ["#000000"]
+            config["colors"] = bkg_processes_names + ["#8B008B"]*len(signal_names) + ["data"
+                                                      ] + ["#B7B7B7"] + ["#8B008B"]*len(signal_names) + ["#000000"]
             config["nicks"] = bkg_processes_names + signal_names + ["data"]
+            config["scale_factors"] = [1]*len(bkg_processes_names) + [50]*len(signal_names) + [1]*len(["data"])
+
             config["x_expressions"] = [
                 "#" + "#".join([
                     channel, category, process, analysis, era, variable, mass
@@ -205,10 +213,10 @@ def main(args):
             ]
             if args.emb == False:
                 config["filename"] = "_".join(
-                    [channel, category, analysis, era, variable, mass])
+                    [channel, category, analysis, era, variable, mass, str(heavy_mass), str(light_mass)])
             else:
                 config["filename"] = "_".join(
-                    [channel, category, analysis, era, variable, mass,"emb"])
+                    [channel, category, analysis, era, variable, mass, str(heavy_mass), str(light_mass), "emb"])
             if args.comparison:
                 config["filename"] = "_".join(
                     [channel, category, analysis, era, variable, mass,"comparison"])
@@ -225,7 +233,10 @@ def main(args):
             config["ratio_denominator_nicks"] = [
                 " ".join(bkg_processes_names)
             ] * (2+len(signal_names))
-            config["ratio_numerator_nicks"] = [" ".join(bkg_processes_names)] + [" ".join(bkg_processes_names+[signal_names[0]])]+ [" ".join(bkg_processes_names+[signal_names[1]])] + ["data"]
+            config["ratio_numerator_nicks"] = [" ".join(bkg_processes_names)]
+            for i in range(len(signal_names)):
+                config["ratio_numerator_nicks"].append(" ".join(bkg_processes_names+[signal_names[i]]))
+            config["ratio_numerator_nicks"].append("data")
             config["ratio_result_nicks"] = ["bkg_ratio"] + [x+"_ratio" for x in signal_names] + ["data_ratio"]
             if args.comparison:
                 config["markers"] = ["HIST"] + ["LINE"] + ["HIST"] * (len(bkg_processes_names)-1) +  ["EX0"] + ["E2", "EX0"] + ["EX0"]
@@ -282,5 +293,9 @@ def main(args):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    setup_logging("plot_nominal.log", logging.DEBUG)
-    main(args)
+    setup_logging("plot_nominal.log", logging.INFO)
+    for heavy_mass in [320, 450]:
+        for light_mass in [60, 70, 75, 80, 85, 90, 95, 100, 110, 120, 130, 150, 170, 190, 250, 300]:
+            if light_mass+125>heavy_mass:
+                continue
+            main(args,heavy_mass,light_mass)

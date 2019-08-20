@@ -25,11 +25,12 @@ ARTUS_FRIENDS_FAKE_FACTOR_INCL_2016=$ARTUS_FRIENDS_FAKE_FACTOR_2016
 
 
 # Samples Run2017
-ARTUS_OUTPUTS_2017="$basedir/2017/ntuples/"
+basedir="/ceph/htautau"
+ARTUS_OUTPUTS_2017="files/2019_08_19/"
 NNScore_Friends_2017="$basedir/2017/nnscore_friends/"
 SVFit_Friends_2017="$basedir/2017/svfit_friends/"
 MELA_Friends_2017="$basedir/2017/mela_friends/"
-FF_Friends_2017="$basedir/2017/ff_friends/"
+FF_Friends_2017="/portal/ekpbms2/home/jbechtel/friend-trees/CMSSW_10_2_14/src/HiggsAnalysis/friend-tree-producer-2/FakeFactors_workdir/FakeFactors_collected/"
 ARTUS_FRIENDS_2017="$NNScore_Friends_2017 $SVFit_Friends_2017 $MELA_Friends_2017"
 ARTUS_FRIENDS_ET_2017=$ARTUS_FRIENDS_2017
 ARTUS_FRIENDS_MT_2017=$ARTUS_FRIENDS_2017
