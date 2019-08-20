@@ -9,6 +9,7 @@ ERA=$1
 VARIABLE=$2
 CHANNELS=${@:3}
 PWD=`pwd`
+NUMCORES=12
 # write arguments.txt
 WORKDIR=`dirname $PWD`
 
@@ -16,7 +17,7 @@ for CHANNEL in $CHANNELS
 do  
     for SHAPEGROUP in backgrounds sm_signals bbH ggH_t ggH_b ggH_i ggA_t ggA_b ggA_i ggh_t ggh_b ggh_i
     do
-        echo "$WORKDIR $ERA $VARIABLE $SHAPEGROUP $CHANNEL"
+        echo "$WORKDIR $NUMCORES $ERA $VARIABLE $SHAPEGROUP $CHANNEL"
     done
 done > arguments.txt
 

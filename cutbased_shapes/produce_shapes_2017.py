@@ -187,7 +187,7 @@ def main(args):
     for ch in args.channels:
 
         # common processes
-        if args.shape_group == "core":
+        if args.shape_group == "backgrounds":
             processes[ch]["data"] = Process("data_obs", DataEstimation         (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
             processes[ch]["EMB"]  = Process("EMB",      ZTTEmbeddedEstimation  (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
             processes[ch]["ZL"]   = Process("ZL",       ZLEstimation           (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
