@@ -129,8 +129,8 @@ def parse_arguments():
         help="Do not produce the systematic variations.")
     parser.add_argument(
         "--shape-group",
-        default="core",
-        choices=["core", "stage1p1", "bbH", "ggH_t", "ggH_b", "ggH_i", "ggA_i", "ggA_t", "ggA_b", "ggh_i", "ggh_t", "ggh_b"],
+        default="backgrounds",
+        choices=["backgrounds", "sm_signals", "bbH", "ggH_t", "ggH_b", "ggH_i", "ggA_i", "ggA_t", "ggA_b", "ggh_i", "ggh_t", "ggh_b"],
         type=str,
         help="Process groups to be considered within the shape production")
     return parser.parse_args()
@@ -199,9 +199,6 @@ def main(args):
             processes[ch]["ZH125"]   = Process("ZH125",    ZHEstimation        (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
             processes[ch]["ttH125"]  = Process("ttH125",   ttHEstimation       (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
 
-            processes[ch]["ggH125"] = Process("ggH125", ggHEstimation       ("ggH125", era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
-            processes[ch]["qqH125"] = Process("qqH125", qqHEstimation       ("qqH125", era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
-
             processes[ch]["ggHWW125"] = Process("ggHWW125", ggHWWEstimation       (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
             processes[ch]["qqHWW125"] = Process("qqHWW125", qqHWWEstimation       (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
 
@@ -215,15 +212,15 @@ def main(args):
                 name = "bbH_" + str(m)
                 processes[ch][name] = Process(name, SUSYbbHEstimation(era, directory, channel_dict[ch], str(m), friend_directory=friend_directories[ch]))
 
-        if args.shape_group == "stage1p1":
-            # stage 1.1 ggh and qqh
+        if args.shape_group == "sm_signals":
+            # stage 0 and stage 1.1 ggh and qqh
             for ggH_htxs in ggHEstimation.htxs_dict:
                 processes[ch][ggH_htxs] = Process(ggH_htxs, ggHEstimation(ggH_htxs, era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
             for qqH_htxs in qqHEstimation.htxs_dict:
                 processes[ch][qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
 
         # channel-specific processes
-        if args.shape_group == "core":
+        if args.shape_group == "backgrounds":
             if ch in ["mt", "et"]:
                 processes[ch]["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, channel_dict[ch], [processes[ch][process] for process in ["EMB", "ZL", "TTL", "VVL"]], processes[ch]["data"], friend_directory=friend_directories[ch]+[ff_friend_directory]))
             elif ch == "tt":
@@ -258,9 +255,9 @@ def main(args):
     # Choice of activated signal processes
     signal_nicks = []
 
-    sm_stage0_nicks = ["WH125", "ZH125", "VH125", "ttH125", "ggH125", "qqH125"]
-    sm_stage1p1_nicks = [ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict] + [qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict]
+    sm_htt_backgrounds_nicks = ["WH125", "ZH125", "VH125", "ttH125"]
     sm_hww_nicks = ["ggHWW125", "qqHWW125"]
+    sm_htt_signals_nicks = [ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict] + [qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict]
     susy_nicks = []
     if "gg" in args.shape_group:
         for m in susyggH_masses:
@@ -269,10 +266,10 @@ def main(args):
         for m in susybbH_masses:
             susy_nicks.append("bbH_" + str(m))
 
-    if args.shape_group == "core":
-        signal_nicks = sm_stage0_nicks + sm_hww_nicks
-    elif args.shape_group == "stage1p1":
-        signal_nicks = sm_stage1p1_nicks
+    if args.shape_group == "backgrounds":
+        signal_nicks = sm_htt_backgrounds_nicks + sm_hww_nicks
+    elif args.shape_group == "sm_signals":
+        signal_nicks = sm_htt_signals_nicks
     else:
         signal_nicks = susy_nicks
 
@@ -284,7 +281,7 @@ def main(args):
     # Setup shapes variations
 
     # EMB: 10% removed events in ttbar simulation (ttbar -> real tau tau events) will be added/subtracted to EMB shape to use as systematic. Technical procedure different to usual systematic variations
-    if args.shape_group == "core":
+    if args.shape_group == "backgrounds":
         tttautau_process = {}
         for ch in args.channels:
             tttautau_process[ch] = Process("TTT", TTTEstimation(era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
@@ -429,7 +426,7 @@ def main(args):
 
         channel_mc_nicks = mc_nicks + ["W"] if ch == "em" else mc_nicks
         channel_boson_mc_nicks = boson_mc_nicks + ["W"] if ch == "em" else boson_mc_nicks
-        if args.shape_group != "core":
+        if args.shape_group != "backgrounds":
             channel_mc_nicks = signal_nicks
             channel_boson_mc_nicks = signal_nicks
     
@@ -450,14 +447,14 @@ def main(args):
             for process_nick in channel_boson_mc_nicks:
                 systematics.add_systematic_variation(variation=variation, process=processes[ch][process_nick], channel=channel_dict[ch], era=era)
 
-        # variations relevant for ggH signals in 'core' and 'stage1p1' shape groups
-        if args.shape_group in ["core", "stage1p1"]:
+        # variations relevant for ggH signals in 'sm_signals' shape group
+        if args.shape_group == "sm_signals":
             for variation in ggh_variations:
                 for process_nick in [nick for nick in signal_nicks if "ggH" in nick and "HWW" not in nick and "ggH_" not in nick]:
                     systematics.add_systematic_variation(variation=variation, process=processes[ch][process_nick], channel=channel_dict[ch], era=era)
 
-        # variations only relevant for the 'core' shape group
-        if args.shape_group == "core":
+        # variations only relevant for the 'background' shape group
+        if args.shape_group == "backgrounds":
             for variation in top_pt_variations:
                 systematics.add_systematic_variation(variation=variation, process=processes[ch]["TTL"], channel=channel_dict[ch], era=era)
 
