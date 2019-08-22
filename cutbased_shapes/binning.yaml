@@ -8,6 +8,38 @@ stxs_stage1p1:
     2jethighmjjlowpt: "(pt_tt_puppi<200)&&(njets>=2)&&(mjj>=350)"
     2jethighmjjhighpt: "(pt_tt_puppi>=200)&&(njets>=2)&&(mjj>=350)"
 
+# Optimized cuts for SM sub-categories
+# See for reference: https://indico.cern.ch/event/842569/contributions/3536321/attachments/1895266/3126759/SoverB_CutScans.pdf
+# -> Variable for ggH: tt - DeltaR < 3.2
+#
+# -> Variables for qqH: mt - DeltaR < 2.5, pt_tt > 75 (di-tau pair)
+# -> Variables for qqH: mt - deltaEtaJJ > 4.0, mjj > 1000 njets >= 2)
+#
+# -> Variables for qqH: et - DeltaR < 2.5, pt_tt > 100 (di-tau pair)
+# -> Variables for qqH: et - deltaEtaJJ > 4.0, mjj > 1000 njets >= 2)
+#
+# -> Variables for qqH: tt - DeltaR < 2.5, pt_tt > 100 (di-tau pair)
+# -> Variables for qqH: tt - deltaEtaJJ > 4.0, mjj > 1000 njets >= 2)
+#
+# -> Variables for qqH: em - pt_tt > 40 (di-tau pair)
+# -> Variables for qqH: em - deltaEtaJJ > 4.5, mjj > 1000 njets >= 2)
+#
+stxs_stage1p1_v2:
+    mt:
+        boosted_0jet: "(pt_tt_puppi>=120)&&(njets==0)"
+        0jet: "(pt_tt_puppi<120)&&(njets==0)"
+    et:
+        boosted_0jet: "(pt_tt_puppi>=120)&&(njets==0)"
+        0jet: "(pt_tt_puppi<120)&&(njets==0)"
+    tt:
+        boosted_0jet_lowdeltar: "(pt_tt_puppi>=120)&&(njets==0)&&(DiTauDeltaR < 3.2)"
+        boosted_0jet_highdeltar: "(pt_tt_puppi>=120)&&(njets==0)&&(DiTauDeltaR >= 3.2)"
+        0jet_lowdeltar: "(pt_tt_puppi<120)&&(njets==0)&&(DiTauDeltaR < 3.2)"
+        0jet_highdeltar: "(pt_tt_puppi<120)&&(njets==0)&&(DiTauDeltaR >= 3.2)"
+    em:
+        boosted_0jet: "(pt_tt_puppi>=120)&&(njets==0)"
+        0jet: "(pt_tt_puppi<120)&&(njets==0)"
+
 # Define main cut-based categories
 cutbased:
     mt:
@@ -43,6 +75,46 @@ cutbased:
         btag_mediumdzeta: "(nbtag>0)&&(pZetaPuppiMissVis<30)&&(pZetaPuppiMissVis>=-10)"
         nobtag_lowdzeta: "(nbtag==0)&&(pZetaPuppiMissVis>=-35)&&(pZetaPuppiMissVis<-10)"
         btag_lowdzeta: "(nbtag>0)&&(pZetaPuppiMissVis>=-35)&&(pZetaPuppiMissVis<-10)"
+
+# Optimized cuts for main categories
+# See for reference: https://indico.cern.ch/event/842569/contributions/3536321/attachments/1895266/3126759/SoverB_CutScans.pdf
+# -> mt_1_puppi < 60 (t & et for qqH125 and ggH125)
+# -> pZetaPuppiMissVis >= -30 (emu ggH125), alternative for mTdileptonMET neglected
+# -> pZetaPuppiMissVis >= 0 (emu qqH125)
+cutbased_v2:
+    mt:
+        wjets_control: "(1>0)&&(mt_1_puppi>=60)"
+        signal_region: "(1>0)&&(mt_1_puppi<60)"
+        nobtag: "(mt_1_puppi<60)&&(nbtag==0)"
+        btag: "(mt_1_puppi<60)&&(nbtag>0)"
+        nobtag_tightmt: "(mt_1_puppi<40)&&(nbtag==0)"
+        btag_tightmt: "(mt_1_puppi<40)&&(nbtag>0)"
+        nobtag_loosemt: "(mt_1_puppi>=40)&&(mt_1_puppi<60)&&(nbtag==0)"
+        btag_loosemt: "(mt_1_puppi>=40)&&(mt_1_puppi<60)&&(nbtag>0)"
+    et:
+        wjets_control: "(1>0)&&(mt_1_puppi>=60)"
+        signal_region: "(1>0)&&(mt_1_puppi<60)"
+        nobtag: "(mt_1_puppi<60)&&(nbtag==0)"
+        btag: "(mt_1_puppi<60)&&(nbtag>0)"
+        nobtag_tightmt: "(mt_1_puppi<40)&&(nbtag==0)"
+        btag_tightmt: "(mt_1_puppi<40)&&(nbtag>0)"
+        nobtag_loosemt: "(mt_1_puppi>=40)&&(mt_1_puppi<60)&&(nbtag==0)"
+        btag_loosemt: "(mt_1_puppi>=40)&&(mt_1_puppi<60)&&(nbtag>0)"
+    tt:
+        signal_region: "(1>0)&&(1>0)"
+        nobtag: "(1>0)&&(nbtag==0)"
+        btag: "(1>0)&&(nbtag>0)"
+    em:
+        ttbar_control: "(1>0)&&(pZetaPuppiMissVis<-30)"
+        signal_region: "(1>0)&&(pZetaPuppiMissVis>=-30)"
+        nobtag: "(nbtag==0)&&(pZetaPuppiMissVis>=-30)"
+        btag: "(nbtag>0)&&(pZetaPuppiMissVis>=-30)"
+        nobtag_highdzeta: "(nbtag==0)&&(pZetaPuppiMissVis>=30)"
+        btag_highdzeta: "(nbtag>0)&&(pZetaPuppiMissVis>=30)"
+        nobtag_mediumdzeta: "(nbtag==0)&&(pZetaPuppiMissVis<30)&&(pZetaPuppiMissVis>=0)"
+        btag_mediumdzeta: "(nbtag>0)&&(pZetaPuppiMissVis<30)&&(pZetaPuppiMissVis>=0)"
+        nobtag_lowdzeta: "(nbtag==0)&&(pZetaPuppiMissVis>=-30)&&(pZetaPuppiMissVis<0)"
+        btag_lowdzeta: "(nbtag>0)&&(pZetaPuppiMissVis>=-30)&&(pZetaPuppiMissVis<0)"
 
 # Binning for the quantities as final discriminators
 variables:
