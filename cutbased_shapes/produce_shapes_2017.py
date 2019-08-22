@@ -21,6 +21,7 @@ import argparse
 import yaml
 import copy
 import numpy as np
+import sys
 
 import logging
 logger = logging.getLogger()
@@ -230,8 +231,10 @@ def main(args):
                 processes[ch]["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, channel_dict[ch], [processes[ch][process] for process in ["EMB", "ZL", "W", "VVL", "TTL"]], processes[ch]["data"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
 
     # Variables and categories
-    #binning = yaml.load(open(args.binning), Loader=yaml.FullLoader) # only after LCG 96 available
-    binning = yaml.load(open(args.binning))
+    if sys.version_info.major <= 2 and sys.version_info.minor <= 7 and sys.version_info.micro <= 15:
+        binning = yaml.load(open(args.binning))
+    else:
+        binning = yaml.load(open(args.binning), Loader=yaml.FullLoader)
 
     # Cut-based analysis shapes
     categories = {
