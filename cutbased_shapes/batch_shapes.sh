@@ -16,5 +16,5 @@ source utils/setup_samples.sh $ERA
 
 echo "To normalize fake-factor shapes to nominal, execute the following, after the jobs are ready:"
 echo
-echo "hadd -f ${ERA}_${CHANNEL}_cutbased_shapes_${VARIABLE}.root ${ERA}_${CHANNEL}_${SHAPEGROUP}_cutbased_shapes_${VARIABLE}.root"
-echo "python fake-factor-application/normalize_shifts.py ${ERA}_${CHANNEL}_cutbased_shapes_${VARIABLE}.root"
+echo "hadd -f ${ERA}_cutbased_shapes_${VARIABLE}.root ${ERA}_??_*_cutbased_shapes_${VARIABLE}.root"
+echo "python fake-factor-application/normalize_shifts.py ${ERA}_cutbased_shapes_${VARIABLE}.root"
