@@ -1,4 +1,8 @@
 #!/bin/bash
+export PATH=/usr/local/cuda-8.0/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda-8.0/lib64:$LD_LIBRARY_PATH
+export PATH=/usr/local/cuda-9.0/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64:$LD_LIBRARY_PATH
 export PATH=/usr/local/cuda-10.0/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda-10.0/lib64:$LD_LIBRARY_PATH
 #Selects GPU with the least used Memory
