@@ -79,7 +79,7 @@ stxs_stage1p1_v2:
         2jet_mediummjj_highdeltar:  "(njets >= 2) && (mjj >= 350) && (mjj < 1000) && (DiTauDeltaR >= 2.5)"
         2jet_highmjj: " (njets >= 2) && (mjj >= 1000)"
     et:
-        0jet: "(njets == 0)"
+        0jet: "(1 > 0) && (njets == 0)"
 
         1jet_lowpt_lowdeltar:     "(pt_tt_puppi <  100) && (njets == 1) && (DiTauDeltaR <  2.5)"
         1jet_lowpt_highdeltar:    "(pt_tt_puppi <  100) && (njets == 1) && (DiTauDeltaR >= 2.5)"
