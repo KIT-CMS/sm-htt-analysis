@@ -83,9 +83,11 @@ if [[ ! -d $workdir ]]; then
     mkdir -p $workdir
 fi
 
+
 THIS_PWD=\$PWD
 cd $sw_src_dir
 eval \`scramv1 runtime -sh\`
+export PATH=\$PATH:\$PWD/grid-control:\$PWD/grid-control/scripts
 cd -
 echo This should be the CMSSW_BASE:
 echo \$CMSSW_BASE
@@ -105,7 +107,7 @@ job_management.py --executable NNScore \\
                   --batch_cluster $cluster \\
                   --command $modus \\
                   --input_ntuples_directory $input_ntuples_dir  \\
-                  --walltime 600  \\
+                  --walltime 1000  \\
                   --events_per_job 200000 \\
                   --friend_ntuples_directories $friendTrees \\
                   --cores 5 \\
@@ -114,24 +116,8 @@ job_management.py --executable NNScore \\
 
 cd $workdir/NNScore_workdir/
 if [[ $modus == submit ]]; then
-    condor_submit condor_NNScore_0.jdl
-elif [[ $modus == "check" ]]; then
-    cat arguments_resubmit.txt
-    condor_submit condor_NNScore_resubmit.jdl
-    if [[ "0" == \`cat arguments_resubmit.txt | wc -l\` ]]; then
-        job_management.py --executable NNScore \\
-            --batch_cluster $cluster \\
-            --command collect \\
-            --input_ntuples_directory $input_ntuples_dir  \\
-            --walltime 600  \\
-            --events_per_job 200000 \\
-            --friend_ntuples_directories $friendTrees \\
-            --cores 5 \\
-            --restrict_to_channels $channels \\
-            --custom_workdir_path $workdir
-    fi
+echo 'export X509_USER_PROXY=~/.globus/x509up && cd $sw_src_dir && scramv1 runtime -sh && export PATH=\$PATH:\$PWD/grid-control:\$PWD/grid-control/scripts &&cd -'
 fi
-
 eof
 
 
