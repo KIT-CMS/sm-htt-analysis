@@ -5,11 +5,11 @@ function overridePar() {
     val=$3
     if [[ "" = $( grep -e "$arg" $file ) ]]; then
         logerror $arg is not in $file
-        exit 2
+        return 2
     fi
     if [[ $( grep -e "(^|\s|--)$arg" $file | grep -c . ) >1 ]]; then
         logerror $arg appears multiple times in $file, aborting.
-        exit 2
+        return 2
     fi
     sed -i -E "s@(^|\s|--)$arg(\s+|=)\w+@\1$arg\2$val@" $file
 }
@@ -21,11 +21,11 @@ function getPar() {
 
     if [[ $nlines == 0 ]]; then
         logerror $arg is not in $file
-        exit 2
+        return 2
     fi
     if [[ $nlines >1 ]]; then
         logerror $arg appears multiple times in $file, aborting.
-        exit 2
+        return 2
     fi
     echo $lines | sed -E "s@(^|\s|--)($arg)(\s+|=)(\w+).*@\4@"
 }
@@ -43,15 +43,15 @@ function updateSymlink() {
         ln -s $source $target
     else
         logerror "Invalid source: $source"
-        exit 1
+        return 1
     fi
 
 }
 
 function recommendCPUs() {
-    freecpus=$(top -bn1 | grep "Cpu(s)" | sed -E "s/.* ([0-9.]+)(%| )id.*/\1/" )
+    avUsage=$(grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage}')
     ncpus=$(($(grep 'cpu' /proc/stat | wc -l)-1))
-    echo $freecpus $ncpus | awk '{print int($1/100*$2*.7)}'
+    echo $avUsage $ncpus | awk '{print int((1-$1/100)*$2*.7)}'
 }
 
 
@@ -67,11 +67,11 @@ function logerror {
 function logandrun() {
     echo -e "\e[43m[RUN]\e[0m" $( date +"%y-%m-%d %R" ): $@
     $@
-    exit_code=$?
-    if [[ $exit_code == 0 ]]; then
+    return_code=$?
+    if [[ $return_code == 0 ]]; then
         echo -e "\e[42m[COMPLETE]\e[0m" $( date +"%y-%m-%d %R" ): $@
     else
         logerror $@
     fi
-    #[[ -z $sourced || $sourced =="0" ]] && exit $exit_code
+    return $return_code
 }
