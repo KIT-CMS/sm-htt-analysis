@@ -10,9 +10,6 @@ classes:
 - ztt
 - noniso
 - misc
-datasets:
-- ml/2016_tt/fold0_training_dataset.root
-- ml/2016_tt/fold1_training_dataset.root
 event_weights: training_weight
 global_weight_scale: 1.0
 model:

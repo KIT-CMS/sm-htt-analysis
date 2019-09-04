@@ -1,7 +1,3 @@
-# Training datasets for different folds
-datasets:
-    - ml/2017_tt/fold0_training_dataset.root
-    - ml/2017_tt/fold1_training_dataset.root
 
 # Base path for all output files
 

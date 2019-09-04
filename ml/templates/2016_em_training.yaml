@@ -14,9 +14,6 @@ classes:
 - ss
 - misc
 - db
-datasets:
-- ml/2016_em/fold0_training_dataset.root
-- ml/2016_em/fold1_training_dataset.root
 event_weights: training_weight
 global_weight_scale: 1.0
 model:
