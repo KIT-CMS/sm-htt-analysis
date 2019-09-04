@@ -14,9 +14,6 @@ classes:
 - ss
 - misc
 - db
-datasets:
-- ml/2018_em/fold0_training_dataset.root
-- ml/2018_em/fold1_training_dataset.root
 event_weights: training_weight
 global_weight_scale: 1.0
 model:
@@ -25,7 +22,7 @@ model:
   epochs: 100000
   name: smhtt_dropout_tanh
   save_best_only: true
-output_path: ml/2018_em
+output_path: ml/out/2018_em
 preprocessing: standard_scaler
 seed: 1234
 train_test_split: 0.75
