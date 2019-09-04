@@ -20,6 +20,8 @@ plots/
 ml/2016_??
 ml/2017_??
 ml/old
+ml/out
+output
 .env
 .vscode
 *.code-workspace
