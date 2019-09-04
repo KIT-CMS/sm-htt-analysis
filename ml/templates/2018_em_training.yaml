@@ -22,6 +22,7 @@ model:
   epochs: 100000
   name: smhtt_dropout_tanh
   save_best_only: true
+  steps_per_epoch: 1000
 output_path: ml/out/2018_em
 preprocessing: standard_scaler
 seed: 1234

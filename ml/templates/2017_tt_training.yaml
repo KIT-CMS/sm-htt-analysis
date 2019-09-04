@@ -54,3 +54,4 @@ model:
     epochs: 100000
     early_stopping: 50
     save_best_only: true
+    steps_per_epoch: 1000
