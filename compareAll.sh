@@ -62,13 +62,6 @@ for channel in ${channels[@]}; do
         [[ $sourced != 1 ]] && exit 1
     fi
 done
-for method in ${methods[@]}; do
-    if [[ ! "mc_mc emb_mc mc_ff emb_ff" =~ ${method} ]]; then
-        logerror ${method} is not a valid method.
-        [[ $sourced != 1 ]] && exit 1
-    fi
-done
-
 
 for DIRECTORY in shapes datacards combine plotting utils
 do
@@ -79,23 +72,19 @@ do
 done
 ############################################
 ############# Ensure all folders and files are available for mc and emb
-for method in ${methods[@]}; do
-    for era in ${eras[@]}; do
-        for channel in ${channels[@]}; do
-            mldir=$sm_htt_analysis_dir/ml/out/${era}_${channel}_${method}
-            #trainingConfFile=$sm_htt_analysis_dir/ml/templates/${era}_${channel}_${method}_training.yaml
-            if [[ ! -d $mldir ]]; then
-                mkdir $mldir
-                loginfo "Creating $mldir"
-            fi
-            # if [[ ! -f $trainingConfFile ]]; then
-            #     cp $sm_htt_analysis_dir/ml/templates/${era}_${channel}_training.yaml $trainingConfFile
-            #     loginfo "copying ml/templates/${era}_${channel}_training.yaml to $trainingConfFile "
-            # fi
+function ensuremldirs() {
+    for method in ${methods[@]}; do
+        for era in ${eras[@]}; do
+            for channel in ${channels[@]}; do
+                mldir=$sm_htt_analysis_dir/ml/out/${era}_${channel}_${method}
+                if [[ ! -d $mldir ]]; then
+                    mkdir $mldir
+                    loginfo "Creating $mldir"
+                fi
+            done
         done
     done
-done
-
+}
 
 source completedMilestones
 
@@ -109,6 +98,7 @@ function compenv() {
 }
 
 function create_training_dataset() {
+    ensuremldirs
     for method in ${methods[@]}; do
         export method
         logandrun ./ml/create_training_dataset.sh ${erasarg} ${channelsarg}
@@ -117,6 +107,7 @@ function create_training_dataset() {
 }
 
 function mltrain() {
+    ensuremldirs
     for method in ${methods[@]}; do
     export method
         for era in ${eras[@]}; do
@@ -128,6 +119,7 @@ function mltrain() {
 }
 
 function mltest() {
+    ensuremldirs
     for method in ${methods[@]}; do
     export method
         for era in ${eras[@]}; do
@@ -177,37 +169,19 @@ function provideCluster() {
     fi
 }
 
-function submitCluster(){
-    if [[ ! "mc_mc emb_mc mc_ff emb_ff" =~ $1 || -z $1 ]]; then
-        logerror Needs exactly one method as argument, eg mc_mc instead of "$1"
-        [[ $sourced != 1 ]] && exit 1
-    else
-        method=$1
-    fi
+function runCluster(){
+    for method in ${methods[@]}; do
+    export method
     for era in ${eras[@]}; do
+        provideCluster $method $era
         logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "submit" ${era}_${method}
-    done
-}
-function resubmitCluster() {
-    if [[ ! "mc_mc emb_mc mc_ff emb_ff" =~ $1 ]]; then
-        logerror Needs exactly one method as argument, eg mc_mc instead of "$1"
-        [[ $sourced != 1 ]] && exit 1
-    else
-        method=$1
-    fi
-    for era in ${eras[@]}; do
-        logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "check" ${era}_${method}
-    done
-}
-function collectCluster() {
-    if [[ ! "mc_mc emb_mc mc_ff emb_ff" =~ $1 ]]; then
-        logerror Needs exactly one method as argument, eg mc_mc instead of "$1"
-        [[ $sourced != 1 ]] && exit 1
-    else
-        method=$1
-    fi
-    for era in ${eras[@]}; do
+        read -p " Collect? y/[n]" yn
+        if [[ ! $yn == "y" ]]; then
+          return 0
+        fi
         logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "collect" ${era}_${method}
+
+    done
     done
 }
 
@@ -293,38 +267,46 @@ function runana() {
     for method in ${methods[@]}; do
     export method
         for era in ${eras[@]}; do
-            for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do
-                if [[ $STXS_FIT == "inclusive" || $STXS_FIT == "stxs_stage0" ]]; then
-                    STXS_SIGNALS=stxs_stage0
-                elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
-                    STXS_SIGNALS=stxs_stage1p1
-                fi
-                #logandrun ./combine/signal_strength.sh ${era} $STXS_FIT output/datacards/${era}-${method}-smhtt-ML/${STXS_SIGNALS}/cmb/125 ${method}
-                [[ $? == 0 ]] || return $?
-            done
-            #[[ $? == 0 ]] || return $?
-            # #./combine/signal_strength.sh $ERA "robustHesse" | tee ${ERA}_signal_strength_robustHesse.log
-                STXS_SIGNALS="stxs_stage0"
-                mkdir -p ${era}-${method}_prefit-plots
-                FILE="${era}_datacard_shapes_prefit-${method}.root"
+            if [[ True ]]; then
+                for STXS_FIT in "inclusive" "stxs_stage0";do # "stxs_stage1p1"; do
+                    if [[ $STXS_FIT == "inclusive" || $STXS_FIT == "stxs_stage0" ]]; then
+                        STXS_SIGNALS=stxs_stage0
+                    elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
+                        STXS_SIGNALS=stxs_stage1p1
+                    fi
+                    for channel in ${channels[@]}; do
+                        logandrun ./combine/signal_strength.sh ${era} $STXS_FIT output/datacards/${era}-${method}-smhtt-ML/${STXS_SIGNALS}/$channel/125 $channel ${method}
+                    done
+                    logandrun ./combine/signal_strength.sh ${era} $STXS_FIT output/datacards/${era}-${method}-smhtt-ML/${STXS_SIGNALS}/cmb/125 cmb ${method}
+                done
+            fi
+            if [[ False ]]; then
+                #[[ $? == 0 ]] || return $?
+                ### postfit shapes
+                STXS_FIT="stxs_stage0"
+                DATACARDDIR=output/datacards/${era}-${method}-smhtt-ML/${STXS_FIT}/cmb/125
+                FILE="${DATACARDDIR}/prefitshape-${era}-${method}-${STXS_FIT}.root"
+                [[ ! -f $FILE ]] || logandrun ./combine/prefit_postfit_shapes.sh ${era} ${STXS_FIT} ${DATACARDDIR} ${method}
+
                 OPTION="--png"
                 (
-                source utils/setup_cvmfs_sft.sh
-                source utils/setup_python.sh
-                if [[ $method =~ "ff" ]]; then
-                    TRAINFF=True
-                else
-                    TRAINFF=False
-                fi
-                if [[ $method =~ "emb" ]]; then
-                    TRAINEMB=True
-                else
-                    TRAINEMB=False
-                fi
-                logandrun ./plotting/plot_shapes.py -i $FILE -o ${era}-${method}_prefit-plots -c ${channels[@]} -e $era $OPTION --categories $CATEGORIES $JETFAKES_ARG $EMBEDDING_ARG --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB
+                    source utils/setup_cvmfs_sft.sh
+                    source utils/setup_python.sh
+                    if [[ $method =~ "ff" ]]; then
+                        TRAINFF=True
+                    else
+                        TRAINFF=False
+                    fi
+                    if [[ $method =~ "emb" ]]; then
+                        TRAINEMB=True
+                    else
+                        TRAINEMB=False
+                    fi
+                    PLOTDIR=output/plots/${era}-${method}_prefit-plots
+                    mkdir -p $PLOTDIR
+                    #logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channels[@]} -e $era $OPTION --categories $CATEGORIES --fake-factor --embedding --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB
                 )
-            #logandrun ./combine/prefit_postfit_shapes.sh ${era} stxs_stage0 output/datacards/${era}-${method}-smhtt-ML/stxs_stage0/cmb/125 ${method}
-            # done
+            fi
         done
     done
 }
