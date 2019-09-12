@@ -96,10 +96,9 @@ def parse_arguments():
         "--binning", required=True, type=str, help="Binning configuration.")
     parser.add_argument(
         "--channels",
-        default=[],
-        nargs='+',
-        type=str,
-        help="Channels to be considered.")
+        default=["em","et","mt","tt"],
+        type=lambda channellist: [channel for channel in channellist.split(',')],
+        help="Channels to be considered, seperated by a comma without space")
     parser.add_argument("--era", type=str, help="Experiment era.")
     parser.add_argument(
         "--gof-channel",
