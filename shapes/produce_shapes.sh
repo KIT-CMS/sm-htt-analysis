@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-
 ERA=$1
 CHANNELS=$2
 METHOD=$3
@@ -11,11 +10,14 @@ source utils/setup_python.sh
 source utils/setup_samples.sh $ERA
 source utils/bashFunctionCollection.sh
 
-ARTUS_FRIENDS=$HOME/batch-out/${ERA}_${METHOD}/NNScore_workdir/NNScore_collected/
-ARTUS_FRIENDS_ET=$ARTUS_FRIENDS
-ARTUS_FRIENDS_EM=$ARTUS_FRIENDS
-ARTUS_FRIENDS_MT=$ARTUS_FRIENDS
-ARTUS_FRIENDS_TT=$ARTUS_FRIENDS
+if [[ -d output/friend_trees ]]; then
+    ARTUS_FRIENDS=output/friend_trees/${ERA}/*/${METHOD}
+    ARTUS_FRIENDS_ET=$ARTUS_FRIENDS
+    ARTUS_FRIENDS_EM=$ARTUS_FRIENDS
+    ARTUS_FRIENDS_MT=$ARTUS_FRIENDS
+    ARTUS_FRIENDS_TT=$ARTUS_FRIENDS
+fi
+
 # Produce shapes
 logandrun python shapes/produce_shapes_$ERA.py \
     --directory $ARTUS_OUTPUTS \
