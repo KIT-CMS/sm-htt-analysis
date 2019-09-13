@@ -62,8 +62,10 @@ cutbased:
 #
 stxs_stage1p1_v2:
     mt:
-        0jet_lowpt:  "(pt_tt_puppi <  75) && (njets == 0)"
-        0jet_highpt: "(pt_tt_puppi >= 75) && (njets == 0)"
+        0jet_lowpt_tightmt:   "(pt_tt_puppi <  75) && (njets == 0) && (mt_1_puppi <  40)"
+        0jet_lowpt_loosemt:   "(pt_tt_puppi <  75) && (njets == 0) && (mt_1_puppi >= 40) && (mt_1_puppi < 70)"
+        0jet_highpt_tightmt:  "(pt_tt_puppi >= 75) && (njets == 0) && (mt_1_puppi <  40)"
+        0jet_highpt_loosemt:  "(pt_tt_puppi >= 75) && (njets == 0) && (mt_1_puppi >= 40) && (mt_1_puppi < 70)"
 
         1jet_lowpt_lowdeltar:     "(pt_tt_puppi <  75) && (njets == 1) && (DiTauDeltaR <  2.5)"
         1jet_lowpt_highdeltar:    "(pt_tt_puppi <  75) && (njets == 1) && (DiTauDeltaR >= 2.5)"
@@ -79,7 +81,8 @@ stxs_stage1p1_v2:
         2jet_mediummjj_highdeltar:  "(njets >= 2) && (mjj >= 350) && (mjj < 1000) && (DiTauDeltaR >= 2.5)"
         2jet_highmjj: " (njets >= 2) && (mjj >= 1000)"
     et:
-        0jet: "(1 > 0) && (njets == 0)"
+        0jet_tightmt: "(1 > 0) && (njets == 0) && (mt_1_puppi <  40)"
+        0jet_loosemt: "(1 > 0) && (njets == 0) && (mt_1_puppi >= 40) && (mt_1_puppi < 70)"
 
         1jet_lowpt_lowdeltar:     "(pt_tt_puppi <  100) && (njets == 1) && (DiTauDeltaR <  2.5)"
         1jet_lowpt_highdeltar:    "(pt_tt_puppi <  100) && (njets == 1) && (DiTauDeltaR >= 2.5)"
@@ -109,8 +112,12 @@ stxs_stage1p1_v2:
         2jet_mediummjj_highdeltar:  "(njets >= 2) && (mjj >= 350) && (mjj < 1000) && (DiTauDeltaR >= 2.5)"
         2jet_highmjj: " (njets >= 2) && (mjj >= 1000)"
     em:
-        0jet_lowpt:  "(pt_tt_puppi <  10) && (njets == 0)"
-        0jet_highpt: "(pt_tt_puppi >= 10) && (njets == 0)"
+        0jet_lowpt_highdzeta:    "(pt_tt_puppi <  10) && (njets == 0) && (pZetaPuppiMissVis >=  30)"
+        0jet_lowpt_mediumdzeta:  "(pt_tt_puppi <  10) && (njets == 0) && (pZetaPuppiMissVis >=  10) && (pZetaPuppiMissVis < 30)"
+        0jet_lowpt_lowdzeta:     "(pt_tt_puppi <  10) && (njets == 0) && (pZetaPuppiMissVis <  -10)"
+        0jet_highpt_highdzeta:   "(pt_tt_puppi >= 10) && (njets == 0) && (pZetaPuppiMissVis >=  30)"
+        0jet_highpt_mediumdzeta: "(pt_tt_puppi >= 10) && (njets == 0) && (pZetaPuppiMissVis >=  10) && (pZetaPuppiMissVis < 30)"
+        0jet_highpt_lowdzeta:    "(pt_tt_puppi >= 10) && (njets == 0) && (pZetaPuppiMissVis <  -10)"
 
         1jet_lowpt:        "(pt_tt_puppi <   40) && (njets == 1)"
         1jet_lowmediumpt:  "(pt_tt_puppi >=  40) && (pt_tt_puppi <  120) && (njets == 1)"
@@ -121,43 +128,6 @@ stxs_stage1p1_v2:
         2jet_mediummjj_lowjdeta:   "(njets >= 2) && (mjj >= 350) && (mjj < 1000) && (jdeta <  4.5)"
         2jet_mediummjj_highjdeta:  "(njets >= 2) && (mjj >= 350) && (mjj < 1000) && (jdeta >= 4.5)"
         2jet_highmjj: " (njets >= 2) && (mjj >= 1000)"
-
-# Optimized cuts for main categories
-# See for reference: https://indico.cern.ch/event/842569/contributions/3536321/attachments/1895266/3126759/SoverB_CutScans.pdf
-# -> mt_1_puppi < 60 (t & et for qqH125 and ggH125)
-# -> pZetaPuppiMissVis >= -30 (emu ggH125), alternative for mTdileptonMET neglected
-# -> pZetaPuppiMissVis >= 0 (emu qqH125)
-cutbased_v2:
-    mt:
-        wjets_control: "(1>0)&&(mt_1_puppi>=60)"
-        nobtag: "(mt_1_puppi<60)&&(nbtag==0)"
-        btag: "(mt_1_puppi<60)&&(nbtag>0)"
-        nobtag_tightmt: "(mt_1_puppi<40)&&(nbtag==0)"
-        btag_tightmt: "(mt_1_puppi<40)&&(nbtag>0)"
-        nobtag_loosemt: "(mt_1_puppi>=40)&&(mt_1_puppi<60)&&(nbtag==0)"
-        btag_loosemt: "(mt_1_puppi>=40)&&(mt_1_puppi<60)&&(nbtag>0)"
-    et:
-        wjets_control: "(1>0)&&(mt_1_puppi>=60)"
-        nobtag: "(mt_1_puppi<60)&&(nbtag==0)"
-        btag: "(mt_1_puppi<60)&&(nbtag>0)"
-        nobtag_tightmt: "(mt_1_puppi<40)&&(nbtag==0)"
-        btag_tightmt: "(mt_1_puppi<40)&&(nbtag>0)"
-        nobtag_loosemt: "(mt_1_puppi>=40)&&(mt_1_puppi<60)&&(nbtag==0)"
-        btag_loosemt: "(mt_1_puppi>=40)&&(mt_1_puppi<60)&&(nbtag>0)"
-    tt:
-        signal_region: "(1>0)&&(1>0)"
-        nobtag: "(1>0)&&(nbtag==0)"
-        btag: "(1>0)&&(nbtag>0)"
-    em:
-        ttbar_control: "(1>0)&&(pZetaPuppiMissVis<-30)"
-        nobtag: "(nbtag==0)&&(pZetaPuppiMissVis>=-30)"
-        btag: "(nbtag>0)&&(pZetaPuppiMissVis>=-30)"
-        nobtag_highdzeta: "(nbtag==0)&&(pZetaPuppiMissVis>=30)"
-        btag_highdzeta: "(nbtag>0)&&(pZetaPuppiMissVis>=30)"
-        nobtag_mediumdzeta: "(nbtag==0)&&(pZetaPuppiMissVis<30)&&(pZetaPuppiMissVis>=0)"
-        btag_mediumdzeta: "(nbtag>0)&&(pZetaPuppiMissVis<30)&&(pZetaPuppiMissVis>=0)"
-        nobtag_lowdzeta: "(nbtag==0)&&(pZetaPuppiMissVis>=-30)&&(pZetaPuppiMissVis<0)"
-        btag_lowdzeta: "(nbtag>0)&&(pZetaPuppiMissVis>=-30)&&(pZetaPuppiMissVis<0)"
 
 # Binning for the quantities as final discriminators
 variables:
