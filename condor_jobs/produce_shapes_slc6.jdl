@@ -11,5 +11,5 @@ Requirements = ( (Target.ProvidesCPU == True) && (TARGET.ProvidesEKPResources ==
 RequestMemory = 20000
 request_disk = 204800
 RequestCpus = 12
-accounting_group = higgs
+accounting_group = cms.higgs
 queue arguments from arguments.txt
