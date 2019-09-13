@@ -207,7 +207,7 @@ def main(args):
         if "gg" in args.shape_group:
             for m in susyggH_masses:
                 name = args.shape_group + "_" + str(m)
-                processes[ch][name] = Process(name, SUSYggHEstimation(era, directory, channel_dict[ch], str(m), args.shape_group, friend_directory=friend_directories[ch]))
+                processes[ch][name] = Process(name, SUSYggHEstimation(era, directory, channel_dict[ch], str(m), args.shape_group.replace("gg",""), friend_directory=friend_directories[ch]))
         if args.shape_group == "bbH":
             for m in susybbH_masses:
                 name = "bbH_" + str(m)
@@ -249,11 +249,12 @@ def main(args):
         for category in binning["cutbased"][ch]:
             cuts = Cuts(Cut(binning["cutbased"][ch][category], category))
             categories[ch].append(Category(category, channel_dict[ch], cuts, variable=discriminator))
-            if category in ["signal_region", "nobtag"]:
-                for subcategory in binning["stxs_stage1p1"]:
+            if category == "nobtag":
+                for subcategory in sorted(binning["stxs_stage1p1_v2"][ch]):
                     stage1p1cuts = copy.deepcopy(cuts)
-                    stage1p1cuts.add(Cut(binning["stxs_stage1p1"][subcategory], category + "_" + subcategory))
+                    stage1p1cuts.add(Cut(binning["stxs_stage1p1_v2"][ch][subcategory], category + "_" + subcategory))
                     categories[ch].append(Category(category + "_" + subcategory, channel_dict[ch], stage1p1cuts, variable=discriminator))
+
 
     # Choice of activated signal processes
     signal_nicks = []
