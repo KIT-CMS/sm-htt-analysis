@@ -17,9 +17,9 @@ shopt -s checkjobs # wait for all jobs before exiting
 export PARALLEL=1
 export USE_BATCH_SYSTEM=1
 export cluster=lxplus7
-export sm_htt_analysis_dir="/portal/ekpbms3/home/${USER}/sm-htt-analysis" ### local sm-htt repo !
+export sm_htt_analysis_dir=$( pwd ) ### local sm-htt repo !
 export cmssw_src_local="/portal/ekpbms3/home/${USER}/CMSSW_10_2_14/src" ### local CMSSW !
-export batch_out_local="/portal/ekpbms3/home/${USER}/batch-out"
+export batch_out_local=${sm_htt_analysis_dir}/output/friend_trees
 source utils/bashFunctionCollection.sh
 
 
@@ -76,7 +76,7 @@ function ensuremldirs() {
     for method in ${methods[@]}; do
         for era in ${eras[@]}; do
             for channel in ${channels[@]}; do
-                mldir=$sm_htt_analysis_dir/ml/out/${era}_${channel}_${method}
+                mldir=ml/out/${era}_${channel}_${method}
                 if [[ ! -d $mldir ]]; then
                     mkdir $mldir
                     loginfo "Creating $mldir"
@@ -84,6 +84,20 @@ function ensuremldirs() {
             done
         done
     done
+}
+
+ensureoutdirs() {
+    if [[ ! -d output ]]; then
+        logerror "no output dir"
+        return 1
+    else
+        pushd output
+        for folder in datacards  log  plots  shapes  signalStrength; do
+            [[ ! -d $folder ]] && mkdir $folder
+        done
+        mkdir -p condorShapes/{error,log,out}
+        popd
+    fi
 }
 
 source completedMilestones
@@ -144,12 +158,6 @@ function exportForApplication {
 }
 
 function provideCluster() {
-    if [[ ! "mc_mc emb_mc mc_ff emb_ff" =~ $1 || -z $1 ]]; then
-        logerror Needs exactly one method as argument, eg mc_mc instead of "$1"
-        [[ $sourced != 1 ]] && exit 1 || exit 0
-    else
-        method=$1
-    fi
     for era in ${eras[@]}; do
         for channel in ${channels[@]}; do
             ### Supply the generated models in the hard-coded path in the friendProducer
@@ -171,17 +179,17 @@ function provideCluster() {
 
 function runCluster(){
     for method in ${methods[@]}; do
-    export method
-    for era in ${eras[@]}; do
-        provideCluster $method $era
-        logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "submit" ${era}_${method}
-        read -p " Collect? y/[n]" yn
-        if [[ ! $yn == "y" ]]; then
-          return 0
-        fi
-        logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "collect" ${era}_${method}
-
-    done
+        export method
+        for era in ${eras[@]}; do
+            provideCluster $method $era
+            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "submit" ${era}_${method}
+            read -p " Collect? y/[n]" yn
+            if [[ ! $yn == "y" ]]; then
+            return 0
+            fi
+            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "collect" ${era}_${method}
+            copyFromCluster
+        done
     done
 }
 
@@ -194,19 +202,17 @@ function copyFromCluster() {
             logerror "!=y \n aborting"
             [[ $sourced != 1 ]] && exit 0
         fi
-
-        for era in ${eras[@]}; do
-            [[ ! -d $batch_out_local/${era}_${method}/NNScore_workdir/NNScore_collected  ]] && mkdir -p $batch_out_local/${era}_${method}/NNScore_workdir/NNScore_collected
-            logandrun lxrsync $USER@lxplus.cern.ch:$batch_out/${era}_${method}/NNScore_workdir/NNScore_collected/ $batch_out_local/${era}_${method}/NNScore_workdir/NNScore_collected
-        done
+        nnscorefolder=$batch_out_local/${era}/nnscore_friends/${method}
+        [[ ! -d $nnscorefolder  ]] && mkdir -p $nnscorefolder
+        logandrun lxrsync $USER@lxplus.cern.ch:$batch_out/${era}_${method}/NNScore_workdir/NNScore_collected/ $nnscorefolder
     fi
 }
 
 export JETFAKES=1 EMBEDDING=1 CATEGORIES="stxs_stage1p1"
 
 function genshapes() {
+    ensureoutdirs
     for method in ${methods[@]}; do
-        cd $sm_htt_analysis_dir
         for era in ${eras[@]}; do
             redoConversion=0
             if [[ ! -f output/shapes/${era}-${method}-${channelsarg}-shapes.root  ]]; then
@@ -232,12 +238,28 @@ function genshapes() {
     done
 }
 
+function subshapes(){
+    ensureoutdirs
+    for method in ${methods[@]}; do
+        for era in ${eras[@]}; do
+            for channel in ${channels[@]}; do
+                if [[ ! -f output/shapes/${era}-${method}-${channel}-shapes.root  ]]; then
+                    echo "$era $channel $method $(pwd -P)"
+                fi
+            done
+        done
+    done > condor_jobs/arguments.txt
+    logandrun condor_jobs/submit.sh
+}
 
 function gendatacards(){
+    ensureoutdirs
     for method in ${methods[@]}; do
         export method
         for era in ${eras[@]}; do
             for STXS_SIGNALS in "stxs_stage0" "stxs_stage1p1"; do
+                    DATACARDDIR=output/datacards/${era}-${method}-smhtt-ML/${STXS_SIGNALS}
+                    [ -d $DATACARDDIR ] || mkdir -p $DATACARDDIR
                     logandrun ./datacards/produce_datacard.sh ${era} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${method} ${channelsarg}
             done
         done
@@ -245,6 +267,7 @@ function gendatacards(){
 }
 
 function genworkspaces(){
+    ensureoutdirs
     for method in ${methods[@]}; do
     export method
         for era in ${eras[@]}; do
@@ -261,14 +284,62 @@ function genworkspaces(){
     done
 }
 
+function genMCprefitshapes(){
+    ensureoutdirs
+    export JETFAKES=0 EMBEDDING=0 CATEGORIES="stxs_stage1p1"
+    for method in ${methods[@]}; do
+        export method
+        for era in ${eras[@]}; do
+            for STXS_SIGNALS in "stxs_stage0"; do
+                    DATACARDDIR=output/datacards/${era}-${method}-smhtt-ML/${STXS_SIGNALS}
+                    [ -d $DATACARDDIR ] || mkdir -p $DATACARDDIR
+                    logandrun ./datacards/produce_datacard.sh ${era} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${method} ${channelsarg}
+            done
+            for STXS_FIT in "stxs_stage0"; do
+                fn="output/datacards/${era}-${method}-smhtt-ML/${STXS_SIGNALS}/cmb/125/${era}-${STXS_FIT}-workspace.root"
+                if [[ ! -f $fn ]]; then
+                    logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${method}
+                    [[ $? == 0 ]] || return $?
+                else
+                    loginfo "skipping workspace creation, as  $fn exists"
+                fi
+            done
+    STXS_FIT="stxs_stage0"
+    DATACARDDIR=output/datacards/${era}-${method}-smhtt-ML/${STXS_FIT}/cmb/125
+    FILE="${DATACARDDIR}/prefitshape-${era}-${method}-${STXS_FIT}.root"
+    logandrun ./combine/prefit_postfit_shapes.sh ${era} ${STXS_FIT} ${DATACARDDIR} ${method}
+
+                OPTION="--png"
+                (
+                    source utils/setup_cvmfs_sft.sh
+                    source utils/setup_python.sh
+                    if [[ $method =~ "ff" ]]; then
+                        TRAINFF=True
+                    else
+                        TRAINFF=False
+                    fi
+                    if [[ $method =~ "emb" ]]; then
+                        TRAINEMB=True
+                    else
+                        TRAINEMB=False
+                    fi
+                    PLOTDIR=output/plots/${era}-${method}_prefit-plots
+                    mkdir -p $PLOTDIR
+                    logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channels[@]} -e $era $OPTION --categories $CATEGORIES --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB
+                )
+        done
+    done
+}
+
 ### Subroutine called by runstages
 ### do not run this parallel! it writes to fit.root in the main dir and is then moved
 function runana() {
+    ensureoutdirs
     for method in ${methods[@]}; do
     export method
         for era in ${eras[@]}; do
             if [[ True ]]; then
-                for STXS_FIT in "inclusive" "stxs_stage0";do # "stxs_stage1p1"; do
+                for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do
                     if [[ $STXS_FIT == "inclusive" || $STXS_FIT == "stxs_stage0" ]]; then
                         STXS_SIGNALS=stxs_stage0
                     elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
