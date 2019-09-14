@@ -12,11 +12,10 @@ source utils/bashFunctionCollection.sh
 #export SCRAM_ARCH="slc6_amd64_gcc700"
 export VO_CMS_SW_DIR="/cvmfs/cms.cern.ch"
 source $VO_CMS_SW_DIR/cmsset_default.sh
-export sm_htt_analysis_dir="/portal/ekpbms3/home/${USER}/sm-htt-analysis"
 
 
-if [[ ! "submit check" =~ $modus || -z $modus ]]; then
-    logerror "modus must be submit or check but is $modus !"
+if [[ ! "submit collect" =~ $modus || -z $modus ]]; then
+    logerror "modus must be submit or collect but is $modus !"
     exit 1
 fi
 if [[ ! "etp lxplus7" =~ $cluster || -z $cluster ]]; then
@@ -30,7 +29,7 @@ if [[ $cluster = "etp" ]]; then
     export batch_out="/portal/ekpbms3/home/${USER}/batch-out"
 
     #### Path pick ntuples + friend tree paths here
-    source $sm_htt_analysis_dir/utils/setup_samples.sh $era
+    source utils/setup_samples.sh $era
     input_ntuples_dir=$ARTUS_OUTPUTS
 
     if [[ $channel != "" ]]; then
@@ -73,8 +72,6 @@ elif [[ $cluster == "lxplus7" ]]; then
 fi
 export workdir=$batch_out/$outdir
 
-
-set -x
 echo "run this on $cluster"
 tmp=$( mktemp )
 cat << eof > $tmp
@@ -116,7 +113,11 @@ job_management.py --executable NNScore \\
 
 cd $workdir/NNScore_workdir/
 if [[ $modus == submit ]]; then
-echo 'export X509_USER_PROXY=~/.globus/x509up && cd $sw_src_dir && scramv1 runtime -sh && export PATH=\$PATH:\$PWD/grid-control:\$PWD/grid-control/scripts &&cd -'
+echo 'export X509_USER_PROXY=~/.globus/x509up'
+echo 'cd $sw_src_dir'
+echo 'cmsenv'
+echo 'export PATH=\$PATH:\$PWD/grid-control:\$PWD/grid-control/scripts'
+echo 'cd -'
 fi
 eof
 
