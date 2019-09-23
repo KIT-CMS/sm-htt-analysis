@@ -2,14 +2,14 @@
 
 ERA=$1
 # Samples Run2016
-basedir="/ceph/sbrommer/artus_ntuple/2016_samples"
-ARTUS_OUTPUTS_2016="$basedir/2019_07_19_merged/"
-NNScore_Friends_2016="$basedir/2019_07_19_merged_NNScore_friends/NNScore_collected/"
-#SVFit_Friends_2016="$basedir/2016/svfit_friends/"
-MELA_Friends_2016="$basedir/2019_07_19_merged_MELA_friends/MELA_collected/"
-FF_Friends_2016="$basedir/2019_07_19_merged_FakeFactor_friends/FakeFactors_collected/"
+basedir="/ceph/htautau"
+ARTUS_OUTPUTS_2016="$basedir/2016/ntuples/"
+NNScore_Friends_2016="/storage/9/sbrommer/friend_tree_workdir/et/NNScore_workdir/NNScore_collected/"
+SVFit_Friends_2016="$basedir/2016/svfit_friends/"
+MELA_Friends_2016="$basedir/2016/mela_friends/"
+FF_Friends_2016="$basedir/2016/ff_friends/"
 
-ARTUS_FRIENDS_2016="$NNScore_Friends_2016 $MELA_Friends_2016" # TODO update once friends are produced
+ARTUS_FRIENDS_2016="$MELA_Friends_2016 $SVFit_Friends_2016" # TODO update once friends are produced
 ARTUS_FRIENDS_ET_2016=$ARTUS_FRIENDS_2016
 ARTUS_FRIENDS_MT_2016=$ARTUS_FRIENDS_2016
 ARTUS_FRIENDS_TT_2016=$ARTUS_FRIENDS_2016
