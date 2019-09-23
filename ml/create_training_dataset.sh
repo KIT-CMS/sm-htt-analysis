@@ -13,49 +13,51 @@ source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
 source utils/bashFunctionCollection.sh
 
-tauEstimation=emb
-jetEstimation=ff
-if [[ $method == *"mc_"* ]]; then
-    tauEstimation=mc
-fi
-if [[ $method == *"_mc"* ]]; then
-    jetEstimation=mc
-fi
-
 function run_procedure() {
-    SELERA=$1
-    SELCHANNEL=$2
-    source utils/setup_samples.sh $SELERA
-    [[ -z $method ]] && outdir=ml/out/${SELERA}_${SELCHANNEL} ||  outdir=ml/out/${SELERA}_${SELCHANNEL}_${method}
+    ERA=$1
+    CHANNEL=$2
+    METHOD=$3
+
+    tauEstimation=emb
+    jetEstimation=ff
+    if [[ $METHOD == *"mc_"* ]]; then
+        tauEstimation=mc
+    fi
+    if [[ $METHOD == *"_mc"* ]]; then
+        jetEstimation=mc
+    fi
+
+    source utils/setup_samples.sh $ERA
+    [[ -z $METHOD ]] && outdir=ml/out/${ERA}_${CHANNEL} ||  outdir=ml/out/${ERA}_${CHANNEL}_${METHOD}
     mkdir -p $outdir
 
     ARTUS_FRIENDS=""
-    if [ ${SELCHANNEL} == 'mt' ]
+    if [ ${CHANNEL} == 'mt' ]
     then
         ARTUS_FRIENDS="${ARTUS_FRIENDS_MT} $FF_Friends_2017"
     fi
-    if [ ${SELCHANNEL} == 'et' ]
+    if [ ${CHANNEL} == 'et' ]
     then
         ARTUS_FRIENDS="${ARTUS_FRIENDS_ET} $FF_Friends_2017"
     fi
-    if [ ${SELCHANNEL} == 'tt' ]
+    if [ ${CHANNEL} == 'tt' ]
     then
         ARTUS_FRIENDS="${ARTUS_FRIENDS_TT} $FF_Friends_2017"
     fi
-    if [ ${SELCHANNEL} == 'em' ]
+    if [ ${CHANNEL} == 'em' ]
     then
         ARTUS_FRIENDS=${ARTUS_FRIENDS_EM}
     fi
     # Write dataset config
      logandrun python ml/write_dataset_config.py \
-         --era ${SELERA} \
-         --channel ${SELCHANNEL} \
+         --era ${ERA} \
+         --channel ${CHANNEL} \
          --base-path $ARTUS_OUTPUTS \
          --friend-paths $ARTUS_FRIENDS \
          --database $KAPPA_DATABASE \
          --output-path $outdir \
          --output-filename training_dataset.root \
-         --tree-path ${SELCHANNEL}_nominal/ntuple \
+         --tree-path ${CHANNEL}_nominal/ntuple \
          --event-branch event \
          --training-weight-branch training_weight \
          --training-z-estimation-method $tauEstimation \
@@ -77,9 +79,18 @@ function run_procedure() {
 
     # write the classweight to dataset_config.yaml
     logandrun python ./ml/yamlmerge.py \
-        --era ${SELERA} \
-        --channel ${SELCHANNEL} \
-        --dataset-config-file ml/out/${SELERA}_${SELCHANNEL}_${method}/dataset_config.yaml
+        --era ${ERA} \
+        --channel ${CHANNEL} \
+        --dataset-config-file ml/out/${ERA}_${CHANNEL}_${METHOD}/dataset_config.yaml
 }
-source utils/multirun.sh
-genArgsAndRun run_procedure $@
+IFS=',' read -r -a eras <<< $1
+IFS=',' read -r -a channels <<< $2
+IFS=',' read -r -a methods <<< $3
+
+for method in ${methods[@]}; do
+    for era in ${eras[@]}; do
+        for channel in ${channels[@]}; do
+            run_procedure $era $channel $method
+        done
+    done
+done
