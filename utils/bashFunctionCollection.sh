@@ -66,7 +66,7 @@ function logerror {
 }
 function logandrun() {
     echo -e "\e[43m[RUN]\e[0m" $( date +"%y-%m-%d %R" ): $@
-    $@
+    time $@
     return_code=$?
     if [[ $return_code == 0 ]]; then
         echo -e "\e[42m[COMPLETE]\e[0m" $( date +"%y-%m-%d %R" ): $@
