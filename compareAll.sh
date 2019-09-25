@@ -16,7 +16,7 @@ unset PYTHONUSERBASE
 shopt -s checkjobs # wait for all jobs before exiting
 export PARALLEL=1
 export USE_BATCH_SYSTEM=1
-export cluster=lxplus7
+export cluster=lxplus7 #etp7 #
 export sm_htt_analysis_dir=$( pwd ) ### local sm-htt repo !
 export cmssw_src_local="/portal/ekpbms3/home/${USER}/CMSSW_10_2_14/src" ### local CMSSW !
 export batch_out_local=${sm_htt_analysis_dir}/output/friend_trees
@@ -24,7 +24,7 @@ source utils/bashFunctionCollection.sh
 
 
 if [[ $USE_BATCH_SYSTEM == "1" ]]; then
-    if [[ $cluster == "etp" ]]; then
+    if [[ $cluster == "etp7" ]]; then
         export batch_out=$batch_out_local
     elif [[ $cluster == "lxplus7" ]]; then
         export batch_out="/afs/cern.ch/work/${USER::1}/${USER}/batch-out"
@@ -42,7 +42,7 @@ methodsarg=$3
 
 [[ "" = $( echo ${eras} ) ]] && eras=("2016" "2017" "2018") erasarg="2016,2017,2018"
 [[ "" = $( echo ${channels} ) ]] && channels=("em" "et" "tt" "mt") channelsarg="em,et,mt,tt"
-[[ "" = $( echo ${methods} ) ]] && methods=("mc_mc" "emb_mc" "mc_ff" "emb_ff") methodsarg="mc_mc,emb_mc,mc_ff,emb_ff"
+[[ "" = $( echo ${methods} ) ]] && methods=("default") methodsarg="default"
 
 loginfo Eras: ${erasarg}  Channels: ${channelsarg}   Training Dataset Generation Method: ${methodsarg} Sourced: $sourced
 
@@ -86,7 +86,7 @@ function ensuremldirs() {
     done
 }
 
-ensureoutdirs() {
+function ensureoutdirs() {
     if [[ ! -d output ]]; then
         logerror "no output dir"
         return 1
@@ -95,7 +95,7 @@ ensureoutdirs() {
         for folder in datacards  log  plots  shapes  signalStrength; do
             [[ ! -d $folder ]] && mkdir $folder
         done
-        mkdir -p condorShapes/{error,log,out}
+        mkdir -p log/condorShapes/
         popd
     fi
 }
@@ -117,7 +117,6 @@ function create_training_dataset() {
         export method
         logandrun ./ml/create_training_dataset.sh ${erasarg} ${channelsarg}
     done
-    loginfo All ${method} datasets created
 }
 
 function mltrain() {
@@ -147,18 +146,23 @@ function mltest() {
 #### converts models to the form needed for submission to a batch system
 function exportForApplication {
     for method in ${methods[@]}; do
-    export method
-    for era in ${eras[@]}; do
-        for channel in ${channels[@]}; do
-            logandrun ./ml/translate_models.sh ${era} ${channel}
-            logandrun ./ml/export_lwtnn.sh ${era} ${channel}
+        export method
+        for era in ${eras[@]}; do
+            for channel in ${channels[@]}; do
+                (
+                echo "process $method"
+                logandrun ./ml/translate_models.sh ${era} ${channel} ${method}
+                logandrun ./ml/export_lwtnn.sh ${era} ${channel}  ${method} ) &
+            done
         done
     done
-    done
+    wait
 }
 
 function provideCluster() {
-    for era in ${eras[@]}; do
+    method=$1
+    era=$2
+    # for era in ${eras[@]}; do
         for channel in ${channels[@]}; do
             ### Supply the generated models in the hard-coded path in the friendProducer
             ### lxrsync will dereference this symlink
@@ -169,70 +173,61 @@ function provideCluster() {
                 updateSymlink $sm_htt_analysis_dir/ml/out/${era}_${channel}_${method}/fold${fold}_lwtnn.json  $llwtnndir/${era}/${channel}/fold${fold}_lwtnn.json
             done
         done
-    done
+    # done
     updateSymlink $sm_htt_analysis_dir/datasets/datasets.json $cmssw_src_local/HiggsAnalysis/friend-tree-producer/data/input_params/datasets.json
     if [[ $cluster == lxplus7 ]]; then
-        loginfo lxrsync ${cmssw_src_local}/HiggsAnalysis/friend-tree-producer/data/ lxplus.cern.ch:${cmssw_src_dir}/HiggsAnalysis/friend-tree-producer/data
-        lxrsync ${cmssw_src_local}/HiggsAnalysis/friend-tree-producer/data/ lxplus.cern.ch:${cmssw_src_dir}/HiggsAnalysis/friend-tree-producer/data
+        loginfo lxrsync -rLPthz ${cmssw_src_local}/HiggsAnalysis/friend-tree-producer/data/ lxplus.cern.ch:${cmssw_src_dir}/HiggsAnalysis/friend-tree-producer/data
+        lxrsync -rLPthz ${cmssw_src_local}/HiggsAnalysis/friend-tree-producer/data/ lxplus.cern.ch:${cmssw_src_dir}/HiggsAnalysis/friend-tree-producer/data
     fi
 }
 
 function runCluster(){
+    set -e
     for method in ${methods[@]}; do
         export method
         for era in ${eras[@]}; do
             provideCluster $method $era
             logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "submit" ${era}_${method}
-            read -p " Collect? y/[n]" yn
-            if [[ ! $yn == "y" ]]; then
-            return 0
-            fi
-            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "collect" ${era}_${method}
-            copyFromCluster
+            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "rungc" ${era}_${method}
+            # [ $? ] && read -p " Collect? y/[n]" yn
+            # if [[ ! $yn == "y" ]]; then
+            # return 0
+            # fi
+            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "collect" ${era}_${method}
+            [ $? ] && copyFromCluster
+            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "delete" ${era}_${method}
         done
     done
 }
 
 function copyFromCluster() {
-    if [[ $cluster == etp ]]; then
-            loginfo Cluster is ept, no need to sync.
+    # read -p "Sync files from $USER@lxplus.cern.ch:$batch_out/${era}_${method} to $batch_out_local/${era}_${method} now? y/[n]" yn
+    # if [[ ! $yn == "y" ]]; then
+    #     logerror "!=y \n aborting"
+    #     [[ $sourced != 1 ]] && exit 0
+    # fi
+    nnscorefolder=$batch_out_local/${era}/nnscore_friends/${method}
+    [[ ! -d $nnscorefolder  ]] && mkdir -p $nnscorefolder
+    if [[ $cluster == etp7 ]]; then
+        logandrun rsync -rLPthz --remove-source-files $batch_out/${era}_${method}/NNScore_workdir/NNScore_collected/ $nnscorefolder
     elif [[ $cluster == lxplus7 ]]; then
-        read -p "Sync files from $USER@lxplus.cern.ch:$batch_out/${era}_${method} to $batch_out_local/${era}_${method} now? y/[n]" yn
-        if [[ ! $yn == "y" ]]; then
-            logerror "!=y \n aborting"
-            [[ $sourced != 1 ]] && exit 0
-        fi
-        nnscorefolder=$batch_out_local/${era}/nnscore_friends/${method}
-        [[ ! -d $nnscorefolder  ]] && mkdir -p $nnscorefolder
-        logandrun lxrsync $USER@lxplus.cern.ch:$batch_out/${era}_${method}/NNScore_workdir/NNScore_collected/ $nnscorefolder
+        logandrun lxrsync -rLPthz --remove-source-files $USER@lxplus.cern.ch:$batch_out/${era}_${method}/NNScore_workdir/NNScore_collected/ $nnscorefolder
     fi
 }
 
 export JETFAKES=1 EMBEDDING=1 CATEGORIES="stxs_stage1p1"
 
+export redoConversion=0
 function genshapes() {
     ensureoutdirs
     for method in ${methods[@]}; do
         for era in ${eras[@]}; do
-            redoConversion=0
+            export redoConversion=0
             if [[ ! -f output/shapes/${era}-${method}-${channelsarg}-shapes.root  ]]; then
                 logandrun ./shapes/produce_shapes.sh ${era} ${channelsarg} ${method}
                 redoConversion=1
             else
                 loginfo Skipping shape generation as ${era}_${method}_shapes.root exists
-            fi
-            for channel in ${channels[@]}; do
-		        fn=output/shapes/${era}-${method}-${channel}-synced-ML.root
-                if [[ ! -f $fn ]]; then
-			        [[ $redoConversion != 1 ]] && logwarn $fn does not exist: rerunning shape syncing
-                    redoConversion=1
-                else
-                    loginfo Skipping shape syncing as $fn exists
-                fi
-            done
-            if [[ $redoConversion == 1 ]]; then
-                loginfo Syncing shapes for ${era} ${channels[@]}
-                logandrun ./shapes/convert_to_synced_shapes.sh ${era} ${method} ${channelsarg}
             fi
         done
     done
@@ -243,14 +238,34 @@ function subshapes(){
     for method in ${methods[@]}; do
         for era in ${eras[@]}; do
             for channel in ${channels[@]}; do
-                if [[ ! -f output/shapes/${era}-${method}-${channel}-shapes.root  ]]; then
+                fn=output/shapes/${era}-${method}-${channel}-shapes.root
+                if [[ ! -f $fn || $( stat -c%s $fn ) -le 2000 ]]; then
                     echo "$era $channel $method $(pwd -P)"
+                    redoConversion=1
                 fi
             done
         done
     done > condor_jobs/arguments.txt
     logandrun condor_jobs/submit.sh
 }
+
+function syncshapes() {
+    for method in ${methods[@]}; do
+        for era in ${eras[@]}; do
+            for channel in ${channels[@]}; do
+		        fn=output/shapes/${era}-${method}-${channel}-synced-ML.root
+                if [[ $redoConversion == 1 || ! -f $fn  || $( stat -c%s $fn ) -le 2000 ]]; then
+                    logandrun ./shapes/convert_to_synced_shapes.sh ${era} ${channel} ${method} &
+                else
+                    loginfo Skipping shape syncing as $fn exists
+                fi
+            done
+        done
+    done
+    wait
+}
+
+
 
 function gendatacards(){
     ensureoutdirs
@@ -260,10 +275,11 @@ function gendatacards(){
             for STXS_SIGNALS in "stxs_stage0" "stxs_stage1p1"; do
                     DATACARDDIR=output/datacards/${era}-${method}-smhtt-ML/${STXS_SIGNALS}
                     [ -d $DATACARDDIR ] || mkdir -p $DATACARDDIR
-                    logandrun ./datacards/produce_datacard.sh ${era} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${method} ${channelsarg}
+                    logandrun ./datacards/produce_datacard.sh ${era} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${method} ${channelsarg} &
             done
         done
     done
+    wait
 }
 
 function genworkspaces(){
@@ -274,14 +290,15 @@ function genworkspaces(){
             for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do
                 fn="output/datacards/${era}-${method}-smhtt-ML/${STXS_SIGNALS}/cmb/125/${era}-${STXS_FIT}-workspace.root"
                 if [[ ! -f $fn ]]; then
-                    logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${method}
-                    [[ $? == 0 ]] || return $?
+                    logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${method} &
+                    #[[ $? == 0 ]] || return $?
                 else
                     loginfo "skipping workspace creation, as  $fn exists"
                 fi
             done
         done
     done
+    wait
 }
 
 function genMCprefitshapes(){
@@ -345,10 +362,11 @@ function runana() {
                     elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
                         STXS_SIGNALS=stxs_stage1p1
                     fi
-                    for channel in ${channels[@]}; do
-                        logandrun ./combine/signal_strength.sh ${era} $STXS_FIT output/datacards/${era}-${method}-smhtt-ML/${STXS_SIGNALS}/$channel/125 $channel ${method}
-                    done
-                    logandrun ./combine/signal_strength.sh ${era} $STXS_FIT output/datacards/${era}-${method}-smhtt-ML/${STXS_SIGNALS}/cmb/125 cmb ${method}
+                    DATACARDDIR=output/datacards/${ERA}-${METHOD}-smhtt-ML/${STXS_SIGNALS}
+                    # for channel in ${channels[@]}; do
+                    #     logandrun ./combine/signal_strength.sh ${era} $STXS_FIT DATACARDDIR/$channel/125 $channel ${method}
+                    # done
+                    logandrun ./combine/signal_strength.sh ${era} $STXS_FIT DATACARDDIR/cmb/125 cmb ${method}
                 done
             fi
             if [[ False ]]; then
@@ -374,7 +392,7 @@ function runana() {
                         TRAINEMB=False
                     fi
                     PLOTDIR=output/plots/${era}-${method}_prefit-plots
-                    mkdir -p $PLOTDIR
+                    [ -d $PLOTDIR ] || mkdir -p $PLOTDIR
                     #logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channels[@]} -e $era $OPTION --categories $CATEGORIES --fake-factor --embedding --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB
                 )
             fi

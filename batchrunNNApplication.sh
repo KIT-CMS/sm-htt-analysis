@@ -14,16 +14,16 @@ export VO_CMS_SW_DIR="/cvmfs/cms.cern.ch"
 source $VO_CMS_SW_DIR/cmsset_default.sh
 
 
-if [[ ! "submit collect" =~ $modus || -z $modus ]]; then
+if [[ ! "submit collect rungc delete" =~ $modus || -z $modus ]]; then
     logerror "modus must be submit or collect but is $modus !"
     exit 1
 fi
-if [[ ! "etp lxplus7" =~ $cluster || -z $cluster ]]; then
-    logerror "cluster must be etp, lxplus7, but is $cluster!"
+if [[ ! "etp7 lxplus7" =~ $cluster || -z $cluster ]]; then
+    logerror "cluster must be etp7, lxplus7, but is $cluster!"
     exit 1
 fi
 
-if [[ $cluster = "etp" ]]; then
+if [[ $cluster = "etp7" ]]; then
     #### use local resources
     export sw_src_dir="/portal/ekpbms3/home/${USER}/CMSSW_10_2_14/src"
     export batch_out="/portal/ekpbms3/home/${USER}/batch-out"
@@ -76,10 +76,6 @@ echo "run this on $cluster"
 tmp=$( mktemp )
 cat << eof > $tmp
 set -e
-if [[ ! -d $workdir ]]; then
-    mkdir -p $workdir
-fi
-
 
 THIS_PWD=\$PWD
 cd $sw_src_dir
@@ -88,18 +84,21 @@ export PATH=\$PATH:\$PWD/grid-control:\$PWD/grid-control/scripts
 cd -
 echo This should be the CMSSW_BASE:
 echo \$CMSSW_BASE
+
 set -x
-if [[ $modus == submit ]]; then
-    rm -r $workdir
-    mkdir $workdir
-
-fi
-
 # # Set stack size to unlimited, otherwise combine may throw a segfault for
 # # complex fits
 
 ulimit -s unlimited
 
+if [[ ! -d $workdir ]]; then
+mkdir -p $workdir
+fi
+if [[ $modus == delete ]]; then
+rm -r $workdir
+fi
+
+if [[ "submit collect" =~ $modus ]]; then
 job_management.py --executable NNScore \\
                   --batch_cluster $cluster \\
                   --command $modus \\
@@ -110,8 +109,9 @@ job_management.py --executable NNScore \\
                   --cores 5 \\
                   --restrict_to_channels $channels \\
                   --custom_workdir_path $workdir
+fi
 
-cd $workdir/NNScore_workdir/
+#cd $workdir/NNScore_workdir/
 if [[ $modus == submit ]]; then
 echo 'export X509_USER_PROXY=~/.globus/x509up'
 echo 'cd $sw_src_dir'
@@ -119,15 +119,21 @@ echo 'cmsenv'
 echo 'export PATH=\$PATH:\$PWD/grid-control:\$PWD/grid-control/scripts'
 echo 'cd -'
 fi
+
+if [[ $modus == rungc ]]; then
+export X509_USER_PROXY=~/.globus/x509up
+voms-proxy-info
+go.py $workdir/NNScore_workdir/grid_control_NNScore.conf -Gc -m 20
+fi
+
 eof
 
 
-if [[ $cluster == etp ]]; then
+if [[ $cluster == "etp7" ]]; then
     cat $tmp | bash
-elif [[ $cluster == lxplus7 ]]; then
+elif [[ $cluster == "lxplus7" ]]; then
     loginfo "lxplus7 is executing:"
     lxrun $tmp
-    #echo "Execute before submiting: cd $sw_src_dir; eval \`scramv1 runtime -sh\`; cd -"
 fi
 
 # # If command is submit:
