@@ -3,20 +3,15 @@ set -e
 ERA=$1
 CHANNELS=$2
 METHOD=$3
+[[ ! -z $4 ]] && PWD=$4 || PWD=$( pwd  )
 BINNING=shapes/binning.yaml
+cd $PWD
 
+export LCG_RELEASE=96
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
-source utils/setup_samples.sh $ERA
+source utils/setup_samples.sh $ERA $METHOD
 source utils/bashFunctionCollection.sh
-
-if [[ -d output/friend_trees ]]; then
-    ARTUS_FRIENDS=output/friend_trees/${ERA}/*/${METHOD}
-    ARTUS_FRIENDS_ET=$ARTUS_FRIENDS
-    ARTUS_FRIENDS_EM=$ARTUS_FRIENDS
-    ARTUS_FRIENDS_MT=$ARTUS_FRIENDS
-    ARTUS_FRIENDS_TT=$ARTUS_FRIENDS
-fi
 
 # Produce shapes
 logandrun python shapes/produce_shapes_$ERA.py \
@@ -31,7 +26,7 @@ logandrun python shapes/produce_shapes_$ERA.py \
     --train-method ${METHOD} \
     --channels $CHANNELS \
     --era $ERA \
-    --num-threads $(recommendCPUs)
+    --num-threads 12
 
 # Normalize fake-factor shapes to nominal
 logandrun python fake-factor-application/normalize_shifts.py output/shapes/${ERA}-${METHOD}-${CHANNELS}-shapes.root
