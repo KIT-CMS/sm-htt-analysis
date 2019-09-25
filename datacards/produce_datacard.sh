@@ -1,5 +1,8 @@
 #!/bin/bash
 set -e
+
+trap 'echo "\"${last_command}\" command filed with exit code $?."' EXIT
+
 source utils/setup_cmssw.sh
 source utils/setup_python.sh
 source utils/bashFunctionCollection.sh
@@ -12,16 +15,10 @@ EMBEDDING=$5
 TRAINING_METHOD=$6
 CHANNELS=$7
 NUM_THREADS=8
-    if [[ $TRAINING_METHOD  =~ "emb" ]]; then
-        TRAIN_EMB=1
-    else
-        TRAIN_EMB=0
-    fi
-    if [[ $TRAINING_METHOD =~ "ff" ]]; then
-        TRAIN_FF=1
-    else
-        TRAIN_FF=0
-    fi
+
+TRAIN_EMB=1
+TRAIN_FF=1
+
 OUTPUTDIR="output/datacards/${ERA}-${TRAINING_METHOD}-smhtt-ML/${STXS_SIGNALS}"
 
 # Remove output directory
@@ -54,11 +51,9 @@ logandrun ${CMSSW_BASE}/bin/slc7_amd64_gcc700/MorphingSMRun2Legacy \
         #--output="${ERA}_${TRAINING_METHOD}_smhtt" \
 
 # Use Barlow-Beeston-lite approach for bin-by-bin systematics
-THIS_PWD=${PWD}
-echo $THIS_PWD
-cd ${OUTPUTDIR}/cmb/125/
+pushd ${OUTPUTDIR}/cmb/125/
 for FILE in *.txt
 do
     sed -i '$s/$/\n * autoMCStats 0.0/' ${FILE}
 done
-cd ${THIS_PWD}
+popd ${THIS_PWD}
