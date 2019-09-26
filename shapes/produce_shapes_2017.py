@@ -96,7 +96,7 @@ def parse_arguments():
         "--binning", required=True, type=str, help="Binning configuration.")
     parser.add_argument(
         "--channels",
-        default=["em","et","mt","tt"],
+        default=[],
         type=lambda channellist: [channel for channel in channellist.split(',')],
         help="Channels to be considered, seperated by a comma without space")
     parser.add_argument("--era", type=str, help="Experiment era.")
@@ -160,6 +160,7 @@ def main(args):
     tt_friend_directory = args.tt_friend_directory
     em_friend_directory = args.em_friend_directory
     ff_friend_directory = args.fake_factor_friend_directory
+
     mt = MTSM2017()
     if args.QCD_extrap_fit:
         mt.cuts.remove("muon_iso")
@@ -232,7 +233,6 @@ def main(args):
     et_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, et,
             [et_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL"]],
             et_processes["data"], friend_directory=et_friend_directory, extrapolation_factor=1.00))
-
 
     tt = TTSM2017()
     tt_processes = {
@@ -444,6 +444,7 @@ def main(args):
                 tt,
                 cuts,
                 variable=score))
+
     em_categories = []
     # Analysis shapes
     if "em" in args.channels:
@@ -507,6 +508,7 @@ def main(args):
                     era=era,
                     variation=Nominal(),
                     mass="125"))
+
     if "mt" in [args.gof_channel] + args.channels:
         for process, category in product(mt_processes.values(), mt_categories):
             systematics.add(
@@ -683,8 +685,7 @@ def main(args):
 
     for variation in jet_es_variations:
         for process_nick in [
-                "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVT", "VVJ",
-                "VVL",
+                "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVT", "VVJ", "VVL",
         ] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -704,8 +705,8 @@ def main(args):
                     process=tt_processes[process_nick],
                     channel=tt,
                     era=era)
-        for process_nick in ["ZTT", "ZL", "W", "TTT", "TTL",  "VVL", "VVT"
-                            ] + signal_nicks:
+        for process_nick in ["ZTT", "ZL", "W", "TTT", "TTL", "VVL", "VVT"
+                ] + signal_nicks:
             if "em" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
@@ -719,8 +720,7 @@ def main(args):
         DifferentPipeline)
     for variation in met_unclustered_variations:  # + met_clustered_variations:
         for process_nick in [
-                "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVT", "VVJ",
-                "VVL",
+                "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVT", "VVJ", "VVL"
         ] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -740,8 +740,9 @@ def main(args):
                     process=tt_processes[process_nick],
                     channel=tt,
                     era=era)
-        for process_nick in ["ZTT", "ZL", "W", "TTT", "TTL",  "VVL", "VVT"
-                            ] + signal_nicks:
+        for process_nick in [
+                "ZTT", "ZL", "W", "TTT", "TTL", "VVL", "VVT"
+        ] + signal_nicks:
             if "em" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
@@ -1050,8 +1051,7 @@ def main(args):
         "CMS_htt_mistag_b_Run2017", "btagMistag", DifferentPipeline)
     for variation in btag_eff_variations + mistag_eff_variations:
         for process_nick in [
-                "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVT", "VVJ",
-                "VVL"
+                "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVT", "VVL", "VVJ"
         ] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -1071,8 +1071,8 @@ def main(args):
                     process=tt_processes[process_nick],
                     channel=tt,
                     era=era)
-        for process_nick in ["ZTT", "ZL", "W", "TTT", "TTL",  "VVL", "VVT"
-                            ] + signal_nicks:
+        for process_nick in ["ZTT", "ZL", "W", "TTT", "TTL", "VVL", "VVT"
+                ] + signal_nicks:
             if "em" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,

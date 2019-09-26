@@ -86,26 +86,25 @@ def parse_arguments():
         "Directories arranged as Artus output and containing a friend tree for em."
     )
     parser.add_argument(
+        "--QCD-extrap-fit",
+        default=False,
+        action='store_true',
+        help="Create shapes for QCD extrapolation factor determination.")
+    parser.add_argument(
         "--datasets", required=True, type=str, help="Kappa datsets database.")
     parser.add_argument(
         "--binning", required=True, type=str, help="Binning configuration.")
     parser.add_argument(
         "--channels",
         default=[],
-        nargs='+',
-        type=str,
-        help="Channels to be considered.")
+        type=lambda channellist: [channel for channel in channellist.split(',')],
+        help="Channels to be considered, seperated by a comma without space")
     parser.add_argument("--era", type=str, help="Experiment era.")
     parser.add_argument(
         "--gof-channel",
         default=None,
         type=str,
         help="Channel for goodness of fit shapes.")
-    parser.add_argument(
-        "--QCD-extrap-fit",
-        default=False,
-        action='store_true',
-        help="Create shapes for QCD extrapolation factor determination.")
     parser.add_argument(
         "--gof-variable",
         type=str,
@@ -122,7 +121,9 @@ def parse_arguments():
         type=str,
         help="Backend. Use classic or tdf.")
     parser.add_argument(
-        "--tag", default="ERA_CHANNEL", type=str, help="Tag of output files.")
+        "--tag", default="ERA_CHANNEL",
+        type=str,
+        help="Tag of output files.")
     parser.add_argument(
         "--skip-systematic-variations",
         default=False,
@@ -133,20 +134,24 @@ def parse_arguments():
 
 def main(args):
     # Container for all distributions to be drawn
+    logger.info(str(args))
     logger.info("Set up shape variations.")
     systematics = Systematics(
-        "{}_shapes.root".format(args.tag),
+        "output/shapes/{ERA}-{TAG}-{CHANNELS}-shapes.root".format(ERA=args.era, TAG=args.tag, CHANNELS=",".join(args.channels)),
         num_threads=args.num_threads,
         skip_systematic_variations=args.skip_systematic_variations)
 
     # Era selection
     if "2016" in args.era:
         from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimation, VVLEstimation, VVTEstimation, VVJEstimation, TTLEstimation, TTTEstimation, TTJEstimation, QCDEstimation_SStoOS_MTETEM, QCDEstimationTT, ZTTEmbeddedEstimation, FakeEstimationLT, NewFakeEstimationLT, FakeEstimationTT, NewFakeEstimationTT,ggHWWEstimation,qqHWWEstimation
+
         from shape_producer.era import Run2016
         era = Run2016(args.datasets)
+
     else:
         logger.critical("Era {} is not implemented.".format(args.era))
         raise Exception
+
     # Channels and processes
     # yapf: disable
     directory = args.directory
@@ -180,7 +185,6 @@ def main(args):
 
         "ggHWW125" : Process("ggHWW125", ggHWWEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         "qqHWW125" : Process("qqHWW125", qqHWWEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
-
         }
 
     # Stage 0 and 1.1 signals for ggH & qqH
@@ -199,7 +203,7 @@ def main(args):
     if args.QCD_extrap_fit:
         et.cuts.remove("ele_iso")
         et.cuts.add(Cut("(iso_1<0.5)*(iso_1>=0.1)", "ele_iso_loose"))
-   
+
     et_processes = {
         "data"  : Process("data_obs", DataEstimation      (era, directory, et, friend_directory=et_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, et, friend_directory=et_friend_directory)),
@@ -261,6 +265,8 @@ def main(args):
         "ggHWW125" : Process("ggHWW125", ggHWWEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
         "qqHWW125" : Process("qqHWW125", qqHWWEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
         }
+
+    # Stage 0 and 1.1 signals for ggH & qqH
     for ggH_htxs in ggHEstimation.htxs_dict:
         tt_processes[ggH_htxs] = Process(ggH_htxs, ggHEstimation(ggH_htxs, era, directory, tt, friend_directory=tt_friend_directory))
     for qqH_htxs in qqHEstimation.htxs_dict:
@@ -281,10 +287,8 @@ def main(args):
         "ZJ"    : Process("ZJ",       ZJEstimation        (era, directory, em, friend_directory=em_friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimation        (era, directory, em, friend_directory=em_friend_directory)),
         "TTT"   : Process("TTT",      TTTEstimation       (era, directory, em, friend_directory=em_friend_directory)),
-        "TTJ"   : Process("TTJ",      TTJEstimation       (era, directory, em, friend_directory=em_friend_directory)),
         "TTL"   : Process("TTL",      TTLEstimation       (era, directory, em, friend_directory=em_friend_directory)),
         "VVT"   : Process("VVT",      VVTEstimation       (era, directory, em, friend_directory=em_friend_directory)),
-        "VVJ"   : Process("VVJ",      VVJEstimation       (era, directory, em, friend_directory=em_friend_directory)),
         "VVL"   : Process("VVL",      VVLEstimation       (era, directory, em, friend_directory=em_friend_directory)),
         "W"     : Process("W",        WEstimation         (era, directory, em, friend_directory=em_friend_directory)),
 
@@ -297,6 +301,7 @@ def main(args):
         "qqHWW125" : Process("qqHWW125", qqHWWEstimation       (era, directory, em, friend_directory=em_friend_directory)),
         }
 
+    # Stage 0 and 1.1 signals for ggH & qqH
     for ggH_htxs in ggHEstimation.htxs_dict:
         em_processes[ggH_htxs] = Process(ggH_htxs, ggHEstimation(ggH_htxs, era, directory, em, friend_directory=em_friend_directory))
     for qqH_htxs in qqHEstimation.htxs_dict:
@@ -306,12 +311,21 @@ def main(args):
     em_processes["QCDEMB"] = Process("QCDEMB", QCDEstimation_SStoOS_MTETEM(era, directory, em, [em_processes[process] for process in ["EMB", "ZL", "W", "VVL", "TTL"]], em_processes["data"], extrapolation_factor=1.17, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
 
     # Variables and categories
-    binning = yaml.load(open(args.binning))
+    binning = yaml.load(open(args.binning), Loader=yaml.Loader)
+
+    def readclasses(c):
+        if args.tag == "":
+            confFileName="ml/out/2017_{}/dataset_config.yaml".format(c,args.tag)
+        else:
+            confFileName="ml/out/2017_{}_{}/dataset_config.yaml".format(c,args.tag)
+        logger.debug("Parse classes from "+confFileName)
+        confdict= yaml.load(open(confFileName, "r"))
+        logger.debug("Classes for {} loaded: {}".format(c, str(confdict["classes"])))
+        return confdict["classes"]
 
     et_categories = []
-    # Analysis shapes
     if "et" in args.channels:
-        classes_et = ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]
+        classes_et = readclasses("et")
         for i, label in enumerate(classes_et):
             score = Variable(
                 "et_max_score",
@@ -337,7 +351,7 @@ def main(args):
                                  Cut(e, "stxs_stage1p1_cut")),
                             variable=score))
     # Goodness of fit shapes
-    elif "et" == args.gof_channel:
+    elif args.gof_channel == "et":
         score = Variable(
                 args.gof_variable,
                 VariableBinning(binning["gof"]["et"][args.gof_variable]["bins"]),
@@ -356,7 +370,7 @@ def main(args):
     mt_categories = []
     # Analysis shapes
     if "mt" in args.channels:
-        classes_mt = ["ggh", "qqh", "ztt", "zll", "w", "tt", "ss", "misc"]
+        classes_mt = readclasses("mt")
         for i, label in enumerate(classes_mt):
             score = Variable(
                 "mt_max_score",
@@ -401,7 +415,7 @@ def main(args):
     tt_categories = []
     # Analysis shapes
     if "tt" in args.channels:
-        classes_tt = ["ggh", "qqh", "ztt", "noniso", "misc"]
+        classes_tt = readclasses("tt")
         for i, label in enumerate(classes_tt):
             score = Variable(
                 "tt_max_score",
@@ -446,7 +460,7 @@ def main(args):
     em_categories = []
     # Analysis shapes
     if "em" in args.channels:
-        classes_em = ["ggh", "qqh", "ztt", "tt", "ss", "misc", "db"]
+        classes_em = readclasses("em")
         for i, label in enumerate(classes_em):
             score = Variable(
                 "em_max_score",
@@ -538,9 +552,10 @@ def main(args):
                     era=era,
                     variation=Nominal(),
                     mass="125"))
+
     # Shapes variations
 
-        # Prefiring weights
+    # Prefiring weights
     prefiring_variaitons = [
         ReplaceWeight("CMS_prefiring_Run2016", "prefireWeight", Weight("prefiringweightup", "prefireWeight"),"Up"),
         ReplaceWeight("CMS_prefiring_Run2016", "prefireWeight", Weight("prefiringweightdown", "prefireWeight"),"Down"),
@@ -587,7 +602,7 @@ def main(args):
         DifferentPipeline)
     for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
         for process_nick in ["ZTT", "TTT", "TTL", "VVL", "VVT", "FAKES"
-                             ] + signal_nicks:
+                            ] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
@@ -601,14 +616,6 @@ def main(args):
                     channel=mt,
                     era=era)
             if "tt" in [args.gof_channel] + args.channels:
-                systematics.add_systematic_variation(
-                    variation=variation,
-                    process=tt_processes[process_nick],
-                    channel=tt,
-                    era=era)
-        for process_nick in ["ZTT", "TTT", "TTL", "VVL", "VVT"
-                             ] + signal_nicks:
-            if "em" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
                     process=tt_processes[process_nick],
@@ -644,7 +651,7 @@ def main(args):
                     process=tt_processes[process_nick],
                     channel=tt,
                     era=era)
-                
+
     # MC ele energy scale & smear uncertainties
     ele_es_variations = create_systematic_variations(
         "CMS_scale_mc_e", "eleScale", DifferentPipeline)
@@ -691,7 +698,7 @@ def main(args):
 
     for variation in jet_es_variations:
         for process_nick in [
-                "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVL", "VVT", "VVJ"
+                "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVT", "VVJ", "VVL",
         ] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -711,9 +718,8 @@ def main(args):
                     process=tt_processes[process_nick],
                     channel=tt,
                     era=era)
-        for process_nick in [
-                "ZTT", "ZL", "W", "TTT", "TTL", "VVL", "VVT"
-        ] + signal_nicks:
+        for process_nick in ["ZTT", "ZL", "W", "TTT", "TTL", "VVL", "VVT"
+                ] + signal_nicks:
             if "em" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
@@ -730,7 +736,7 @@ def main(args):
     #    "CMS_scale_met_clustered_Run2016", "metJetEn", DifferentPipeline)
     for variation in met_unclustered_variations:  # + met_clustered_variations:
         for process_nick in [
-                "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVL", "VVT", "VVJ"
+                "ZTT", "ZL", "ZJ", "W", "TTT", "TTL", "TTJ", "VVT", "VVJ", "VVL"
         ] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -768,8 +774,7 @@ def main(args):
         "CMS_htt_boson_scale_met_Run2016", "metRecoilResponse",
         DifferentPipeline)
     for variation in recoil_resolution_variations + recoil_response_variations:
-        for process_nick in [
-                "ZTT", "ZL", "ZJ", "W"] + signal_nicks:
+        for process_nick in ["ZTT", "ZL", "ZJ", "W"] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
@@ -788,9 +793,7 @@ def main(args):
                     process=tt_processes[process_nick],
                     channel=tt,
                     era=era)
-        for process_nick in [
-                "ZTT", "ZL", "W", "TTT", "TTL", "VVL", "VVT"
-        ] + signal_nicks:
+        for process_nick in ["ZTT", "ZL", "W"] + signal_nicks:
             if "em" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
@@ -821,8 +824,7 @@ def main(args):
                     process=tt_processes[process_nick],
                     channel=tt,
                     era=era)
-        for process_nick in [
-                "ZTT", "ZL"]:
+        for process_nick in ["ZTT", "ZL"]:
             if "em" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
@@ -891,6 +893,39 @@ def main(args):
                     channel=tt,
                     era=era)
 
+    # ZL fakes energy scale
+    ele_fake_es_1prong_variations = create_systematic_variations(
+        "CMS_ZLShape_et_1prong_Run2016", "tauEleFakeEsOneProng",
+        DifferentPipeline)
+    ele_fake_es_1prong1pizero_variations = create_systematic_variations(
+        "CMS_ZLShape_et_1prong1pizero_Run2016", "tauEleFakeEsOneProngPiZeros",
+        DifferentPipeline)
+
+    if "et" in [args.gof_channel] + args.channels:
+        for process_nick in ["ZL"]:
+            for variation in ele_fake_es_1prong_variations + ele_fake_es_1prong1pizero_variations:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+
+    mu_fake_es_1prong_variations = create_systematic_variations(
+        "CMS_ZLShape_mt_1prong_Run2016", "tauMuFakeEsOneProng",
+        DifferentPipeline)
+    mu_fake_es_1prong1pizero_variations = create_systematic_variations(
+        "CMS_ZLShape_mt_1prong1pizero_Run2016", "tauMuFakeEsOneProngPiZeros",
+        DifferentPipeline)
+
+    if "mt" in [args.gof_channel] + args.channels:
+        for process_nick in ["ZL"]:
+            for variation in mu_fake_es_1prong_variations + mu_fake_es_1prong1pizero_variations:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+
     # lepton trigger efficiency
     lep_trigger_eff_variations = []
     lep_trigger_eff_variations.append(
@@ -937,39 +972,6 @@ def main(args):
                     channel=mt,
                     era=era)
     
-    # ZL fakes energy scale
-    ele_fake_es_1prong_variations = create_systematic_variations(
-        "CMS_ZLShape_et_1prong_Run2016", "tauEleFakeEsOneProng",
-        DifferentPipeline)
-    ele_fake_es_1prong1pizero_variations = create_systematic_variations(
-        "CMS_ZLShape_et_1prong1pizero_Run2016", "tauEleFakeEsOneProngPiZeros",
-        DifferentPipeline)
-
-    if "et" in [args.gof_channel] + args.channels:
-        for process_nick in ["ZL"]:
-            for variation in ele_fake_es_1prong_variations + ele_fake_es_1prong1pizero_variations:
-                systematics.add_systematic_variation(
-                    variation=variation,
-                    process=et_processes[process_nick],
-                    channel=et,
-                    era=era)
-
-    mu_fake_es_1prong_variations = create_systematic_variations(
-        "CMS_ZLShape_mt_1prong_Run2016", "tauMuFakeEsOneProng",
-        DifferentPipeline)
-    mu_fake_es_1prong1pizero_variations = create_systematic_variations(
-        "CMS_ZLShape_mt_1prong1pizero_Run2016", "tauMuFakeEsOneProngPiZeros",
-        DifferentPipeline)
-
-    if "mt" in [args.gof_channel] + args.channels:
-        for process_nick in ["ZL"]:
-            for variation in mu_fake_es_1prong_variations + mu_fake_es_1prong1pizero_variations:
-                systematics.add_systematic_variation(
-                    variation=variation,
-                    process=mt_processes[process_nick],
-                    channel=mt,
-                    era=era)
-
     # # Zll reweighting !!! replaced by log normal uncertainties: CMS_eFakeTau_Run2016 15.5%; CMS_mFakeTau_Run2016 27.2%
     # '''zll_et_weight_variations = []
     # zll_et_weight_variations.append(
@@ -1041,10 +1043,8 @@ def main(args):
                     process=tt_processes[process_nick],
                     channel=tt,
                     era=era)
-    for variation in btag_eff_variations + mistag_eff_variations:
-        for process_nick in [
-                "ZTT", "ZL", "W", "TTT", "TTL", "VVT", "VVL"
-        ] + signal_nicks:
+        for process_nick in ["ZTT", "ZL", "W", "TTT", "TTL", "VVL", "VVT"
+                ] + signal_nicks:
             if "em" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
@@ -1455,6 +1455,16 @@ def main(args):
         Weight("em_qcd_osss_binned_Weight", "qcd_weight"),
         "Down"))
 
+
+    for variation in qcd_variations:
+        for process_nick in ["QCD"]:
+            if "em" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=em_processes[process_nick],
+                    channel=em,
+                    era=era)
+
     # Gluon-fusion WG1 uncertainty scheme
     ggh_variations = []
     for unc in [
@@ -1505,5 +1515,5 @@ def main(args):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    setup_logging("{}_produce_shapes.log".format(args.tag), logging.INFO)
+    setup_logging("output/log/{}_{}_{}_shapes.log".format(args.era, args.tag, ",".join(args.channels)), logging.INFO)
     main(args)
