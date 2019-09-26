@@ -19,4 +19,4 @@ PostFitShapesFromWorkspace -m 125 -w ${WORKSPACE} \
 
 # Postfit shapes
 #PostFitShapesFromWorkspace -m 125 -w ${WORKSPACE} \
-    #-d ${DATACARDDIR}/combined.txt.cmb -o ${DATACARDDIR}/${ERA}_datacard_shapes_postfit_sb.root -f fitDiagnostics${ERA}.root:fit_s --postfit
+    #-d ${DATACARDDIR}/combined.txt.cmb -o ${DATACARDDIR}/postfit${OUTPUTFILE} -f fitDiagnostics${ERA}.root:fit_s --postfit

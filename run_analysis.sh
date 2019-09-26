@@ -17,7 +17,7 @@ do
         exit 1
     fi
 done
-
+ensureoutdirs
 # Clean-up workspace
 #./utils/clean.sh
 
@@ -55,19 +55,16 @@ STXS_FIT="inclusive"        # options: stxs_stage0, stxs_stage1p1, inclusive
 
 # Run statistical inference
 #./combine/significance.sh $ERA | tee ${ERA}_significance.log
-./combine/signal_strength.sh $ERA $STXS_FIT $DATACARDDIR/cmb/125 cmb ${TAG}
+#./combine/signal_strength.sh $ERA $STXS_FIT $DATACARDDIR/cmb/125 cmb ${TAG}
 # ./combine/signal_strength.sh $ERA "robustHesse" $DATACARDDIR/cmb/125 cmb ${TAG}
 # ./combine/diff_nuisances.sh $ERA
 #./combine/nuisance_impacts.sh $ERA
 
 # Make prefit and postfit shapes
 
-# ./combine/prefit_postfit_shapes.sh ${ERA} ${STXS_FIT} ${DATACARDDIR}/cmb/125 ${TAG}
-
-# PREFITFILE="${DATACARDDIR}/prefitshape-${era}-${TAG}-${STXS_FIT}.root"
-# PLOTDIR=output/plots/${era}-${TAG}_prefit-plots
-# [ -d $PLOTDIR ] || mkdir -p $PLOTDIR
-
-# ./plotting/plot_shapes.py -i $PREFITFILE -o $PLOTDIR -c ${CHANNELS[@]} -e $era $OPTION --categories $CATEGORIES --fake-factor --embedding --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB
+./combine/prefit_postfit_shapes.sh ${ERA} ${STXS_FIT} ${DATACARDDIR}/cmb/125 ${TAG}
+EMBEDDING=1
+JETFAKES=1
+./plotting/plot_shapes.sh $ERA $TAG ${CHANNELSARG} $STXS_SIGNALS $STXS_FIT $CATEGORIES $JETFAKES $EMBEDDING
 
 #./plotting/plot_signals.sh $ERA $STXS_SIGNALS $CATEGORIES $CHANNELS

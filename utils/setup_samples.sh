@@ -3,18 +3,8 @@ set -e
 
 ERA=$1
 TAG=$2
-WD=$( pwd -P )
+[[ ! -z $3 ]] && WD=$3 || WD=$( pwd -P )
 # Samples Run2016
-<<<<<<< 2116e65b006f57a670391d58cc5b56b7d6f7cd87
-basedir="/ceph/htautau"
-ARTUS_OUTPUTS_2016="$basedir/2016/ntuples/"
-NNScore_Friends_2016="/storage/9/sbrommer/friend_tree_workdir/et/NNScore_workdir/NNScore_collected/"
-SVFit_Friends_2016="$basedir/2016/svfit_friends/"
-MELA_Friends_2016="$basedir/2016/mela_friends/"
-FF_Friends_2016="$basedir/2016/ff_friends/"
-
-ARTUS_FRIENDS_2016="$MELA_Friends_2016 $SVFit_Friends_2016" # TODO update once friends are produced
-=======
 basedir="/ceph/sbrommer/artus_ntuple/2016_samples"
 ARTUS_OUTPUTS_2016="$basedir/2019_07_19_merged/"
 NNScore_Friends_2016="$basedir/2019_07_19_merged_NNScore_friends/NNScore_collected/"
@@ -27,8 +17,7 @@ if [[ -d output/friend_trees ]]; then
     DIR=${WD}/output/friend_trees/2016/mela_friends/${TAG}/ && [[ -d $DIR ]] && MELA_Friends_2016=$DIR
     DIR=${WD}/output/friend_trees/2016/ff_friends/${TAG}/ && [[ -d $DIR ]] && FF_Friends_2016=$DIR
 fi
-ARTUS_FRIENDS_2016="$NNScore_Friends_2016 $MELA_Friends_2016" # TODO update once friends are produced
->>>>>>> utils/setup_samples.sh: override the friend trees, if there are matching friend trees in output/friend_trees/${ERA}/nnscore_friends etc
+ARTUS_FRIENDS_2016="$NNScore_Friends_2016 $MELA_Friends_2016 $SVFit_Friends_2016" # TODO update once friends are produced
 ARTUS_FRIENDS_ET_2016=$ARTUS_FRIENDS_2016
 ARTUS_FRIENDS_MT_2016=$ARTUS_FRIENDS_2016
 ARTUS_FRIENDS_TT_2016=$ARTUS_FRIENDS_2016

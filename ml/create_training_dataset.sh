@@ -13,11 +13,18 @@ source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
 source utils/bashFunctionCollection.sh
 
+IFS=',' read -r -a eras <<< $1
+IFS=',' read -r -a channels <<< $2
+if [[ -z $3 ]]; then
+    tags=("default")
+else
+IFS=',' read -r -a tags <<< $3
+fi
+
 function run_procedure() {
     ERA=$1
     CHANNEL=$2
     TAG=$3
-
     tauEstimation=emb
     jetEstimation=ff
     if [[ $TAG == *"mc_"* ]]; then
@@ -26,8 +33,7 @@ function run_procedure() {
     if [[ $TAG == *"_mc"* ]]; then
         jetEstimation=mc
     fi
-
-    source utils/setup_samples.sh $ERA
+    source utils/setup_samples.sh $ERA $TAG
     [[ -z $TAG ]] && outdir=ml/out/${ERA}_${CHANNEL} ||  outdir=ml/out/${ERA}_${CHANNEL}_${TAG}
     mkdir -p $outdir
 
@@ -64,7 +70,7 @@ function run_procedure() {
          --training-jetfakes-estimation-method $jetEstimation \
          --output-config $outdir/dataset_config.yaml
 
-     # # Create dataset files from config
+    # # Create dataset files from config
      logandrun ./htt-ml/dataset/create_training_dataset.py $outdir/dataset_config.yaml
      # Reweight STXS stage 1 signals so that each stage 1 signal is weighted equally but
      # conserve the overall weight of the stage 0 signal
@@ -72,20 +78,29 @@ function run_procedure() {
      #    $outdir \
      #    $outdir/fold0_training_dataset.root \
      #    $outdir/fold1_training_dataset.root
+
      # split the dataset
      logandrun hadd -f $outdir/combined_training_dataset.root \
          $outdir/fold0_training_dataset.root \
          $outdir/fold1_training_dataset.root
 
+    # use this for balenced batch training
     # write the classweight to dataset_config.yaml
-    logandrun python ./ml/yamlmerge.py \
+    # logandrun python ./ml/yamlmerge.py \
+    #     --era ${ERA} \
+    #     --channel ${CHANNEL} \
+    #     --dataset-config-file ml/out/${ERA}_${CHANNEL}_${TAG}/dataset_config.yaml
+
+    logandrun python ./ml/sum_training_weights.py \
         --era ${ERA} \
         --channel ${CHANNEL} \
-        --dataset-config-file ml/out/${ERA}_${CHANNEL}_${TAG}/dataset_config.yaml
+        --dataset $outdir/combined_training_dataset.root \
+        --dataset-config-file "$outdir/dataset_config.yaml" \
+        --training-template "ml/templates/${ERA}_${CHANNEL}_training.yaml" \
+        --channel $CHANNEL \
+        --write-weights True
+
 }
-IFS=',' read -r -a eras <<< $1
-IFS=',' read -r -a channels <<< $2
-IFS=',' read -r -a tags <<< $3
 
 for tag in ${tags[@]}; do
     for era in ${eras[@]}; do

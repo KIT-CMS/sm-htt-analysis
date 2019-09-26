@@ -1,19 +1,25 @@
 #!/bin/bash
+set -e
 
+source utils/bashFunctionCollection.sh
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
 
 ERA=$1
-STXS_SIGNALS=$2
-CATEGORIES=$3
-JETFAKES=$4
-EMBEDDING=$5
-CHANNELS=${@:6}
+TAG=$2
+IFS=',' read -r -a CHANNELS <<< $3
+STXS_SIGNALS=$4
+STXS_FIT=$5
+CATEGORIES=$6
+JETFAKES=$7
+EMBEDDING=$8
 
+TRAINFF=True
+TRAINEMB=True
 if [ $STXS_SIGNALS == 1 ]
 then
     echo "[ERROR] Plotting for STXS stage 1 signals is not yet implemented."
-    exit
+    exit 1
 fi
 
 EMBEDDING_ARG=""
@@ -27,12 +33,17 @@ if [ $JETFAKES == 1 ]
 then
     JETFAKES_ARG="--fake-factor"
 fi
+DATACARDDIR=output/datacards/${ERA}-${TAG}-smhtt-ML/${STXS_SIGNALS}
+PREFITFILEDIR="${DATACARDDIR}/cmb/125"
 
-mkdir -p ${ERA}_plots
-for FILE in "${ERA}_datacard_shapes_prefit.root" "${ERA}_datacard_shapes_postfit_sb.root"
+PLOTDIR=output/plots/${ERA}-${TAG}_prefit-plots
+[ -d $PLOTDIR ] || mkdir -p $PLOTDIR
+
+for FILE in "${PREFITFILEDIR}/prefitshape-${ERA}-${TAG}-${STXS_FIT}.root" "${PREFITFILEDIR}/postfitshape-${ERA}-${TAG}-${STXS_FIT}.root"
 do
+    [[ -f $FILE ]] || ( logerror $FILE not fould && exit 2 )
     for OPTION in "" "--png"
     do
-        ./plotting/plot_shapes.py -i $FILE -c $CHANNELS -e $ERA $OPTION --categories $CATEGORIES $JETFAKES_ARG $EMBEDDING_ARG --normalize-by-bin-width -l
+        logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${CHANNELS[@]} -e $ERA $OPTION --categories $CATEGORIES --fake-factor --embedding --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB
     done
 done

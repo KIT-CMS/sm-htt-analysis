@@ -86,21 +86,7 @@ function ensuremldirs() {
     done
 }
 
-function ensureoutdirs() {
-    if [[ ! -d output ]]; then
-        logerror "no output dir"
-        return 1
-    else
-        pushd output
-        for folder in datacards  log  plots  shapes  signalStrength; do
-            [[ ! -d $folder ]] && mkdir $folder
-        done
-        mkdir -p log/condorShapes/
-        popd
-    fi
-}
 
-source completedMilestones
 
 
 function compenv() {
@@ -114,8 +100,7 @@ function compenv() {
 function create_training_dataset() {
     ensuremldirs
     for tag in ${tags[@]}; do
-        export tag
-        logandrun ./ml/create_training_dataset.sh ${erasarg} ${channelsarg}
+        logandrun ./ml/create_training_dataset.sh ${erasarg} ${channelsarg} ${tag}
     done
 }
 

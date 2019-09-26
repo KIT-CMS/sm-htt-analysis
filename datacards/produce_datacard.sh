@@ -48,7 +48,6 @@ logandrun ${CMSSW_BASE}/bin/slc7_amd64_gcc700/MorphingSMRun2Legacy \
     --output=${OUTPUTDIR} \
     --train_ff=${TRAIN_FF} \
     --train_emb=${TRAIN_EMB} | tee output/log/datacard-${ERA}-${STXS_SIGNALS}-${CATEGORIES}-${JETFAKES}-${EMBEDDING}-${TAG}-${CHANNELS}.log
-        #--output="${ERA}_${TAG}_smhtt" \
 
 # Use Barlow-Beeston-lite approach for bin-by-bin systematics
 pushd ${OUTPUTDIR}/cmb/125/

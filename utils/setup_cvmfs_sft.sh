@@ -1,4 +1,5 @@
 #!/bin/bash
+[[ ! -z $1 ]] || LCG_RELEASE=$1
 [[ -z $LCG_RELEASE ]] && LCG_RELEASE=95
 if uname -a | grep ekpdeepthought -q
 then

@@ -66,12 +66,23 @@ function logerror {
 }
 function logandrun() {
     echo -e "\e[43m[RUN]\e[0m" $( date +"%y-%m-%d %R" ): $@
-    time $@
+    start=`date +%s`
+    $@
     return_code=$?
+    end=`date +%s`
     if [[ $return_code == 0 ]]; then
-        echo -e "\e[42m[COMPLETE]\e[0m" $( date +"%y-%m-%d %R" ): $@
+        echo -e "\e[42m[COMPLETE]\e[0m" $( date +"%y-%m-%d %R" ): $@ "     \e[104m{$((end-start))s}\e[0m"
     else
-        logerror $@
+        logerror Error Code $return_code  $@
     fi
     return $return_code
+}
+function ensureoutdirs() {
+    [[ -d output ]] || mkdir output
+    pushd output
+    for folder in datacards  log  plots  shapes  signalStrength; do
+        [[ ! -d $folder ]] && mkdir $folder
+    done
+    [[ -d log/condorShapes ]] || mkdir log/condorShapes
+    popd
 }
