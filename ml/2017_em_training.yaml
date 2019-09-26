@@ -39,7 +39,7 @@ variables:
 - eta_1
 - m_vis
 - ptvis
-- m_sv
+- m_sv_puppi
 - ME_q2v1
 - ME_q2v2
 - bpt_1
@@ -50,7 +50,7 @@ variables:
 - jdeta
 - mjj
 - dijetpt
-- mTdileptonMET
+- mTdileptonMET_puppi
 
 # Split of dataset in training and validation (in TMVA called training and testing)
 train_test_split: 0.75

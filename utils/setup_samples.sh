@@ -20,12 +20,12 @@ ARTUS_FRIENDS_FAKE_FACTOR_INCL_2016=$ARTUS_FRIENDS_FAKE_FACTOR_2016
 
 
 # Samples Run2017
-basedir="/ceph/htautau"
-ARTUS_OUTPUTS_2017="$basedir/2017/ntuples/"
-NNScore_Friends_2017="$basedir/2017/nnscore_friends/"
-SVFit_Friends_2017="$basedir/2017/svfit_friends/"
-MELA_Friends_2017="$basedir/2017/mela_friends/"
-FF_Friends_2017="$basedir/2017/ff_friends/"
+basedir="/ceph/swozniewski/SM_Htautau_Legacy/ntuples/2017_08_21"
+ARTUS_OUTPUTS_2017="$basedir/merged/"
+NNScore_Friends_2017="$basedir/NN_puppi/"
+SVFit_Friends_2017="$basedir/SVFit/"
+MELA_Friends_2017="$basedir/MELA/"
+FF_Friends_2017="$basedir/FF/"
 ARTUS_FRIENDS_2017="$NNScore_Friends_2017 $SVFit_Friends_2017 $MELA_Friends_2017"
 ARTUS_FRIENDS_ET_2017=$ARTUS_FRIENDS_2017
 ARTUS_FRIENDS_MT_2017=$ARTUS_FRIENDS_2017
