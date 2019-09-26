@@ -16,19 +16,19 @@ source utils/bashFunctionCollection.sh
 function run_procedure() {
     ERA=$1
     CHANNEL=$2
-    METHOD=$3
+    TAG=$3
 
     tauEstimation=emb
     jetEstimation=ff
-    if [[ $METHOD == *"mc_"* ]]; then
+    if [[ $TAG == *"mc_"* ]]; then
         tauEstimation=mc
     fi
-    if [[ $METHOD == *"_mc"* ]]; then
+    if [[ $TAG == *"_mc"* ]]; then
         jetEstimation=mc
     fi
 
     source utils/setup_samples.sh $ERA
-    [[ -z $METHOD ]] && outdir=ml/out/${ERA}_${CHANNEL} ||  outdir=ml/out/${ERA}_${CHANNEL}_${METHOD}
+    [[ -z $TAG ]] && outdir=ml/out/${ERA}_${CHANNEL} ||  outdir=ml/out/${ERA}_${CHANNEL}_${TAG}
     mkdir -p $outdir
 
     ARTUS_FRIENDS=""
@@ -81,16 +81,16 @@ function run_procedure() {
     logandrun python ./ml/yamlmerge.py \
         --era ${ERA} \
         --channel ${CHANNEL} \
-        --dataset-config-file ml/out/${ERA}_${CHANNEL}_${METHOD}/dataset_config.yaml
+        --dataset-config-file ml/out/${ERA}_${CHANNEL}_${TAG}/dataset_config.yaml
 }
 IFS=',' read -r -a eras <<< $1
 IFS=',' read -r -a channels <<< $2
-IFS=',' read -r -a methods <<< $3
+IFS=',' read -r -a tags <<< $3
 
-for method in ${methods[@]}; do
+for tag in ${tags[@]}; do
     for era in ${eras[@]}; do
         for channel in ${channels[@]}; do
-            run_procedure $era $channel $method
+            run_procedure $era $channel $tag
         done
     done
 done

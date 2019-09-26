@@ -3,8 +3,9 @@ set -e
 
 era=$1
 channel=$2
+tag=$3
 ## is unset && then || else
-[[ -z $method ]] && outdir=ml/out/${era}_${SELCHANNEL} ||  outdir=ml/out/${era}_${channel}_${method}
+[[ -z $tag ]] && outdir=ml/out/${era}_${SELCHANNEL} ||  outdir=ml/out/${era}_${channel}_${tag}
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh

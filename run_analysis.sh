@@ -4,7 +4,7 @@ set -e
 ERA=$1               # options: 2016, 2017
 IFS=',' read -r -a CHANNELS <<< $2
 CHANNELSARG=$2
-METHOD="default"
+TAG="default"
 
 source utils/bashFunctionCollection.sh
 
@@ -23,14 +23,14 @@ done
 
 
 # Create shapes of systematics
-#./shapes/produce_shapes.sh $ERA $CHANNELSARG $METHOD
+#./shapes/produce_shapes.sh $ERA $CHANNELSARG $TAG
 
 # Apply blinding strategy
 #./shapes/apply_blinding.sh $ERA
 
 # Convert shapes to synced format
 for CHANNEL in ${CHANNELS[@]}; do
-    logandrun ./shapes/convert_to_synced_shapes.sh $ERA $CHANNEL $METHOD &
+    logandrun ./shapes/convert_to_synced_shapes.sh $ERA $CHANNEL $TAG &
 done
 wait
 
@@ -39,9 +39,9 @@ STXS_SIGNALS="stxs_stage0"  # options: stxs_stage0, stxs_stage1p1
 CATEGORIES="stxs_stage1p1"    # options: stxs_stage0, stxs_stage1p1
 JETFAKES=1                  # options: 0, 1
 EMBEDDING=1                 # options: 0, 1
-DATACARDDIR=output/datacards/${ERA}-${METHOD}-smhtt-ML/${STXS_SIGNALS}
+DATACARDDIR=output/datacards/${ERA}-${TAG}-smhtt-ML/${STXS_SIGNALS}
 [ -d $DATACARDDIR ] || mkdir -p $DATACARDDIR
-./datacards/produce_datacard.sh ${ERA} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${METHOD} ${CHANNELSARG}
+./datacards/produce_datacard.sh ${ERA} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${TAG} ${CHANNELSARG}
 
 # Combine datacards
 # The following line combines datacards of different eras.
@@ -51,21 +51,21 @@ DATACARDDIR=output/datacards/${ERA}-${METHOD}-smhtt-ML/${STXS_SIGNALS}
 
 # Build workspace
 STXS_FIT="inclusive"        # options: stxs_stage0, stxs_stage1p1, inclusive
-./datacards/produce_workspace.sh $ERA $STXS_FIT $METHOD | tee ${ERA}_produce_workspace_${STXS_FIT}.log
+./datacards/produce_workspace.sh $ERA $STXS_FIT $TAG | tee ${ERA}_produce_workspace_${STXS_FIT}.log
 
 # Run statistical inference
 #./combine/significance.sh $ERA | tee ${ERA}_significance.log
-./combine/signal_strength.sh $ERA $STXS_FIT $DATACARDDIR/cmb/125 cmb ${METHOD}
-# ./combine/signal_strength.sh $ERA "robustHesse" $DATACARDDIR/cmb/125 cmb ${METHOD}
+./combine/signal_strength.sh $ERA $STXS_FIT $DATACARDDIR/cmb/125 cmb ${TAG}
+# ./combine/signal_strength.sh $ERA "robustHesse" $DATACARDDIR/cmb/125 cmb ${TAG}
 # ./combine/diff_nuisances.sh $ERA
 #./combine/nuisance_impacts.sh $ERA
 
 # Make prefit and postfit shapes
 
-# ./combine/prefit_postfit_shapes.sh ${ERA} ${STXS_FIT} ${DATACARDDIR}/cmb/125 ${METHOD}
+# ./combine/prefit_postfit_shapes.sh ${ERA} ${STXS_FIT} ${DATACARDDIR}/cmb/125 ${TAG}
 
-# PREFITFILE="${DATACARDDIR}/prefitshape-${era}-${METHOD}-${STXS_FIT}.root"
-# PLOTDIR=output/plots/${era}-${METHOD}_prefit-plots
+# PREFITFILE="${DATACARDDIR}/prefitshape-${era}-${TAG}-${STXS_FIT}.root"
+# PLOTDIR=output/plots/${era}-${TAG}_prefit-plots
 # [ -d $PLOTDIR ] || mkdir -p $PLOTDIR
 
 # ./plotting/plot_shapes.py -i $PREFITFILE -o $PLOTDIR -c ${CHANNELS[@]} -e $era $OPTION --categories $CATEGORIES --fake-factor --embedding --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB

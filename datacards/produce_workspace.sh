@@ -6,7 +6,7 @@ source utils/setup_python.sh
 [[ ! -z $1 && ! -z $2 && ! -z $3 ]] || (echo Invalid number of arguments; exit 1  )
 ERA=$1
 STXS_FIT=$2
-TRAINING_METHOD=$3
+TAG=$3
 NUM_THREADS=12
 
 if [[ $STXS_FIT == "inclusive" || $STXS_FIT == "stxs_stage0" ]]; then
@@ -15,10 +15,10 @@ elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
     STXS_SIGNALS=stxs_stage1p1
 fi
 
-LOGFILE=output/log/workspace-${ERA}-$STXS_FIT-${TRAINING_METHOD}.log
+LOGFILE=output/log/workspace-${ERA}-$STXS_FIT-${TAG}.log
 
 # Collect input directories for eras and define output path for workspace
-INPUT=output/datacards/${ERA}-${TRAINING_METHOD}-smhtt-ML/${STXS_SIGNALS}/*/125
+INPUT=output/datacards/${ERA}-${TAG}-smhtt-ML/${STXS_SIGNALS}/*/125
 echo "[INFO] Add datacards to workspace from path "${INPUT}"."
 
 OUTPUT=${ERA}-${STXS_FIT}-workspace.root

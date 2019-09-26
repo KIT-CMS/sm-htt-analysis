@@ -26,3 +26,5 @@ output
 .vscode
 *.code-workspace
 tmp-*
+combine_logger.out
+docker_stderror

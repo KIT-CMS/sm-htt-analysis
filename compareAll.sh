@@ -35,16 +35,16 @@ fi
 ########### Argument handling and Tests ##################
 IFS=',' read -r -a eras <<< $1
 IFS=',' read -r -a channels <<< $2
-IFS=',' read -r -a methods <<< $3
+IFS=',' read -r -a tags <<< $3
 erasarg=$1
 channelsarg=$2
-methodsarg=$3
+tagsarg=$3
 
 [[ "" = $( echo ${eras} ) ]] && eras=("2016" "2017" "2018") erasarg="2016,2017,2018"
 [[ "" = $( echo ${channels} ) ]] && channels=("em" "et" "tt" "mt") channelsarg="em,et,mt,tt"
-[[ "" = $( echo ${methods} ) ]] && methods=("default") methodsarg="default"
+[[ "" = $( echo ${tags} ) ]] && tags=("default") tagsarg="default"
 
-loginfo Eras: ${erasarg}  Channels: ${channelsarg}   Training Dataset Generation Method: ${methodsarg} Sourced: $sourced
+loginfo Eras: ${erasarg}  Channels: ${channelsarg}   Training Dataset Generation tag: ${tagsarg} Sourced: $sourced
 
 if [[ ! -z ${4:-} ]]; then
     logerror only takes 3 arguments, seperate multiple eras and channels by comma eg: 2016,2018 mt,em   or \"\" em
@@ -73,10 +73,10 @@ done
 ############################################
 ############# Ensure all folders and files are available for mc and emb
 function ensuremldirs() {
-    for method in ${methods[@]}; do
+    for tag in ${tags[@]}; do
         for era in ${eras[@]}; do
             for channel in ${channels[@]}; do
-                mldir=ml/out/${era}_${channel}_${method}
+                mldir=ml/out/${era}_${channel}_${tag}
                 if [[ ! -d $mldir ]]; then
                     mkdir $mldir
                     loginfo "Creating $mldir"
@@ -104,8 +104,8 @@ source completedMilestones
 
 
 function compenv() {
-    varnames=(era channel method eras  channels  methods erasarg channelsarg methodsarg mldir trainingConfFile anaSSStep  llwtnndir temp_file PROD_NEW_DATACARDS redoConversion fn JETFAKES EMBEDDING CATEGORIES PROD_NEW_DATACARDS STXS_SIGNALS STXS_FIT USE_BATCH_SYSTEM)
-    IFS='°' read -r -a vars <<< "${era[@]}"°"${channel[@]}"°"${method[@]}"°"${eras[@]}"°"${channels[@]}"°"${methods[@]}"°"${erasarg[@]}"°"${channelsarg[@]}"°"${methodsarg[@]}"°"${mldir[@]}"°"${trainingConfFile[@]}"°"${anaSSStep[@]}"°"${llwtnndir[@]}"°"${temp_file[@]}"°"${PROD_NEW_DATACARDS[@]}"°"${redoConversion[@]}"°"${fn[@]}"°"${JETFAKES[@]}"°"${EMBEDDING[@]}"°"${CATEGORIES[@]}"°"${PROD_NEW_DATACARDS[@]}"°"${STXS_SIGNALS[@]}"°"${STXS_FIT[@]}"°$USE_BATCH_SYSTEM
+    varnames=(era channel tag eras  channels  tags erasarg channelsarg tagsarg mldir trainingConfFile anaSSStep  llwtnndir temp_file PROD_NEW_DATACARDS redoConversion fn JETFAKES EMBEDDING CATEGORIES PROD_NEW_DATACARDS STXS_SIGNALS STXS_FIT USE_BATCH_SYSTEM)
+    IFS='°' read -r -a vars <<< "${era[@]}"°"${channel[@]}"°"${tag[@]}"°"${eras[@]}"°"${channels[@]}"°"${tags[@]}"°"${erasarg[@]}"°"${channelsarg[@]}"°"${tagsarg[@]}"°"${mldir[@]}"°"${trainingConfFile[@]}"°"${anaSSStep[@]}"°"${llwtnndir[@]}"°"${temp_file[@]}"°"${PROD_NEW_DATACARDS[@]}"°"${redoConversion[@]}"°"${fn[@]}"°"${JETFAKES[@]}"°"${EMBEDDING[@]}"°"${CATEGORIES[@]}"°"${PROD_NEW_DATACARDS[@]}"°"${STXS_SIGNALS[@]}"°"${STXS_FIT[@]}"°$USE_BATCH_SYSTEM
     for (( i=0; i<${#vars[@]}; i++ )); do
         echo "${varnames[$i]}=${vars[$i]}"
     done
@@ -113,19 +113,19 @@ function compenv() {
 
 function create_training_dataset() {
     ensuremldirs
-    for method in ${methods[@]}; do
-        export method
+    for tag in ${tags[@]}; do
+        export tag
         logandrun ./ml/create_training_dataset.sh ${erasarg} ${channelsarg}
     done
 }
 
 function mltrain() {
     ensuremldirs
-    for method in ${methods[@]}; do
-    export method
+    for tag in ${tags[@]}; do
+    export tag
         for era in ${eras[@]}; do
             for channel in ${channels[@]}; do
-                logandrun ./ml/run_training.sh ${era} ${channel} ${method}
+                logandrun ./ml/run_training.sh ${era} ${channel} ${tag}
             done
         done
     done
@@ -133,11 +133,11 @@ function mltrain() {
 
 function mltest() {
     ensuremldirs
-    for method in ${methods[@]}; do
-    export method
+    for tag in ${tags[@]}; do
+    export tag
         for era in ${eras[@]}; do
             for channel in ${channels[@]}; do
-                logandrun ./ml/run_testing.sh ${era} ${channel} ${method}
+                logandrun ./ml/run_testing.sh ${era} ${channel} ${tag}
             done
         done
     done
@@ -145,14 +145,14 @@ function mltest() {
 
 #### converts models to the form needed for submission to a batch system
 function exportForApplication {
-    for method in ${methods[@]}; do
-        export method
+    for tag in ${tags[@]}; do
+        export tag
         for era in ${eras[@]}; do
             for channel in ${channels[@]}; do
                 (
-                echo "process $method"
-                logandrun ./ml/translate_models.sh ${era} ${channel} ${method}
-                logandrun ./ml/export_lwtnn.sh ${era} ${channel}  ${method} ) &
+                echo "process $tag"
+                logandrun ./ml/translate_models.sh ${era} ${channel} ${tag}
+                logandrun ./ml/export_lwtnn.sh ${era} ${channel}  ${tag} ) &
             done
         done
     done
@@ -160,7 +160,7 @@ function exportForApplication {
 }
 
 function provideCluster() {
-    method=$1
+    tag=$1
     era=$2
     # for era in ${eras[@]}; do
         for channel in ${channels[@]}; do
@@ -170,7 +170,7 @@ function provideCluster() {
             [[ ! -d $llwtnndir/${era}/${channel} ]] && mkdir -p $llwtnndir/${era}/${channel}
             for fold in 0 1;
             do
-                updateSymlink $sm_htt_analysis_dir/ml/out/${era}_${channel}_${method}/fold${fold}_lwtnn.json  $llwtnndir/${era}/${channel}/fold${fold}_lwtnn.json
+                updateSymlink $sm_htt_analysis_dir/ml/out/${era}_${channel}_${tag}/fold${fold}_lwtnn.json  $llwtnndir/${era}/${channel}/fold${fold}_lwtnn.json
             done
         done
     # done
@@ -183,35 +183,35 @@ function provideCluster() {
 
 function runCluster(){
     set -e
-    for method in ${methods[@]}; do
-        export method
+    for tag in ${tags[@]}; do
+        export tag
         for era in ${eras[@]}; do
-            provideCluster $method $era
-            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "submit" ${era}_${method}
-            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "rungc" ${era}_${method}
+            provideCluster $tag $era
+            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "submit" ${era}_${tag}
+            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "rungc" ${era}_${tag}
             # [ $? ] && read -p " Collect? y/[n]" yn
             # if [[ ! $yn == "y" ]]; then
             # return 0
             # fi
-            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "collect" ${era}_${method}
+            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "collect" ${era}_${tag}
             [ $? ] && copyFromCluster
-            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "delete" ${era}_${method}
+            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "delete" ${era}_${tag}
         done
     done
 }
 
 function copyFromCluster() {
-    # read -p "Sync files from $USER@lxplus.cern.ch:$batch_out/${era}_${method} to $batch_out_local/${era}_${method} now? y/[n]" yn
+    # read -p "Sync files from $USER@lxplus.cern.ch:$batch_out/${era}_${tag} to $batch_out_local/${era}_${tag} now? y/[n]" yn
     # if [[ ! $yn == "y" ]]; then
     #     logerror "!=y \n aborting"
     #     [[ $sourced != 1 ]] && exit 0
     # fi
-    nnscorefolder=$batch_out_local/${era}/nnscore_friends/${method}
+    nnscorefolder=$batch_out_local/${era}/nnscore_friends/${tag}
     [[ ! -d $nnscorefolder  ]] && mkdir -p $nnscorefolder
     if [[ $cluster == etp7 ]]; then
-        logandrun rsync -rLPthz --remove-source-files $batch_out/${era}_${method}/NNScore_workdir/NNScore_collected/ $nnscorefolder
+        logandrun rsync -rLPthz --remove-source-files $batch_out/${era}_${tag}/NNScore_workdir/NNScore_collected/ $nnscorefolder
     elif [[ $cluster == lxplus7 ]]; then
-        logandrun lxrsync -rLPthz --remove-source-files $USER@lxplus.cern.ch:$batch_out/${era}_${method}/NNScore_workdir/NNScore_collected/ $nnscorefolder
+        logandrun lxrsync -rLPthz --remove-source-files $USER@lxplus.cern.ch:$batch_out/${era}_${tag}/NNScore_workdir/NNScore_collected/ $nnscorefolder
     fi
 }
 
@@ -220,14 +220,14 @@ export JETFAKES=1 EMBEDDING=1 CATEGORIES="stxs_stage1p1"
 export redoConversion=0
 function genshapes() {
     ensureoutdirs
-    for method in ${methods[@]}; do
+    for tag in ${tags[@]}; do
         for era in ${eras[@]}; do
             export redoConversion=0
-            if [[ ! -f output/shapes/${era}-${method}-${channelsarg}-shapes.root  ]]; then
-                logandrun ./shapes/produce_shapes.sh ${era} ${channelsarg} ${method}
+            if [[ ! -f output/shapes/${era}-${tag}-${channelsarg}-shapes.root  ]]; then
+                logandrun ./shapes/produce_shapes.sh ${era} ${channelsarg} ${tag}
                 redoConversion=1
             else
-                loginfo Skipping shape generation as ${era}_${method}_shapes.root exists
+                loginfo Skipping shape generation as ${era}_${tag}_shapes.root exists
             fi
         done
     done
@@ -235,12 +235,12 @@ function genshapes() {
 
 function subshapes(){
     ensureoutdirs
-    for method in ${methods[@]}; do
+    for tag in ${tags[@]}; do
         for era in ${eras[@]}; do
             for channel in ${channels[@]}; do
-                fn=output/shapes/${era}-${method}-${channel}-shapes.root
+                fn=output/shapes/${era}-${tag}-${channel}-shapes.root
                 if [[ ! -f $fn || $( stat -c%s $fn ) -le 2000 ]]; then
-                    echo "$era $channel $method $(pwd -P)"
+                    echo "$era $channel $tag $(pwd -P)"
                     redoConversion=1
                 fi
             done
@@ -250,12 +250,12 @@ function subshapes(){
 }
 
 function syncshapes() {
-    for method in ${methods[@]}; do
+    for tag in ${tags[@]}; do
         for era in ${eras[@]}; do
             for channel in ${channels[@]}; do
-		        fn=output/shapes/${era}-${method}-${channel}-synced-ML.root
+		        fn=output/shapes/${era}-${tag}-${channel}-synced-ML.root
                 if [[ $redoConversion == 1 || ! -f $fn  || $( stat -c%s $fn ) -le 2000 ]]; then
-                    logandrun ./shapes/convert_to_synced_shapes.sh ${era} ${channel} ${method} &
+                    logandrun ./shapes/convert_to_synced_shapes.sh ${era} ${channel} ${tag} &
                 else
                     loginfo Skipping shape syncing as $fn exists
                 fi
@@ -269,13 +269,13 @@ function syncshapes() {
 
 function gendatacards(){
     ensureoutdirs
-    for method in ${methods[@]}; do
-        export method
+    for tag in ${tags[@]}; do
+        export tag
         for era in ${eras[@]}; do
             for STXS_SIGNALS in "stxs_stage0" "stxs_stage1p1"; do
-                    DATACARDDIR=output/datacards/${era}-${method}-smhtt-ML/${STXS_SIGNALS}
+                    DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}
                     [ -d $DATACARDDIR ] || mkdir -p $DATACARDDIR
-                    logandrun ./datacards/produce_datacard.sh ${era} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${method} ${channelsarg} &
+                    logandrun ./datacards/produce_datacard.sh ${era} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${tag} ${channelsarg} &
             done
         done
     done
@@ -284,13 +284,13 @@ function gendatacards(){
 
 function genworkspaces(){
     ensureoutdirs
-    for method in ${methods[@]}; do
-    export method
+    for tag in ${tags[@]}; do
+    export tag
         for era in ${eras[@]}; do
             for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do
-                fn="output/datacards/${era}-${method}-smhtt-ML/${STXS_SIGNALS}/cmb/125/${era}-${STXS_FIT}-workspace.root"
+                fn="output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/cmb/125/${era}-${STXS_FIT}-workspace.root"
                 if [[ ! -f $fn ]]; then
-                    logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${method} &
+                    logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${tag} &
                     #[[ $? == 0 ]] || return $?
                 else
                     loginfo "skipping workspace creation, as  $fn exists"
@@ -304,43 +304,43 @@ function genworkspaces(){
 function genMCprefitshapes(){
     ensureoutdirs
     export JETFAKES=0 EMBEDDING=0 CATEGORIES="stxs_stage1p1"
-    for method in ${methods[@]}; do
-        export method
+    for tag in ${tags[@]}; do
+        export tag
         for era in ${eras[@]}; do
             for STXS_SIGNALS in "stxs_stage0"; do
-                    DATACARDDIR=output/datacards/${era}-${method}-smhtt-ML/${STXS_SIGNALS}
+                    DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}
                     [ -d $DATACARDDIR ] || mkdir -p $DATACARDDIR
-                    logandrun ./datacards/produce_datacard.sh ${era} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${method} ${channelsarg}
+                    logandrun ./datacards/produce_datacard.sh ${era} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${tag} ${channelsarg}
             done
             for STXS_FIT in "stxs_stage0"; do
-                fn="output/datacards/${era}-${method}-smhtt-ML/${STXS_SIGNALS}/cmb/125/${era}-${STXS_FIT}-workspace.root"
+                fn="output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/cmb/125/${era}-${STXS_FIT}-workspace.root"
                 if [[ ! -f $fn ]]; then
-                    logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${method}
+                    logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${tag}
                     [[ $? == 0 ]] || return $?
                 else
                     loginfo "skipping workspace creation, as  $fn exists"
                 fi
             done
     STXS_FIT="stxs_stage0"
-    DATACARDDIR=output/datacards/${era}-${method}-smhtt-ML/${STXS_FIT}/cmb/125
-    FILE="${DATACARDDIR}/prefitshape-${era}-${method}-${STXS_FIT}.root"
-    logandrun ./combine/prefit_postfit_shapes.sh ${era} ${STXS_FIT} ${DATACARDDIR} ${method}
+    DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_FIT}/cmb/125
+    FILE="${DATACARDDIR}/prefitshape-${era}-${tag}-${STXS_FIT}.root"
+    logandrun ./combine/prefit_postfit_shapes.sh ${era} ${STXS_FIT} ${DATACARDDIR} ${tag}
 
                 OPTION="--png"
                 (
                     source utils/setup_cvmfs_sft.sh
                     source utils/setup_python.sh
-                    if [[ $method =~ "ff" ]]; then
+                    if [[ $tag =~ "ff" ]]; then
                         TRAINFF=True
                     else
                         TRAINFF=False
                     fi
-                    if [[ $method =~ "emb" ]]; then
+                    if [[ $tag =~ "emb" ]]; then
                         TRAINEMB=True
                     else
                         TRAINEMB=False
                     fi
-                    PLOTDIR=output/plots/${era}-${method}_prefit-plots
+                    PLOTDIR=output/plots/${era}-${tag}_prefit-plots
                     mkdir -p $PLOTDIR
                     logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channels[@]} -e $era $OPTION --categories $CATEGORIES --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB
                 )
@@ -352,8 +352,8 @@ function genMCprefitshapes(){
 ### do not run this parallel! it writes to fit.root in the main dir and is then moved
 function runana() {
     ensureoutdirs
-    for method in ${methods[@]}; do
-    export method
+    for tag in ${tags[@]}; do
+    export tag
         for era in ${eras[@]}; do
             if [[ True ]]; then
                 for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do
@@ -362,36 +362,36 @@ function runana() {
                     elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
                         STXS_SIGNALS=stxs_stage1p1
                     fi
-                    DATACARDDIR=output/datacards/${ERA}-${METHOD}-smhtt-ML/${STXS_SIGNALS}
+                    DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}
                     # for channel in ${channels[@]}; do
-                    #     logandrun ./combine/signal_strength.sh ${era} $STXS_FIT DATACARDDIR/$channel/125 $channel ${method}
+                    #     logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR/$channel/125 $channel ${tag}
                     # done
-                    logandrun ./combine/signal_strength.sh ${era} $STXS_FIT DATACARDDIR/cmb/125 cmb ${method}
+                    logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR/cmb/125 cmb ${tag}
                 done
             fi
             if [[ False ]]; then
                 #[[ $? == 0 ]] || return $?
                 ### postfit shapes
                 STXS_FIT="stxs_stage0"
-                DATACARDDIR=output/datacards/${era}-${method}-smhtt-ML/${STXS_FIT}/cmb/125
-                FILE="${DATACARDDIR}/prefitshape-${era}-${method}-${STXS_FIT}.root"
-                [[ ! -f $FILE ]] || logandrun ./combine/prefit_postfit_shapes.sh ${era} ${STXS_FIT} ${DATACARDDIR} ${method}
+                DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_FIT}/cmb/125
+                FILE="${DATACARDDIR}/prefitshape-${era}-${tag}-${STXS_FIT}.root"
+                [[ ! -f $FILE ]] || logandrun ./combine/prefit_postfit_shapes.sh ${era} ${STXS_FIT} ${DATACARDDIR} ${tag}
 
                 OPTION="--png"
                 (
                     source utils/setup_cvmfs_sft.sh
                     source utils/setup_python.sh
-                    if [[ $method =~ "ff" ]]; then
+                    if [[ $tag =~ "ff" ]]; then
                         TRAINFF=True
                     else
                         TRAINFF=False
                     fi
-                    if [[ $method =~ "emb" ]]; then
+                    if [[ $tag =~ "emb" ]]; then
                         TRAINEMB=True
                     else
                         TRAINEMB=False
                     fi
-                    PLOTDIR=output/plots/${era}-${method}_prefit-plots
+                    PLOTDIR=output/plots/${era}-${tag}_prefit-plots
                     [ -d $PLOTDIR ] || mkdir -p $PLOTDIR
                     #logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channels[@]} -e $era $OPTION --categories $CATEGORIES --fake-factor --embedding --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB
                 )

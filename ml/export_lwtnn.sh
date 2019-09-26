@@ -3,7 +3,7 @@ set -e
 
 ERA=$1
 CHANNEL=$2
-[[ -z $3 ]] || method=$3
+[[ -z $3 ]] || tag=$3
 
 # source python3 LCG view
 LCG_RELEASE=94python3
@@ -22,7 +22,7 @@ if [ ! -d "htt-ml/lwtnn" ]; then
     exit 1
 fi
 
-[[ -z $method ]] && outdir=ml/out/${ERA}_${CHANNEL} || outdir=ml/out/${ERA}_${CHANNEL}_${method}
+[[ -z $tag ]] && outdir=ml/out/${ERA}_${CHANNEL} || outdir=ml/out/${ERA}_${CHANNEL}_${tag}
 for fold in 0 1;
 do
     python3 htt-ml/lwtnn/converters/keras2json.py ${outdir}/fold${fold}_keras_architecture.json  ${outdir}/fold${fold}_keras_variables.json ${outdir}/fold${fold}_keras_weights.h5 >  ${outdir}/fold${fold}_lwtnn.json

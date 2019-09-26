@@ -9,16 +9,16 @@ if [[ ! -z $1 && ! -z $2 ]]; then
     IFS=',' read -r -a eras <<< $1
     IFS=',' read -r -a channels <<< $2
     if [[ -z $3 ]]; then
-        methods="default"
+        tags="default"
     else
-        IFS=',' read -r -a methods <<< $3
+        IFS=',' read -r -a tags <<< $3
     fi
-    for method in ${methods[@]}; do
+    for tag in ${tags[@]}; do
         for era in ${eras[@]}; do
             for channel in ${channels[@]}; do
-                #fn=output/shapes/${era}-${method}-${channel}-shapes.root
+                #fn=output/shapes/${era}-${tag}-${channel}-shapes.root
                 #if [[ ! -f $fn || $( stat -c%s $fn ) -le 2000 ]]; then
-                    echo "$era $channel $method $(pwd -P)"
+                    echo "$era $channel $tag $(pwd -P)"
                 #fi
             done
         done

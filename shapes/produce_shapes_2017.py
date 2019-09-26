@@ -121,9 +121,9 @@ def parse_arguments():
         type=str,
         help="Backend. Use classic or tdf.")
     parser.add_argument(
-        "--train-method",
-        default="",
-        type=str)
+        "--tag", default="ERA_CHANNEL",
+        type=str,
+        help="Tag of output files.")
     parser.add_argument(
         "--skip-systematic-variations",
         default=False,
@@ -137,7 +137,7 @@ def main(args):
     logger.info(str(args))
     logger.info("Set up shape variations.")
     systematics = Systematics(
-        "output/shapes/{ERA}-{METHOD}-{CHANNELS}-shapes.root".format(ERA=args.era, METHOD=args.train_method, CHANNELS=",".join(args.channels)),
+        "output/shapes/{ERA}-{TAG}-{CHANNELS}-shapes.root".format(ERA=args.era, TAG=args.tag, CHANNELS=",".join(args.channels)),
         num_threads=args.num_threads,
         skip_systematic_variations=args.skip_systematic_variations)
 
@@ -302,10 +302,10 @@ def main(args):
     binning = yaml.load(open(args.binning), Loader=yaml.Loader)
 
     def readclasses(c):
-        if args.train_method == "":
-            confFileName="ml/out/2017_{}/dataset_config.yaml".format(c,args.train_method)
+        if args.tag == "":
+            confFileName="ml/out/2017_{}/dataset_config.yaml".format(c,args.tag)
         else:
-            confFileName="ml/out/2017_{}_{}/dataset_config.yaml".format(c,args.train_method)
+            confFileName="ml/out/2017_{}_{}/dataset_config.yaml".format(c,args.tag)
         logger.debug("Parse classes from "+confFileName)
         confdict= yaml.load(open(confFileName, "r"))
         logger.debug("Classes for {} loaded: {}".format(c, str(confdict["classes"])))
@@ -1541,5 +1541,5 @@ def main(args):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    setup_logging("output/log/{}_{}_{}_shapes.log".format(args.era, args.train_method, ",".join(args.channels)), logging.INFO)
+    setup_logging("output/log/{}_{}_{}_shapes.log".format(args.era, args.tag, ",".join(args.channels)), logging.INFO)
     main(args)

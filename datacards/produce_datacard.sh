@@ -12,14 +12,14 @@ STXS_SIGNALS=$2
 CATEGORIES=$3
 JETFAKES=$4
 EMBEDDING=$5
-TRAINING_METHOD=$6
+TAG=$6
 CHANNELS=$7
 NUM_THREADS=8
 
 TRAIN_EMB=1
 TRAIN_FF=1
 
-OUTPUTDIR="output/datacards/${ERA}-${TRAINING_METHOD}-smhtt-ML/${STXS_SIGNALS}"
+OUTPUTDIR="output/datacards/${ERA}-${TAG}-smhtt-ML/${STXS_SIGNALS}"
 
 # Remove output directory
 [[ ! -d $OUTPUTDIR ]] || rm -r $OUTPUTDIR
@@ -39,7 +39,7 @@ logandrun ${CMSSW_BASE}/bin/slc7_amd64_gcc700/MorphingSMRun2Legacy \
     --jetfakes=$JETFAKES \
     --embedding=$EMBEDDING \
     --postfix="-ML" \
-    --midfix="-${TRAINING_METHOD}-" \
+    --midfix="-${TAG}-" \
     --channel=${CHANNELS} \
     --auto_rebin=true \
     --stxs_signals=${STXS_SIGNALS} \
@@ -47,8 +47,8 @@ logandrun ${CMSSW_BASE}/bin/slc7_amd64_gcc700/MorphingSMRun2Legacy \
     --era=${ERA} \
     --output=${OUTPUTDIR} \
     --train_ff=${TRAIN_FF} \
-    --train_emb=${TRAIN_EMB} | tee output/log/datacard-${ERA}-${STXS_SIGNALS}-${CATEGORIES}-${JETFAKES}-${EMBEDDING}-${TRAINING_METHOD}-${CHANNELS}.log
-        #--output="${ERA}_${TRAINING_METHOD}_smhtt" \
+    --train_emb=${TRAIN_EMB} | tee output/log/datacard-${ERA}-${STXS_SIGNALS}-${CATEGORIES}-${JETFAKES}-${EMBEDDING}-${TAG}-${CHANNELS}.log
+        #--output="${ERA}_${TAG}_smhtt" \
 
 # Use Barlow-Beeston-lite approach for bin-by-bin systematics
 pushd ${OUTPUTDIR}/cmb/125/

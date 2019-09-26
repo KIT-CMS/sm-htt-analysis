@@ -24,7 +24,7 @@ else
 fi
 
 
-[[ -z $method ]] && outdir=ml/out/${ERA}_${CHANNEL} || outdir=ml/out/${ERA}_${CHANNEL}_${method}
+[[ -z $tag ]] && outdir=ml/out/${ERA}_${CHANNEL} || outdir=ml/out/${ERA}_${CHANNEL}_${tag}
 
 mkdir -p $outdir
 
