@@ -14,34 +14,47 @@ cutbased:
         wjets_control: "(1>0)&&(mt_1_puppi>=70)"
         signal_region: "(1>0)&&(mt_1_puppi<70)"
         nobtag: "(mt_1_puppi<70)&&(nbtag==0)"
+        nobtag_lowmsv: "(mt_1_puppi<70)&&(nbtag==0)&&(m_sv_puppi <  250)"
+        nobtag_highmsv: "(mt_1_puppi<70)&&(nbtag==0)&&(m_sv_puppi >= 250)"
         btag: "(mt_1_puppi<70)&&(nbtag>0)"
         nobtag_tightmt: "(mt_1_puppi<40)&&(nbtag==0)"
+        nobtag_highmsv_tightmt: "(mt_1_puppi<40)&&(nbtag==0)&&(m_sv_puppi >= 250)"
         btag_tightmt: "(mt_1_puppi<40)&&(nbtag>0)"
-        nobtag_loosemt: "(mt_1_puppi>=40)&&(mt_1_puppi<70)&&(nbtag==0)"
+        nobtag_highmsv_loosemt: "(mt_1_puppi>=40)&&(mt_1_puppi<70)&&(nbtag==0)&&(m_sv_puppi >= 250)"
         btag_loosemt: "(mt_1_puppi>=40)&&(mt_1_puppi<70)&&(nbtag>0)"
     et:
         wjets_control: "(1>0)&&(mt_1_puppi>=70)"
         signal_region: "(1>0)&&(mt_1_puppi<70)"
         nobtag: "(mt_1_puppi<70)&&(nbtag==0)"
+        nobtag_lowmsv: "(mt_1_puppi<70)&&(nbtag==0)&&(m_sv_puppi <  250)"
+        nobtag_highmsv: "(mt_1_puppi<70)&&(nbtag==0)&&(m_sv_puppi >= 250)"
         btag: "(mt_1_puppi<70)&&(nbtag>0)"
         nobtag_tightmt: "(mt_1_puppi<40)&&(nbtag==0)"
+        nobtag_highmsv_tightmt: "(mt_1_puppi<40)&&(nbtag==0)&&(m_sv_puppi >= 250)"
         btag_tightmt: "(mt_1_puppi<40)&&(nbtag>0)"
         nobtag_loosemt: "(mt_1_puppi>=40)&&(mt_1_puppi<70)&&(nbtag==0)"
+        nobtag_highmsv_loosemt: "(mt_1_puppi>=40)&&(mt_1_puppi<70)&&(nbtag==0)&&(m_sv_puppi >= 250)"
         btag_loosemt: "(mt_1_puppi>=40)&&(mt_1_puppi<70)&&(nbtag>0)"
     tt:
         signal_region: "(1>0)&&(1>0)"
         nobtag: "(1>0)&&(nbtag==0)"
+        nobtag_lowmsv: "(mt_1_puppi<70)&&(nbtag==0)&&(m_sv_puppi <  250)"
+        nobtag_highmsv: "(mt_1_puppi<70)&&(nbtag==0)&&(m_sv_puppi >= 250)"
         btag: "(1>0)&&(nbtag>0)"
     em:
         ttbar_control: "(1>0)&&(pZetaPuppiMissVis<-35)"
         signal_region: "(1>0)&&(pZetaPuppiMissVis>=-35)"
         nobtag: "(nbtag==0)&&(pZetaPuppiMissVis>=-35)"
+        nobtag_lowmsv: "(mt_1_puppi<70)&&(nbtag==0)&&(m_sv_puppi <  250)"
+        nobtag_highmsv: "(mt_1_puppi<70)&&(nbtag==0)&&(m_sv_puppi >= 250)"
         btag: "(nbtag>0)&&(pZetaPuppiMissVis>=-35)"
         nobtag_highdzeta: "(nbtag==0)&&(pZetaPuppiMissVis>=30)"
+        nobtag_highmsv_highdzeta: "(nbtag==0)&&(pZetaPuppiMissVis>=30)&&(m_sv_puppi >= 250)"
         btag_highdzeta: "(nbtag>0)&&(pZetaPuppiMissVis>=30)"
-        nobtag_mediumdzeta: "(nbtag==0)&&(pZetaPuppiMissVis<30)&&(pZetaPuppiMissVis>=-10)"
+        nobtag_highmsv_mediumdzeta: "(nbtag==0)&&(pZetaPuppiMissVis<30)&&(pZetaPuppiMissVis>=-10)&&(m_sv_puppi >= 250)"
         btag_mediumdzeta: "(nbtag>0)&&(pZetaPuppiMissVis<30)&&(pZetaPuppiMissVis>=-10)"
         nobtag_lowdzeta: "(nbtag==0)&&(pZetaPuppiMissVis>=-35)&&(pZetaPuppiMissVis<-10)"
+        nobtag_highmsv_lowdzeta: "(nbtag==0)&&(pZetaPuppiMissVis>=-35)&&(pZetaPuppiMissVis<-10)&&(m_sv_puppi >= 250)"
         btag_lowdzeta: "(nbtag>0)&&(pZetaPuppiMissVis>=-35)&&(pZetaPuppiMissVis<-10)"
 
 # Optimized cuts for SM sub-categories
@@ -62,10 +75,8 @@ cutbased:
 #
 stxs_stage1p1_v2:
     mt:
-        0jet_lowpt_tightmt:   "(pt_tt_puppi <  75) && (njets == 0) && (mt_1_puppi <  40)"
-        0jet_lowpt_loosemt:   "(pt_tt_puppi <  75) && (njets == 0) && (mt_1_puppi >= 40) && (mt_1_puppi < 70)"
-        0jet_highpt_tightmt:  "(pt_tt_puppi >= 75) && (njets == 0) && (mt_1_puppi <  40)"
-        0jet_highpt_loosemt:  "(pt_tt_puppi >= 75) && (njets == 0) && (mt_1_puppi >= 40) && (mt_1_puppi < 70)"
+        0jet_tightmt:   "(njets == 0) && (mt_1_puppi <  40)"
+        0jet_loosemt:   "(njets == 0) && (mt_1_puppi >= 40) && (mt_1_puppi < 70)"
 
         geq1jet_highdeltar: "(njets >= 1) && (DiTauDeltaR >= 2.5)"
 
@@ -88,22 +99,19 @@ stxs_stage1p1_v2:
         2jet_mediummjj_lowdeltar: "(njets >= 2) && (mjj >= 350)  && (mjj < 1000) && (DiTauDeltaR <  2.5)"
         2jet_highmjj_lowdeltar:   "(njets >= 2) && (mjj >= 1000) && (DiTauDeltaR <  2.5)"
     tt:
-        leq1jet_highdeltar:   "(njets <= 1) && (DiTauDeltaR >= 3.2)"
+        highdeltar:   "(njets <= 1) && (DiTauDeltaR >= 3.2) || (njets >= 2) && (DiTauDeltaR >= 2.5)"
         0jet_lowmediumdeltar: "(njets == 0) && (DiTauDeltaR <  3.2)"
 
         1jet_lowpt_lowdeltar:          "(pt_tt_puppi <  100) && (njets == 1) && (DiTauDeltaR <  2.5)"
         1jet_lowpt_mediumdeltar:       "(pt_tt_puppi <  100) && (njets == 1) && (DiTauDeltaR >= 2.5) && (DiTauDeltaR <  3.2)"
-        1jet_mediumpt_lowmediumdeltar: "(pt_tt_puppi >= 100) && (pt_tt_puppi <  200) && (njets == 1) && (DiTauDeltaR <  3.2)"
-        1jet_highpt_lowmediumdeltar:   "(pt_tt_puppi >= 200) && (njets == 1) && (DiTauDeltaR <  3.2)"
+        1jet_highpt_lowmediumdeltar:   "(pt_tt_puppi >= 100) && (njets == 1) && (DiTauDeltaR <  3.2)"
 
-        2jet_highdeltar:  "(njets >= 2) && (DiTauDeltaR >= 2.5)"
         2jet_lowmjj_lowdeltar:   "(njets >= 2) && (mjj <  350) && (DiTauDeltaR <  2.5)"
         2jet_highmjj_lowdeltar_lowjdeta:   "(njets >= 2) && (mjj >= 350) && (DiTauDeltaR <  2.5) && (jdeta <  4.0)"
         2jet_highmjj_lowdeltar_highjdeta:  "(njets >= 2) && (mjj >= 350) && (DiTauDeltaR <  2.5) && (jdeta >= 4.0)"
     em:
         0jet_lowpt:    "(pt_tt_puppi <  10) && (njets == 0)"
-        0jet_highpt_highdzeta:   "(pt_tt_puppi >= 10) && (njets == 0) && (pZetaPuppiMissVis >=  30)"
-        0jet_highpt_mediumdzeta: "(pt_tt_puppi >= 10) && (njets == 0) && (pZetaPuppiMissVis >=  10) && (pZetaPuppiMissVis < 30)"
+        0jet_highpt_highmediumdzeta: "(pt_tt_puppi >= 10) && (njets == 0) && (pZetaPuppiMissVis >= -10)"
         0jet_highpt_lowdzeta:    "(pt_tt_puppi >= 10) && (njets == 0) && (pZetaPuppiMissVis <  -10)"
 
         1jet_lowpt:        "(pt_tt_puppi <   40) && (njets == 1)"
@@ -112,9 +120,7 @@ stxs_stage1p1_v2:
         1jet_highpt:       "(pt_tt_puppi >= 200) && (njets == 1)"
 
         2jet_lowmjj:   "(njets >= 2) && (mjj <  350)"
-        2jet_mediummjj_lowjdeta:   "(njets >= 2) && (mjj >= 350) && (mjj < 1000) && (jdeta <  4.5)"
-        2jet_mediummjj_highjdeta:  "(njets >= 2) && (mjj >= 350) && (mjj < 1000) && (jdeta >= 4.5)"
-        2jet_highmjj: " (njets >= 2) && (mjj >= 1000)"
+        2jet_highmjj: " (njets >= 2) && (mjj >= 350)"
 
 # Binning for the quantities as final discriminators
 variables:
