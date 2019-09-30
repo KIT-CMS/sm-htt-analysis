@@ -249,7 +249,7 @@ def main(args):
         for category in binning["cutbased"][ch]:
             cuts = Cuts(Cut(binning["cutbased"][ch][category], category))
             categories[ch].append(Category(category, channel_dict[ch], cuts, variable=discriminator))
-            if category == "nobtag":
+            if category in [ "nobtag", "nobtag_lowmsv"]:
                 for subcategory in sorted(binning["stxs_stage1p1_v2"][ch]):
                     stage1p1cuts = copy.deepcopy(cuts)
                     stage1p1cuts.add(Cut(binning["stxs_stage1p1_v2"][ch][subcategory], category + "_" + subcategory))
