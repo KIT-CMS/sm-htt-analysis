@@ -87,12 +87,12 @@ stxs_stage1p1_v2:
         geq1jet_highdeltar:       "(njets >= 1) && (DiTauDeltaR >= 2.5)"
 
         1jet_lowdeltar_lowpt:     "(njets == 1) && (DiTauDeltaR <  2.5) && (pt_tt_puppi <  120)"
-        1jet_lowdeltar_mediumhpt: "(njets == 1) && (DiTauDeltaR <  2.5) && (pt_tt_puppi >= 120) && (pt_tt_puppi <  200)"
+        1jet_lowdeltar_mediumpt: "(njets == 1) && (DiTauDeltaR <  2.5) && (pt_tt_puppi >= 120) && (pt_tt_puppi <  200)"
         1jet_lowdeltar_highpt:    "(njets == 1) && (DiTauDeltaR <  2.5) && (pt_tt_puppi >= 200)"
 
-        2jet_lowmjj_lowdeltar:    "(njets >= 2) && (DiTauDeltaR <  2.5) && (mjj <   350)"
-        2jet_mediummjj_lowdeltar: "(njets >= 2) && (DiTauDeltaR <  2.5) && (mjj >=  350) && (mjj < 1000)"
-        2jet_highmjj_lowdeltar:   "(njets >= 2) && (DiTauDeltaR <  2.5) && (mjj >= 1000)"
+        2jet_lowdeltar_lowmjj:    "(njets >= 2) && (DiTauDeltaR <  2.5) && (mjj <   350)"
+        2jet_lowdeltar_mediummjj: "(njets >= 2) && (DiTauDeltaR <  2.5) && (mjj >=  350) && (mjj < 1000)"
+        2jet_lowdeltar_highmjj:   "(njets >= 2) && (DiTauDeltaR <  2.5) && (mjj >= 1000)"
     et:
         0jet_tightmt_lowpt:       "(njets == 0) && (mt_1_puppi <  40)                      && (pt_tt_puppi <  100)"
         0jet_tightmt_mediumpt:    "(njets == 0) && (mt_1_puppi <  40)                      && (pt_tt_puppi >= 100) && (pt_tt_puppi <  200)"
@@ -104,12 +104,12 @@ stxs_stage1p1_v2:
         geq1jet_highdeltar:       "(njets >= 1) && (DiTauDeltaR >= 2.5)"
 
         1jet_lowdeltar_lowpt:     "(njets == 1) && (DiTauDeltaR <  2.5) && (pt_tt_puppi <  120)"
-        1jet_lowdeltar_mediumhpt: "(njets == 1) && (DiTauDeltaR <  2.5) && (pt_tt_puppi >= 120) && (pt_tt_puppi <  200)"
+        1jet_lowdeltar_mediumpt: "(njets == 1) && (DiTauDeltaR <  2.5) && (pt_tt_puppi >= 120) && (pt_tt_puppi <  200)"
         1jet_lowdeltar_highpt:    "(njets == 1) && (DiTauDeltaR <  2.5) && (pt_tt_puppi >= 200)"
 
-        2jet_lowmjj_lowdeltar:    "(njets >= 2) && (DiTauDeltaR <  2.5) && (mjj <   350)"
-        2jet_mediummjj_lowdeltar: "(njets >= 2) && (DiTauDeltaR <  2.5) && (mjj >=  350) && (mjj < 1000)"
-        2jet_highmjj_lowdeltar:   "(njets >= 2) && (DiTauDeltaR <  2.5) && (mjj >= 1000)"
+        2jet_lowdeltar_lowmjj:    "(njets >= 2) && (DiTauDeltaR <  2.5) && (mjj <   350)"
+        2jet_lowdeltar_mediummjj: "(njets >= 2) && (DiTauDeltaR <  2.5) && (mjj >=  350) && (mjj < 1000)"
+        2jet_lowdeltar_highmjj:   "(njets >= 2) && (DiTauDeltaR <  2.5) && (mjj >= 1000)"
     tt:
         highdeltar:                       "(njets <= 1) && (DiTauDeltaR >= 3.2) || (njets >= 2) && (DiTauDeltaR >= 2.5)"
 
@@ -125,8 +125,7 @@ stxs_stage1p1_v2:
         2jet_lowdeltar_highmjj_lowjdeta:  "(njets >= 2) && (DiTauDeltaR <  2.5)                         && (mjj >= 350) && (jdeta <  4.0)"
         2jet_lowdeltar_highmjj_highjdeta: "(njets >= 2) && (DiTauDeltaR <  2.5)                         && (mjj >= 350) && (jdeta >= 4.0)"
     em:
-        0jet_lowpt_highdzeta:    "(njets == 0) && (pt_tt_puppi <  10) && (pZetaPuppiMissVis >=  30)"
-        0jet_lowpt_mediumdzeta:  "(njets == 0) && (pt_tt_puppi <  10) && (pZetaPuppiMissVis <   30) && (pZetaPuppiMissVis >= -10)"
+        0jet_lowpt_mediumdzeta:  "(njets == 0) && (pt_tt_puppi <  10) && (pZetaPuppiMissVis >= -10)"
         0jet_lowpt_lowdzeta:     "(njets == 0) && (pt_tt_puppi <  10) && (pZetaPuppiMissVis <  -10)"
         0jet_highpt_highdzeta:   "(njets == 0) && (pt_tt_puppi >= 10) && (pZetaPuppiMissVis >=  30)"
         0jet_highpt_mediumdzeta: "(njets == 0) && (pt_tt_puppi >= 10) && (pZetaPuppiMissVis <   30) && (pZetaPuppiMissVis >= -10)"
