@@ -73,7 +73,7 @@ function logandrun() {
     if [[ $return_code == 0 ]]; then
         echo -e "\e[42m[COMPLETE]\e[0m" $( date +"%y-%m-%d %R" ): $@ "     \e[104m{$((end-start))s}\e[0m"
     else
-        logerror Error Code $return_code  $@
+        logerror Error Code $return_code  $@ "     \e[104m{$((end-start))s}\e[0m"
     fi
     return $return_code
 }
