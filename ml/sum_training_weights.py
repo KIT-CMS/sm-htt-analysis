@@ -80,8 +80,8 @@ def main(args):
     for i, name in enumerate(classes):
         newWeightsDict[name]=sum_all / counts[i]
 
+    ### Warning for big changes
     if set(trainingTemplateDict["class_weights"].keys())==set(newWeightsDict.keys()):
-        ### Warning for big changes
         for i, name in enumerate(classes):
             oldweight=trainingTemplateDict["class_weights"][name]
             newweight=newWeightsDict[name]
@@ -102,23 +102,36 @@ def main(args):
         odDict[key]=newWeightsDict[key]
     del newWeightsDict
 
+    ###
+    # attach the weights dict with the classes to the dsConfDict
     dsConfDict["classes"]=odDict.keys()
     dsConfDict["class_weights"]=odDict
 
-    ## check if the dataset_config.yaml is overwriting no permitted values in the template dict
-    diffkeys=[key for key in trainingTemplateDict if key in dsConfDict and trainingTemplateDict[key]!=dsConfDict[key] and not key in ["classes", "class_weights","datasets"]  ]
-    if len(diffkeys)>0:
-        logger.fatal("Cannont merge configs in {} and {}: keys {} overlap".format(args.dataset_config_file,args.training_template,str(diffkeys)))
-        raise Exception
 
-    ## update the template dict with the values from the dataset_config dict + new generated classweight and classes
-    for key in dsConfDict:
-        if args.write_weights or key not in ["classes", "class_weights"]:
-            if key in trainingTemplateDict and trainingTemplateDict[key]!=dsConfDict[key]:
-                logger.warn("Overwriting template key {} with value {} with {}".format(key, str(trainingTemplateDict[key]),str(dsConfDict[key])))
-            trainingTemplateDict[key]=dsConfDict[key]
-    with open(args.dataset_config_file,"w") as f:
-        yaml.dump(trainingTemplateDict, f,Dumper=Dumper, default_flow_style=False)
+    ############ Logic for merging the configs
+    if "classes" in trainingTemplateDict.keys():
+        if set(trainingTemplateDict["classes"])!=set(classes):
+            logger.warn("Training classes in {} and {} differ".format(args.dataset_config_file,args.training_template))
+        #exit 1
+
+    mergeddict=OrderedDict({})
+    ## check if there are relevant overwrites:
+    ## dsConfDict has priority over trainingTemplateDict
+    ## nothing that is provided by the write_dataset_config.py is overwritten
+    for d in [dsConfDict, trainingTemplateDict]:
+        for key in ["classes","class_weights"]+d.keys():
+            #if True:
+            # making sure processes appear at the end
+            if key not in ["processes"]:
+                if key in mergeddict and mergeddict[key]!=d[key]:
+                    logger.warn("Key overlap for key {}, {} should overwrite {}".format(key,d[key],mergeddict[key]))
+                else: mergeddict[key]=d[key]
+    mergeddict["processes"]=dsConfDict["processes"]
+    with open(mergeddict["output_path"]+"/dataset_config.yaml","w") as f:
+        yaml.dump(mergeddict, f,Dumper=Dumper, default_flow_style=False)
+
+    logger.info( "{}-{}: Dict after merge: without processes".format(args.era, args.channel))
+    print(dictToString({key: value for key, value in mergeddict.items() if key != "processes"}))
 
     logger.info( "{}-{}: Class weights after update: {}".format(args.era, args.channel,dictToString(trainingTemplateDict["class_weights"])))
 

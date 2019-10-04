@@ -40,15 +40,15 @@ function run_procedure() {
     ARTUS_FRIENDS=""
     if [ ${CHANNEL} == 'mt' ]
     then
-        ARTUS_FRIENDS="${ARTUS_FRIENDS_MT} $FF_Friends_2017"
+        ARTUS_FRIENDS="${ARTUS_FRIENDS_MT} $ARTUS_FRIENDS_FAKE_FACTOR"
     fi
     if [ ${CHANNEL} == 'et' ]
     then
-        ARTUS_FRIENDS="${ARTUS_FRIENDS_ET} $FF_Friends_2017"
+        ARTUS_FRIENDS="${ARTUS_FRIENDS_ET} $ARTUS_FRIENDS_FAKE_FACTOR"
     fi
     if [ ${CHANNEL} == 'tt' ]
     then
-        ARTUS_FRIENDS="${ARTUS_FRIENDS_TT} $FF_Friends_2017"
+        ARTUS_FRIENDS="${ARTUS_FRIENDS_TT} $ARTUS_FRIENDS_FAKE_FACTOR"
     fi
     if [ ${CHANNEL} == 'em' ]
     then
@@ -70,26 +70,20 @@ function run_procedure() {
          --training-jetfakes-estimation-method $jetEstimation \
          --output-config $outdir/dataset_config.yaml
 
-    # # Create dataset files from config
+    # Create dataset files from config
      logandrun ./htt-ml/dataset/create_training_dataset.py $outdir/dataset_config.yaml
-     # Reweight STXS stage 1 signals so that each stage 1 signal is weighted equally but
-     # conserve the overall weight of the stage 0 signal
-     #python ml/reweight_stxs_stage1.py \
-     #    $outdir \
-     #    $outdir/fold0_training_dataset.root \
-     #    $outdir/fold1_training_dataset.root
+
+    #  Reweight STXS stage 1 signals so that each stage 1 signal is weighted equally but
+    #  conserve the overall weight of the stage 0 signal
+    #  python ml/reweight_stxs_stage1.py \
+    #     $outdir \
+    #     $outdir/fold0_training_dataset.root \
+    #     $outdir/fold1_training_dataset.root
 
      # split the dataset
      logandrun hadd -f $outdir/combined_training_dataset.root \
          $outdir/fold0_training_dataset.root \
          $outdir/fold1_training_dataset.root
-
-    # use this for balenced batch training
-    # write the classweight to dataset_config.yaml
-    # logandrun python ./ml/yamlmerge.py \
-    #     --era ${ERA} \
-    #     --channel ${CHANNEL} \
-    #     --dataset-config-file ml/out/${ERA}_${CHANNEL}_${TAG}/dataset_config.yaml
 
     logandrun python ./ml/sum_training_weights.py \
         --era ${ERA} \

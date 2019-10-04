@@ -167,7 +167,7 @@ def main(args):
 
 
         if args.training_jetfakes_estimation_method=="ff" and args.channel != "em":
-            if args.era != "2017":
+            if not args.era in ["2017","2018"]:
                 logger.fatal("FF training not implemented for {}".format(args.era))
                 raise Exception
             classes_map.update({
