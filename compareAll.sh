@@ -16,7 +16,7 @@ unset PYTHONUSERBASE
 shopt -s checkjobs # wait for all jobs before exiting
 export PARALLEL=1
 export USE_BATCH_SYSTEM=1
-export cluster=lxplus7 #etp7 #
+export cluster=naf #lxplus7 # etp7 # lxplus7 # #
 export sm_htt_analysis_dir=$( pwd ) ### local sm-htt repo !
 export cmssw_src_local="/portal/ekpbms3/home/${USER}/CMSSW_10_2_14/src" ### local CMSSW !
 export batch_out_local=${sm_htt_analysis_dir}/output/friend_trees
@@ -29,6 +29,14 @@ if [[ $USE_BATCH_SYSTEM == "1" ]]; then
     elif [[ $cluster == "lxplus7" ]]; then
         export batch_out="/afs/cern.ch/work/${USER::1}/${USER}/batch-out"
         export cmssw_src_dir="/afs/cern.ch/user/${USER::1}/${USER}/CMSSW_10_2_14/src" ## Remote CMSSW!
+        export remote="cern"
+    elif [[ $cluster == "naf" ]]; then
+        export remote="naf"
+        export cmssw_src_dir="/afs/desy.de/user/m/mscham/CMSSW_10_2_14/src"
+        export batch_out="/nfs/dust/cms/user/mscham/NNScoreApp"
+    else
+        logerror No such cluster: $cluster
+        exit 1
     fi
 fi
 
@@ -135,7 +143,6 @@ function exportForApplication {
         for era in ${eras[@]}; do
             for channel in ${channels[@]}; do
                 (
-                echo "process $tag"
                 logandrun ./ml/translate_models.sh ${era} ${channel} ${tag}
                 logandrun ./ml/export_lwtnn.sh ${era} ${channel}  ${tag} ) &
             done
@@ -150,7 +157,7 @@ function provideCluster() {
     # for era in ${eras[@]}; do
         for channel in ${channels[@]}; do
             ### Supply the generated models in the hard-coded path in the friendProducer
-            ### lxrsync will dereference this symlink
+            ### alogrsync $remote will dereference this symlink
             llwtnndir=$cmssw_src_local/HiggsAnalysis/friend-tree-producer/data/inputs_lwtnn
             [[ ! -d $llwtnndir/${era}/${channel} ]] && mkdir -p $llwtnndir/${era}/${channel}
             for fold in 0 1;
@@ -160,9 +167,8 @@ function provideCluster() {
         done
     # done
     updateSymlink $sm_htt_analysis_dir/datasets/datasets.json $cmssw_src_local/HiggsAnalysis/friend-tree-producer/data/input_params/datasets.json
-    if [[ $cluster == lxplus7 ]]; then
-        loginfo lxrsync -rLPthz ${cmssw_src_local}/HiggsAnalysis/friend-tree-producer/data/ lxplus.cern.ch:${cmssw_src_dir}/HiggsAnalysis/friend-tree-producer/data
-        lxrsync -rLPthz ${cmssw_src_local}/HiggsAnalysis/friend-tree-producer/data/ lxplus.cern.ch:${cmssw_src_dir}/HiggsAnalysis/friend-tree-producer/data
+    if [[ ! $cluster =~ "etp"  ]]; then
+        logandrun alogrsync $remote -rLPthz ${cmssw_src_local}/HiggsAnalysis/friend-tree-producer/data/ $remote:${cmssw_src_dir}/HiggsAnalysis/friend-tree-producer/data
     fi
 }
 
@@ -172,15 +178,13 @@ function runCluster(){
         export tag
         for era in ${eras[@]}; do
             provideCluster $tag $era
-            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "submit" ${era}_${tag}
-            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "rungc" ${era}_${tag}
-            # [ $? ] && read -p " Collect? y/[n]" yn
-            # if [[ ! $yn == "y" ]]; then
-            # return 0
-            # fi
-            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "collect" ${era}_${tag}
+            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "submit" ${tag}
+            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "rungc" ${tag}
+            [ $? ] && read -p " Collect? y/[n]" yn
+            [[ $yn == "y" ]] || return 0
+            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "collect" ${tag}
             [ $? ] && copyFromCluster
-            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "delete" ${era}_${tag}
+            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "delete" ${tag}
         done
     done
 }
@@ -195,8 +199,8 @@ function copyFromCluster() {
     [[ ! -d $nnscorefolder  ]] && mkdir -p $nnscorefolder
     if [[ $cluster == etp7 ]]; then
         logandrun rsync -rLPthz --remove-source-files $batch_out/${era}_${tag}/NNScore_workdir/NNScore_collected/ $nnscorefolder
-    elif [[ $cluster == lxplus7 ]]; then
-        logandrun lxrsync -rLPthz --remove-source-files $USER@lxplus.cern.ch:$batch_out/${era}_${tag}/NNScore_workdir/NNScore_collected/ $nnscorefolder
+    else
+        logandrun alogrsync $remote -rLPthz --remove-source-files $remote:$batch_out/${era}_${tag}/NNScore_workdir/NNScore_collected/ $nnscorefolder
     fi
 }
 
