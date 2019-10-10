@@ -367,7 +367,7 @@ def main(args):
 
     if "mm" in args.channels:
         variables = [Variable(v,VariableBinning(binning["control"]["mm"][v]["bins"]), expression=binning["control"]["mm"][v]["expression"]) for v in variable_names]
-        variables.append(Variable("m_vis_high",ConstantBinning(19,50.0,1000.0),expression="m_vis"))
+        variables.append(Variable("m_vis_high",ConstantBinning(95,50.0,1000.0),expression="m_vis"))
         variable_names.append("m_vis_high")
         cuts = Cuts()
         for name, var in zip(variable_names, variables):

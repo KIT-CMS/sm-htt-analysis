@@ -70,12 +70,11 @@ def main(args):
     # yapf: disable
     directory = args.directory
 
-    zptm_path = "/portal/ekpbms1/home/akhmet/workdir/FriendTreeProductionMain/CMSSW_10_2_14/src/ZPtMReweighting_workdir/ZPtMReweighting_collected/"
     mm = MM()
     mm_processes = {
         "data"  : Process("data_obs", DataEstimation      (era, directory, mm, friend_directory=[])),
-        "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, mm, friend_directory=[zptm_path])),
-        "ZL"    : Process("ZL",       ZLEstimation        (era, directory, mm, friend_directory=[zptm_path])),
+        "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, mm, friend_directory=[])),
+        "ZL"    : Process("ZL",       ZLEstimation        (era, directory, mm, friend_directory=[])),
         "TTT"   : Process("TTT",      TTTEstimation       (era, directory, mm, friend_directory=[])),
         "TTL"   : Process("TTL",      TTLEstimation       (era, directory, mm, friend_directory=[])),
         "VVT"   : Process("VVT",      VVTEstimation       (era, directory, mm, friend_directory=[])),

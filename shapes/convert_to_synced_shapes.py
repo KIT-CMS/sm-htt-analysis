@@ -81,17 +81,23 @@ def main(args):
         if not os.path.exists(args.output):
             os.mkdir(args.output)
         file_output = ROOT.TFile(filename_output, "RECREATE")
-        for category in hist_map[channel]:
-            if category.endswith("_ss") or category.endswith("_B"):
+        for category in sorted(hist_map[channel]):
+            if category.endswith("_ss") or category.endswith("_B") or category.endswith("_FF"):
                 continue
             file_output.cd()
             dir_name = "{CHANNEL}_{CATEGORY}".format(
                 CHANNEL=channel, CATEGORY=category)
             file_output.mkdir(dir_name)
             file_output.cd(dir_name)
-            for name in hist_map[channel][category]:
+            for name in sorted(hist_map[channel][category]):
                 hist = file_input.Get(name)
+                if (not "ZTTpTTTauTau" in name) and ("CMS_htt_emb_ttbar" in name):
+                    continue
                 name_output = hist_map[channel][category][name]
+                if "ZTTpTTTauTauUp" in name_output:
+                    name_output = name_output.replace("ZTTpTTTauTauUp","EMB")
+                if "ZTTpTTTauTauDown" in name_output:
+                    name_output = name_output.replace("ZTTpTTTauTauDown","EMB")               
                 hist.SetTitle(name_output)
                 hist.SetName(name_output)
                 hist.Write()
@@ -106,8 +112,9 @@ def main(args):
                             or "_1ProngPi0Eff_" in name_output
                             or "_3ProngEff_" in name_output
                             or ("_ff_" in name_output and "_syst_" in name_output)):
-                        hist.SetTitle(name_output.replace("_Run2016", "").replace("_Run2017", ""))
-                        hist.SetName(name_output.replace("_Run2016", "").replace("_Run2017", ""))
+                        hist.SetTitle(name_output.replace("_Run2016", "").replace("_Run2017", "").replace("_Run2018", ""))
+                        hist.SetName(name_output.replace("_Run2016", "").replace("_Run2017", "").replace("_Run2018", ""))
+                        
                         hist.Write()
         file_output.Close()
 

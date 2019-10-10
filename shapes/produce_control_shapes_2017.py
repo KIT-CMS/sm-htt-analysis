@@ -174,6 +174,7 @@ def main(args):
         "WH"    : Process("WH125",    WHEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
         "ZH"    : Process("ZH125",    ZHEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
         "ttH"   : Process("ttH125",   ttHEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
+        "HWW"   : Process("HWW",      HWWEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         }
     mt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, mt, [mt_processes[process] for process in ["ZTT", "ZL", "TTT", "TTL", "VVT", "VVL"]], mt_processes["data"], friend_directory=mt_friend_directory+[ff_friend_directory]))
     mt_processes["FAKESEMB"] = Process("jetFakesEMB", NewFakeEstimationLT(era, directory, mt, [mt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], mt_processes["data"], friend_directory=mt_friend_directory+[ff_friend_directory]))
@@ -206,6 +207,7 @@ def main(args):
         "WH"    : Process("WH125",    WHEstimation        (era, directory, et, friend_directory=et_friend_directory)),
         "ZH"    : Process("ZH125",    ZHEstimation        (era, directory, et, friend_directory=et_friend_directory)),
         "ttH"   : Process("ttH125",   ttHEstimation       (era, directory, et, friend_directory=et_friend_directory)),
+        "HWW"   : Process("HWW",      HWWEstimation       (era, directory, et, friend_directory=et_friend_directory)),
         }
     et_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, et, [et_processes[process] for process in ["ZTT", "ZL", "TTT", "TTL", "VVT", "VVL"]], et_processes["data"], friend_directory=et_friend_directory+[ff_friend_directory]))
     et_processes["FAKESEMB"] = Process("jetFakesEMB", NewFakeEstimationLT(era, directory, et, [et_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], et_processes["data"], friend_directory=et_friend_directory+[ff_friend_directory]))
@@ -238,6 +240,7 @@ def main(args):
         "WH"    : Process("WH125",    WHEstimation        (era, directory, tt, friend_directory=tt_friend_directory)),
         "ZH"    : Process("ZH125",    ZHEstimation        (era, directory, tt, friend_directory=tt_friend_directory)),
         "ttH"   : Process("ttH125",   ttHEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
+        "HWW"   : Process("HWW",      HWWEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
         }
     tt_processes["FAKESEMB"] = Process("jetFakesEMB", NewFakeEstimationTT(era, directory, tt, [tt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], tt_processes["data"], friend_directory=tt_friend_directory+[ff_friend_directory]))
     tt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationTT(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZL", "TTT", "TTL", "VVT", "VVL"]], tt_processes["data"], friend_directory=tt_friend_directory+[ff_friend_directory]))
@@ -266,10 +269,11 @@ def main(args):
         "WH"    : Process("WH125",    WHEstimation        (era, directory, em, friend_directory=em_friend_directory)),
         "ZH"    : Process("ZH125",    ZHEstimation        (era, directory, em, friend_directory=em_friend_directory)),
         "ttH"   : Process("ttH125",   ttHEstimation       (era, directory, em, friend_directory=em_friend_directory)),
+        "HWW"   : Process("HWW",      HWWEstimation       (era, directory, em, friend_directory=em_friend_directory)),
         }
 
     em_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, em, [em_processes[process] for process in ["ZTT", "ZL", "W", "TTT", "VVT", "VVL"]], em_processes["data"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
-    em_processes["QCDEMB"] = Process("QCDEMB", QCDEstimation_SStoOS_MTETEM(era, directory, em, [em_processes[process] for process in ["EMB", "ZL", "W", "VVL"]], em_processes["data"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
+    em_processes["QCDEMB"] = Process("QCDEMB", QCDEstimation_SStoOS_MTETEM(era, directory, em, [em_processes[process] for process in ["EMB", "ZL", "W", "VVL", "TTL"]], em_processes["data"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
 
     mm = MM()
     mm_processes = {
@@ -319,8 +323,8 @@ def main(args):
     #    "puppimet", "mt_1_puppi", "mt_2_puppi", "pt_tt_puppi", "pZetaPuppiMissVis", "pt_ttjj_puppi", "mt_tot_puppi", "mTdileptonMET_puppi",
     #    "NNrecoil_pt", "nnmet", "mt_1_nn", "mt_2_nn", "pt_tt_nn", "pZetaNNMissVis", "pt_ttjj_nn", "mt_tot_nn", "mTdileptonMET_nn",
 
-    #    "metParToZ", "metPerpToZ",
-    #    "puppimetParToZ", "puppimetPerpToZ",
+        "metParToZ", "metPerpToZ",
+        "puppimetParToZ", "puppimetPerpToZ",
     ]
 
     if "mt" in args.channels:
@@ -369,7 +373,7 @@ def main(args):
 
     if "mm" in args.channels:
         variables = [Variable(v,VariableBinning(binning["control"]["mm"][v]["bins"]), expression=binning["control"]["mm"][v]["expression"]) for v in variable_names]
-        variables.append(Variable("m_vis_high",ConstantBinning(19,50.0,1000.0),expression="m_vis"))
+        variables.append(Variable("m_vis_high",ConstantBinning(95,50.0,1000.0),expression="m_vis"))
         variable_names.append("m_vis_high")
         cuts = Cuts()
         for name, var in zip(variable_names, variables):

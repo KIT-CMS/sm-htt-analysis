@@ -367,7 +367,7 @@ def main(args):
 
     if "mm" in args.channels:
         variables = [Variable(v,VariableBinning(binning["control"]["mm"][v]["bins"]), expression=binning["control"]["mm"][v]["expression"]) for v in variable_names]
-        variables.append(Variable("m_vis_high",ConstantBinning(19,50.0,1000.0),expression="m_vis"))
+        variables.append(Variable("m_vis_high",ConstantBinning(95,50.,1000.), expression="m_vis"))
         variable_names.append("m_vis_high")
         cuts = Cuts()
         for name, var in zip(variable_names, variables):
@@ -381,7 +381,7 @@ def main(args):
                 Category(
                     name+"_peak",
                     mm,
-                    Cuts(Cut("m_vis > 70 && m_vis < 110","m_vis_peak")),
+                    Cuts(Cut("m_vis >= 70 && m_vis < 110","m_vis_peak")),
                     variable=var))
 
     # Nominal histograms

@@ -24,10 +24,14 @@ from itertools import product
 
 import argparse
 import yaml
+import numpy as np
 
 import logging
 logger = logging.getLogger("")
 
+def construct_binning(binning_configuration, variablename):
+    binning_structure = binning_configuration[variablename]["bins"]
+    return sorted(np.concatenate([np.arange(start, end, step) for start, end, step in binning_structure] + [np.array([end])]))
 
 def setup_logging(output_file, level=logging.DEBUG):
     logger.setLevel(level)
@@ -45,6 +49,8 @@ def setup_logging(output_file, level=logging.DEBUG):
 def parse_arguments():
     parser = argparse.ArgumentParser(
         description="Produce shapes for 2016 Standard Model analysis.")
+    parser.add_argument(
+        "--tag", default="ERA_CHANNEL", type=str, help="Tag of output files.")
 
     parser.add_argument(
         "--directory",
@@ -95,6 +101,8 @@ def parse_arguments():
     parser.add_argument(
         "--binning", required=True, type=str, help="Binning configuration.")
     parser.add_argument(
+        "--variable", required=True, type=str, help="Variable configuration.")
+    parser.add_argument(
         "--channels",
         default=[],
         nargs='+',
@@ -126,8 +134,7 @@ def parse_arguments():
 
 def main(args):
     # Container for all distributions to be drawn
-    systematics = Systematics("counts_for_soverb.root", num_threads=args.num_threads, find_unique_objects=False)
-
+    systematics = Systematics("{}_counts_for_soverb_{}.root".format(args.tag,args.variable), num_threads=args.num_threads, find_unique_objects=False)
     # Era
     era = Run2017(args.datasets)
 
@@ -224,15 +231,15 @@ def main(args):
     binning = yaml.load(open(args.binning))
 
     variable_names = [
-        "ME_D",
+        "ME_vbf_vs_Z", "DiTauDeltaR",
         "dijetpt", "jdeta", "mjj",# "jpt_1", "jpt_2", "njets",
 #        "bpt_1", "bpt_2", "nbtag",
 #        "DiTauDeltaR", "ptvis", "pt_tt", "pt_tt_puppi", "pt_ttjj", "pt_ttjj_puppi", "eta_sv", "eta_fastmtt",
         "pt_tt", "pt_tt_puppi", "pt_ttjj", "pt_ttjj_puppi",
 #        "mt_1", "mt_2", "mTdileptonMET", "pZetaMissVis",
-        "mt_1", "pZetaMissVis",
+        "mt_1", "pZetaMissVis", "mTdileptonMET",
 #        "mt_1_puppi", "mt_2_puppi", "mTdileptonMET_puppi", "pZetaPuppiMissVis",
-        "mt_1_puppi", "pZetaPuppiMissVis",
+        "mt_1_puppi", "pZetaPuppiMissVis", "mTdileptonMET_puppi",
 #        "m_sv", "m_fastmtt", "m_vis",
     ]
     categories = {
@@ -241,12 +248,11 @@ def main(args):
         "tt" : [],
         "em" : [],
     }
-    for variable in variable_names:
-        for ch in args.channels:
-            cut_values = binning["control"][ch][variable]["bins"]
-            for cut in cut_values:
-                categories[ch].append(Category("%s-less-%s"%(variable, str(cut).replace(".","p")),channels[ch], Cuts(Cut("%s < %s"%(variable, str(cut)))), variable=None))
-                categories[ch].append(Category("%s-greater-%s"%(variable, str(cut).replace(".","p")),channels[ch], Cuts(Cut("%s > %s"%(variable, str(cut)))), variable=None))
+    for ch in args.channels:
+        cut_values = construct_binning(binning, args.variable)
+        for cut in cut_values:
+            categories[ch].append(Category("%s-less-%s"%(args.variable, str(cut).replace(".","p")),channels[ch], Cuts(Cut("%s < %s"%(args.variable, str(cut)))), variable=None))
+            categories[ch].append(Category("%s-greater-%s"%(args.variable, str(cut).replace(".","p")),channels[ch], Cuts(Cut("%s > %s"%(args.variable, str(cut)))), variable=None))
         
 
     # Nominal histograms

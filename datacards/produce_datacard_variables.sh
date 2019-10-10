@@ -33,7 +33,7 @@ if [ -n "$USE_COMBINEHARVESTER" ]; then
     INPUT_FOLDER="../../../../.."
 
     # Create datacards
-    $CMSSW_BASE/bin/slc6_amd64_gcc491/MorphingSM2017 \
+    $CMSSW_BASE/bin/slc7_amd64_gcc700/MorphingSMRun2Legacy \
         --input_folder_mt=$INPUT_FOLDER \
         --input_folder_et=$INPUT_FOLDER \
         --input_folder_tt=$INPUT_FOLDER \
@@ -44,6 +44,7 @@ if [ -n "$USE_COMBINEHARVESTER" ]; then
         --postfix="-ML" \
         --channel="${CHANNELS}" \
         --auto_rebin=true \
+        --rebin_categories=false \
         --gof_category_name ${CHANNELS}_${VARIABLE} \
         --stxs_signals=$STXS_SIGNALS \
         --categories=$STXS_CATEGORIES \

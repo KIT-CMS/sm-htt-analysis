@@ -16,7 +16,7 @@ NUM_THREADS=8
 rm -rf output/${ERA}_smhtt
 
 # Create datacards
-$CMSSW_BASE/bin/slc6_amd64_gcc530/MorphingSM2017 \
+$CMSSW_BASE/bin/slc7_amd64_gcc700/MorphingSMRun2Legacy \
     --base_path=$PWD \
     --input_folder_mt="/" \
     --input_folder_et="/" \

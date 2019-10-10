@@ -9,7 +9,7 @@ LCG_RELEASE=94python3
 if uname -a | grep ekpdeepthought
 then
     source /cvmfs/sft.cern.ch/lcg/views/LCG_${LCG_RELEASE}/x86_64-ubuntu1604-gcc54-opt/setup.sh
-elif uname -a | grep bms1
+elif uname -a | grep -E 'el7' -q
 then
     source /cvmfs/sft.cern.ch/lcg/views/LCG_${LCG_RELEASE}/x86_64-centos7-gcc62-opt/setup.sh
 else
