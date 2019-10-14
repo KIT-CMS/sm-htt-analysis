@@ -39,7 +39,7 @@ PREFITFILEDIR="${DATACARDDIR}/cmb/125"
 PLOTDIR=output/plots/${ERA}-${TAG}_prefit-plots
 [ -d $PLOTDIR ] || mkdir -p $PLOTDIR
 
-for FILE in "${PREFITFILEDIR}/prefitshape-${ERA}-${TAG}-${STXS_FIT}.root" "${PREFITFILEDIR}/postfitshape-${ERA}-${TAG}-${STXS_FIT}.root"
+for FILE in "${PREFITFILEDIR}/prefitshape-${ERA}-${TAG}-${STXS_FIT}.root" #"${PREFITFILEDIR}/postfitshape-${ERA}-${TAG}-${STXS_FIT}.root"
 do
     [[ -f $FILE ]] || ( logerror $FILE not fould && exit 2 )
     for OPTION in "" "--png"

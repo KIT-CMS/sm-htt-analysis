@@ -180,8 +180,8 @@ function runCluster(){
             provideCluster $tag $era
             logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "submit" ${tag}
             [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "rungc" ${tag}
-            [ $? ] && read -p " Collect? y/[n]" yn
-            [[ $yn == "y" ]] || return 0
+            #[ $? ] && read -p " Collect? y/[n]" yn
+            #[[ $yn == "y" ]]
             [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "collect" ${tag}
             [ $? ] && copyFromCluster
             [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "delete" ${tag}
@@ -213,7 +213,7 @@ function genshapes() {
         for era in ${eras[@]}; do
             export redoConversion=0
             if [[ ! -f output/shapes/${era}-${tag}-${channelsarg}-shapes.root  ]]; then
-                logandrun ./shapes/produce_shapes.sh ${era} ${channelsarg} ${tag}
+                logandrun ./shapes/produce_shapes.sh ${era} ${channelsarg} ${tag} || return 1
                 redoConversion=1
             else
                 loginfo Skipping shape generation as ${era}_${tag}_shapes.root exists
@@ -290,6 +290,8 @@ function genworkspaces(){
     wait
 }
 
+export JETFAKES=1 EMBEDDING=1 CATEGORIES="stxs_stage1p1"
+
 function genMCprefitshapes(){
     ensureoutdirs
     export JETFAKES=0 EMBEDDING=0 CATEGORIES="stxs_stage1p1"
@@ -341,11 +343,11 @@ function genMCprefitshapes(){
 ### do not run this parallel! it writes to fit.root in the main dir and is then moved
 function runana() {
     ensureoutdirs
-    for tag in ${tags[@]}; do
-    export tag
+    for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do
+        export tag
         for era in ${eras[@]}; do
             if [[ True ]]; then
-                for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do
+                for tag in ${tags[@]}; do
                     if [[ $STXS_FIT == "inclusive" || $STXS_FIT == "stxs_stage0" ]]; then
                         STXS_SIGNALS=stxs_stage0
                     elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
@@ -355,36 +357,50 @@ function runana() {
                     # for channel in ${channels[@]}; do
                     #     logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR/$channel/125 $channel ${tag}
                     # done
-                    logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR/cmb/125 cmb ${tag}
+                    logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR/cmb/125 cmb ${tag} &
                 done
+                wait
             fi
-            if [[ False ]]; then
-                #[[ $? == 0 ]] || return $?
-                ### postfit shapes
-                STXS_FIT="stxs_stage0"
-                DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_FIT}/cmb/125
-                FILE="${DATACARDDIR}/prefitshape-${era}-${tag}-${STXS_FIT}.root"
-                [[ ! -f $FILE ]] || logandrun ./combine/prefit_postfit_shapes.sh ${era} ${STXS_FIT} ${DATACARDDIR} ${tag}
+        done
+    done
+}
 
-                OPTION="--png"
-                (
-                    source utils/setup_cvmfs_sft.sh
-                    source utils/setup_python.sh
-                    if [[ $tag =~ "ff" ]]; then
-                        TRAINFF=True
-                    else
-                        TRAINFF=False
-                    fi
-                    if [[ $tag =~ "emb" ]]; then
-                        TRAINEMB=True
-                    else
-                        TRAINEMB=False
-                    fi
-                    PLOTDIR=output/plots/${era}-${tag}_prefit-plots
-                    [ -d $PLOTDIR ] || mkdir -p $PLOTDIR
-                    #logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channels[@]} -e $era $OPTION --categories $CATEGORIES --fake-factor --embedding --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB
-                )
+### Subroutine called by runstages
+### do not run this parallel! it writes to fit.root in the main dir and is then moved
+function plot_shapes() {
+    ensureoutdirs
+    for tag in ${tags[@]}; do
+        export tag
+        for era in ${eras[@]}; do
+            STXS_FIT="stxs_stage0"
+            if [[ $STXS_FIT == "inclusive" || $STXS_FIT == "stxs_stage0" ]]; then
+                STXS_SIGNALS=stxs_stage0
+            elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
+                STXS_SIGNALS=stxs_stage1p1
             fi
+            DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_FIT}/cmb/125
+            FILE="${DATACARDDIR}/prefitshape-${era}-${tag}-${STXS_FIT}.root"
+            [[ -f $FILE ]] || logandrun ./combine/prefit_postfit_shapes.sh ${era} ${STXS_FIT} ${DATACARDDIR} ${tag}
+
+            # OPTION="--png"
+            # (
+            #     source utils/setup_cvmfs_sft.sh
+            #     source utils/setup_python.sh
+            #     if [[ $tag =~ "ff" ]]; then
+            #         TRAINFF=True
+            #     else
+            #         TRAINFF=False
+            #     fi
+            #     if [[ $tag =~ "emb" ]]; then
+            #         TRAINEMB=True
+            #     else
+            #         TRAINEMB=False
+            #     fi
+            #     PLOTDIR=output/plots/${era}-${tag}_prefit-plots
+            #     [ -d $PLOTDIR ] || mkdir -p $PLOTDIR
+            #     logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channels[@]} -e $era $OPTION --categories $CATEGORIES --fake-factor --embedding --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB
+            # )
+            logandrun ./plotting/plot_shapes.sh $era $tag ${channelsarg} $STXS_SIGNALS $STXS_FIT $CATEGORIES $JETFAKES $EMBEDDING
         done
     done
 }

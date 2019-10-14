@@ -58,7 +58,7 @@ elif [[ $cluster == "lxplus7" ]]; then
     export sw_src_dir="/afs/cern.ch/user/${USER::1}/${USER}/CMSSW_10_2_14/src"
     export batch_out="/afs/cern.ch/work/${USER::1}/${USER}/batch-out"
 elif [[ $cluster == "naf" ]]; then
-    eventsPerJob=200000
+    eventsPerJob=2000000
     walltime=1000
     case $era in
         "2016" )
