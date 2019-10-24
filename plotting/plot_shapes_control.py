@@ -97,7 +97,7 @@ def main(info):
     split_dict = {c: split_value for c in ["et", "mt", "tt", "em", "mm"]}
 
     bkg_processes = [
-        "VVL", "TTL", "ZL", "jetFakesEMB", "EMB"
+        "VVL", "TTL", "ZL", "jetFakes", "EMB"
     ]
     if not args.fake_factor and args.embedding:
         bkg_processes = [
@@ -128,7 +128,7 @@ def main(info):
     category = "_".join([channel, variable])
     if args.category_postfix is not None:
         category += "_%s"%args.category_postfix
-    rootfile = rootfile_parser.Rootfile_parser(args.input.replace(".root","_"+channel+"_"+args.era+".root"), "smhtt", era, variable, "125")
+    rootfile = rootfile_parser.Rootfile_parser(args.input, "smhtt", era, variable, "125")
     bkg_processes = [b for b in all_bkg_processes]
     if "em" in channel:
         if not args.embedding:
@@ -173,7 +173,7 @@ def main(info):
         # add VH, ttH & HWW to total bkg histogram
         total_bkg.Add(rootfile.get(channel, category, "VH125"))
         total_bkg.Add(rootfile.get(channel, category, "ttH125"))
-        total_bkg.Add(rootfile.get(channel, category, "HWW"))
+        # total_bkg.Add(rootfile.get(channel, category, "HWW"))
 
     plot.add_hist(total_bkg, "total_bkg")
     plot.setGraphStyle(
@@ -197,7 +197,7 @@ def main(info):
             qqH = rootfile.get(channel, category, "qqH125").Clone()
             VH = rootfile.get(channel, category, "VH125").Clone()
             ttH = rootfile.get(channel, category, "ttH125").Clone()
-            HWW = rootfile.get(channel, category, "HWW").Clone()
+            # HWW = rootfile.get(channel, category, "HWW").Clone()
             if ggH.Integral() > 0:
                 ggH_scale = 0.5*data_norm/ggH.Integral()
             else:
@@ -214,18 +214,18 @@ def main(info):
                 ttH_scale =  0.25*data_norm/ttH.Integral()
             else:
                 ttH_scale = 0.0
-            if HWW.Integral() > 0:
-                HWW_scale =  0.25*data_norm/HWW.Integral()
-                if HWW_scale > 10000:
-                    HWW_scale = 0.0
-            else:
-                HWW_scale = 0.0
+            # if HWW.Integral() > 0:
+            #     HWW_scale =  0.25*data_norm/HWW.Integral()
+            #     if HWW_scale > 10000:
+            #         HWW_scale = 0.0
+            # else:
+            #     HWW_scale = 0.0
             if i in [0,1]:
                 ggH.Scale(ggH_scale)
                 qqH.Scale(qqH_scale)
                 VH.Scale(VH_scale)
                 ttH.Scale(ttH_scale)
-                HWW.Scale(HWW_scale)
+                # HWW.Scale(HWW_scale)
             plot.subplot(i).add_hist(ggH, "ggH")
             plot.subplot(i).add_hist(ggH, "ggH_top")
             plot.subplot(i).add_hist(qqH, "qqH")
@@ -234,8 +234,8 @@ def main(info):
             plot.subplot(i).add_hist(VH, "VH_top")
             plot.subplot(i).add_hist(ttH, "ttH")
             plot.subplot(i).add_hist(ttH, "ttH_top")
-            plot.subplot(i).add_hist(HWW, "HWW")
-            plot.subplot(i).add_hist(HWW, "HWW_top")
+            # plot.subplot(i).add_hist(HWW, "HWW")
+            # plot.subplot(i).add_hist(HWW, "HWW_top")
 
     if "mm" not in channel:
         plot.subplot(0 if args.linear else 1).setGraphStyle(
@@ -250,9 +250,9 @@ def main(info):
         plot.subplot(0 if args.linear else 1).setGraphStyle(
             "ttH", "hist", linecolor=styles.color_dict["ttH"], linewidth=3)
         plot.subplot(0 if args.linear else 1).setGraphStyle("ttH_top", "hist", linecolor=0)
-        plot.subplot(0 if args.linear else 1).setGraphStyle(
-            "HWW", "hist", linecolor=styles.color_dict["HWW"], linewidth=3)
-        plot.subplot(0 if args.linear else 1).setGraphStyle("HWW_top", "hist", linecolor=0)
+        # plot.subplot(0 if args.linear else 1).setGraphStyle(
+        #     "HWW", "hist", linecolor=styles.color_dict["HWW"], linewidth=3)
+        # plot.subplot(0 if args.linear else 1).setGraphStyle("HWW_top", "hist", linecolor=0)
 
 
     # assemble ratio
@@ -345,12 +345,12 @@ def main(info):
 
     # draw subplots. Argument contains names of objects to be drawn in corresponding order.
     if "mm" not in channel:
-        procs_to_draw = ["stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top", "VH", "VH_top", "ttH", "ttH_top", "HWW", "HWW_top", "data_obs"] if args.linear else ["stack", "total_bkg", "data_obs"]
+        procs_to_draw = ["stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top", "VH", "VH_top", "ttH", "ttH_top", "data_obs"] if args.linear else ["stack", "total_bkg", "data_obs"]
         plot.subplot(0).Draw(procs_to_draw)
         if args.linear != True:
             plot.subplot(1).Draw([
                 "stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top",
-                "VH", "VH_top", "ttH", "ttH_top", "HWW", "HWW_top", "data_obs"
+                "VH", "VH_top", "ttH", "ttH_top", "data_obs"
             ])
         plot.subplot(2).Draw([
             "total_bkg", "bkg_ggH", "bkg_ggH_top", "bkg_qqH",
@@ -382,7 +382,7 @@ def main(info):
             plot.legend(i).add_entry(0 if args.linear else 1, "qqH%s" % suffix[i], "%s #times qq#rightarrowH"%str(int(qqH_scale)), 'l')
             plot.legend(i).add_entry(0 if args.linear else 1, "VH%s" % suffix[i], "%s #times V(lep)H"%str(int(VH_scale)), 'l')
             plot.legend(i).add_entry(0 if args.linear else 1, "ttH%s" % suffix[i], "%s #times ttH"%str(int(ttH_scale)), 'l')
-            plot.legend(i).add_entry(0 if args.linear else 1, "HWW%s" % suffix[i], "%s #times H#rightarrowWW"%str(int(HWW_scale)), 'l')
+            # plot.legend(i).add_entry(0 if args.linear else 1, "HWW%s" % suffix[i], "%s #times H#rightarrowWW"%str(int(HWW_scale)), 'l')
         plot.legend(i).add_entry(0, "data_obs", "Data", 'PE')
         plot.legend(i).setNColumns(3)
     plot.legend(0).Draw()
