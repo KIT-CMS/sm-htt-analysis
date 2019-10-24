@@ -27,7 +27,7 @@ $CMSSW_BASE/bin/slc7_amd64_gcc700/MorphingSMRun2Legacy \
     --binomial_bbb=true \
     --jetfakes=$JETFAKES \
     --embedding=$EMBEDDING \
-    --postfix="-ML" \
+    --postfix="-diBJetMass" \
     --channel="${CHANNELS}" \
     --auto_rebin=true \
     --stxs_signals=$STXS_SIGNALS \

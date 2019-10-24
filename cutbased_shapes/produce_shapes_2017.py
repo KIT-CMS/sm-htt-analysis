@@ -52,7 +52,22 @@ def parse_arguments():
         description="Produce shapes for 2017 Standard Model analysis.")
 
     parser.add_argument(
-        "--directory",
+        "--tt-directory",
+        required=True,
+        type=str,
+        help="Directory with Artus outputs.")
+    parser.add_argument(
+        "--mt-directory",
+        required=True,
+        type=str,
+        help="Directory with Artus outputs.")
+    parser.add_argument(
+        "--et-directory",
+        required=True,
+        type=str,
+        help="Directory with Artus outputs.")
+    parser.add_argument(
+        "--em-directory",
         required=True,
         type=str,
         help="Directory with Artus outputs.")
@@ -131,7 +146,7 @@ def parse_arguments():
     parser.add_argument(
         "--shape-group",
         default="backgrounds",
-        choices=["backgrounds", "sm_signals", "bbH", "ggH_t", "ggH_b", "ggH_i", "ggA_i", "ggA_t", "ggA_b", "ggh_i", "ggh_t", "ggh_b"],
+        choices=["backgrounds", "nmssm_signals", "sm_signals"],
         type=str,
         help="Process groups to be considered within the shape production")
     return parser.parse_args()
@@ -147,7 +162,7 @@ def main(args):
 
     # Era selection
     if "2017" in args.era:
-        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, HWWEstimation, ggHWWEstimation, qqHWWEstimation, SUSYggHEstimation, SUSYbbHEstimation
+        from shape_producer.estimation_methods_2017_nmssm import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, HWWEstimation, ggHWWEstimation, qqHWWEstimation, SUSYggHEstimation, SUSYbbHEstimation, NMSSMEstimation
 
         from shape_producer.era import Run2017
         era = Run2017(args.datasets)
@@ -155,15 +170,25 @@ def main(args):
     else:
         logger.critical("Era {} is not implemented.".format(args.era))
         raise Exception
-
+    if len(args.channels) > 1:
+        print "Please submit only one channel at a time"
+        exit()
     # Channels and processes
     # yapf: disable
-    directory = args.directory
+    if "tt" in args.channels:
+        directory = args.tt_directory
+    if "mt" in args.channels:
+        directory = args.mt_directory
+        print directory
+    if "et" in args.channels:
+        directory = args.et_directory
+    if "em" in args.channels:
+        directory = args.em_directory
     friend_directories = {
         "et" : args.et_friend_directory,
         "mt" : args.mt_friend_directory,
         "tt" : args.tt_friend_directory,
-        "em" : args.em_friend_directory,
+        "em" : []#args.em_friend_directory,
     }
     ff_friend_directory = args.fake_factor_friend_directory
 
@@ -175,8 +200,8 @@ def main(args):
 
     }
 
-    susyggH_masses = [100, 110, 120, 130, 140, 180, 200, 250, 300, 350, 400, 450, 600, 700, 800, 900, 1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200]
-    susybbH_masses = [90, 110, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1800, 2000, 2300, 2600, 3200]
+    nmssm_heavy_masses = [320,450,700,800,900,1000]
+    nmssm_low_masses = [60, 70, 75, 80, 85, 90, 95, 100, 110, 120, 130, 150, 170, 190, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850]
 
     processes = {
         "mt" : {},
@@ -203,15 +228,6 @@ def main(args):
             processes[ch]["ggHWW125"] = Process("ggHWW125", ggHWWEstimation       (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
             processes[ch]["qqHWW125"] = Process("qqHWW125", qqHWWEstimation       (era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
 
-        # mssm ggH and bbH signals
-        if "gg" in args.shape_group:
-            for m in susyggH_masses:
-                name = args.shape_group + "_" + str(m)
-                processes[ch][name] = Process(name, SUSYggHEstimation(era, directory, channel_dict[ch], str(m), args.shape_group.replace("gg",""), friend_directory=friend_directories[ch]))
-        if args.shape_group == "bbH":
-            for m in susybbH_masses:
-                name = "bbH_" + str(m)
-                processes[ch][name] = Process(name, SUSYbbHEstimation(era, directory, channel_dict[ch], str(m), friend_directory=friend_directories[ch]))
 
         if args.shape_group == "sm_signals":
             # stage 0 and stage 1.1 ggh and qqh
@@ -219,6 +235,13 @@ def main(args):
                 processes[ch][ggH_htxs] = Process(ggH_htxs, ggHEstimation(ggH_htxs, era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
             for qqH_htxs in qqHEstimation.htxs_dict:
                 processes[ch][qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, channel_dict[ch], friend_directory=friend_directories[ch]))
+
+        if args.shape_group == "nmssm_signals":
+            for heavy_mass in nmssm_heavy_masses:
+                for light_mass in nmssm_low_masses:
+                    if light_mass+125>heavy_mass:
+                        continue
+                    processes[ch]["NMSSM_{}_125_{}".format(heavy_mass,light_mass)] = Process("NMSSM_{}_125_{}".format(heavy_mass,light_mass), NMSSMEstimation(era,directory,channel_dict[ch],friend_directory=friend_directories[ch],heavy_mass=heavy_mass,light_mass=light_mass))
 
         # channel-specific processes
         if args.shape_group == "backgrounds":
@@ -243,18 +266,11 @@ def main(args):
         "tt" : [],
         "em" : [],
     }
-
     for ch in args.channels:
         discriminator = construct_variable(binning, args.discriminator_variable)
         for category in binning["cutbased"][ch]:
             cuts = Cuts(Cut(binning["cutbased"][ch][category], category))
             categories[ch].append(Category(category, channel_dict[ch], cuts, variable=discriminator))
-            if category in [ "nobtag", "nobtag_lowmsv"]:
-                for subcategory in sorted(binning["stxs_stage1p1_v2"][ch]):
-                    stage1p1cuts = copy.deepcopy(cuts)
-                    stage1p1cuts.add(Cut(binning["stxs_stage1p1_v2"][ch][subcategory], category + "_" + subcategory))
-                    categories[ch].append(Category(category + "_" + subcategory, channel_dict[ch], stage1p1cuts, variable=discriminator))
-
 
     # Choice of activated signal processes
     signal_nicks = []
@@ -262,25 +278,21 @@ def main(args):
     sm_htt_backgrounds_nicks = ["WH125", "ZH125", "VH125", "ttH125"]
     sm_hww_nicks = ["ggHWW125", "qqHWW125"]
     sm_htt_signals_nicks = [ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict] + [qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict]
-    susy_nicks = []
-    if "gg" in args.shape_group:
-        for m in susyggH_masses:
-            susy_nicks.append(args.shape_group + "_" + str(m))
-    if args.shape_group == "bbH":
-        for m in susybbH_masses:
-            susy_nicks.append("bbH_" + str(m))
 
     if args.shape_group == "backgrounds":
         signal_nicks = sm_htt_backgrounds_nicks + sm_hww_nicks
     elif args.shape_group == "sm_signals":
         signal_nicks = sm_htt_signals_nicks
-    else:
-        signal_nicks = susy_nicks
-
+    elif args.shape_group == "nmssm_signals":
+        for heavy_mass in nmssm_heavy_masses:
+            for light_mass in nmssm_low_masses:
+                if light_mass+125>heavy_mass:
+                    continue
+                signal_nicks.append("NMSSM_{}_125_{}".format(heavy_mass,light_mass))
     # Nominal histograms
     for ch in args.channels:
         for process, category in product(processes[ch].values(), categories[ch]):
-            systematics.add(Systematic(category=category, process=process, analysis="mssmvssm", era=era, variation=Nominal(), mass="125"))
+            systematics.add(Systematic(category=category, process=process, analysis="nmssm", era=era, variation=Nominal(), mass="125"))
 
     # Setup shapes variations
 

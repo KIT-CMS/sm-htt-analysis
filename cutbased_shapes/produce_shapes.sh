@@ -14,7 +14,10 @@ source utils/setup_samples.sh $ERA
 
 # Produce shapes
 python cutbased_shapes/produce_shapes_$ERA.py \
-    --directory $ARTUS_OUTPUTS \
+    --tt-directory $ARTUS_OUTPUTS_TT \
+    --mt-directory $ARTUS_OUTPUTS_MT \
+    --et-directory $ARTUS_OUTPUTS_ET \
+    --em-directory $ARTUS_OUTPUTS_EM \
     --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \

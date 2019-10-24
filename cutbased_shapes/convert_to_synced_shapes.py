@@ -51,16 +51,16 @@ def create_properties(histname):
     return {"inputname" : histname, "channel" : channel, "category" : category, "process" : process, "outputname" : outputname}
 
 def merge_to_synced_file(info):
-    filename_outputs = os.path.join(info["path"], "htt_{CHANNEL}_*.inputs-mssm-vs-sm-Run{ERA}-{VARIABLE}.root").format(
+    filename_outputs = os.path.join(info["path"], "htt_{CHANNEL}_*.inputs-nmssm-Run{ERA}-{VARIABLE}.root").format(
         CHANNEL=info["channel"], ERA=info["era"], VARIABLE=info["variable"])
-    merged_output = os.path.join(info["path"], "htt_{CHANNEL}.inputs-mssm-vs-sm-Run{ERA}-{VARIABLE}.root").format(
+    merged_output = os.path.join(info["path"], "htt_{CHANNEL}.inputs-nmssm-Run{ERA}-{VARIABLE}.root").format(
         CHANNEL=info["channel"], ERA=info["era"], VARIABLE=info["variable"])
     outputlist = glob.glob(filename_outputs)
     hadd_cmd = "hadd -f " + merged_output + " " + " ".join(outputlist)
     os.system(hadd_cmd)
 
 def create_synced_category_files(info):
-    filename_output = os.path.join(info["path"], "htt_{CHANNEL}_{CATEGORY}.inputs-mssm-vs-sm-Run{ERA}-{VARIABLE}.root").format(
+    filename_output = os.path.join(info["path"], "htt_{CHANNEL}_{CATEGORY}.inputs-nmssm-Run{ERA}-{VARIABLE}.root").format(
         CHANNEL=info["channel"], CATEGORY=info["category"], ERA=info["era"], VARIABLE=info["variable"])
     print "Creating: %s"%filename_output
     if not os.path.exists(info["path"]):

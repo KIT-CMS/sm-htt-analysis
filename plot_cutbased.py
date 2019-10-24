@@ -55,7 +55,7 @@ def parse_arguments():
         "-c",
         "--channels", nargs="+", type=str, required=True, help="Channel")
     parser.add_argument(
-        "--analysis", type=str, default="smhtt", help="Analysis")
+        "--analysis", type=str, default="nmssm", help="Analysis")
     parser.add_argument(
         "--shapes",
         type=str,
@@ -214,14 +214,14 @@ def main(args,heavy_mass,light_mass):
             config["y_rel_lims"] = [5, 500] if (variable in logvars) else [0.9, 1.5]
             config["markers"] = ["HIST"] * len(bkg_processes_names) + ["LINE"]*len(signal_names) + ["P"] + ["E2"] + ["LINE"]*len(signal_names) + ["P"]
             config["legend_markers"] = ["F"] * (len(bkg_processes_names))  +  ["LX0"]*len(signal_names) +  ["ELP"] + ["E2"] + ["L"]*len(signal_names) + ["P"]
-            signal_label = ['H({}) #rightarrow h(125)h"({}) #rightarrow #tau#tau bb (1 pb)'.format(heavy_mass,light_mass)]
+            signal_label = ["H({}) #rightarrow h(125)h#doublequote({}) #rightarrow #tau#tau bb (1 pb)".format(heavy_mass,light_mass)]
             config["labels"] = bkg_processes_names + signal_label + ["data"
                                                       ] + [""]*len(signal_names) + config["labels"]
             config["colors"] = bkg_processes_names + ["#8B008B"]*len(signal_names) + ["data"
                                                       ] + ["#B7B7B7"] + ["#8B008B"]*len(signal_names) + ["#000000"]
             config["nicks"] = bkg_processes_names + signal_names + ["data"]
             config["scale_factors"] = [1]*len(bkg_processes_names) + [1]*len(signal_names) + [1]*len(["data"])
-                
+
             config["x_expressions"] = [
                 "#" + "#".join([
                     channel, category, process, analysis, era, variable, mass
@@ -247,7 +247,12 @@ def main(args,heavy_mass,light_mass):
                 config["x_label"] = args.x_label
             else:
                 config["x_label"] = "_".join([channel, variable])
-            config["title"] = "_".join(["channel", channel])
+            channel_label = {"mt": "#mu#tau_{h}",
+                            "tt": "#tau_{h}#tau_{h}",
+                            "et":  "e#tau_{h}",
+                             "em": "e#mu" }
+            
+            config["title"] = channel_label[channel]+category.replace(channel,"").replace("_"," ")
             config["stacks"] = ["mc"] * len(bkg_processes_names) + signal_names + [
                 "data"
             ] + [x+"Ratio" for x in signal_names] + config["stacks"]
@@ -314,6 +319,7 @@ def main(args,heavy_mass,light_mass):
                             config[key] = config[key][:-1]
                 config["legend_cols"] = 1
             configs.append(config)
+
 
     higgsplot.HiggsPlotter(
         list_of_config_dicts=configs,
