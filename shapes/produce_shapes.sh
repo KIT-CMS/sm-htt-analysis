@@ -7,8 +7,8 @@ TAG=$3
 BINNING=shapes/binning.yaml
 cd $PWD
 
-export LCG_RELEASE=96
-source utils/setup_cvmfs_sft.sh
+source utils/setup_cvmfs_sft.sh 96
+echo $PATH | tr ":" "\n"
 source utils/setup_python.sh
 source utils/setup_samples.sh $ERA $TAG
 source utils/bashFunctionCollection.sh

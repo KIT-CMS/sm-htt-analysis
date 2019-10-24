@@ -1,6 +1,10 @@
 #!/bin/bash
-[[ ! -z $1 ]] || LCG_RELEASE=$1
-[[ -z $LCG_RELEASE ]] && LCG_RELEASE=95
+if [[ ! -z $LCG_RELEASE ]]; then
+    :
+else
+    export LCG_RELEASE=95
+fi
+
 if uname -a | grep ekpdeepthought -q
 then
     source /cvmfs/sft.cern.ch/lcg/views/LCG_${LCG_RELEASE}/x86_64-ubuntu1604-gcc54-opt/setup.sh
