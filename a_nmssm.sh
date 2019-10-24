@@ -7,15 +7,15 @@ if [ "$STEP" -lt 1 ]
 then
     if [ "$CHANNEL" == "all" ]
     then
-    # ./cutbased_shapes/produce_shapes.sh 4 2017 diBJetMass backgrounds mt & 
-    ./cutbased_shapes/produce_shapes.sh 12 2017 diBJetMass nmssm_signals mt & 
-    # ./cutbased_shapes/produce_shapes.sh 4 2017 diBJetMass sm_signals mt & 
-    # ./cutbased_shapes/produce_shapes.sh 4 2017 diBJetMass backgrounds et & 
-    ./cutbased_shapes/produce_shapes.sh 12 2017 diBJetMass nmssm_signals et & 
-    # ./cutbased_shapes/produce_shapes.sh 4 2017 diBJetMass sm_signals et & 
-    # ./cutbased_shapes/produce_shapes.sh 4 2017 diBJetMass backgrounds tt & 
-    ./cutbased_shapes/produce_shapes.sh 12 2017 diBJetMass nmssm_signals tt & 
-    # ./cutbased_shapes/produce_shapes.sh 4 2017 diBJetMass sm_signals tt & 
+    ./cutbased_shapes/produce_shapes.sh 4 2017 diBJetMass backgrounds mt & 
+    ./cutbased_shapes/produce_shapes.sh 4 2017 diBJetMass nmssm_signals mt & 
+    ./cutbased_shapes/produce_shapes.sh 4 2017 diBJetMass sm_signals mt & 
+    ./cutbased_shapes/produce_shapes.sh 4 2017 diBJetMass backgrounds et & 
+    ./cutbased_shapes/produce_shapes.sh 4 2017 diBJetMass nmssm_signals et & 
+    ./cutbased_shapes/produce_shapes.sh 4 2017 diBJetMass sm_signals et & 
+    ./cutbased_shapes/produce_shapes.sh 4 2017 diBJetMass backgrounds tt & 
+    ./cutbased_shapes/produce_shapes.sh 4 2017 diBJetMass nmssm_signals tt & 
+    ./cutbased_shapes/produce_shapes.sh 4 2017 diBJetMass sm_signals tt & 
 
     else
     ./cutbased_shapes/produce_shapes.sh 12 2017 diBJetMass backgrounds $CHANNEL & 
