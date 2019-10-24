@@ -154,11 +154,12 @@ function exportForApplication {
 function provideCluster() {
     tag=$1
     era=$2
+    llwtnndir=$cmssw_src_local/HiggsAnalysis/friend-tree-producer/data/inputs_lwtnn
+    find $llwtnndir -type l -iname "fold*_lwtnn.json" -delete
     # for era in ${eras[@]}; do
         for channel in ${channels[@]}; do
             ### Supply the generated models in the hard-coded path in the friendProducer
             ### alogrsync $remote will dereference this symlink
-            llwtnndir=$cmssw_src_local/HiggsAnalysis/friend-tree-producer/data/inputs_lwtnn
             [[ ! -d $llwtnndir/${era}/${channel} ]] && mkdir -p $llwtnndir/${era}/${channel}
             for fold in 0 1;
             do
@@ -184,7 +185,7 @@ function runCluster(){
             #[[ $yn == "y" ]]
             [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "collect" ${tag}
             [ $? ] && copyFromCluster
-            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "delete" ${tag}
+            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "delete" ${tag} || return 1
         done
     done
 }
@@ -198,9 +199,13 @@ function copyFromCluster() {
     nnscorefolder=$batch_out_local/${era}/nnscore_friends/${tag}
     [[ ! -d $nnscorefolder  ]] && mkdir -p $nnscorefolder
     if [[ $cluster == etp7 ]]; then
-        logandrun rsync -rLPthz --remove-source-files $batch_out/${era}_${tag}/NNScore_workdir/NNScore_collected/ $nnscorefolder
+        logandrun rsync -rLPthz $batch_out/${era}_${tag}/NNScore_workdir/NNScore_collected/ $nnscorefolder
     else
-        logandrun alogrsync $remote -rLPthz --remove-source-files $remote:$batch_out/${era}_${tag}/NNScore_workdir/NNScore_collected/ $nnscorefolder
+        logandrun alogrsync $remote -rLPthz $remote:$batch_out/${era}_${tag}/NNScore_workdir/NNScore_collected/ $nnscorefolder
+    fi
+    if [[ $( du -bs $nnscorefolder | cut -f1 ) -lt 10000000000 ]]; then
+        logerror Recieved NNScore Friend folder to small!
+        return 1
     fi
 }
 
@@ -239,9 +244,9 @@ function subshapes(){
 }
 
 function syncshapes() {
-    for tag in ${tags[@]}; do
+    for channel in ${channels[@]}; do
         for era in ${eras[@]}; do
-            for channel in ${channels[@]}; do
+            for tag in ${tags[@]}; do
 		        fn=output/shapes/${era}-${tag}-${channel}-synced-ML.root
                 if [[ $redoConversion == 1 || ! -f $fn  || $( stat -c%s $fn ) -le 2000 ]]; then
                     logandrun ./shapes/convert_to_synced_shapes.sh ${era} ${channel} ${tag} &
@@ -249,34 +254,34 @@ function syncshapes() {
                     loginfo Skipping shape syncing as $fn exists
                 fi
             done
+            wait
         done
     done
-    wait
 }
 
 
 
 function gendatacards(){
     ensureoutdirs
-    for tag in ${tags[@]}; do
-        export tag
-        for era in ${eras[@]}; do
-            for STXS_SIGNALS in "stxs_stage0" "stxs_stage1p1"; do
-                    DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}
-                    [ -d $DATACARDDIR ] || mkdir -p $DATACARDDIR
-                    logandrun ./datacards/produce_datacard.sh ${era} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${tag} ${channelsarg} &
+    for era in ${eras[@]}; do
+        for STXS_SIGNALS in "stxs_stage0" "stxs_stage1p1"; do
+            for tag in ${tags[@]}; do
+            export tag
+                DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}
+                [ -d $DATACARDDIR ] || mkdir -p $DATACARDDIR
+                logandrun ./datacards/produce_datacard.sh ${era} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${tag} ${channelsarg} &
             done
+            wait
         done
     done
-    wait
 }
 
 function genworkspaces(){
     ensureoutdirs
-    for tag in ${tags[@]}; do
-    export tag
-        for era in ${eras[@]}; do
-            for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do
+    for era in ${eras[@]}; do
+        for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do
+            for tag in ${tags[@]}; do
+            export tag
                 fn="output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/cmb/125/${era}-${STXS_FIT}-workspace.root"
                 if [[ ! -f $fn ]]; then
                     logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${tag} &
@@ -285,9 +290,10 @@ function genworkspaces(){
                     loginfo "skipping workspace creation, as  $fn exists"
                 fi
             done
+            wait
         done
     done
-    wait
+
 }
 
 export JETFAKES=1 EMBEDDING=1 CATEGORIES="stxs_stage1p1"
@@ -343,7 +349,7 @@ function genMCprefitshapes(){
 ### do not run this parallel! it writes to fit.root in the main dir and is then moved
 function runana() {
     ensureoutdirs
-    for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do
+    for STXS_FIT in "stxs_stage1p1"; do #"inclusive" "stxs_stage0";do #
         export tag
         for era in ${eras[@]}; do
             if [[ True ]]; then
@@ -354,12 +360,12 @@ function runana() {
                         STXS_SIGNALS=stxs_stage1p1
                     fi
                     DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}
-                    # for channel in ${channels[@]}; do
-                    #     logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR/$channel/125 $channel ${tag}
-                    # done
-                    logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR/cmb/125 cmb ${tag} &
+                    for channel in ${channels[@]}; do
+                         logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR/$channel/125 $channel ${tag} &
+                    done
+                    wait
+                    #logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR/cmb/125 cmb ${tag} &
                 done
-                wait
             fi
         done
     done

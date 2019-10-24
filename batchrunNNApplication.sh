@@ -58,22 +58,22 @@ elif [[ $cluster == "lxplus7" ]]; then
     export sw_src_dir="/afs/cern.ch/user/${USER::1}/${USER}/CMSSW_10_2_14/src"
     export batch_out="/afs/cern.ch/work/${USER::1}/${USER}/batch-out"
 elif [[ $cluster == "naf" ]]; then
-    eventsPerJob=2000000
-    walltime=1000
+    eventsPerJob=20000000
+    walltime=2000
     case $era in
         "2016" )
             logerror No friend trees for $era on lxplus7
             exit 1
-            input_ntuples_dir="/nfs/dust/cms/group/higgs-kit/ekp/ARTUS_OUTPUTS_2016"
-            friendTrees="/nfs/dust/cms/group/higgs-kit/ekp/FF_Friends_2016"
+            input_ntuples_dir="/nfs/dust/cms/group/higgs-kit/ekp/2016/ntuples"
+            friendTrees="/nfs/dust/cms/group/higgs-kit/ekp/2016/ff_friends /nfs/dust/cms/group/higgs-kit/ekp/2016/mela_friends /nfs/dust/cms/group/higgs-kit/ekp/2016/svfit_friends"
             ;;
         "2017" )
-            input_ntuples_dir="/nfs/dust/cms/group/higgs-kit/ekp/ARTUS_OUTPUTS_2017"
-            friendTrees="/nfs/dust/cms/group/higgs-kit/ekp/FF_Friends_2017 /nfs/dust/cms/group/higgs-kit/ekp/MELA_Friends_2017 /nfs/dust/cms/group/higgs-kit/ekp/SVFit_Friends_2017"
+            input_ntuples_dir="/nfs/dust/cms/group/higgs-kit/ekp/2017/ntuples"
+            friendTrees="/nfs/dust/cms/group/higgs-kit/ekp/2017/ff_friends /nfs/dust/cms/group/higgs-kit/ekp/2017/mela_friends /nfs/dust/cms/group/higgs-kit/ekp/2017/svfit_friends"
             ;;
         "2018" )
-            input_ntuples_dir="/nfs/dust/cms/user/jbechtel/htautau/analysis_ntuples_2"
-            friendTrees="/nfs/dust/cms/user/mscham/ff_friends_2018 /nfs/dust/cms/user/jbechtel/htautau/analysis_friends_mela /nfs/dust/cms/user/jbechtel/htautau/analysis_friends_sv"
+            input_ntuples_dir="/nfs/dust/cms/group/higgs-kit/ekp/2018/ntuples"
+            friendTrees="/nfs/dust/cms/group/higgs-kit/ekp/2018/ff_friends /nfs/dust/cms/group/higgs-kit/ekp/2018/mela_friends /nfs/dust/cms/group/higgs-kit/ekp/2018/svfit_friends"
             ;;
     esac
     export remote="naf"
@@ -82,16 +82,16 @@ elif [[ $cluster == "naf" ]]; then
 fi
 export workdir=$batch_out/$outdir
 export submitlock=$workdir/$era-$2.lock
+export jm=$sw_src_dir/HiggsAnalysis/friend-tree-producer/scripts/job_management.py
 echo "run this on $cluster"
 tmp=$( mktemp )
 cat << eof > $tmp
 set -e
 source /cvmfs/cms.cern.ch/cmsset_default.sh
-THIS_PWD=\$PWD
-cd $sw_src_dir
+pushd $sw_src_dir
 eval \`scramv1 runtime -sh\`
 export PATH=\$PATH:\$PWD/grid-control:\$PWD/grid-control/scripts
-cd -
+popd
 echo This should be the CMSSW_BASE:
 echo \$CMSSW_BASE
 
@@ -107,7 +107,7 @@ fi
 
 if [[ "submit" == $modus ]]; then
 if [[ ! -f $submitlock ]]; then
-job_management.py --executable NNScore \\
+$jm --executable NNScore \\
                   --batch_cluster $cluster \\
                   --command $modus \\
                   --input_ntuples_directory $input_ntuples_dir  \\
@@ -123,15 +123,15 @@ fi
 fi
 
 
-if [[ $modus == rungc ]]; then
+if [[ "rungc" == $modus ]]; then
 export X509_USER_PROXY=~/.globus/x509up
 voms-proxy-info
-go.py $workdir/NNScore_workdir/grid_control_NNScore.conf -Gc -m 20
+go.py $workdir/NNScore_workdir/grid_control_NNScore.conf -Gc -m 5
 fi
 
 
 if [[ "collect" == $modus ]]; then
-job_management.py --executable NNScore \\
+$jm --executable NNScore \\
                   --batch_cluster $cluster \\
                   --command $modus \\
                   --input_ntuples_directory $input_ntuples_dir  \\
@@ -143,7 +143,7 @@ job_management.py --executable NNScore \\
                   --custom_workdir_path $workdir
 fi
 
-if [[ $modus == delete ]]; then
+if [[ "delete" == $modus ]]; then
 rm -r $workdir
 fi
 
