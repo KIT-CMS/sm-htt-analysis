@@ -5,7 +5,7 @@ era=$1
 channel=$2
 tag=$3
 ## is unset && then || else
-[[ -z $tag ]] && outdir=ml/out/${era}_${SELCHANNEL} ||  outdir=ml/out/${era}_${channel}_${tag}
+[[ -z $tag ]] && outdir=output/ml/${era}_${SELCHANNEL} ||  outdir=output/ml/${era}_${channel}_${tag}
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh

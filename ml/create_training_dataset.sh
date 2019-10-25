@@ -8,8 +8,8 @@ then
     echo "Not possible here, use another machine"
     exit 1
 fi
-LCG_RELEASE=95
-source utils/setup_cvmfs_sft.sh
+
+source utils/setup_cvmfs_sft.sh 95
 source utils/setup_python.sh
 source utils/bashFunctionCollection.sh
 
@@ -34,7 +34,7 @@ function run_procedure() {
         jetEstimation=mc
     fi
     source utils/setup_samples.sh $ERA $TAG
-    [[ -z $TAG ]] && outdir=ml/out/${ERA}_${CHANNEL} ||  outdir=ml/out/${ERA}_${CHANNEL}_${TAG}
+    [[ -z $TAG ]] && outdir=output/ml/${ERA}_${CHANNEL} ||  outdir=output/ml/${ERA}_${CHANNEL}_${TAG}
     mkdir -p $outdir
 
     ARTUS_FRIENDS=""

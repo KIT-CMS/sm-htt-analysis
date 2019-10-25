@@ -80,7 +80,7 @@ function logandrun() {
 function ensureoutdirs() {
     [[ -d output ]] || mkdir output
     pushd output
-    for folder in datacards  log  plots  shapes  signalStrength; do
+    for folder in datacards  log  plots  shapes ml signalStrength; do
         [[ ! -d $folder ]] && mkdir $folder
     done
     [[ -d log/condorShapes ]] || mkdir log/condorShapes

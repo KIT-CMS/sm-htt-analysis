@@ -273,7 +273,6 @@ def main(args):
         tt_processes[qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, tt, friend_directory=tt_friend_directory))
    
     tt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationTT(era, directory, tt, [tt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], tt_processes["data"], friend_directory=tt_friend_directory+[ff_friend_directory]))
-
     tt_processes["QCD"] = Process("QCD", QCDEstimationTT(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL"]], tt_processes["data"]))
     # tt_processes["QCDEMB"] = Process("QCDEMB", QCDEstimation_SStoOS_MTETEM(era, directory, tt, [tt_processes[process] for process in ["EMB", "ZL", "ZJ", "W", "TTJ", "TTL", "VVJ", "VVL"]], tt_processes["data"], extrapolation_factor=1.17))
 
@@ -315,9 +314,9 @@ def main(args):
 
     def readclasses(c):
         if args.tag == "":
-            confFileName="ml/out/2017_{}/dataset_config.yaml".format(c,args.tag)
+            confFileName="output/ml/2016_{}/dataset_config.yaml".format(c,args.tag)
         else:
-            confFileName="ml/out/2017_{}_{}/dataset_config.yaml".format(c,args.tag)
+            confFileName="output/ml/2016_{}_{}/dataset_config.yaml".format(c,args.tag)
         logger.debug("Parse classes from "+confFileName)
         confdict= yaml.load(open(confFileName, "r"))
         logger.debug("Classes for {} loaded: {}".format(c, str(confdict["classes"])))
@@ -950,6 +949,7 @@ def main(args):
                     process=mt_processes[process_nick],
                     channel=mt,
                     era=era)
+<<<<<<< 6e9ee8c3eaa55d6e65eb35c4fb558d64c0d77b5a
     lep_trigger_eff_variations = []
     lep_trigger_eff_variations.append(
         AddWeight("CMS_eff_trigger_emb_mt_Run2016", "trg_mt_eff_weight",
@@ -972,6 +972,30 @@ def main(args):
                     channel=mt,
                     era=era)
     
+=======
+    # lep_trigger_eff_variations = []  #TODO include EMB again once samples are there
+    # lep_trigger_eff_variations.append(
+    #     AddWeight("CMS_eff_trigger_emb_mt_Run2016", "trg_mt_eff_weight",
+    #               Weight("(1.0*(pt_1<=23)+1.02*(pt_1>23))", "trg_mt_eff_weight"), "Up"))
+    # lep_trigger_eff_variations.append(
+    #     AddWeight("CMS_eff_trigger_emb_mt_Run2016", "trg_mt_eff_weight",
+    #               Weight("(1.0*(pt_1<=23)+0.98*(pt_1>23))", "trg_mt_eff_weight"), "Down"))
+    # lep_trigger_eff_variations.append(
+    #     AddWeight("CMS_eff_xtrigger_emb_mt_Run2016", "xtrg_mt_eff_weight",
+    #               Weight("(1.054*(pt_1<=23)+1.0*(pt_1>23))", "xtrg_mt_eff_weight"), "Up"))
+    # lep_trigger_eff_variations.append(
+    #     AddWeight("CMS_eff_xtrigger_emb_mt_Run2016", "xtrg_mt_eff_weight",
+    #               Weight("(0.946*(pt_1<=23)+1.0*(pt_1>23))", "xtrg_mt_eff_weight"), "Down"))
+    # for variation in lep_trigger_eff_variations:
+    #     for process_nick in ["EMB"]:
+    #         if "mt" in [args.gof_channel] + args.channels:
+    #             systematics.add_systematic_variation(
+    #                 variation=variation,
+    #                 process=mt_processes[process_nick],
+    #                 channel=mt,
+    #                 era=era)
+
+>>>>>>> ml/out -> output/ml
     # # Zll reweighting !!! replaced by log normal uncertainties: CMS_eFakeTau_Run2016 15.5%; CMS_mFakeTau_Run2016 27.2%
     # '''zll_et_weight_variations = []
     # zll_et_weight_variations.append(

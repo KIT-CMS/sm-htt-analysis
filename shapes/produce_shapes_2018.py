@@ -303,9 +303,9 @@ def main(args):
 
     def readclasses(c):
         if args.tag == "":
-            confFileName="ml/out/2017_{}/dataset_config.yaml".format(c,args.tag)
+            confFileName="output/ml/2018_{}/dataset_config.yaml".format(c,args.tag)
         else:
-            confFileName="ml/out/2017_{}_{}/dataset_config.yaml".format(c,args.tag)
+            confFileName="output/ml/2018_{}_{}/dataset_config.yaml".format(c,args.tag)
         logger.debug("Parse classes from "+confFileName)
         confdict= yaml.load(open(confFileName, "r"))
         logger.debug("Classes for {} loaded: {}".format(c, str(confdict["classes"])))

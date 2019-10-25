@@ -84,7 +84,7 @@ function ensuremldirs() {
     for tag in ${tags[@]}; do
         for era in ${eras[@]}; do
             for channel in ${channels[@]}; do
-                mldir=ml/out/${era}_${channel}_${tag}
+                mldir=output/ml/${era}_${channel}_${tag}
                 if [[ ! -d $mldir ]]; then
                     mkdir $mldir
                     loginfo "Creating $mldir"
@@ -163,7 +163,7 @@ function provideCluster() {
             [[ ! -d $llwtnndir/${era}/${channel} ]] && mkdir -p $llwtnndir/${era}/${channel}
             for fold in 0 1;
             do
-                updateSymlink $sm_htt_analysis_dir/ml/out/${era}_${channel}_${tag}/fold${fold}_lwtnn.json  $llwtnndir/${era}/${channel}/fold${fold}_lwtnn.json
+                updateSymlink $sm_htt_analysis_dir/output/ml/${era}_${channel}_${tag}/fold${fold}_lwtnn.json  $llwtnndir/${era}/${channel}/fold${fold}_lwtnn.json
             done
         done
     # done
