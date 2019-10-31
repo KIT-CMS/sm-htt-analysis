@@ -14,7 +14,7 @@ import os
 import logging
 logger = logging.getLogger("")
 from multiprocessing import Pool
-
+from multiprocessing import Process
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
@@ -170,9 +170,10 @@ def main(info):
             process, "hist", fillcolor=styles.color_dict[process])
 
     if "mm" not in channel:
-        # add VH ttH to total bkg histogram
+        # add VH, ttH & HWW to total bkg histogram
         total_bkg.Add(rootfile.get(channel, category, "VH125"))
         total_bkg.Add(rootfile.get(channel, category, "ttH125"))
+        total_bkg.Add(rootfile.get(channel, category, "HWW"))
 
     plot.add_hist(total_bkg, "total_bkg")
     plot.setGraphStyle(
@@ -195,19 +196,46 @@ def main(info):
             ggH = rootfile.get(channel, category, "ggH125").Clone()
             qqH = rootfile.get(channel, category, "qqH125").Clone()
             VH = rootfile.get(channel, category, "VH125").Clone()
-            ggH_scale = 0.75*data_norm/ggH.Integral()
-            qqH_scale = 0.75*data_norm/qqH.Integral()
-            VH_scale =  0.5*data_norm/VH.Integral()
+            ttH = rootfile.get(channel, category, "ttH125").Clone()
+            HWW = rootfile.get(channel, category, "HWW").Clone()
+            if ggH.Integral() > 0:
+                ggH_scale = 0.5*data_norm/ggH.Integral()
+            else:
+                ggH_scale = 0.0
+            if qqH.Integral() > 0:
+                qqH_scale = 0.5*data_norm/qqH.Integral()
+            else:
+                qqH_scale = 0.0
+            if VH.Integral() > 0:
+                VH_scale =  0.25*data_norm/VH.Integral()
+            else:
+                VH_scale = 0.0
+            if ttH.Integral() > 0:
+                ttH_scale =  0.25*data_norm/ttH.Integral()
+            else:
+                ttH_scale = 0.0
+            if HWW.Integral() > 0:
+                HWW_scale =  0.25*data_norm/HWW.Integral()
+                if HWW_scale > 10000:
+                    HWW_scale = 0.0
+            else:
+                HWW_scale = 0.0
             if i in [0,1]:
                 ggH.Scale(ggH_scale)
                 qqH.Scale(qqH_scale)
                 VH.Scale(VH_scale)
+                ttH.Scale(ttH_scale)
+                HWW.Scale(HWW_scale)
             plot.subplot(i).add_hist(ggH, "ggH")
             plot.subplot(i).add_hist(ggH, "ggH_top")
             plot.subplot(i).add_hist(qqH, "qqH")
             plot.subplot(i).add_hist(qqH, "qqH_top")
             plot.subplot(i).add_hist(VH, "VH")
             plot.subplot(i).add_hist(VH, "VH_top")
+            plot.subplot(i).add_hist(ttH, "ttH")
+            plot.subplot(i).add_hist(ttH, "ttH_top")
+            plot.subplot(i).add_hist(HWW, "HWW")
+            plot.subplot(i).add_hist(HWW, "HWW_top")
 
     if "mm" not in channel:
         plot.subplot(0 if args.linear else 1).setGraphStyle(
@@ -219,6 +247,12 @@ def main(info):
         plot.subplot(0 if args.linear else 1).setGraphStyle(
             "VH", "hist", linecolor=styles.color_dict["VH"], linewidth=3)
         plot.subplot(0 if args.linear else 1).setGraphStyle("VH_top", "hist", linecolor=0)
+        plot.subplot(0 if args.linear else 1).setGraphStyle(
+            "ttH", "hist", linecolor=styles.color_dict["ttH"], linewidth=3)
+        plot.subplot(0 if args.linear else 1).setGraphStyle("ttH_top", "hist", linecolor=0)
+        plot.subplot(0 if args.linear else 1).setGraphStyle(
+            "HWW", "hist", linecolor=styles.color_dict["HWW"], linewidth=3)
+        plot.subplot(0 if args.linear else 1).setGraphStyle("HWW_top", "hist", linecolor=0)
 
 
     # assemble ratio
@@ -276,7 +310,6 @@ def main(info):
     if category in ["2"]:
         plot.subplot(2).setYlims(0.45, 2.05)
     if category in ["1", "2"]:
-        #plot.subplot(0).setLogY()
         plot.subplot(0).setYlims(0.1, 150000000)
         if channel == "em":
             plot.subplot(0).setYlims(1, 15000000)
@@ -304,26 +337,20 @@ def main(info):
 
     plot.subplot(2).setYlabel("")
 
-    #plot.scaleXTitleSize(0.8)
-    #plot.scaleXLabelSize(0.8)
-    #plot.scaleYTitleSize(0.8)
     plot.scaleYLabelSize(0.8)
-    #plot.scaleXLabelOffset(2.0)
     plot.scaleYTitleOffset(1.1)
-
-    #plot.subplot(2).setNYdivisions(3, 5)
 
     if not channel == "tt" and category in ["11", "12", "13", "14", "15", "16"]:
         plot.subplot(2).changeXLabels(["0.2", "0.4", "0.6", "0.8", "1.0"])
 
     # draw subplots. Argument contains names of objects to be drawn in corresponding order.
     if "mm" not in channel:
-        procs_to_draw = ["stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top", "VH", "VH_top", "data_obs"] if args.linear else ["stack", "total_bkg", "data_obs"]
+        procs_to_draw = ["stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top", "VH", "VH_top", "ttH", "ttH_top", "HWW", "HWW_top", "data_obs"] if args.linear else ["stack", "total_bkg", "data_obs"]
         plot.subplot(0).Draw(procs_to_draw)
         if args.linear != True:
             plot.subplot(1).Draw([
                 "stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top",
-                "VH", "VH_top", "data_obs"
+                "VH", "VH_top", "ttH", "ttH_top", "HWW", "HWW_top", "data_obs"
             ])
         plot.subplot(2).Draw([
             "total_bkg", "bkg_ggH", "bkg_ggH_top", "bkg_qqH",
@@ -348,12 +375,14 @@ def main(info):
         plot.add_legend(width=0.6, height=0.15)
         for process in legend_bkg_processes:
             plot.legend(i).add_entry(
-                0, process, styles.legend_label_dict[process.replace("TTL", "TT").replace("VVL", "VV")], 'f')
+                0, process, styles.legend_label_dict[process.replace("TTL", "TT").replace("VVL", "VV").replace("NLO","")], 'f')
         plot.legend(i).add_entry(0, "total_bkg", "Bkg. stat. unc.", 'f')
         if "mm" not in channel:
             plot.legend(i).add_entry(0 if args.linear else 1, "ggH%s" % suffix[i], "%s #times gg#rightarrowH"%str(int(ggH_scale)), 'l')
             plot.legend(i).add_entry(0 if args.linear else 1, "qqH%s" % suffix[i], "%s #times qq#rightarrowH"%str(int(qqH_scale)), 'l')
-            plot.legend(i).add_entry(0 if args.linear else 1, "VH%s" % suffix[i], "%s #times qq#rightarrowVH"%str(int(VH_scale)), 'l')
+            plot.legend(i).add_entry(0 if args.linear else 1, "VH%s" % suffix[i], "%s #times V(lep)H"%str(int(VH_scale)), 'l')
+            plot.legend(i).add_entry(0 if args.linear else 1, "ttH%s" % suffix[i], "%s #times ttH"%str(int(ttH_scale)), 'l')
+            plot.legend(i).add_entry(0 if args.linear else 1, "HWW%s" % suffix[i], "%s #times H#rightarrowWW"%str(int(HWW_scale)), 'l')
         plot.legend(i).add_entry(0, "data_obs", "Data", 'PE')
         plot.legend(i).setNColumns(3)
     plot.legend(0).Draw()
@@ -382,7 +411,7 @@ def main(info):
     elif "2017" in args.era:
         plot.DrawLumi("41.5 fb^{-1} (2017, 13 TeV)")
     elif "2018" in args.era:
-        plot.DrawLumi("59.7  fb^{-1} (2018, 13 TeV)")
+        plot.DrawLumi("59.7 fb^{-1} (2018, 13 TeV)")
     else:
         logger.critical("Era {} is not implemented.".format(args.era))
         raise Exception

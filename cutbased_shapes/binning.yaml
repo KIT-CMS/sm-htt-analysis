@@ -1,0 +1,237 @@
+# Define STXS stage 1.1 categories for sub-categorization of 'signal_region' and 'nobtag' categories
+stxs_stage1p1:
+    boosted: "(pt_tt_puppi>=200)&&(njets<=1)"
+    0jet: "(pt_tt_puppi<200)&&(njets==0)"
+    1jetlowpt: "(pt_tt_puppi<120)&&(njets==1)"
+    1jethighpt: "(pt_tt_puppi<200)&&(pt_tt_puppi>=120)&&(njets==1)"
+    2jetlowmjj: "(njets>=2)&&(mjj<350)"
+    2jethighmjjlowpt: "(pt_tt_puppi<200)&&(njets>=2)&&(mjj>=350)"
+    2jethighmjjhighpt: "(pt_tt_puppi>=200)&&(njets>=2)&&(mjj>=350)"
+
+# Define main cut-based categories
+cutbased:
+    mt:
+        wjets_control: "(1 > 0) && (mt_1_puppi >= 70)"
+        signal_region: "(1 > 0) && (mt_1_puppi <  70)"
+        nobtag:                   "(mt_1_puppi <  70)                      && (nbtag == 0)"
+        nobtag_lowmsv:            "(mt_1_puppi <  70)                      && (nbtag == 0) && (m_sv_puppi <  250)"
+        nobtag_highmsv:           "(mt_1_puppi <  70)                      && (nbtag == 0) && (m_sv_puppi >= 250)"
+        btag:                     "(mt_1_puppi <  70)                      && (nbtag >  0)"
+        nobtag_tightmt:           "(mt_1_puppi <  40)                      && (nbtag == 0)"
+        nobtag_highmsv_tightmt:   "(mt_1_puppi <  40)                      && (nbtag == 0) && (m_sv_puppi >= 250)"
+        btag_tightmt:             "(mt_1_puppi <  40)                      && (nbtag >  0)"
+        nobtag_loosemt:           "(mt_1_puppi >= 40) && (mt_1_puppi < 70) && (nbtag == 0)"
+        nobtag_highmsv_loosemt:   "(mt_1_puppi >= 40) && (mt_1_puppi < 70) && (nbtag == 0) && (m_sv_puppi >= 250)"
+        btag_loosemt:             "(mt_1_puppi >= 40) && (mt_1_puppi < 70) && (nbtag >  0)"
+    et:
+        wjets_control: "(1 > 0) && (mt_1_puppi >= 70)"
+        signal_region: "(1 > 0) && (mt_1_puppi <  70)"
+        nobtag:                   "(mt_1_puppi <  70)                      && (nbtag == 0)"
+        nobtag_lowmsv:            "(mt_1_puppi <  70)                      && (nbtag == 0) && (m_sv_puppi <  250)"
+        nobtag_highmsv:           "(mt_1_puppi <  70)                      && (nbtag == 0) && (m_sv_puppi >= 250)"
+        btag:                     "(mt_1_puppi <  70)                      && (nbtag >  0)"
+        nobtag_tightmt:           "(mt_1_puppi <  40)                      && (nbtag == 0)"
+        nobtag_highmsv_tightmt:   "(mt_1_puppi <  40)                      && (nbtag == 0) && (m_sv_puppi >= 250)"
+        btag_tightmt:             "(mt_1_puppi <  40)                      && (nbtag >  0)"
+        nobtag_loosemt:           "(mt_1_puppi >= 40) && (mt_1_puppi < 70) && (nbtag == 0)"
+        nobtag_highmsv_loosemt:   "(mt_1_puppi >= 40) && (mt_1_puppi < 70) && (nbtag == 0) && (m_sv_puppi >= 250)"
+        btag_loosemt:             "(mt_1_puppi >= 40) && (mt_1_puppi < 70) && (nbtag >  0)"
+    tt:
+        signal_region:  "(1 > 0) && (1 > 0)"
+        nobtag:         "(1 > 0) && (nbtag == 0)"
+        nobtag_lowmsv:             "(nbtag == 0) && (m_sv_puppi <  250)"
+        nobtag_highmsv:            "(nbtag == 0) && (m_sv_puppi >= 250)"
+        btag:           "(1 > 0) && (nbtag >  0)"
+    em:
+        ttbar_control:                   "(1 > 0) && (pZetaPuppiMissVis <  -35)"
+        signal_region:                   "(1 > 0) && (pZetaPuppiMissVis >= -35)"
+        nobtag:                     "(nbtag == 0) && (pZetaPuppiMissVis >= -35)"
+        nobtag_lowmsv:              "(nbtag == 0) && (pZetaPuppiMissVis >= -35)                               && (m_sv_puppi <  250)"
+        nobtag_highmsv:             "(nbtag == 0) && (pZetaPuppiMissVis >= -35)                               && (m_sv_puppi >= 250)"
+        btag:                       "(nbtag >  0) && (pZetaPuppiMissVis >= -35)"
+        nobtag_highdzeta:           "(nbtag == 0) && (pZetaPuppiMissVis >=  30)"
+        nobtag_highmsv_highdzeta:   "(nbtag == 0) && (pZetaPuppiMissVis >=  30)                               && (m_sv_puppi >= 250)"
+        btag_highdzeta:             "(nbtag >  0) && (pZetaPuppiMissVis >=  30)"
+        nobtag_mediumdzeta:         "(nbtag == 0) && (pZetaPuppiMissVis <   30) && (pZetaPuppiMissVis >= -10)"
+        nobtag_highmsv_mediumdzeta: "(nbtag == 0) && (pZetaPuppiMissVis <   30) && (pZetaPuppiMissVis >= -10) && (m_sv_puppi >= 250)"
+        btag_mediumdzeta:           "(nbtag >  0) && (pZetaPuppiMissVis <   30) && (pZetaPuppiMissVis >= -10)"
+        nobtag_lowdzeta:            "(nbtag == 0) && (pZetaPuppiMissVis >= -35) && (pZetaPuppiMissVis <  -10)"
+        nobtag_highmsv_lowdzeta:    "(nbtag == 0) && (pZetaPuppiMissVis >= -35) && (pZetaPuppiMissVis <  -10) && (m_sv_puppi >= 250)"
+        btag_lowdzeta:              "(nbtag >  0) && (pZetaPuppiMissVis >= -35) && (pZetaPuppiMissVis <  -10)"
+
+# Optimized cuts for SM sub-categories
+# See for reference: https://indico.cern.ch/event/842569/contributions/3536321/attachments/1895266/3126759/SoverB_CutScans.pdf
+# -> Variable for ggH: tt - DeltaR < 3.2
+#
+# -> Variables for qqH: mt - DeltaR < 2.5, pt_tt > 75 (di-tau pair)
+# -> Variables for qqH: mt - deltaEtaJJ > 4.0, mjj > 1000 njets >= 2)
+#
+# -> Variables for qqH: et - DeltaR < 2.5, pt_tt > 100 (di-tau pair)
+# -> Variables for qqH: et - deltaEtaJJ > 4.0, mjj > 1000 njets >= 2)
+#
+# -> Variables for qqH: tt - DeltaR < 2.5, pt_tt > 100 (di-tau pair)
+# -> Variables for qqH: tt - deltaEtaJJ > 4.0, mjj > 1000 njets >= 2)
+#
+# -> Variables for qqH: em - pt_tt > 40 (di-tau pair)
+# -> Variables for qqH: em - deltaEtaJJ > 4.5, mjj > 1000 njets >= 2)
+#
+stxs_stage1p1_v2:
+    mt:
+        0jet_tightmt:             "(njets == 0) && (mt_1_puppi <  40)"
+        0jet_loosemt:             "(njets == 0) && (mt_1_puppi >= 40) && (mt_1_puppi < 70)"
+
+        geq1jet_highdeltar:       "(njets >= 1) && (DiTauDeltaR >= 2.5)"
+
+        1jet_lowdeltar_lowpt:     "(njets == 1) && (DiTauDeltaR <  2.5) && (pt_tt_puppi <  120)"
+        1jet_lowdeltar_mediumpt:  "(njets == 1) && (DiTauDeltaR <  2.5) && (pt_tt_puppi >= 120) && (pt_tt_puppi <  200)"
+        1jet_lowdeltar_highpt:    "(njets == 1) && (DiTauDeltaR <  2.5) && (pt_tt_puppi >= 200)"
+
+        2jet_lowdeltar_lowmjj:    "(njets >= 2) && (DiTauDeltaR <  2.5) && (mjj <   350)"
+        2jet_lowdeltar_mediummjj: "(njets >= 2) && (DiTauDeltaR <  2.5) && (mjj >=  350) && (mjj < 1000)"
+        2jet_lowdeltar_highmjj:   "(njets >= 2) && (DiTauDeltaR <  2.5) && (mjj >= 1000)"
+    et:
+        0jet_tightmt:             "(njets == 0) && (mt_1_puppi <  40)"
+        0jet_loosemt:             "(njets == 0) && (mt_1_puppi >= 40) && (mt_1_puppi < 70)"
+
+        geq1jet_highdeltar:       "(njets >= 1) && (DiTauDeltaR >= 2.5)"
+
+        1jet_lowdeltar_lowpt:     "(njets == 1) && (DiTauDeltaR <  2.5) && (pt_tt_puppi <  120)"
+        1jet_lowdeltar_mediumpt:  "(njets == 1) && (DiTauDeltaR <  2.5) && (pt_tt_puppi >= 120) && (pt_tt_puppi <  200)"
+        1jet_lowdeltar_highpt:    "(njets == 1) && (DiTauDeltaR <  2.5) && (pt_tt_puppi >= 200)"
+
+        2jet_lowdeltar_lowmjj:    "(njets >= 2) && (DiTauDeltaR <  2.5) && (mjj <   350)"
+        2jet_lowdeltar_mediummjj: "(njets >= 2) && (DiTauDeltaR <  2.5) && (mjj >=  350) && (mjj < 1000)"
+        2jet_lowdeltar_highmjj:   "(njets >= 2) && (DiTauDeltaR <  2.5) && (mjj >= 1000)"
+    tt:
+        highdeltar:                       "(njets <= 1) && (DiTauDeltaR >= 3.2) || (njets >= 2) && (DiTauDeltaR >= 2.5)"
+
+        0jet_lowmediumdeltar:             "(njets == 0) && (DiTauDeltaR <  3.2)"
+
+        1jet_lowpt_lowdeltar:             "(njets == 1) && (DiTauDeltaR <  2.5)                         && (pt_tt_puppi <  100)"
+        1jet_lowpt_mediumdeltar:          "(njets == 1) && (DiTauDeltaR >= 2.5) && (DiTauDeltaR <  3.2) && (pt_tt_puppi <  100)"
+        1jet_highpt_lowmediumdeltar:      "(njets == 1) && (DiTauDeltaR <  3.2)                         && (pt_tt_puppi >= 100)"
+
+        2jet_lowdeltar_lowmjj:            "(njets >= 2) && (DiTauDeltaR <  2.5)                         && (mjj <  350)"
+        2jet_lowdeltar_highmjj_lowjdeta:  "(njets >= 2) && (DiTauDeltaR <  2.5)                         && (mjj >= 350) && (jdeta <  4.0)"
+        2jet_lowdeltar_highmjj_highjdeta: "(njets >= 2) && (DiTauDeltaR <  2.5)                         && (mjj >= 350) && (jdeta >= 4.0)"
+    em:
+        0jet_lowpt_mediumdzeta:  "(njets == 0) && (pt_tt_puppi <  10) && (pZetaPuppiMissVis >= -10)"
+        0jet_lowpt_lowdzeta:     "(njets == 0) && (pt_tt_puppi <  10) && (pZetaPuppiMissVis <  -10)"
+        0jet_highpt_mediumdzeta: "(njets == 0) && (pt_tt_puppi >= 10) && (pZetaPuppiMissVis >= -10)"
+        0jet_highpt_lowdzeta:    "(njets == 0) && (pt_tt_puppi >= 10) && (pZetaPuppiMissVis <  -10)"
+
+        1jet_lowpt:              "(njets == 1) && (pt_tt_puppi <   40)"
+        1jet_lowmediumpt:        "(njets == 1) && (pt_tt_puppi >=  40) && (pt_tt_puppi <  120)"
+        1jet_highmediumpt:       "(njets == 1) && (pt_tt_puppi >= 120) && (pt_tt_puppi <  200)"
+        1jet_highpt:             "(njets == 1) && (pt_tt_puppi >= 200)"
+
+        2jet_lowmjj:             "(njets >= 2) && (mjj <  350)"
+        2jet_mediummjj:          "(njets >= 2) && (mjj >= 350)"
+
+# Binning for the quantities as final discriminators
+variables:
+    DiTauDeltaR:
+      bins: [[0.0, 5.0, 0.1]]
+      expression: "DiTauDeltaR"
+    mTdileptonMET:
+      bins: [[0.0, 300.0, 4.0]]
+      expression: "mTdileptonMET"
+    mTdileptonMET_puppi:
+      bins: [[0.0, 300.0, 4.0]]
+      expression: "mTdileptonMET_puppi"
+    pZetaMissVis:
+      bins: [[-200.0, 200.0, 5.0]]
+      expression: "pZetaMissVis"
+    pZetaPuppiMissVis:
+      bins: [[-200.0, 200.0, 5.0]]
+      expression: "pZetaPuppiMissVis"
+    m_sv:
+      bins: [[0.0, 50.0, 50.0], [50.0, 250.0, 5.0], [250.0, 500.0, 10.0], [500.0, 1000.0, 25.0], [1000.0, 2000.0, 50.0], [2000.0, 5000.0, 100.0]]
+      expression: "m_sv"
+    pt_sv:
+      bins: [[0.0, 300.0, 5.0], [300.0, 500.0, 10.0], [500.0, 1000.0, 50.0]]
+      expression: "pt_sv"
+    m_sv_puppi:
+      bins: [[0.0, 50.0, 50.0], [50.0, 250.0, 5.0], [250.0, 500.0, 10.0], [500.0, 1000.0, 25.0], [1000.0, 2000.0, 50.0], [2000.0, 5000.0, 100.0]]
+      expression: "m_sv_puppi"
+    pt_sv_puppi:
+      bins: [[0.0, 300.0, 5.0], [300.0, 500.0, 10.0], [500.0, 1000.0, 50.0]]
+      expression: "pt_sv_puppi"
+    m_vis:
+      bins: [[0.0, 50.0, 50.0], [50.0, 250.0, 5.0], [250.0, 500.0, 10.0], [500.0, 1000.0, 25.0], [1000.0, 2000.0, 50.0], [2000.0, 5000.0, 100.0]]
+      expression: "m_vis"
+    ME_vbf_vs_Z:
+      bins: [[0.0, 0.95, 0.25], [0.95, 1.0, 0.001]]
+      expression: "ME_vbf_vs_Z"
+    mt_tot:
+      bins: [[0.0, 50.0, 50.0], [50.0, 250.0, 5.0], [250.0, 500.0, 10.0], [500.0, 1000.0, 25.0], [1000.0, 2000.0, 50.0], [2000.0, 5000.0, 100.0]]
+      expression: "mt_tot"
+    mt_tot_puppi:
+      bins: [[0.0, 50.0, 50.0], [50.0, 250.0, 5.0], [250.0, 500.0, 10.0], [500.0, 1000.0, 25.0], [1000.0, 2000.0, 50.0], [2000.0, 5000.0, 100.0]]
+      expression: "mt_tot_puppi"
+    pt_1:
+      bins: [[0.0, 300.0, 5.0]]
+      expression: "pt_1"
+    pt_2:
+      bins: [[0.0, 300.0, 5.0]]
+      expression: "pt_2"
+    jpt_1:
+      bins: [[30.0, 300.0, 5.0]]
+      expression: "jpt_1"
+    jpt_2:
+      bins: [[30.0, 300.0, 5.0]]
+      expression: "jpt_2"
+    jeta_1:
+      bins: [[-4.8, 4.8, 0.2]]
+      expression: "jeta_1"
+    jeta_2:
+      bins: [[-4.8, 4.8, 0.2]]
+      expression: "jeta_2"
+    jdeta:
+      bins: [[0.0, 6.0, 0.2], [6.0, 10.0, 0.5]]
+      expression: "jdeta"
+    njets:
+      bins: [-0.5, 10.5, 1.0]
+      expression: "njets"
+    nbtag:
+      bins: [-0.5, 6.5, 1.0]
+      expression: "nbtag"
+    mt_1:
+      bins: [[0.0, 300.0, 5.0]]
+      expression: "mt_1"
+    mt_1_puppi:
+      bins: [[0.0, 300.0, 5.0]]
+      expression: "mt_1_puppi"
+    ptvis:
+      bins: [[0.0, 300.0, 5.0], [300.0, 500.0, 10.0], [500.0, 1000.0, 50.0]]
+      expression: "ptvis"
+    pt_tt:
+      bins: [[0.0, 300.0, 5.0], [300.0, 500.0, 10.0], [500.0, 1000.0, 50.0]]
+      expression: "pt_tt"
+    pt_ttjj:
+      bins: [[0.0, 300.0, 5.0]]
+      expression: "pt_ttjj"
+    pt_tt_puppi:
+      bins: [[0.0, 300.0, 5.0], [300.0, 500.0, 10.0], [500.0, 1000.0, 50.0]]
+      expression: "pt_tt_puppi"
+    pt_ttjj_puppi:
+      bins: [[0.0, 300.0, 5.0]]
+      expression: "pt_ttjj_puppi"
+    mjj:
+      bins: [[0.0, 700.0, 5.0], [700.0, 1500.0, 20.0], [1500.0, 4000.0, 100.0]]
+      expression: "mjj"
+    dijetpt:
+      bins: [[0.0, 300.0, 5.0]]
+      expression: "dijetpt"
+    met:
+      bins: [[0.0, 300.0, 5.0]]
+      expression: "met"
+    puppimet:
+      bins: [[0.0, 300.0, 5.0]]
+      expression: "puppimet"
+    bpt_1:
+      bins: [[20.0, 300.0, 5.0]]
+      expression: "bpt_1"
+    bpt_2:
+      bins: [[20.0, 300.0, 5.0]]
+      expression: "bpt_2"

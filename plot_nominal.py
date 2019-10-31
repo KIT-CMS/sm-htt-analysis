@@ -70,6 +70,16 @@ def parse_arguments():
         default=24,
         help="Number of processes used for plotting")
 
+    parser.add_argument("--filename-prefix", type=str, default="", help="filename prefix")
+    parser.add_argument("--www", action="store_true", help="webplotting")
+    parser.add_argument("--www-dir", type=str, default=None,
+        help='Directory structure where the plots will be uploaded. {date} expressions will be replaced by date.')
+    parser.add_argument("--www-no-overwrite", action='store_true', default=False, help="Don't overwrite remote file. [Default: %(default)s]")
+    parser.add_argument("--no-overwrite", "--keep-both", "--keep", "-k", action='store_true', default=False, help="Don't overwrite output file. [Default: %(default)s]")
+    parser.add_argument("--log-level", default="debug", help="log level. [Default: %(default)s]")
+    parser.add_argument("--redo-cache", action="store_true",
+                        help="Do not use inputs from cached trees, but overwrite them. [Default: False for absolute paths, True for relative paths]")
+
     return parser.parse_args()
 
 
@@ -115,30 +125,26 @@ logvars = ["nbtag","njets","jpt_1","jpt_2"]
 
 def main(args):
 
+    signal_names=["ggh","qqh"]
+    signal=["ggH125","qqH125"]
+
     if args.emb and args.ff:
         bkg_processes_names = [
          "emb", "zll", "ttl", "vvl", "fakes"
         ]
-        signal=["ggH125","qqH125"]
-        signal_names=["ggh","qqh"]
-
-        bkg_processes = ["EMB", "ZL", "TTL", "VVL", "jetFakes"]  # names in ROOT file
+        bkg_processes = ["EMB", "ZL", "TTL", "VVL", "jetFakes"]
     elif args.emb:
         bkg_processes_names = ["emb", "zll","zj", "ttl", "ttj","vvl", "vvj", "w", "qcd"]
-        signal_names=["ggh","qqh"]
         bkg_processes = ["EMB", "ZL", "ZJ","TTL", "TTJ","VVL", "VVJ", "W", "QCD"]
-        signal=["ggH125","qqH125"]
     elif args.ff:
         bkg_processes_names = [
-            "ztt", "zll", "ttt", "ttl", "vvt", "vvl", "ewk", "fakes"
+            "ztt", "zll", "ttt", "ttl", "vvt", "vvl", "fakes"
         ]  # enforced by HarryPlotter
-        bkg_processes = ["ZTT", "ZL", "TTT", "TTL", "VVT", "VVL", "EWK", "jetFakes"]  # names in ROOT file
+        bkg_processes = ["ZTT", "ZL", "TTT", "TTL", "VVT", "VVL", "jetFakes"]
     else:
         bkg_processes_names = [
             "ztt", "zll","zj","ttl", "ttt","ttj","vvl","vvt","vvj","w","qcd"]
-        signal_names=["ggh","qqh"]
         bkg_processes = ["ZTT", "ZL", "ZJ","TTL","TTT", "TTJ", "VVL","VVT","VVJ","W","QCD"]
-        signal=["ggH125","qqH125"]
     channels = args.channels
     analysis = args.analysis
     era = args.era
@@ -158,6 +164,23 @@ def main(args):
     categories = [c for c in args.categories] if args.categories is not None else None
     if "all" in variables:
         variables = ["mt_1","mt_2", "pt_1","pt_2", "eta_1", "eta_2", "m_vis", "ptvis", "npv", "njets", "nbtag", "jpt_1", "jpt_2", "jeta_1", "jeta_2", "met", "mjj", "dijetpt", "pZetaMissVis", "m_1", "m_2", "decayMode_1", "decayMode_2", "iso_1", "iso_2", "rho", "mt_tot", "d0_1", "d0_2", "dZ_1", "dZ_2"]
+
+    if args.www:
+        config_template['www'] = ''
+    if args.www_dir:
+        config_template['www_dir'] = args.www_dir
+    if args.www_no_overwrite:
+        config_template['www_no_overwrite'] = True
+        config_template['no_overwrite'] = True
+    if args.no_overwrite:
+        config_template['no_overwrite'] = True
+    if args.redo_cache:
+        config_template['redo_cache'] = True
+
+    if args.filename_prefix != '':
+        args.filename_prefix = args.filename_prefix if args.filename_prefix[0] == '_' else '_' + args.filename_prefix
+    # if args.log_level == 'debug':
+        # config['log_level'] =
 
     configs = []
     for channel in channels:
@@ -205,20 +228,20 @@ def main(args):
             ]
             if args.emb == False:
                 config["filename"] = "_".join(
-                    [channel, category, analysis, era, variable, mass])
+                    [channel, category, analysis, era, variable, mass]) + args.filename_prefix
             else:
                 config["filename"] = "_".join(
-                    [channel, category, analysis, era, variable, mass,"emb"])
+                    [channel, category, analysis, era, variable, mass,"emb"]) + args.filename_prefix
             if args.comparison:
                 config["filename"] = "_".join(
-                    [channel, category, analysis, era, variable, mass,"comparison"])
+                    [channel, category, analysis, era, variable, mass,"comparison"]) + args.filename_prefix
             if args.ff:
                 config["filename"] = config["filename"]+"_ff"
             if not args.x_label == None:
                 config["x_label"] = args.x_label
             else:
                 config["x_label"] = "_".join([channel, variable])
-            config["title"] = "_".join(["channel", channel, category])
+            config["title"] = "_".join(["channel", channel])
             config["stacks"] = ["mc"] * len(bkg_processes_names) + signal_names + [
                 "data"
             ] + [x+"Ratio" for x in signal_names] + config["stacks"]
@@ -235,7 +258,6 @@ def main(args):
                 config["colors"] = [bkg_processes_names[0]] + ["#C70039"] + bkg_processes_names[1:] + ["data"
                                                           ] + ["#B7B7B7", " #C70039 ", "#000000"]
 
-                                                          #~ ] + ["#B7B7B7", "#ce661c", "#000000"]
                 config["subplot_legend"] =  [
                                             0.195,
                                             0.77,
@@ -274,6 +296,8 @@ def main(args):
                 config["ratio_result_nicks"] = ["ratio_Bkg", "ratio_Data_to_MC", "ratio_Data"]
             configs.append(config)
 
+    import pprint as pp
+    pp.pprint(configs)
     higgsplot.HiggsPlotter(
         list_of_config_dicts=configs,
         list_of_args_strings=[args.additional_arguments],
@@ -282,5 +306,9 @@ def main(args):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    setup_logging("plot_nominal.log", logging.DEBUG)
+    if args.log_level == 'debug':
+        ll = logging.DEBUG
+    else:
+        ll = logging.INFO
+    setup_logging("plot_nominal.log", ll)
     main(args)

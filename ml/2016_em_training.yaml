@@ -1,11 +1,11 @@
 class_weights:
-  db: 195.647877793145
-  ggh: 361.71163909587585
-  misc: 26.017038287474183
-  qqh: 2525.69335387353
-  ss: 8.295319790486822
-  tt: 13.627690244300798
-  ztt: 1.3168950553832528
+  db: 18.04702194946015
+  ggh: 325.2065547835655
+  misc: 27.450102086245554
+  qqh: 2670.0693406141913
+  ss: 8.51917489984838
+  tt: 14.386620157694404
+  ztt: 1.393109470577024
 classes:
 - ggh
 - qqh
@@ -30,20 +30,20 @@ preprocessing: standard_scaler
 seed: 1234
 train_test_split: 0.75
 variables:
+- pt_1
 - pt_2
+- eta_1
+- m_vis
+- ptvis
+- m_sv
+- ME_q2v1
+- ME_q2v2
+- bpt_1
+- nbtag
 - jpt_1
 - jpt_2
-- bpt_1
-- bpt_2
 - njets
-- nbtag
-- m_sv
-- mt_1
-- mt_2
-- ptvis
-- pt_tt
-- mjj
 - jdeta
-- m_vis
+- mjj
 - dijetpt
-- met
+- mTdileptonMET

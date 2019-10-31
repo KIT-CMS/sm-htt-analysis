@@ -22,8 +22,6 @@ if not os.path.exists(outfoldername):
 fout      = r.TFile.Open("%s/Type1_PFMET_%s.root"%(outfoldername,era),"recreate")
 foutpuppi = r.TFile.Open("%s/Type1_PuppiMET_%s.root"%(outfoldername,era),"recreate")
 
-r.gROOT.SetBatch()
-
 hist_names = sorted([k.GetName() for k in f.GetListOfKeys() if "_ss" not in k.GetName() and "output_tree" not in k.GetName() ])
 
 categories = set(sorted([k.strip("#").split("#")[1] for k in hist_names]))

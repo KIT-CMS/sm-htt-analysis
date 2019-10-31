@@ -6,6 +6,7 @@ import numpy as np
 import Dumbledraw.dumbledraw as dd
 import Dumbledraw.rootfile_parser_inputshapes as rootfile_parser
 import Dumbledraw.styles as styles
+import sys
 
 def sorted_nicely(l):
     """ Sort the given iterable in the way that humans expect: alphanumeric sort (in bash, that's 'sort -V')"""
@@ -17,7 +18,9 @@ def sorted_nicely(l):
 def sorted_cats(l):
     return sorted(l,key = lambda k : [float(k.replace(k.split("-")[0],"").replace("-less-","").replace("-greater-","").replace("p","."))]  )
 
-f = r.TFile("counts_for_soverb.root","read")
+fname = sys.argv[1]
+
+f = r.TFile(fname,"read")
 t = f.Get("output_tree")
 t.GetEntry(0)
 
@@ -64,12 +67,12 @@ for sig in signals:
     for var in variables:
         for cg, cl in zip(categories_greater[var],categories_less[var]):
             soverb_dict[sig].setdefault(var,{"greater" : [], "less" : []})
-            denominator = math.sqrt(yields_dict[cg][sig] + yields_dict[cg]["BG"])
+            denominator = math.sqrt(max(0,yields_dict[cg][sig]) + max(0,yields_dict[cg]["BG"]))
             if denominator > 0:
                 soverb_greater = yields_dict[cg][sig]/denominator
             else:
                 soverb_greater = 0
-            denominator = math.sqrt(yields_dict[cl][sig] + yields_dict[cl]["BG"])
+            denominator = math.sqrt(max(0,yields_dict[cl][sig]) + max(0,yields_dict[cl]["BG"]))
             if denominator > 0:
                 soverb_less = yields_dict[cl][sig]/denominator
             else:

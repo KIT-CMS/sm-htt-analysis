@@ -173,7 +173,7 @@ if __name__ == "__main__":
     #ROOT.gStyle.SetPalette(cp) #kBlueGreenYellow kCoffee
     #ROOT.TColor.InvertPalette()
     label_dict = {
-        "r_ggH_GG2H_0J" : "0 Jet",
+        "r_ggH_GG2H_0J" : "0 Jet p_{T}^{H} [0,200]",
         "r_ggH_GG2H_PTH_GT200" : "p_{T}^{H} [200,#infty]",
         "r_ggH_GG2H_1J_PTH_0_120" : "1 Jet p_{T}^{H} [0,120]",
         "r_ggH_GG2H_1J_PTH_120_200" : "1 Jet p_{T}^{H} [120,200]",

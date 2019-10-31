@@ -1,9 +1,9 @@
 class_weights:
-  ggh: 241.36803191752904
-  misc: 10.526449079155576
-  noniso: 1.52653125620745
-  qqh: 590.1229311109338
-  ztt: 4.096956063741624
+  ggh: 212.3346062909674
+  misc: 9.900178353165487
+  noniso: 1.537756394620113
+  qqh: 594.462319220591
+  ztt: 4.12708246875239
 classes:
 - ggh
 - qqh
@@ -28,18 +28,12 @@ train_test_split: 0.75
 variables:
 - pt_1
 - pt_2
-- jpt_1
-- jpt_2
-- bpt_1
-- bpt_2
-- nbtag
-- m_sv
-- mt_1
-- mt_2
-- ptvis
-- pt_tt
-- mjj
-- jdeta
 - m_vis
+- ptvis
+- m_sv
+- nbtag
+- jpt_1
+- njets
+- jdeta
+- mjj
 - dijetpt
-- met
