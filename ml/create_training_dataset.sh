@@ -9,7 +9,7 @@ then
     exit 1
 fi
 
-source utils/setup_cvmfs_sft.sh 95
+source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
 source utils/bashFunctionCollection.sh
 
@@ -22,6 +22,7 @@ IFS=',' read -r -a tags <<< $3
 fi
 
 function run_procedure() {
+    set -e
     ERA=$1
     CHANNEL=$2
     TAG=$3

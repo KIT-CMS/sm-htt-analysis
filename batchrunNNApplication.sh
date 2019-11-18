@@ -58,7 +58,8 @@ elif [[ $cluster == "lxplus7" ]]; then
     export sw_src_dir="/afs/cern.ch/user/${USER::1}/${USER}/CMSSW_10_2_14/src"
     export batch_out="/afs/cern.ch/work/${USER::1}/${USER}/batch-out"
 elif [[ $cluster == "naf" ]]; then
-    eventsPerJob=20000000
+    eventsPerJob=2000000
+
     walltime=2000
     case $era in
         "2016" )
@@ -126,7 +127,7 @@ fi
 if [[ "rungc" == $modus ]]; then
 export X509_USER_PROXY=~/.globus/x509up
 voms-proxy-info
-go.py $workdir/NNScore_workdir/grid_control_NNScore.conf -Gc -m 5
+go.py $workdir/NNScore_workdir/grid_control_NNScore.conf -Gc -m 10
 fi
 
 

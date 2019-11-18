@@ -47,6 +47,11 @@ function updateSymlink() {
     fi
 
 }
+function condwait(){
+    if [[ $(jobs | wc -l ) -gt 12 ]]; then
+        wait
+    fi
+}
 
 function recommendCPUs() {
     avUsage=$(grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage}')

@@ -7,7 +7,7 @@ TAG=$3
 BINNING=shapes/binning.yaml
 cd $PWD
 
-export LCG_RELEASE=96
+export LCG_RELEASE=95
 source utils/setup_cvmfs_sft.sh
 
 source utils/setup_python.sh
@@ -27,7 +27,7 @@ logandrun python shapes/produce_shapes_$ERA.py \
     --tag ${TAG} \
     --channels $CHANNELS \
     --era $ERA \
-    --num-threads 12
+    --num-threads 10
 
 # Normalize fake-factor shapes to nominal
 logandrun python fake-factor-application/normalize_shifts.py output/shapes/${ERA}-${TAG}-${CHANNELS}-shapes.root

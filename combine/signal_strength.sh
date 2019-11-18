@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
-source utils/setup_cmssw.sh
 source utils/bashFunctionCollection.sh
+source utils/setup_cmssw.sh
 
 ERA=$1
 STXS_FIT=$2
@@ -31,7 +31,7 @@ then
         --robustFit 1 -n $ERA -v1 \
         --robustHesse 1 \
         -t -1 --expectSignal 1 \
-        --X-rtd MINIMIZER_analytic\
+        --X-rtd MINIMIZER_analytic \
         --cminDefaultMinimizerStrategy 0 \
         | tee $LOGFILE
     #python combine/check_mlfit.py fitDiagnostics${ERA}.root
@@ -52,5 +52,5 @@ then
         -n $ERA -v1 \
         | tee $LOGFILE
     [[ ! -f higgsCombine${ERA}.MultiDimFit.mH125.root ]] || mv higgsCombine${ERA}.MultiDimFit.mH125.root $FITFILE
-    python combine/print_fitresult.py $FITFILE | tee -a $LOGFILE | sed "s@\[INFO\] @@" | tail -n +2 | sort | sed -E "s@\s*:@@" | tee $OUTPUTFILE
+    logandrun python combine/print_fitresult.py $FITFILE | tee -a $LOGFILE | sed "s@\[INFO\] @@" | tail -n +2 | sort | sed -E "s@\s*:@@" | grep -E '^r' | tee $OUTPUTFILE
 fi

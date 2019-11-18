@@ -28,3 +28,4 @@ output
 tmp-*
 combine_logger.out
 docker_stderror
+.ipynb_checkpoints/

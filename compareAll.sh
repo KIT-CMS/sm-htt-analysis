@@ -145,6 +145,7 @@ function exportForApplication {
                 (
                 logandrun ./ml/translate_models.sh ${era} ${channel} ${tag}
                 logandrun ./ml/export_lwtnn.sh ${era} ${channel}  ${tag} ) &
+                condwait
             done
         done
     done
@@ -254,9 +255,10 @@ function syncshapes() {
                     loginfo Skipping shape syncing as $fn exists
                 fi
             done
-            wait
+            condwait
         done
     done
+    wait
 }
 
 
@@ -271,9 +273,10 @@ function gendatacards(){
                 [ -d $DATACARDDIR ] || mkdir -p $DATACARDDIR
                 logandrun ./datacards/produce_datacard.sh ${era} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${tag} ${channelsarg} &
             done
-            wait
+            condwait
         done
     done
+    wait
 }
 
 function genworkspaces(){
@@ -284,16 +287,16 @@ function genworkspaces(){
             export tag
                 fn="output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/cmb/125/${era}-${STXS_FIT}-workspace.root"
                 if [[ ! -f $fn ]]; then
-                    logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${tag} &
+                    logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${tag}
+                    #condwait
                     #[[ $? == 0 ]] || return $?
                 else
                     loginfo "skipping workspace creation, as  $fn exists"
                 fi
             done
-            wait
         done
     done
-
+    wait
 }
 
 export JETFAKES=1 EMBEDDING=1 CATEGORIES="stxs_stage1p1"
@@ -349,7 +352,7 @@ function genMCprefitshapes(){
 ### do not run this parallel! it writes to fit.root in the main dir and is then moved
 function runana() {
     ensureoutdirs
-    for STXS_FIT in "stxs_stage1p1"; do #"inclusive" "stxs_stage0";do #
+    for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do #
         export tag
         for era in ${eras[@]}; do
             if [[ True ]]; then
@@ -362,9 +365,10 @@ function runana() {
                     DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}
                     for channel in ${channels[@]}; do
                          logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR/$channel/125 $channel ${tag} &
+                         condwait
                     done
-                    wait
-                    #logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR/cmb/125 cmb ${tag} &
+                    logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR/cmb/125 cmb ${tag} &
+                    condwait
                 done
             fi
         done
