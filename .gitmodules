@@ -25,3 +25,6 @@
 [submodule "TauIDSF_measurement"]
 	path = TauIDSF_measurement
 	url = git@github.com:KIT-CMS/TauIDSF_measurement.git
+[submodule "fake-factor-derivation"]
+	path = fake-factor-derivation
+	url = git@github.com:KIT-CMS/fake-factor-derivation.git
