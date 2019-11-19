@@ -2,8 +2,8 @@
 
 ERA=$1
 # Samples Run2016
-basedir="/ceph/htautau"
-ARTUS_OUTPUTS_2016="$basedir/2016/ntuples/"
+basedir="/ceph/mburkart/Run2Legacy/TauID/Data_and_MC_and_Embedding_DeepTau_TauIDSFMeasurement2016_mm_14_11_2019"
+ARTUS_OUTPUTS_2016="$basedir/merged/"
 NNScore_Friends_2016="/storage/9/sbrommer/friend_tree_workdir/et/NNScore_workdir/NNScore_collected/"
 SVFit_Friends_2016="$basedir/2016/svfit_friends/"
 MELA_Friends_2016="$basedir/2016/mela_friends/"
@@ -20,7 +20,10 @@ ARTUS_FRIENDS_FAKE_FACTOR_INCL_2016=$ARTUS_FRIENDS_FAKE_FACTOR_2016
 
 
 # Samples Run2017
-basedir=" /ceph/swozniewski/SM_Htautau_Legacy/ntuples/2017_10_01"
+# basedir="/ceph/swozniewski/SM_Htautau_Legacy/ntuples/2017_10_01"
+# basedir="/ceph/mburkart/artus_ouputs/2019_08_06/artusjobs_Data_and_MC_and_Embedding_ReReco31Mar2018_Fall17v2MC_Run2017_mm_05_08_2019"
+# basedir="/ceph/swozniewski/SM_Htautau_Legacy/ntuples/2017_08_21"
+basedir="/ceph/mburkart/Run2Legacy/TauID/Data_and_MC_and_Embedding_DeepTau_TauIDSFMeasurement2017_05_11_2019/"
 ARTUS_OUTPUTS_2017="$basedir/merged/"
 NNScore_Friends_2017="$basedir/NN_puppi/"
 SVFit_Friends_2017="$basedir/SVFit/"
@@ -36,7 +39,8 @@ ARTUS_FRIENDS_FAKE_FACTOR_INCL_2017=$FF_Friends_2017
 ARTUS_OUTPUTS_EM_2017=""
 
 # Samples Run2018
-ARTUS_OUTPUTS_2018="$basedir/2018/ntuples/"
+basedir="/ceph/mburkart/Run2Legacy/TauID/Data_and_MC_and_Embedding_DeepTau_TauIDSFMeasurement2018_mm_07_11_2019"
+ARTUS_OUTPUTS_2018="$basedir/merged/"
 NNScore_Friends_2018=""
 NNScore_Friends_ET_2018="/ceph/jbechtel/artus_outputs/2018/friends/nn_scores_naf/et/"
 NNScore_Friends_MT_2018="/ceph/jbechtel/artus_outputs/2018/friends/nn_scores_naf/mt/"
