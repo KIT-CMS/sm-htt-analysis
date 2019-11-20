@@ -86,11 +86,6 @@ def parse_arguments():
         "Directories arranged as Artus output and containing a friend tree for em."
     )
     parser.add_argument(
-        "--QCD-extrap-fit",
-        default=False,
-        action='store_true',
-        help="Create shapes for QCD extrapolation factor determination.")
-    parser.add_argument(
         "--datasets", required=True, type=str, help="Kappa datsets database.")
     parser.add_argument(
         "--binning", required=True, type=str, help="Binning configuration.")
@@ -105,6 +100,11 @@ def parse_arguments():
         default=None,
         type=str,
         help="Channel for goodness of fit shapes.")
+    parser.add_argument(
+        "--QCD-extrap-fit",
+        default=False,
+        action='store_true',
+        help="Create shapes for QCD extrapolation factor determination.")
     parser.add_argument(
         "--gof-variable",
         type=str,
@@ -144,14 +144,11 @@ def main(args):
     # Era selection
     if "2016" in args.era:
         from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimation, VVLEstimation, VVTEstimation, VVJEstimation, TTLEstimation, TTTEstimation, TTJEstimation, QCDEstimation_SStoOS_MTETEM, QCDEstimationTT, ZTTEmbeddedEstimation, FakeEstimationLT, NewFakeEstimationLT, FakeEstimationTT, NewFakeEstimationTT,ggHWWEstimation,qqHWWEstimation
-
         from shape_producer.era import Run2016
         era = Run2016(args.datasets)
-
     else:
         logger.critical("Era {} is not implemented.".format(args.era))
         raise Exception
-
     # Channels and processes
     # yapf: disable
     directory = args.directory
@@ -286,8 +283,10 @@ def main(args):
         "ZJ"    : Process("ZJ",       ZJEstimation        (era, directory, em, friend_directory=em_friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimation        (era, directory, em, friend_directory=em_friend_directory)),
         "TTT"   : Process("TTT",      TTTEstimation       (era, directory, em, friend_directory=em_friend_directory)),
+        "TTJ"   : Process("TTJ",      TTJEstimation       (era, directory, em, friend_directory=em_friend_directory)),
         "TTL"   : Process("TTL",      TTLEstimation       (era, directory, em, friend_directory=em_friend_directory)),
         "VVT"   : Process("VVT",      VVTEstimation       (era, directory, em, friend_directory=em_friend_directory)),
+        "VVJ"   : Process("VVJ",      VVJEstimation       (era, directory, em, friend_directory=em_friend_directory)),
         "VVL"   : Process("VVL",      VVLEstimation       (era, directory, em, friend_directory=em_friend_directory)),
         "W"     : Process("W",        WEstimation         (era, directory, em, friend_directory=em_friend_directory)),
 
@@ -717,8 +716,9 @@ def main(args):
                     process=tt_processes[process_nick],
                     channel=tt,
                     era=era)
-        for process_nick in ["ZTT", "ZL", "W", "TTT", "TTL", "VVL", "VVT"
-                ] + signal_nicks:
+        for process_nick in [
+                "ZTT", "ZL", "W", "TTT", "TTL", "VVL", "VVT"
+        ] + signal_nicks:
             if "em" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
@@ -773,7 +773,8 @@ def main(args):
         "CMS_htt_boson_scale_met_Run2016", "metRecoilResponse",
         DifferentPipeline)
     for variation in recoil_resolution_variations + recoil_response_variations:
-        for process_nick in ["ZTT", "ZL", "ZJ", "W"] + signal_nicks:
+        for process_nick in [
+                "ZTT", "ZL", "ZJ", "W"] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
@@ -949,7 +950,6 @@ def main(args):
                     process=mt_processes[process_nick],
                     channel=mt,
                     era=era)
-<<<<<<< 6e9ee8c3eaa55d6e65eb35c4fb558d64c0d77b5a
     lep_trigger_eff_variations = []
     lep_trigger_eff_variations.append(
         AddWeight("CMS_eff_trigger_emb_mt_Run2016", "trg_mt_eff_weight",
@@ -972,30 +972,7 @@ def main(args):
                     channel=mt,
                     era=era)
     
-=======
-    # lep_trigger_eff_variations = []  #TODO include EMB again once samples are there
-    # lep_trigger_eff_variations.append(
-    #     AddWeight("CMS_eff_trigger_emb_mt_Run2016", "trg_mt_eff_weight",
-    #               Weight("(1.0*(pt_1<=23)+1.02*(pt_1>23))", "trg_mt_eff_weight"), "Up"))
-    # lep_trigger_eff_variations.append(
-    #     AddWeight("CMS_eff_trigger_emb_mt_Run2016", "trg_mt_eff_weight",
-    #               Weight("(1.0*(pt_1<=23)+0.98*(pt_1>23))", "trg_mt_eff_weight"), "Down"))
-    # lep_trigger_eff_variations.append(
-    #     AddWeight("CMS_eff_xtrigger_emb_mt_Run2016", "xtrg_mt_eff_weight",
-    #               Weight("(1.054*(pt_1<=23)+1.0*(pt_1>23))", "xtrg_mt_eff_weight"), "Up"))
-    # lep_trigger_eff_variations.append(
-    #     AddWeight("CMS_eff_xtrigger_emb_mt_Run2016", "xtrg_mt_eff_weight",
-    #               Weight("(0.946*(pt_1<=23)+1.0*(pt_1>23))", "xtrg_mt_eff_weight"), "Down"))
-    # for variation in lep_trigger_eff_variations:
-    #     for process_nick in ["EMB"]:
-    #         if "mt" in [args.gof_channel] + args.channels:
-    #             systematics.add_systematic_variation(
-    #                 variation=variation,
-    #                 process=mt_processes[process_nick],
-    #                 channel=mt,
-    #                 era=era)
 
->>>>>>> ml/out -> output/ml
     # # Zll reweighting !!! replaced by log normal uncertainties: CMS_eFakeTau_Run2016 15.5%; CMS_mFakeTau_Run2016 27.2%
     # '''zll_et_weight_variations = []
     # zll_et_weight_variations.append(
@@ -1453,6 +1430,14 @@ def main(args):
         Weight("em_qcd_osss_0jet_shapedown_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
         "Down"))
 
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_1jet_rate_Run2016", "qcd_weight",
+        Weight("em_qcd_osss_1jet_rateup_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        "Up"))
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_1jet_rate_Run2016", "qcd_weight",
+        Weight("em_qcd_osss_1jet_ratedown_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        "Down"))
     qcd_variations.append(ReplaceWeight(
         "CMS_htt_qcd_1jet_shape_Run2016", "qcd_weight",
         Weight("em_qcd_osss_1jet_shapeup_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
