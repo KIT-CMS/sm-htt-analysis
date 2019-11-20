@@ -41,7 +41,7 @@ JETFAKES=1                  # options: 0, 1
 EMBEDDING=1                 # options: 0, 1
 DATACARDDIR=output/datacards/${ERA}-${TAG}-smhtt-ML/${STXS_SIGNALS}
 [ -d $DATACARDDIR ] || mkdir -p $DATACARDDIR
-./datacards/produce_datacard.sh ${ERA} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${TAG} ${CHANNELSARG}
+logandrun ./datacards/produce_datacard.sh ${ERA} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${TAG} ${CHANNELSARG}
 
 # Combine datacards
 # The following line combines datacards of different eras.
@@ -51,20 +51,20 @@ DATACARDDIR=output/datacards/${ERA}-${TAG}-smhtt-ML/${STXS_SIGNALS}
 
 # Build workspace
 STXS_FIT="inclusive"        # options: stxs_stage0, stxs_stage1p1, inclusive
-./datacards/produce_workspace.sh $ERA $STXS_FIT $TAG | tee ${ERA}_produce_workspace_${STXS_FIT}.log
+logandrun ./datacards/produce_workspace.sh $ERA $STXS_FIT $TAG | tee ${ERA}_produce_workspace_${STXS_FIT}.log
 
 # Run statistical inference
 #./combine/significance.sh $ERA | tee ${ERA}_significance.log
-#./combine/signal_strength.sh $ERA $STXS_FIT $DATACARDDIR/cmb/125 cmb ${TAG}
-# ./combine/signal_strength.sh $ERA "robustHesse" $DATACARDDIR/cmb/125 cmb ${TAG}
-# ./combine/diff_nuisances.sh $ERA
+logandrun ./combine/signal_strength.sh $ERA $STXS_FIT $DATACARDDIR/cmb/125 cmb ${TAG}
+logandrun ./combine/signal_strength.sh $ERA $STXS_FIT $DATACARDDIR/cmb/125 cmb ${TAG} "robustHesse"
+ ./combine/diff_nuisances.sh $ERA
 #./combine/nuisance_impacts.sh $ERA
 
 # Make prefit and postfit shapes
 
-./combine/prefit_postfit_shapes.sh ${ERA} ${STXS_FIT} ${DATACARDDIR}/cmb/125 ${TAG}
+logandrun ./combine/prefit_postfit_shapes.sh ${ERA} ${STXS_FIT} ${DATACARDDIR}/cmb/125 ${TAG}
 EMBEDDING=1
 JETFAKES=1
-./plotting/plot_shapes.sh $ERA $TAG ${CHANNELSARG} $STXS_SIGNALS $STXS_FIT $CATEGORIES $JETFAKES $EMBEDDING
+logandrun ./plotting/plot_shapes.sh $ERA $TAG ${CHANNELSARG} $STXS_SIGNALS $STXS_FIT $CATEGORIES $JETFAKES $EMBEDDING
 
 #./plotting/plot_signals.sh $ERA $STXS_SIGNALS $CATEGORIES $CHANNELS
