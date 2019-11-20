@@ -150,9 +150,9 @@ def main(args):
     # Channels and processes
     # yapf: disable
     directory = args.directory
-    et_friend_directory = []#args.et_friend_directory
-    mt_friend_directory = []#args.mt_friend_directory
-    tt_friend_directory = []#args.tt_friend_directory
+    et_friend_directory = args.et_friend_directory
+    mt_friend_directory = args.mt_friend_directory
+    tt_friend_directory = args.tt_friend_directory
     em_friend_directory = args.em_friend_directory
     ff_friend_directory = args.fake_factor_friend_directory
     mt = MTSM2016()
@@ -176,7 +176,7 @@ def main(args):
         "VH125"    : Process("VH125",    VHEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
         "WH125"    : Process("WH125",    WHEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
         "ZH125"    : Process("ZH125",    ZHEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
-        # "ttH125"   : Process("ttH125",   ttHEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
+        "ttH125"   : Process("ttH125",   ttHEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
 
         "ggHWW125" : Process("ggHWW125", ggHWWEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         "qqHWW125" : Process("qqHWW125", qqHWWEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
@@ -490,7 +490,7 @@ def main(args):
 
     # yapf: enable
      # Nominal histograms
-    signal_nicks = ["WH125", "ZH125", "VH125"]
+    signal_nicks = ["WH125", "ZH125", "VH125", "ttH125"]
     ww_nicks = ["ggHWW125", "qqHWW125"] # TODO add gghWW
     if args.gof_channel == None:
         signal_nicks += [ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict] + [qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict] + ww_nicks
