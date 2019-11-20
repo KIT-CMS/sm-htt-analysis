@@ -150,9 +150,9 @@ def main(args):
     # Channels and processes
     # yapf: disable
     directory = args.directory
-    et_friend_directory = args.et_friend_directory
-    mt_friend_directory = args.mt_friend_directory
-    tt_friend_directory = args.tt_friend_directory
+    et_friend_directory = []#args.et_friend_directory
+    mt_friend_directory = []#args.mt_friend_directory
+    tt_friend_directory = []#args.tt_friend_directory
     em_friend_directory = args.em_friend_directory
     ff_friend_directory = args.fake_factor_friend_directory
     mt = MTSM2016()
@@ -176,7 +176,7 @@ def main(args):
         "VH125"    : Process("VH125",    VHEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
         "WH125"    : Process("WH125",    WHEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
         "ZH125"    : Process("ZH125",    ZHEstimation        (era, directory, mt, friend_directory=mt_friend_directory)),
-        "ttH125"   : Process("ttH125",   ttHEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
+        # "ttH125"   : Process("ttH125",   ttHEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
 
         "ggHWW125" : Process("ggHWW125", ggHWWEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
         "qqHWW125" : Process("qqHWW125", qqHWWEstimation       (era, directory, mt, friend_directory=mt_friend_directory)),
@@ -232,7 +232,7 @@ def main(args):
     et_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, et, [et_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], et_processes["data"], friend_directory=et_friend_directory+[ff_friend_directory]))
 
     et_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, et, [et_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL"]], et_processes["data"], extrapolation_factor=1.17))
-    et_processes["QCDEMB"] = Process("QCDEMB", QCDEstimation_SStoOS_MTETEM(era, directory, et, [mt_processes[process] for process in ["EMB", "ZL", "ZJ", "W", "TTJ", "TTL", "VVJ", "VVL"]], et_processes["data"], extrapolation_factor=1.17))
+    et_processes["QCDEMB"] = Process("QCDEMB", QCDEstimation_SStoOS_MTETEM(era, directory, et, [et_processes[process] for process in ["EMB", "ZL", "ZJ", "W", "TTJ", "TTL", "VVJ", "VVL"]], et_processes["data"], extrapolation_factor=1.17))
 
 
 
@@ -269,7 +269,7 @@ def main(args):
     tt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationTT(era, directory, tt, [tt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], tt_processes["data"], friend_directory=tt_friend_directory+[ff_friend_directory]))
 
     tt_processes["QCD"] = Process("QCD", QCDEstimationTT(era, directory, tt, [tt_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL"]], tt_processes["data"]))
-    tt_processes["QCDEMB"] = Process("QCDEMB", QCDEstimation_SStoOS_MTETEM(era, directory, tt, [mt_processes[process] for process in ["EMB", "ZL", "ZJ", "W", "TTJ", "TTL", "VVJ", "VVL"]], tt_processes["data"], extrapolation_factor=1.17))
+    # tt_processes["QCDEMB"] = Process("QCDEMB", QCDEstimation_SStoOS_MTETEM(era, directory, tt, [tt_processes[process] for process in ["EMB", "ZL", "ZJ", "W", "TTJ", "TTL", "VVJ", "VVL"]], tt_processes["data"], extrapolation_factor=1.17))
 
     em = EMSM2016()
     if args.QCD_extrap_fit:
@@ -490,7 +490,7 @@ def main(args):
 
     # yapf: enable
      # Nominal histograms
-    signal_nicks = ["WH125", "ZH125", "VH125", "ttH125"]
+    signal_nicks = ["WH125", "ZH125", "VH125"]
     ww_nicks = ["ggHWW125", "qqHWW125"] # TODO add gghWW
     if args.gof_channel == None:
         signal_nicks += [ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict] + [qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict] + ww_nicks
@@ -1395,7 +1395,7 @@ def main(args):
                     "CMS_%s" % (systematic_shift.format(ch='_tt', shift="").replace("_dm0", "")),
                     "fake_factor",
                     Weight(
-                        "(0.5*ff1_{syst}*(byTightIsolationMVArun2017v2DBoldDMwLT2017_1<0.5)+0.5*ff2_{syst}*(byTightIsolationMVArun2017v2DBoldDMwLT2017_2<0.5))".
+                        "(0.5*ff1_{syst}*(byTightDeepTau2017v2p1VSjet_1<0.5)+0.5*ff2_{syst}*(byTightDeepTau2017v2p1VSjet_2<0.5))".
                         format(
                             syst=systematic_shift.format(
                                 ch="", shift="_%s" % shift_direction.lower())

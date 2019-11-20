@@ -1412,7 +1412,7 @@ def main(args):
                     "CMS_%s" % (systematic_shift.format(ch='_tt', shift="").replace("_dm0", "")),
                     "fake_factor",
                     Weight(
-                        "(0.5*ff1_{syst}*(byTightIsolationMVArun2017v2DBoldDMwLT2017_1<0.5)+0.5*ff2_{syst}*(byTightIsolationMVArun2017v2DBoldDMwLT2017_2<0.5))".
+                        "(0.5*ff1_{syst}*(byTightDeepTau2017v2p1VSjet_1<0.5)+0.5*ff2_{syst}*(byTightDeepTau2017v2p1VSjet_2<0.5))".
                         format(
                             syst=systematic_shift.format(
                                 ch="", shift="_%s" % shift_direction.lower())
