@@ -28,5 +28,5 @@ fi
 
 mkdir -p $outdir
 
-logandrun python htt-ml/training/keras_training.py $outdir/dataset_config.yaml 0
-logandrun python htt-ml/training/keras_training.py $outdir/dataset_config.yaml 1
+logandrun python htt-ml/training/keras_training.py $outdir/dataset_config.yaml 0 --balance-batches True
+logandrun python htt-ml/training/keras_training.py $outdir/dataset_config.yaml 1 --balance-batches True
