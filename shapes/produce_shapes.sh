@@ -1,15 +1,21 @@
 #!/bin/bash
-
-BINNING=shapes/binning.yaml
+set -e
 ERA=$1
-CHANNELS=${@:2}
+CHANNELS=$2
+TAG=$3
+[[ ! -z $4 ]] && PWD=$4 || PWD=$( pwd  )
+BINNING=shapes/binning.yaml
+cd $PWD
 
+export LCG_RELEASE=95
 source utils/setup_cvmfs_sft.sh
+
 source utils/setup_python.sh
-source utils/setup_samples.sh $ERA
+source utils/setup_samples.sh $ERA $TAG
+source utils/bashFunctionCollection.sh
 
 # Produce shapes
-python shapes/produce_shapes_$ERA.py \
+logandrun python shapes/produce_shapes_$ERA.py \
     --directory $ARTUS_OUTPUTS \
     --et-friend-directory $ARTUS_FRIENDS_ET \
     --em-friend-directory $ARTUS_FRIENDS_EM \
@@ -18,10 +24,10 @@ python shapes/produce_shapes_$ERA.py \
     --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
+    --tag ${TAG} \
     --channels $CHANNELS \
     --era $ERA \
-    --tag $ERA \
-    --num-threads 32
+    --num-threads 10
 
 # Normalize fake-factor shapes to nominal
-python fake-factor-application/normalize_shifts.py ${ERA}_shapes.root
+logandrun python fake-factor-application/normalize_shifts.py output/shapes/${ERA}-${TAG}-${CHANNELS}-shapes.root

@@ -9,7 +9,7 @@ import ROOT
 import argparse
 import copy
 import yaml
-
+import distutils.util
 import logging
 logger = logging.getLogger("")
 
@@ -29,6 +29,7 @@ def parse_arguments():
         required=True,
         help="Channels")
     parser.add_argument("-e", "--era", type=str, required=True, help="Era")
+    parser.add_argument("-o", "--outputfolder", type=str, required=True, help="...yourself")
     parser.add_argument(
         "-i",
         "--input",
@@ -60,6 +61,16 @@ def parse_arguments():
         action="store_true",
         help="Fake factor estimation method used")
     parser.add_argument(
+        "--train-emb",
+        type=lambda x:bool(distutils.util.strtobool(x)),
+        default=True,
+        help="Use fake factor training category")
+    parser.add_argument(
+        "--train-ff",
+        type=lambda x:bool(distutils.util.strtobool(x)),
+        default=True,
+        help="Use fake factor training category")
+    parser.add_argument(
         "--chi2test",
         action="store_true",
         help="Print chi2/ndf result in upper-right of subplot")
@@ -82,6 +93,7 @@ def setup_logging(output_file, level=logging.DEBUG):
 
 def main(args):
     stxs_stage1p1_cats = [str(100+i) for i in range(4)] + [str(200+i) for i in range(4)]
+    print(args)
     if args.gof_variable != None:
         channel_categories = {
             "et": ["300"],
@@ -97,9 +109,21 @@ def main(args):
             "mt": ["12", "15", "11", "13", "14", "16"],
             #"tt": ["ztt", "noniso", "misc"]
             "tt": ["12", "17", "16"],
-            #"em": ["12", "13", "14", "16", "18", "19"]
+            #"em": ["ztt", "tt", "ss", "misc", "db"]
             "em": ["12", "13", "14", "16", "19"]
         }
+        if args.train_emb: #swap ztt for embedding
+            for chn in ["em","mt","et","tt"]:
+                channel_categories[chn].remove("12")
+                channel_categories[chn].append("20")
+        if args.train_ff:
+            for chn in ["mt","et","tt"]: # no change for em
+                if chn == "tt":
+                    channel_categories[chn].remove("17")
+                else:
+                    channel_categories[chn].remove("11")
+                    channel_categories[chn].remove("14")
+                channel_categories[chn].append("21") # add ff
         if args.categories == "stxs_stage0":
             for channel in ["et", "mt", "tt", "em"]:
                 channel_categories[channel] += ["1", "2"]
@@ -141,7 +165,9 @@ def main(args):
             "14": "qcd",
             "16": "misc",
             "17": "qcd",
-            "19": "diboson"
+            "19": "diboson",
+            "20": "Genuine #tau",
+            "21": "Jet #rightarrow #tau_{h}"
         }
     if args.linear == True:
         split_value = 0
@@ -181,7 +207,7 @@ def main(args):
     else:
         logger.critical("Era {} is not implemented.".format(args.era))
         raise Exception
-
+    print(channel_categories)
     plots = []
     for channel in args.channels:
         for category in channel_categories[channel]:
@@ -255,6 +281,7 @@ def main(args):
 
             # get observed data and total background histograms
             # NOTE: With CMSSW_8_1_0 the TotalBkg definition has changed.
+            print("plot.add_hist(rootfile.get("+era+", "+channel+", "+category+', "data_obs")')
             plot.add_hist(
                 rootfile.get(era, channel, category, "data_obs"), "data_obs")
             total_bkg = rootfile.get(era, channel, category, "TotalBkg")
@@ -454,7 +481,7 @@ def main(args):
 
             # save plot
             postfix = "prefit" if "prefit" in args.input else "postfit" if "postfit" in args.input else "undefined"
-            plot.save("%s_plots/%s_%s_%s_%s.%s" % (args.era, args.era, channel, args.gof_variable if args.gof_variable is not None else category, postfix, "png" if args.png else "pdf"))
+            plot.save("%s/%s_%s_%s_%s.%s" % (args.outputfolder, args.era, channel, args.gof_variable if args.gof_variable is not None else category, postfix, "png" if args.png else "pdf"))
             plots.append(
                 plot
             )  # work around to have clean up seg faults only at the end of the script

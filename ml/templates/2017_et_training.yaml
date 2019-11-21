@@ -1,10 +1,6 @@
-# Training datasets for different folds
-datasets:
-    - ml/2017_et/fold0_training_dataset.root
-    - ml/2017_et/fold1_training_dataset.root
 
 # Base path for all output files
-output_path: ml/2017_et
+
 
 # Define classes based on tree names in dataset file
 classes:
@@ -64,3 +60,4 @@ model:
     epochs: 100000
     early_stopping: 50
     save_best_only: true
+    steps_per_epoch: 1000

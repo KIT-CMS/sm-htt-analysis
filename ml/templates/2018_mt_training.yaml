@@ -1,12 +1,12 @@
 class_weights:
-  ggh: 191.4583769068112
-  misc: 55.538791940478944
-  qqh: 1549.1761839898736
-  ss: 5.582443648692467
-  tt: 15.188188568663193
-  w: 5.736539094478119
-  zll: 16.768407504004394
-  ztt: 2.0112822968604043
+  ggh: 11.330266232321177
+  misc: 62.327626898120435
+  qqh: 81.9131136606347
+  ss: 7.8140118355592225
+  tt: 16.105234971450596
+  w: 6.94188662581963
+  zll: 19.407357883911818
+  ztt: 2.008670388602055
 classes:
 - ggh
 - qqh
@@ -16,9 +16,6 @@ classes:
 - tt
 - ss
 - misc
-datasets:
-- ml/2016_mt/fold0_training_dataset.root
-- ml/2016_mt/fold1_training_dataset.root
 event_weights: training_weight
 global_weight_scale: 1.0
 model:
@@ -27,7 +24,7 @@ model:
   epochs: 100000
   name: smhtt_dropout_tanh
   save_best_only: true
-output_path: ml/2016_mt
+  steps_per_epoch: 1000
 preprocessing: standard_scaler
 seed: 1234
 train_test_split: 0.75

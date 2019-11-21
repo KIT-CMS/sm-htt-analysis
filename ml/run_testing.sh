@@ -1,10 +1,16 @@
 #!/bin/bash
+set -e
 
-ERA=$1
-CHANNEL=$2
+era=$1
+channel=$2
+tag=$3
+## is unset && then || else
+[[ -z $tag ]] && outdir=output/ml/${era}_${SELCHANNEL} ||  outdir=output/ml/${era}_${channel}_${tag}
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
+source utils/bashFunctionCollection.sh
+
 
 export KERAS_BACKEND=tensorflow
 export OMP_NUM_THREADS=12
@@ -15,50 +21,48 @@ then
     source utils/setup_cuda.sh
 fi
 
-mkdir -p ml/${ERA}_${CHANNEL}
-
 # Confusion matrices
 TEST_CONFUSION_MATRIX=1
 if [ -n "$TEST_CONFUSION_MATRIX" ]; then
-python htt-ml/testing/keras_confusion_matrix.py \
-    ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 0
+logandrun python htt-ml/testing/keras_confusion_matrix.py \
+    $outdir/dataset_config.yaml ml/templates/${era}_${channel}_testing.yaml 0
 
-python htt-ml/testing/keras_confusion_matrix.py \
-    ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 1
+logandrun python htt-ml/testing/keras_confusion_matrix.py \
+    $outdir/dataset_config.yaml ml/templates/${era}_${channel}_testing.yaml 1
 fi
 
 # Taylor analysis (1D)
 export KERAS_BACKEND=tensorflow
 TEST_TAYLOR_1D=1
 if [ -n "$TEST_TAYLOR_1D" ]; then
-python htt-ml/testing/keras_taylor_1D.py \
-    ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 0
+logandrun python htt-ml/testing/keras_taylor_1D.py \
+    $outdir/dataset_config.yaml ml/templates/${era}_${channel}_testing.yaml 0
 
-python htt-ml/testing/keras_taylor_1D.py \
-    ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 1
+logandrun python htt-ml/testing/keras_taylor_1D.py \
+    $outdir/dataset_config.yaml ml/templates/${era}_${channel}_testing.yaml 1
 fi
 
 # Taylor analysis (ranking)
 export KERAS_BACKEND=tensorflow
 #TEST_TAYLOR_RANKING=1
 if [ -n "$TEST_TAYLOR_RANKING" ]; then
-python htt-ml/testing/keras_taylor_ranking.py \
-    ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 0
+logandrun python htt-ml/testing/keras_taylor_ranking.py \
+    $outdir/dataset_config.yaml ml/templates/${era}_${channel}_testing.yaml 0
 
-python htt-ml/testing/keras_taylor_ranking.py \
-    ml/${ERA}_${CHANNEL}_training.yaml ml/${ERA}_${CHANNEL}_testing.yaml 1
+logandrun python htt-ml/testing/keras_taylor_ranking.py \
+    $outdir/dataset_config.yaml ml/templates/${era}_${channel}_testing.yaml 1
 fi
 
 # Make plots combining goodness of fit and Taylor ranking
 #TEST_PLOT_COMBINED_GOF_TAYLOR=1
 if [ -n "$TEST_PLOT_COMBINED_GOF_TAYLOR" ]; then
     for IFOLD in 0 1; do
-        python ml/plot_combined_taylor_gof.py \
-            ${ERA} \
-            ml/${ERA}_${CHANNEL}/fold${IFOLD}_keras_taylor_ranking.yaml \
+        logandrun python ml/plot_combined_taylor_gof.py \
+            ${era} \
+            $outdir/fold${IFOLD}_keras_taylor_ranking.yaml \
             /path/to/gof/result/dir/ \
-            ${CHANNEL} \
+            ${channel} \
             ${IFOLD} \
-            ml/${ERA}_${CHANNEL}/
+            ml/${era}_${channel}/
     done
 fi

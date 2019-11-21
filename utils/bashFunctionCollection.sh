@@ -5,26 +5,29 @@ function overridePar() {
     val=$3
     if [[ "" = $( grep -e "$arg" $file ) ]]; then
         logerror $arg is not in $file
-        exit 2
+        return 2
     fi
     if [[ $( grep -e "(^|\s|--)$arg" $file | grep -c . ) >1 ]]; then
         logerror $arg appears multiple times in $file, aborting.
-        exit 2
+        return 2
     fi
     sed -i -E "s@(^|\s|--)$arg(\s+|=)\w+@\1$arg\2$val@" $file
 }
 function getPar() {
     file=$1
     arg=$2
-    if [[ "" = $( grep -e "$arg" $file ) ]]; then
+    lines=$( grep -E "(^|\s|--)$arg" $file  )
+    nlines=$( echo $lines | grep -c . )
+
+    if [[ $nlines == 0 ]]; then
         logerror $arg is not in $file
-        exit 2
+        return 2
     fi
-    if [[ $( grep -e $arg $file | grep -c . ) >1 ]]; then
+    if [[ $nlines >1 ]]; then
         logerror $arg appears multiple times in $file, aborting.
-        exit 2
+        return 2
     fi
-    grep -e  "$arg" $file | sed -r "s@.*$arg(\s+|=)(\w+).*@\2@"
+    echo $lines | sed -E "s@(^|\s|--)($arg)(\s+|=)(\w+).*@\4@"
 }
 
 function updateSymlink() {
@@ -36,28 +39,55 @@ function updateSymlink() {
         [[ -d $target ]] && rmdir $target
         ln -sn $source $target
     elif [[ -f $source ]]; then
-        [[ -f $target ]]  && rm $target
+        [[ -f $target || -L $target ]]  && rm $target
         ln -s $source $target
     else
         logerror "Invalid source: $source"
-        exit 1
+        return 1
     fi
 
 }
+function condwait(){
+    if [[ $(jobs | wc -l ) -gt 12 ]]; then
+        wait
+    fi
+}
 
 function recommendCPUs() {
-    freecpus=$(top -bn1 | grep "Cpu(s)" | sed -E "s/.* ([0-9.]+)(%| )id.*/\1/" )
+    avUsage=$(grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage}')
     ncpus=$(($(grep 'cpu' /proc/stat | wc -l)-1))
-    echo $freecpus $ncpus | awk '{print int($1/100*$2*.7)}'
+    echo $avUsage $ncpus | awk '{print int((1-$1/100)*$2*.7)}'
 }
 
 
 function loginfo {
-    echo -e "\e[42m[INFO]\e[0m" $( date +"%y-%m-%d %R" ): $@
+    echo -e "\e[46m[INFO]\e[0m" $( date +"%y-%m-%d %R" ): $@
 }
 function logwarn {
     echo -e "\e[45m[WARN]\e[0m" $( date +"%y-%m-%d %R" ): $@
 }
 function logerror {
     echo -e "\e[41m[ERROR]\e[0m" $( date +"%y-%m-%d %R" ): $@
+}
+function logandrun() {
+    echo -e "\e[43m[RUN]\e[0m" $( date +"%y-%m-%d %R" ): $@
+    start=`date +%s`
+    $@
+    return_code=$?
+    end=`date +%s`
+    if [[ $return_code == 0 ]]; then
+        echo -e "\e[42m[COMPLETE]\e[0m" $( date +"%y-%m-%d %R" ): $@ "     \e[104m{$((end-start))s}\e[0m"
+    else
+        logerror Error Code $return_code  $@ "     \e[104m{$((end-start))s}\e[0m"
+    fi
+    return $return_code
+}
+function ensureoutdirs() {
+    [[ -d output ]] || mkdir output
+    pushd output
+    for folder in datacards  log  plots  shapes ml signalStrength; do
+        [[ ! -d $folder ]] && mkdir $folder
+    done
+    [[ -d log/condorShapes ]] || mkdir log/condorShapes
+    popd
 }

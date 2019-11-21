@@ -1,10 +1,9 @@
 universe = docker
 docker_image = mschnepf/slc6-condocker
-executable = batch_shapes.sh
-output = out/$(Process).out
-error = error/$(Process).err
-log = log/$(Process).log
-getenv = True
+executable = shapes/produce_shapes.sh
+output = output/log/condorShapes/$(Process).out
+error = output/log/condorShapes/$(Process).err
+log = output/log/condorShapes/$(Process).log
 Requirements = ( (Target.ProvidesCPU == True) && (TARGET.ProvidesEKPResources == True ) )
 +RequestWalltime = 36000
 +ExperimentalJob = True
@@ -12,4 +11,4 @@ RequestMemory = 20000
 request_disk = 204800
 RequestCpus = 12
 accounting_group = cms.higgs
-queue arguments from arguments.txt
+queue arguments from condor_jobs/arguments.txt

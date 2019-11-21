@@ -1,57 +1,106 @@
 #!/bin/bash
-set -e 
+set -e
+
+if uname -a | grep ekpdeepthought
+then
+    #source /cvmfs/sft.cern.ch/lcg/views/LCG_94/x86_64-ubuntu1604-gcc54-opt/setup.sh
+    #source /cvmfs/sft.cern.ch/lcg/views/LCG_95/x86_64-ubuntu1804-gcc8-opt/setup.sh
+    echo "Not possible here, use another machine"
+    exit 1
+fi
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
+source utils/bashFunctionCollection.sh
+
+IFS=',' read -r -a eras <<< $1
+IFS=',' read -r -a channels <<< $2
+if [[ -z $3 ]]; then
+    tags=("default")
+else
+IFS=',' read -r -a tags <<< $3
+fi
 
 function run_procedure() {
-    SELERA=$1
-    SELCHANNEL=$2
-    source utils/setup_samples.sh $SELERA
-    mkdir -p ml/${SELERA}_${SELCHANNEL}
+    set -e
+    ERA=$1
+    CHANNEL=$2
+    TAG=$3
+    tauEstimation=emb
+    jetEstimation=ff
+    if [[ $TAG == *"mc_"* ]]; then
+        tauEstimation=mc
+    fi
+    if [[ $TAG == *"_mc"* ]]; then
+        jetEstimation=mc
+    fi
+    source utils/setup_samples.sh $ERA $TAG
+    [[ -z $TAG ]] && outdir=output/ml/${ERA}_${CHANNEL} ||  outdir=output/ml/${ERA}_${CHANNEL}_${TAG}
+    mkdir -p $outdir
 
     ARTUS_FRIENDS=""
-    if [ ${SELCHANNEL} == 'mt' ]
+    if [ ${CHANNEL} == 'mt' ]
     then
-        ARTUS_FRIENDS=${ARTUS_FRIENDS_MT}
+        ARTUS_FRIENDS="${ARTUS_FRIENDS_MT} $ARTUS_FRIENDS_FAKE_FACTOR"
     fi
-    if [ ${SELCHANNEL} == 'et' ]
+    if [ ${CHANNEL} == 'et' ]
     then
-        ARTUS_FRIENDS=${ARTUS_FRIENDS_ET}
+        ARTUS_FRIENDS="${ARTUS_FRIENDS_ET} $ARTUS_FRIENDS_FAKE_FACTOR"
     fi
-    if [ ${SELCHANNEL} == 'tt' ]
+    if [ ${CHANNEL} == 'tt' ]
     then
-        ARTUS_FRIENDS=${ARTUS_FRIENDS_TT}
+        ARTUS_FRIENDS="${ARTUS_FRIENDS_TT} $ARTUS_FRIENDS_FAKE_FACTOR"
     fi
-    if [ ${SELCHANNEL} == 'em' ]
+    if [ ${CHANNEL} == 'em' ]
     then
         ARTUS_FRIENDS=${ARTUS_FRIENDS_EM}
     fi
     # Write dataset config
-    python ml/write_dataset_config.py \
-        --era ${SELERA} \
-        --channel ${SELCHANNEL} \
-        --base-path $ARTUS_OUTPUTS \
-        --friend-paths $ARTUS_FRIENDS \
-        --database $KAPPA_DATABASE \
-        --output-path $PWD/ml/${SELERA}_${SELCHANNEL} \
-        --output-filename training_dataset.root \
-        --tree-path ${SELCHANNEL}_nominal/ntuple \
-        --event-branch event \
-        --training-weight-branch training_weight \
-        --training-z-estimation-method mc \
-        --output-config ml/${SELERA}_${SELCHANNEL}/dataset_config.yaml
+     logandrun python ml/write_dataset_config.py \
+         --era ${ERA} \
+         --channel ${CHANNEL} \
+         --base-path $ARTUS_OUTPUTS \
+         --friend-paths $ARTUS_FRIENDS \
+         --database $KAPPA_DATABASE \
+         --output-path $outdir \
+         --output-filename training_dataset.root \
+         --tree-path ${CHANNEL}_nominal/ntuple \
+         --event-branch event \
+         --training-weight-branch training_weight \
+         --training-z-estimation-method $tauEstimation \
+         --training-jetfakes-estimation-method $jetEstimation \
+         --output-config $outdir/dataset_config.yaml
 
     # Create dataset files from config
-    ./htt-ml/dataset/create_training_dataset.py ml/${SELERA}_${SELCHANNEL}/dataset_config.yaml
+     logandrun ./htt-ml/dataset/create_training_dataset.py $outdir/dataset_config.yaml
 
-    # Reweight STXS stage 1 signals so that each stage 1 signal is weighted equally but
-    # conserve the overall weight of the stage 0 signal
-    #python ml/reweight_stxs_stage1.py \
-    #    ml/${SELERA}_${SELCHANNEL} \
-    #    ml/${SELERA}_${SELCHANNEL}/fold0_training_dataset.root \
-    #    ml/${SELERA}_${SELCHANNEL}/fold1_training_dataset.root
+    #  Reweight STXS stage 1 signals so that each stage 1 signal is weighted equally but
+    #  conserve the overall weight of the stage 0 signal
+    #  python ml/reweight_stxs_stage1.py \
+    #     $outdir \
+    #     $outdir/fold0_training_dataset.root \
+    #     $outdir/fold1_training_dataset.root
+
+     # split the dataset
+     logandrun hadd -f $outdir/combined_training_dataset.root \
+         $outdir/fold0_training_dataset.root \
+         $outdir/fold1_training_dataset.root
+
+    logandrun python ./ml/sum_training_weights.py \
+        --era ${ERA} \
+        --channel ${CHANNEL} \
+        --dataset $outdir/combined_training_dataset.root \
+        --dataset-config-file "$outdir/dataset_config.yaml" \
+        --training-template "ml/templates/${ERA}_${CHANNEL}_training.yaml" \
+        --channel $CHANNEL \
+        --write-weights True
+
 }
 
-source utils/multirun.sh
-genArgsAndRun run_procedure $@
+for tag in ${tags[@]}; do
+    for era in ${eras[@]}; do
+        for channel in ${channels[@]}; do
+            run_procedure $era $channel $tag
+        done
+    done
+done
