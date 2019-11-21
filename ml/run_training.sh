@@ -24,9 +24,22 @@ else
 fi
 
 
+<<<<<<< HEAD
 [[ -z $tag ]] && outdir=output/ml/${ERA}_${CHANNEL} || outdir=output/ml/${ERA}_${CHANNEL}_${tag}
 
 mkdir -p $outdir
 
 logandrun python htt-ml/training/keras_training.py $outdir/dataset_config.yaml 0 --balance-batches True
 logandrun python htt-ml/training/keras_training.py $outdir/dataset_config.yaml 1 --balance-batches True
+=======
+if [[ $ERA == *"all"* ]]
+then
+  mkdir -p ml/all_eras_$CHANNEL
+  python htt-ml/training/keras_training.py ml/all_eras_training_${CHANNEL}.yaml 0 --balance-batches 1 --conditional 1
+  python htt-ml/training/keras_training.py ml/all_eras_training_${CHANNEL}.yaml 1 --balance-batches 1 --conditional 1
+else
+  mkdir -p ml/${ERA}_${CHANNEL}
+  python htt-ml/training/keras_training.py ml/${ERA}_${CHANNEL}_training.yaml 0
+  python htt-ml/training/keras_training.py ml/${ERA}_${CHANNEL}_training.yaml 1
+fi
+>>>>>>> Added conditional network setup and implemented switches

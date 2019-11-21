@@ -22,6 +22,7 @@ if [ ! -d "htt-ml/lwtnn" ]; then
     exit 1
 fi
 
+<<<<<<< HEAD
 [[ -z $tag ]] && outdir=output/ml/${ERA}_${CHANNEL} || outdir=output/ml/${ERA}_${CHANNEL}_${tag}
 for fold in 0 1;
 do
@@ -30,4 +31,26 @@ done
 
 echo "Created lwtnn .json files:"
 ls ${outdir}/*lwtnn.json -lrth
+=======
+if [[ $ERA == *"all"* ]]
+then
+  for fold in 0 1;
+  do
+      python3 htt-ml/lwtnn/converters/keras2json.py ml/all_eras_$CHANNEL/fold${fold}_keras_architecture.json  ml/all_eras_$CHANNEL/fold${fold}_keras_variables.json ml/all_eras_$CHANNEL/fold${fold}_keras_weights.h5 >  ml/all_eras_$CHANNEL/fold${fold}_lwtnn.json
+  done
+else
+  for fold in 0 1;
+  do
+      python3 htt-ml/lwtnn/converters/keras2json.py ml/${ERA}_${CHANNEL}/fold${fold}_keras_architecture.json  ml/${ERA}_${CHANNEL}/fold${fold}_keras_variables.json ml/${ERA}_${CHANNEL}/fold${fold}_keras_weights.h5 >  ml/${ERA}_${CHANNEL}/fold${fold}_lwtnn.json
+  done
+fi
+
+echo "Created lwtnn .json files:"
+if [[ $ERA == *"all"* ]]
+then
+  ls ml/all_eras_$CHANNEL/*lwtnn.json -lrth
+else
+  ls ml/${ERA}_${CHANNEL}/*lwtnn.json -lrth
+fi
+>>>>>>> Added conditional network setup and implemented switches
 exit $!

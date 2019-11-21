@@ -1,3 +1,4 @@
+<<<<<<< HEAD:ml/templates/2017_mt_training.yaml
 
 # Base path for all output files
 
@@ -14,23 +15,41 @@ classes:
     - misc
 
 # Set class weights
+=======
+>>>>>>> Added conditional network setup and implemented switches:ml/2017_mt_training.yaml
 class_weights:
-    ggh:  297.2
-    qqh:  2432.6
-    ztt: 2.7
-    zll: 18.2
-    w: 3.7
-    tt: 7.9
-    ss: 6.4
-    misc:  40.0
-
-# Define global scale factor, which is multiplied to all event weights
-global_weight_scale: 1.0
-
-# Set event weight variable
+  ggh: 299.8233359960128
+  misc: 32.22720506834981
+  qqh: 2454.0432286081095
+  ss: 6.475085662265225
+  tt: 7.943213505901027
+  w: 3.7258105403543786
+  zll: 18.38590891487261
+  ztt: 2.761604506500651
+classes:
+- ggh
+- qqh
+- ztt
+- zll
+- w
+- tt
+- ss
+- misc
+datasets:
+- ml/2017_mt/fold0_training_dataset.root
+- ml/2017_mt/fold1_training_dataset.root
 event_weights: training_weight
-
-# Define list of variables to be used for training
+global_weight_scale: 1.0
+model:
+  batch_size: 100
+  early_stopping: 50
+  epochs: 100000
+  name: smhtt_dropout_tanh
+  save_best_only: true
+output_path: ml/2017_mt
+preprocessing: standard_scaler
+seed: 1234
+train_test_split: 0.75
 variables:
 - pt_1
 - pt_2
@@ -43,6 +62,7 @@ variables:
 - jdeta
 - mjj
 - dijetpt
+<<<<<<< HEAD:ml/templates/2017_mt_training.yaml
 
 # Split of dataset in training and validation (in TMVA called training and testing)
 train_test_split: 0.75
@@ -61,3 +81,5 @@ model:
     early_stopping: 50
     save_best_only: true
     steps_per_epoch: 1000
+=======
+>>>>>>> Added conditional network setup and implemented switches:ml/2017_mt_training.yaml

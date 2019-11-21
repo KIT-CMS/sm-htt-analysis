@@ -19,6 +19,7 @@ CMSSW_*/
 plots/
 ml/2016_??
 ml/2017_??
+<<<<<<< HEAD
 ml/old
 ml/out
 output
@@ -29,3 +30,6 @@ tmp-*
 combine_logger.out
 docker_stderror
 .ipynb_checkpoints/
+=======
+.idea
+>>>>>>> Added conditional network setup and implemented switches
