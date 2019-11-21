@@ -1,22 +1,21 @@
 class_weights:
-  db: 18.04702194946015
-  ggh: 325.2065547835655
-  misc: 27.450102086245554
-  qqh: 2670.0693406141913
-  ss: 8.51917489984838
-  tt: 14.386620157694404
-  ztt: 1.393109470577024
+  ggh: 228.85898502808072
+  misc: 61.1182510138474
+  qqh: 1640.541310143928
+  ss: 5.300878072843851
+  tt: 16.21965087970577
+  w: 5.7352701002415065
+  zll: 7.344435244940444
+  ztt: 2.3932582547721872
 classes:
 - ggh
 - qqh
 - ztt
+- zll
+- w
 - tt
 - ss
 - misc
-- db
-datasets:
-- ml/2016_em/fold0_training_dataset.root
-- ml/2016_em/fold1_training_dataset.root
 event_weights: training_weight
 global_weight_scale: 1.0
 model:
@@ -25,25 +24,20 @@ model:
   epochs: 100000
   name: smhtt_dropout_tanh
   save_best_only: true
-output_path: ml/2016_em
+  steps_per_epoch: 1000
+
 preprocessing: standard_scaler
 seed: 1234
 train_test_split: 0.75
 variables:
 - pt_1
 - pt_2
-- eta_1
 - m_vis
 - ptvis
 - m_sv
-- ME_q2v1
-- ME_q2v2
-- bpt_1
 - nbtag
 - jpt_1
-- jpt_2
 - njets
 - jdeta
 - mjj
 - dijetpt
-- mTdileptonMET

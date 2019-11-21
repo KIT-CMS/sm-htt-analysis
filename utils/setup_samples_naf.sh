@@ -1,8 +1,9 @@
 #!/bin/bash
 
 ERA=$1
+TAG=$2
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source $DIR/setup_samples.sh $ERA
+source $DIR/setup_samples.sh $ERA $TAG
 
 basedir_naf="/nfs/dust/cms/group/higgs-kit/ekp"
 

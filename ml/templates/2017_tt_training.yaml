@@ -1,32 +1,22 @@
-# Training datasets for different folds
-datasets:
-    - ml/2017_mt/fold0_training_dataset.root
-    - ml/2017_mt/fold1_training_dataset.root
 
 # Base path for all output files
-output_path: ml/2017_mt
+
 
 # Define classes based on tree names in dataset file
 classes:
     - ggh
     - qqh
     - ztt
-    - zll
-    - w
-    - tt
-    - ss
+    - noniso
     - misc
 
 # Set class weights
 class_weights:
-    ggh:  297.2
-    qqh:  2432.6
-    ztt: 2.7
-    zll: 18.2
-    w: 3.7
-    tt: 7.9
-    ss: 6.4
-    misc:  40.0
+    ggh: 454.2
+    qqh: 2443.4
+    ztt: 11.2
+    noniso: 1.1
+    misc: 30.6
 
 # Define global scale factor, which is multiplied to all event weights
 global_weight_scale: 1.0
@@ -64,3 +54,4 @@ model:
     epochs: 100000
     early_stopping: 50
     save_best_only: true
+    steps_per_epoch: 1000

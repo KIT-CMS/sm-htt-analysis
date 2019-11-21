@@ -86,8 +86,17 @@ for iline in range(len(lines1)):
                         workl[index]=workl[index][1:]
     #merge diffs if match is empty
     for index,match in enumerate(workl):
-        if not isinstance(match,tuple) and match=="":
+        if not isinstance(match,tuple) and match=="" and index!=len(workl)-1:
+            # print index
+            # print [x for x in enumerate(workl)]
+            # try:
             workl[index-1]=(workl[index-1][0]+workl[index+1][0], workl[index-1][1]+workl[index+1][1])
+            # except IndexError:
+            #     exit(1)
+            # finally:
+            #     print index
+            #     print [x for x in enumerate(workl)]
+            #     print workl[index]
             workl[index+1]=("","")
 
 

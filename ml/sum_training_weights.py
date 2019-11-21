@@ -2,17 +2,28 @@
 
 import ROOT
 ROOT.PyConfig.IgnoreCommandLineOptions = True
-
 import argparse
-import yaml
 import logging
-logger = logging.getLogger("write_dataset_config")
+logger = logging.getLogger("sum_training_weights")
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
 formatter = logging.Formatter("%(name)s - %(levelname)s - %(message)s")
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
+### YAML + ORDERED DICT MAGIC
+from collections import OrderedDict
+import yaml
+from yaml import Loader, Dumper
+from yaml.representer import SafeRepresenter
+
+def dict_representer(dumper, data):
+   return dumper.represent_dict(data.iteritems())
+Dumper.add_representer(OrderedDict, dict_representer)
+
+def dict_constructor(loader, node):
+    return OrderedDict(loader.construct_pairs(node))
+Loader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, dict_constructor)
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Sum training weights of classes in training dataset.")
@@ -20,24 +31,27 @@ def parse_arguments():
     parser.add_argument("--channel", required=True, help="Analysis channel")
     parser.add_argument("--dataset", type=str,required=True, help="Training dataset.")
     parser.add_argument("--dataset-config-file", type=str,required=True, help="Specifies the config file created by ml/create_training_dataset.sh calling ml/write_dataset_config.py")
-    parser.add_argument("--write-weights", type=bool, default=False, help="Overwrite inverse weights to ml/$era_$channel_training.yaml")
+    parser.add_argument("--training-template", type=str,required=False, help="Specifies the config file setting the model, used variables...")
+    parser.add_argument("--write-weights", type=bool, default=True, help="Overwrite inverse weights to ml/$era_$channel_training.yaml")
     parser.add_argument( "--weight-branch", default="training_weight", type=str, help="Branch with weights.")
     return parser.parse_args()
 
 
-
-def readclasses(filename):
-    logger.debug("Parse config.")
-    confdict= yaml.load(open(filename, "r"))
-    return set([confdict["processes"][key]["class"] for key in confdict["processes"].keys()])
-
 def dictToString(exdict):
     return str(["{} : {}".format(key, value) for key, value in sorted(exdict.items(), key=lambda x: x[1])])
+
 
 def main(args):
     logger.info("Process training dataset %s.", args.dataset)
     f = ROOT.TFile(args.dataset)
-    classes=readclasses(args.dataset_config_file)
+
+    dsConfDict= yaml.load(open(args.dataset_config_file, "r"))
+    ### use the classes that have processes mapped to them
+    classes = set([dsConfDict["processes"][key]["class"] for key in dsConfDict["processes"].keys()])
+
+    if args.training_template == None:
+        args.training_template= "ml/templates/{}_{}_training.yaml".format(args.era, args.channel)
+    trainingTemplateDict=yaml.load(open(args.training_template, "r"))
 
     ### Weight Calculation
     counts = []
@@ -60,26 +74,66 @@ def main(args):
             "Class {} (sum, fraction, inverse): {:g}, {:g}, {:g}".format(
                 name, counts[i], counts[i] / sum_all, sum_all / counts[i]))
 
-    ### Writing calculated weight to "ml/{}_{}_training.yaml"
-    if args.write_weights:
-        training_config_filename="ml/{}_{}_training.yaml".format(args.era, args.channel)
-        training_config_dict=yaml.load(open(training_config_filename, "r"))
+    logger.info( "{}-{}: Class weights before update: {}".format(args.era, args.channel,dictToString(trainingTemplateDict["class_weights"])))
 
-        logger.info( "{}-{}: Class weights before update: {}".format(args.era, args.channel,dictToString(training_config_dict["class_weights"])))
+    newWeightsDict={}
+    for i, name in enumerate(classes):
+        newWeightsDict[name]=sum_all / counts[i]
 
+    ### Warning for big changes
+    if set(trainingTemplateDict["class_weights"].keys())==set(newWeightsDict.keys()):
         for i, name in enumerate(classes):
-            oldweight=training_config_dict["class_weights"][name]
-            newweight=sum_all / counts[i]
-            
-            ### Warning for big changes
+            oldweight=trainingTemplateDict["class_weights"][name]
+            newweight=newWeightsDict[name]
             if newweight/oldweight > 2 or newweight/oldweight < .5:
-                logger.warning( "{}-{}: Class weights for {} changing by more than a factor of 2".format(args.era, args.channel,name))
-            training_config_dict["class_weights"][name]=newweight
+                    logger.warning( "{}-{}: Class weights for {} changing by more than a factor of 2".format(args.era, args.channel,name))
+    else:
+        logger.warn("Training classes in {} and {} differ".format(args.dataset_config_file,args.training_template))
 
-        with open(training_config_filename,"w") as f:
-            yaml.dump(training_config_dict, f, default_flow_style=False)
+    ## Sort the clases, so testing plots/... are easierer to compare
+    priolist=["qqh","ggh","emb","ztt","tt","db","misc","zll","w","noniso","ss","ff"]
+    odDict=OrderedDict({})
+    for key in priolist:
+        if key in newWeightsDict:
+            odDict[key]=newWeightsDict[key]
+            del newWeightsDict[key]
+    ## add classes that are not in the priolist at the end
+    for key in newWeightsDict:
+        odDict[key]=newWeightsDict[key]
+    del newWeightsDict
 
-        logger.info( "{}-{}: Class weights after update: {}".format(args.era, args.channel,dictToString(training_config_dict["class_weights"])))
+    ###
+    # attach the weights dict with the classes to the dsConfDict
+    dsConfDict["classes"]=odDict.keys()
+    dsConfDict["class_weights"]=odDict
+
+
+    ############ Logic for merging the configs
+    if "classes" in trainingTemplateDict.keys():
+        if set(trainingTemplateDict["classes"])!=set(classes):
+            logger.warn("Training classes in {} and {} differ".format(args.dataset_config_file,args.training_template))
+        #exit 1
+
+    mergeddict=OrderedDict({})
+    ## check if there are relevant overwrites:
+    ## dsConfDict has priority over trainingTemplateDict
+    ## nothing that is provided by the write_dataset_config.py is overwritten
+    for d in [dsConfDict, trainingTemplateDict]:
+        for key in ["classes","class_weights"]+d.keys():
+            #if True:
+            # making sure processes appear at the end
+            if key not in ["processes"]:
+                if key in mergeddict and mergeddict[key]!=d[key]:
+                    logger.warn("Key overlap for key {}, {} should overwrite {}".format(key,d[key],mergeddict[key]))
+                else: mergeddict[key]=d[key]
+    mergeddict["processes"]=dsConfDict["processes"]
+    with open(mergeddict["output_path"]+"/dataset_config.yaml","w") as f:
+        yaml.dump(mergeddict, f,Dumper=Dumper, default_flow_style=False)
+
+    logger.info( "{}-{}: Dict after merge: without processes".format(args.era, args.channel))
+    print(dictToString({key: value for key, value in mergeddict.items() if key != "processes"}))
+
+    logger.info( "{}-{}: Class weights after update: {}".format(args.era, args.channel,dictToString(trainingTemplateDict["class_weights"])))
 
 if __name__ == "__main__":
     args = parse_arguments()
