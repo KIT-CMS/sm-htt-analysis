@@ -15,16 +15,24 @@ then
     source utils/setup_cuda.sh
 fi
 
-mkdir -p ml/all_eras_${CHANNEL}
+if [[ -z $3 ]]; then
+  tag="default"
+else
+  tag=$3
+fi
+
+[[ -z $tag ]] && outdir=output/ml/all_eras_${CHANNEL} ||  outdir=output/ml/all_eras_${CHANNEL}_${tag}
+
+mkdir -p ${outdir}
 
 # Confusion matrices
 TEST_CONFUSION_MATRIX=1
 if [ -n "$TEST_CONFUSION_MATRIX" ]; then
 python htt-ml/testing/keras_confusion_matrix.py \
-    ml/all_eras_training_${CHANNEL}.yaml ml/all_eras_testing_${CHANNEL}.yaml 0 $ERA
+    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${CHANNEL}.yaml 0 --era $ERA
 
 python htt-ml/testing/keras_confusion_matrix.py \
-    ml/all_eras_training_${CHANNEL}.yaml ml/all_eras_testing_${CHANNEL}.yaml 1 $ERA
+    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${CHANNEL}.yaml 1 --era $ERA
 fi
 
 # Taylor analysis (1D)
@@ -32,8 +40,8 @@ export KERAS_BACKEND=tensorflow
 TEST_TAYLOR_1D=1
 if [ -n "$TEST_TAYLOR_1D" ]; then
 python htt-ml/testing/keras_taylor_1D.py \
-    ml/all_eras_training_${CHANNEL}.yaml ml/all_eras_testing_${CHANNEL}.yaml 0 $ERA
+    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${CHANNEL}.yaml 0 --era $ERA
 
 python htt-ml/testing/keras_taylor_1D.py \
-    ml/all_eras_training_${CHANNEL}.yaml ml/all_eras_testing_${CHANNEL}.yaml 1 $ERA
+    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${CHANNEL}.yaml 1 --era $ERA
 fi

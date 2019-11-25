@@ -1,22 +1,3 @@
-<<<<<<< HEAD:ml/templates/2017_mt_training.yaml
-
-# Base path for all output files
-
-
-# Define classes based on tree names in dataset file
-classes:
-    - ggh
-    - qqh
-    - ztt
-    - zll
-    - w
-    - tt
-    - ss
-    - misc
-
-# Set class weights
-=======
->>>>>>> Added conditional network setup and implemented switches:ml/2017_mt_training.yaml
 class_weights:
   ggh: 299.8233359960128
   misc: 32.22720506834981
@@ -46,6 +27,7 @@ model:
   epochs: 100000
   name: smhtt_dropout_tanh
   save_best_only: true
+  steps_per_epoch: 1000
 output_path: ml/2017_mt
 preprocessing: standard_scaler
 seed: 1234
@@ -62,24 +44,3 @@ variables:
 - jdeta
 - mjj
 - dijetpt
-<<<<<<< HEAD:ml/templates/2017_mt_training.yaml
-
-# Split of dataset in training and validation (in TMVA called training and testing)
-train_test_split: 0.75
-
-# Define preprocessing
-preprocessing: standard_scaler
-
-# Set random seed for initialization of parameters and dataset splits
-seed: 1234
-
-# Define the model parameter
-model:
-    name: smhtt_dropout_tanh
-    batch_size: 100
-    epochs: 100000
-    early_stopping: 50
-    save_best_only: true
-    steps_per_epoch: 1000
-=======
->>>>>>> Added conditional network setup and implemented switches:ml/2017_mt_training.yaml

@@ -26,8 +26,8 @@ function run_procedure() {
     ERA=$1
     CHANNEL=$2
     TAG=$3
-    tauEstimation=emb
-    jetEstimation=ff
+    tauEstimation=mc
+    jetEstimation=mc
     if [[ $TAG == *"mc_"* ]]; then
         tauEstimation=mc
     fi
@@ -35,7 +35,16 @@ function run_procedure() {
         jetEstimation=mc
     fi
     source utils/setup_samples.sh $ERA $TAG
-    [[ -z $TAG ]] && outdir=output/ml/${ERA}_${CHANNEL} ||  outdir=output/ml/${ERA}_${CHANNEL}_${TAG}
+    if [[ $ERA == *"all"* ]]; then
+      [[ -z $TAG ]] && outdir=output/ml/all_eras_${CHANNEL} ||  outdir=output/ml/all_eras_${CHANNEL}_${TAG}
+      logandrun python ml/create_combined_config.py \
+                --tag ${TAG} \
+                --channel ${CHANNEL} \
+                --output_dir ${outdir}
+      exit
+    else
+      [[ -z $TAG ]] && outdir=output/ml/${ERA}_${CHANNEL} ||  outdir=output/ml/${ERA}_${CHANNEL}_${TAG}
+    fi
     mkdir -p $outdir
 
     ARTUS_FRIENDS=""

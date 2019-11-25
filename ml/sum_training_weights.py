@@ -33,7 +33,7 @@ def parse_arguments():
     parser.add_argument("--dataset-config-file", type=str,required=True, help="Specifies the config file created by ml/create_training_dataset.sh calling ml/write_dataset_config.py")
     parser.add_argument("--training-template", type=str,required=False, help="Specifies the config file setting the model, used variables...")
     parser.add_argument("--write-weights", type=bool, default=True, help="Overwrite inverse weights to ml/$era_$channel_training.yaml")
-    parser.add_argument( "--weight-branch", default="training_weight", type=str, help="Branch with weights.")
+    parser.add_argument("--weight-branch", default="training_weight", type=str, help="Branch with weights.")
     return parser.parse_args()
 
 
@@ -74,16 +74,7 @@ def main(args):
             "Class {} (sum, fraction, inverse): {:g}, {:g}, {:g}".format(
                 name, counts[i], counts[i] / sum_all, sum_all / counts[i]))
 
-<<<<<<< HEAD
     logger.info( "{}-{}: Class weights before update: {}".format(args.era, args.channel,dictToString(trainingTemplateDict["class_weights"])))
-=======
-    ### Writing calculated weight to "ml/{}_{}_training.yaml"
-    if args.write_weights:
-        training_config_filename="ml/{}_{}_training.yaml".format(args.era, args.channel)
-        training_config_dict=yaml.load(open(training_config_filename, "r"))
-        all_eras_config_filename="ml/all_eras_training_{}.yaml".format(args.channel)
-        all_eras_config_dict=yaml.load(open(all_eras_config_filename, "r"))
->>>>>>> Added conditional network setup and implemented switches
 
     newWeightsDict={}
     for i, name in enumerate(classes):
@@ -95,8 +86,7 @@ def main(args):
             oldweight=trainingTemplateDict["class_weights"][name]
             newweight=newWeightsDict[name]
             if newweight/oldweight > 2 or newweight/oldweight < .5:
-<<<<<<< HEAD
-                    logger.warning( "{}-{}: Class weights for {} changing by more than a factor of 2".format(args.era, args.channel,name))
+                logger.warning( "{}-{}: Class weights for {} changing by more than a factor of 2".format(args.era, args.channel,name))
     else:
         logger.warn("Training classes in {} and {} differ".format(args.dataset_config_file,args.training_template))
 
@@ -144,16 +134,7 @@ def main(args):
     print(dictToString({key: value for key, value in mergeddict.items() if key != "processes"}))
 
     logger.info( "{}-{}: Class weights after update: {}".format(args.era, args.channel,dictToString(trainingTemplateDict["class_weights"])))
-=======
-                logger.warning( "{}-{}: Class weights for {} changing by more than a factor of 2".format(args.era, args.channel,name))
-            training_config_dict["class_weights"][name]=newweight
-            all_eras_config_dict["class_weights_{}".format(args.era)][name] = newweight
 
-        with open(training_config_filename,"w") as f:
-            yaml.dump(training_config_dict, f, default_flow_style=False)
-
-        logger.info( "{}-{}: Class weights after update: {}".format(args.era, args.channel,dictToString(training_config_dict["class_weights"])))
->>>>>>> Added conditional network setup and implemented switches
 
 if __name__ == "__main__":
     args = parse_arguments()
