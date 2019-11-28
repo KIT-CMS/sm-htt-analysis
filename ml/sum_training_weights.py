@@ -33,7 +33,7 @@ def parse_arguments():
     parser.add_argument("--dataset-config-file", type=str,required=True, help="Specifies the config file created by ml/create_training_dataset.sh calling ml/write_dataset_config.py")
     parser.add_argument("--training-template", type=str,required=False, help="Specifies the config file setting the model, used variables...")
     parser.add_argument("--write-weights", type=bool, default=True, help="Overwrite inverse weights to ml/$era_$channel_training.yaml")
-    parser.add_argument( "--weight-branch", default="training_weight", type=str, help="Branch with weights.")
+    parser.add_argument("--weight-branch", default="training_weight", type=str, help="Branch with weights.")
     return parser.parse_args()
 
 
@@ -86,7 +86,7 @@ def main(args):
             oldweight=trainingTemplateDict["class_weights"][name]
             newweight=newWeightsDict[name]
             if newweight/oldweight > 2 or newweight/oldweight < .5:
-                    logger.warning( "{}-{}: Class weights for {} changing by more than a factor of 2".format(args.era, args.channel,name))
+                logger.warning( "{}-{}: Class weights for {} changing by more than a factor of 2".format(args.era, args.channel,name))
     else:
         logger.warn("Training classes in {} and {} differ".format(args.dataset_config_file,args.training_template))
 
@@ -134,6 +134,7 @@ def main(args):
     print(dictToString({key: value for key, value in mergeddict.items() if key != "processes"}))
 
     logger.info( "{}-{}: Class weights after update: {}".format(args.era, args.channel,dictToString(trainingTemplateDict["class_weights"])))
+
 
 if __name__ == "__main__":
     args = parse_arguments()

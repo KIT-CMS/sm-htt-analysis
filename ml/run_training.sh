@@ -23,10 +23,23 @@ else
     export PATH=$HOME/.local/pylibs-$(hostname)/bin:$PATH
 fi
 
+if [[ -z $3 ]]; then
+  TAG="default"
+else
+  TAG=$3
+fi
 
-[[ -z $tag ]] && outdir=output/ml/${ERA}_${CHANNEL} || outdir=output/ml/${ERA}_${CHANNEL}_${tag}
+if [[ $ERA == *"all"* ]]
+then
+  [[ -z $TAG ]] && outdir=output/ml/all_eras_${CHANNEL} || outdir=output/ml/all_eras_${CHANNEL}_${TAG}
 
-mkdir -p $outdir
+  mkdir -p $outdir
+  logandrun python htt-ml/training/keras_training.py ${outdir}/dataset_config.yaml 0 --balance-batches 1 --conditional 1
+  logandrun python htt-ml/training/keras_training.py ${outdir}/dataset_config.yaml 1 --balance-batches 1 --conditional 1
+else
+  [[ -z $TAG ]] && outdir=output/ml/${ERA}_${CHANNEL} || outdir=output/ml/${ERA}_${CHANNEL}_${TAG}
 
-logandrun python htt-ml/training/keras_training.py $outdir/dataset_config.yaml 0 --balance-batches True
-logandrun python htt-ml/training/keras_training.py $outdir/dataset_config.yaml 1 --balance-batches True
+  mkdir -p $outdir
+  logandrun python htt-ml/training/keras_training.py ${outdir}/dataset_config.yaml 0 --balance-batches 1
+  logandrun python htt-ml/training/keras_training.py ${outdir}/dataset_config.yaml 1 --balance-batches 1
+fi

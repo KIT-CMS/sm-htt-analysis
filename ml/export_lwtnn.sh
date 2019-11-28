@@ -3,7 +3,6 @@ set -e
 
 ERA=$1
 CHANNEL=$2
-[[ -z $3 ]] || tag=$3
 
 # source python3 LCG view
 LCG_RELEASE=94python3
@@ -22,11 +21,30 @@ if [ ! -d "htt-ml/lwtnn" ]; then
     exit 1
 fi
 
-[[ -z $tag ]] && outdir=output/ml/${ERA}_${CHANNEL} || outdir=output/ml/${ERA}_${CHANNEL}_${tag}
-for fold in 0 1;
-do
-    python3 htt-ml/lwtnn/converters/keras2json.py ${outdir}/fold${fold}_keras_architecture.json  ${outdir}/fold${fold}_keras_variables.json ${outdir}/fold${fold}_keras_weights.h5 >  ${outdir}/fold${fold}_lwtnn.json
-done
+if [[ -z $3 ]]; then
+  tag="default"
+else
+  tag=$3
+fi
+
+if [[ $ERA == *"all"* ]]
+then
+  [[ -z $tag ]] && outdir=output/ml/all_eras_${CHANNEL} || outdir=output/ml/all_eras_${CHANNEL}_${tag}
+  for fold in 0 1;
+  do
+      python3 htt-ml/lwtnn/converters/keras2json.py ${outdir}/fold${fold}_keras_architecture.json  ${outdir}/fold${fold}_keras_variables.json ${outdir}/fold${fold}_keras_weights.h5 >  ${outdir}/fold${fold}_lwtnn.json
+      for era in "2016" "2017" "2018"; do
+        [[ -z $tag ]] && era_out=output/ml/${ERA}_${CHANNEL} || era_out=output/ml/${ERA}_${CHANNEL}_${tag}
+        cp ${outdir}/fold${fold}_lwtnn.json ${era_out}
+      done
+  done
+else
+  [[ -z $tag ]] && outdir=output/ml/${ERA}_${CHANNEL} || outdir=output/ml/${ERA}_${CHANNEL}_${tag}
+  for fold in 0 1;
+  do
+      python3 htt-ml/lwtnn/converters/keras2json.py ${outdir}/fold${fold}_keras_architecture.json  ${outdir}/fold${fold}_keras_variables.json ${outdir}/fold${fold}_keras_weights.h5 >  ${outdir}/fold${fold}_lwtnn.json
+  done
+fi
 
 echo "Created lwtnn .json files:"
 ls ${outdir}/*lwtnn.json -lrth

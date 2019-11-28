@@ -3,9 +3,15 @@ set -e
 
 era=$1
 channel=$2
-tag=$3
 ## is unset && then || else
-[[ -z $tag ]] && outdir=output/ml/${era}_${SELCHANNEL} ||  outdir=output/ml/${era}_${channel}_${tag}
+
+if [[ -z $3 ]]; then
+  tag="default"
+else
+  tag=$3
+fi
+
+[[ -z $tag ]] && outdir=output/ml/${era}_${channel} ||  outdir=output/ml/${era}_${channel}_${tag}
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
@@ -21,14 +27,16 @@ then
     source utils/setup_cuda.sh
 fi
 
+mkdir -p ${outdir}
+
 # Confusion matrices
 TEST_CONFUSION_MATRIX=1
 if [ -n "$TEST_CONFUSION_MATRIX" ]; then
 logandrun python htt-ml/testing/keras_confusion_matrix.py \
-    $outdir/dataset_config.yaml ml/templates/${era}_${channel}_testing.yaml 0
+    ${outdir}/dataset_config.yaml ml/templates/${era}_${channel}_testing.yaml 0
 
 logandrun python htt-ml/testing/keras_confusion_matrix.py \
-    $outdir/dataset_config.yaml ml/templates/${era}_${channel}_testing.yaml 1
+    ${outdir}/dataset_config.yaml ml/templates/${era}_${channel}_testing.yaml 1
 fi
 
 # Taylor analysis (1D)
@@ -36,10 +44,10 @@ export KERAS_BACKEND=tensorflow
 TEST_TAYLOR_1D=1
 if [ -n "$TEST_TAYLOR_1D" ]; then
 logandrun python htt-ml/testing/keras_taylor_1D.py \
-    $outdir/dataset_config.yaml ml/templates/${era}_${channel}_testing.yaml 0
+    ${outdir}/dataset_config.yaml ml/templates/${era}_${channel}_testing.yaml 0
 
 logandrun python htt-ml/testing/keras_taylor_1D.py \
-    $outdir/dataset_config.yaml ml/templates/${era}_${channel}_testing.yaml 1
+    ${outdir}/dataset_config.yaml ml/templates/${era}_${channel}_testing.yaml 1
 fi
 
 # Taylor analysis (ranking)
@@ -47,10 +55,10 @@ export KERAS_BACKEND=tensorflow
 #TEST_TAYLOR_RANKING=1
 if [ -n "$TEST_TAYLOR_RANKING" ]; then
 logandrun python htt-ml/testing/keras_taylor_ranking.py \
-    $outdir/dataset_config.yaml ml/templates/${era}_${channel}_testing.yaml 0
+    ${outdir}/dataset_config.yaml ml/templates/${era}_${channel}_testing.yaml 0
 
 logandrun python htt-ml/testing/keras_taylor_ranking.py \
-    $outdir/dataset_config.yaml ml/templates/${era}_${channel}_testing.yaml 1
+    ${outdir}/dataset_config.yaml ml/templates/${era}_${channel}_testing.yaml 1
 fi
 
 # Make plots combining goodness of fit and Taylor ranking
