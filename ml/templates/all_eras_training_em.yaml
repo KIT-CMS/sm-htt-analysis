@@ -34,7 +34,7 @@ variables:
 - eta_1
 - m_vis
 - ptvis
-- m_sv
+- m_sv_puppi
 - ME_q2v1
 - ME_q2v2
 - bpt_1
@@ -45,7 +45,7 @@ variables:
 - jdeta
 - mjj
 - dijetpt
-- mTdileptonMET
+- mTdileptonMET_puppi
 class_weights_2017:
   db: 9.570964884211262
   ggh: 858.038714150548
