@@ -602,6 +602,64 @@ def main(args):
                     process=tt_processes[process_nick],
                     channel=tt,
                     era=era)
+    
+    # Tau ID 
+    # in et and mt one nuisance per pT bin
+    # [30., 35., 40., 500., 1000. ,$\le$ 1000.]
+    for channel in ["et" , "mt"]:
+        pt = [30, 35, 40, 500, 1000, "inf"]
+        tau_id_variations = []
+        for i, ptbin in enumerate(pt[:-1]):
+            bindown = ptbin
+            binup = pt[i+1]
+            if binup == "inf":
+                tau_id_variations.append(
+                AddWeight("CMS_eff_tauid_{}-{}_{}_Run2018".format(bindown, binup, channel), "tauid_{}-{}_{}_eff_weight".format(bindown, binup, channel),
+                        Weight("(((pt_2 >= {bindown})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2*1.0/tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*1.0))".format(bindown=bindown), "tauid_{}-{}_{}_eff_weight".format(bindown, binup, channel)), "Up"))
+                tau_id_variations.append(
+                    AddWeight("CMS_eff_tauid_{}-{}_{}_Run2018".format(bindown, binup, channel), "tauid_{}-{}_{}_eff_weight".format(bindown, binup, channel),
+                            Weight("(((pt_2 >= {bindown})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2*1.0/tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*1.0))".format(bindown=bindown), "tauid_{}-{}_{}_eff_weight".format(bindown, binup, channel)), "Down"))
+            else:
+                tau_id_variations.append(
+                AddWeight("CMS_eff_tauid_{}-{}_{}_Run2018".format(bindown, binup, channel), "tauid_{}-{}_{}_eff_weight".format(bindown, binup, channel),
+                        Weight("(((pt_2 >= {bindown} && pt_2 < {binup})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2*(1.0/tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))+((pt_2 < {bindown} && pt_2 > {binup})*1.0))".format(bindown=bindown, binup=binup), "tauid_{}-{}_{}_eff_weight".format(bindown, binup, channel)), "Up"))
+                tau_id_variations.append(
+                AddWeight("CMS_eff_tauid_{}-{}_{}_Run2018".format(bindown, binup, channel), "tauid_{}-{}_{}_eff_weight".format(bindown, binup, channel),
+                        Weight("(((pt_2 >= {bindown} && pt_2 < {binup})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2*(1.0/tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))+((pt_2 < {bindown} && pt_2 > {binup})*1.0))".format(bindown=bindown, binup=binup), "tauid_{}-{}_{}_eff_weight".format(bindown, binup, channel)), "Down"))
+            
+        for variation in tau_id_variations:
+            for process_nick in ["ZTT", "TTT", "TTL", "VVT", "VVL", "EMB", "FAKES"
+                            ] + signal_nicks:
+                if "et" in [args.gof_channel] + args.channels and "et" in channel:
+                    systematics.add_systematic_variation(
+                        variation=variation,
+                        process=et_processes[process_nick],
+                        channel=et,
+                        era=era)
+                if "mt" in [args.gof_channel] + args.channels and "mt" in channel:
+                    systematics.add_systematic_variation(
+                        variation=variation,
+                        process=mt_processes[process_nick],
+                        channel=mt,
+                        era=era)
+    # for tautau, the id is split by decay mode, and each decay mode is assosicated one nuicance
+    tau_id_variations = []
+    for decaymode in [0,1,10,11]:
+        tau_id_variations.append(
+            AddWeight("CMS_eff_tauid_dm{dm}-tt_Run2018".format(dm=decaymode), "tauid_dm{dm}-tt_eff_weight".format(dm=decaymode),
+                    Weight("(((decayMode_1=={dm} && decayMode_2=={dm})*(1.0/tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*(1.0/tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_1*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((decayMode_1!={dm} && decayMode_2=={dm})*(1.0/tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((decayMode_1=={dm} && decayMode_2!={dm})*(1.0/tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm} && decayMode_2!={dm})*1.0))".format(dm=decaymode), "tauid_dm{dm}-tt_eff_weight".format(dm=decaymode)), "Up"))
+        tau_id_variations.append(
+                AddWeight("CMS_eff_tauid_dm{dm}-tt_Run2018".format(dm=decaymode), "tauid_dm{dm}-tt_eff_weight".format(dm=decaymode),
+                    Weight("(((decayMode_1=={dm} && decayMode_2=={dm})*(1.0/tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*(1.0/tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_1*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((decayMode_1!={dm} && decayMode_2=={dm})*(1.0/tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((decayMode_1=={dm} && decayMode_2!={dm})*(1.0/tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm} && decayMode_2!={dm})*1.0))".format(dm=decaymode), "tauid_dm{dm}-tt_eff_weight".format(dm=decaymode)), "Down"))
+    for variation in tau_id_variations:
+        for process_nick in ["ZTT", "TTT", "TTL", "VVT", "VVL", "EMB", "FAKES"
+                        ] + signal_nicks:
+            if "tt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
 
     # MC ele energy scale & smear uncertainties
     ele_es_variations = create_systematic_variations(
