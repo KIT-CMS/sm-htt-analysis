@@ -63,7 +63,7 @@ if [[ -d output/friend_trees ]]; then
     DIR=${WD}/output/friend_trees/2018/friends/MELA/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && MELA_Friends_2017=$DIR
     DIR=${WD}/output/friend_trees/2018/friends/FakeFactors/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && FF_Friends_2017=$DIR
 fi
-ARTUS_FRIENDS_2018="$SVFit_Friends_2018 $MELA_Friends_2018 $NNScore_Friends_2018"
+ARTUS_FRIENDS_2018="$SVFit_Friends_2018"
 ARTUS_FRIENDS_ET_2018=$ARTUS_FRIENDS_2018
 ARTUS_FRIENDS_MT_2018=$ARTUS_FRIENDS_2018
 ARTUS_FRIENDS_TT_2018=$ARTUS_FRIENDS_2018
