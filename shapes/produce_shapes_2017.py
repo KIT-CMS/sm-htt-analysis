@@ -628,10 +628,10 @@ def main(args):
             else:
                 tau_id_variations.append(
                 AddWeight("CMS_eff_tauid_{}-{}_{}_Run2017".format(bindown, binup, channel), "tauid_{}-{}_{}_eff_weight".format(bindown, binup, channel),
-                        Weight("(((pt_2 >= {bindown} && pt_2 < {binup})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2*(1.0/tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))+((pt_2 < {bindown} && pt_2 > {binup})*1.0))".format(bindown=bindown, binup=binup), "tauid_{}-{}_{}_eff_weight".format(bindown, binup, channel)), "Up"))
+                        Weight("(((pt_2 >= {bindown} && pt_2 < {binup})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2*(1.0/tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))+((pt_2 < {bindown} || pt_2 > {binup})*1.0))".format(bindown=bindown, binup=binup), "tauid_{}-{}_{}_eff_weight".format(bindown, binup, channel)), "Up"))
                 tau_id_variations.append(
                 AddWeight("CMS_eff_tauid_{}-{}_{}_Run2017".format(bindown, binup, channel), "tauid_{}-{}_{}_eff_weight".format(bindown, binup, channel),
-                        Weight("(((pt_2 >= {bindown} && pt_2 < {binup})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2*(1.0/tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))+((pt_2 < {bindown} && pt_2 > {binup})*1.0))".format(bindown=bindown, binup=binup), "tauid_{}-{}_{}_eff_weight".format(bindown, binup, channel)), "Down"))
+                        Weight("(((pt_2 >= {bindown} && pt_2 < {binup})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2*(1.0/tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))+((pt_2 < {bindown} || pt_2 > {binup})*1.0))".format(bindown=bindown, binup=binup), "tauid_{}-{}_{}_eff_weight".format(bindown, binup, channel)), "Down"))
             
         for variation in tau_id_variations:
             for process_nick in ["ZTT", "TTT", "TTL", "VVT", "VVL", "EMB", "FAKES"
