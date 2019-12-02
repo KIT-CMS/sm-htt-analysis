@@ -30,7 +30,7 @@ if [[ $USE_BATCH_SYSTEM == "1" ]]; then
         export batch_out="/afs/cern.ch/work/${USER::1}/${USER}/batch-out"
         export cmssw_src_dir="/afs/cern.ch/user/${USER::1}/${USER}/CMSSW_10_2_14/src" ## Remote CMSSW!
         export remote="cern"
-    elif [[ $cluster == "naf" ]]; then
+    elif [[ $cluster == "naf7" ]]; then
         export remote="naf"
         export cmssw_src_dir="/afs/desy.de/user/m/mscham/CMSSW_10_2_14/src"
         export batch_out="/nfs/dust/cms/user/mscham/NNScoreApp"

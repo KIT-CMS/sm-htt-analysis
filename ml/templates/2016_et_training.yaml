@@ -19,7 +19,7 @@ classes:
 event_weights: training_weight
 global_weight_scale: 1.0
 model:
-  batch_size: 100
+  eventsPerClassAndBatch: 30
   early_stopping: 50
   epochs: 100000
   name: smhtt_dropout_tanh
