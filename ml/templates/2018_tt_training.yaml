@@ -27,7 +27,7 @@ variables:
 - pt_2
 - m_vis
 - ptvis
-- m_sv
+- m_sv_puppi
 - nbtag
 - jpt_1
 - njets
