@@ -16,7 +16,7 @@ unset PYTHONUSERBASE
 shopt -s checkjobs # wait for all jobs before exiting
 export PARALLEL=1
 export USE_BATCH_SYSTEM=1
-export cluster=naf #lxplus7 # etp7 # lxplus7 # #
+export cluster=naf7 #lxplus7 # etp7
 export sm_htt_analysis_dir=$( pwd ) ### local sm-htt repo !
 export cmssw_src_local="/portal/ekpbms3/home/${USER}/CMSSW_10_2_14/src" ### local CMSSW !
 export batch_out_local=${sm_htt_analysis_dir}/output/friend_trees
@@ -364,10 +364,10 @@ function runana() {
                     fi
                     DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}
                     for channel in ${channels[@]}; do
-                         logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR/$channel/125 $channel ${tag} &
+                         logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR/$channel/125 $channel ${tag} #&
                          condwait
                     done
-                    logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR/cmb/125 cmb ${tag} &
+                    logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR/cmb/125 cmb ${tag} #&
                     condwait
                 done
             fi

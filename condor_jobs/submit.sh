@@ -16,10 +16,7 @@ if [[ ! -z $1 && ! -z $2 ]]; then
     for tag in ${tags[@]}; do
         for era in ${eras[@]}; do
             for channel in ${channels[@]}; do
-                #fn=output/shapes/${era}-${tag}-${channel}-shapes.root
-                #if [[ ! -f $fn || $( stat -c%s $fn ) -le 2000 ]]; then
                     echo "$era $channel $tag $(pwd -P)"
-                #fi
             done
         done
     done > condor_jobs/arguments.txt
