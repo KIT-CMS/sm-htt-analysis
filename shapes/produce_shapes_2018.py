@@ -634,12 +634,14 @@ def main(args):
     # Tau energy scale
     tau_es_3prong_variations = create_systematic_variations(
         "CMS_scale_t_3prong_Run2018", "tauEsThreeProng", DifferentPipeline)
+    tau_es_3prong1pizero_variations = create_systematic_variations(
+        "CMS_scale_t_3prong1pizero_Run2018", "tauEsThreeProngOnePiZero", DifferentPipeline)
     tau_es_1prong_variations = create_systematic_variations(
         "CMS_scale_t_1prong_Run2018", "tauEsOneProng", DifferentPipeline)
     tau_es_1prong1pizero_variations = create_systematic_variations(
         "CMS_scale_t_1prong1pizero_Run2018", "tauEsOneProngOnePiZero",
         DifferentPipeline)
-    for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
+    for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations + tau_es_3prong1pizero_variations:
         for process_nick in ["ZTT", "TTT", "TTL", "VVT", "VVL", "EMB", "FAKES"
                             ] + signal_nicks:
             if "et" in [args.gof_channel] + args.channels:
@@ -1162,12 +1164,14 @@ def main(args):
     # Tau energy scale
     tau_es_3prong_variations = create_systematic_variations(
         "CMS_scale_emb_t_3prong_Run2018", "tauEsThreeProng", DifferentPipeline)
+    tau_es_3prong1pizero_variations = create_systematic_variations(
+        "CMS_scale_t_3prong1pizero_Run2018", "tauEsThreeProngOnePiZero", DifferentPipeline)
     tau_es_1prong_variations = create_systematic_variations(
         "CMS_scale_emb_t_1prong_Run2018", "tauEsOneProng", DifferentPipeline)
     tau_es_1prong1pizero_variations = create_systematic_variations(
         "CMS_scale_emb_t_1prong1pizero_Run2018", "tauEsOneProngOnePiZero",
         DifferentPipeline)
-    for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
+    for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations + tau_es_3prong1pizero_variations:
         for process_nick in ["EMB", "FAKES"]:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
