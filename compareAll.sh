@@ -48,6 +48,13 @@ erasarg=$1
 channelsarg=$2
 tagsarg=$3
 
+if [[ $eras == "all" ]]; then
+    CONDITIONAL_TRAINING=1
+    eras=""
+else
+    CONDITIONAL_TRAINING=0
+fi
+
 [[ "" = $( echo ${eras} ) ]] && eras=("2016" "2017" "2018") erasarg="2016,2017,2018"
 [[ "" = $( echo ${channels} ) ]] && channels=("em" "et" "tt" "mt") channelsarg="em,et,mt,tt"
 [[ "" = $( echo ${tags} ) ]] && tags=("default") tagsarg="default"
@@ -95,8 +102,6 @@ function ensuremldirs() {
 }
 
 
-
-
 function compenv() {
     varnames=(era channel tag eras  channels  tags erasarg channelsarg tagsarg mldir trainingConfFile anaSSStep  llwtnndir temp_file PROD_NEW_DATACARDS redoConversion fn JETFAKES EMBEDDING CATEGORIES PROD_NEW_DATACARDS STXS_SIGNALS STXS_FIT USE_BATCH_SYSTEM)
     IFS='°' read -r -a vars <<< "${era[@]}"°"${channel[@]}"°"${tag[@]}"°"${eras[@]}"°"${channels[@]}"°"${tags[@]}"°"${erasarg[@]}"°"${channelsarg[@]}"°"${tagsarg[@]}"°"${mldir[@]}"°"${trainingConfFile[@]}"°"${anaSSStep[@]}"°"${llwtnndir[@]}"°"${temp_file[@]}"°"${PROD_NEW_DATACARDS[@]}"°"${redoConversion[@]}"°"${fn[@]}"°"${JETFAKES[@]}"°"${EMBEDDING[@]}"°"${CATEGORIES[@]}"°"${PROD_NEW_DATACARDS[@]}"°"${STXS_SIGNALS[@]}"°"${STXS_FIT[@]}"°$USE_BATCH_SYSTEM
@@ -115,39 +120,59 @@ function create_training_dataset() {
 function mltrain() {
     ensuremldirs
     for tag in ${tags[@]}; do
-    export tag
-        for era in ${eras[@]}; do
+        if [[ $CONDITIONAL_TRAINING == 1 ]]; then
             for channel in ${channels[@]}; do
-                logandrun ./ml/run_training.sh ${era} ${channel} ${tag}
+                logandrun ./ml/run_training.sh all ${channel} ${tag}
             done
-        done
+        else
+            for era in ${eras[@]}; do
+                for channel in ${channels[@]}; do
+                    logandrun ./ml/run_training.sh ${era} ${channel} ${tag}
+                done
+            done
+        fi
     done
 }
 
 function mltest() {
     ensuremldirs
     for tag in ${tags[@]}; do
-    export tag
-        for era in ${eras[@]}; do
+        if [[ $CONDITIONAL_TRAINING == 1 ]]; then
             for channel in ${channels[@]}; do
-                logandrun ./ml/run_testing.sh ${era} ${channel} ${tag}
+                logandrun ./ml/run_testing.sh all ${channel} ${tag}
             done
-        done
+        else
+            for era in ${eras[@]}; do
+                for channel in ${channels[@]}; do
+                    logandrun ./ml/run_testing.sh ${era} ${channel} ${tag}
+                done
+            done
+        fi
     done
 }
 
 #### converts models to the form needed for submission to a batch system
 function exportForApplication {
     for tag in ${tags[@]}; do
-        export tag
-        for era in ${eras[@]}; do
+        if [[ $CONDITIONAL_TRAINING == 1 ]]; then
             for channel in ${channels[@]}; do
                 (
-                logandrun ./ml/translate_models.sh ${era} ${channel} ${tag}
-                logandrun ./ml/export_lwtnn.sh ${era} ${channel}  ${tag} ) &
+                set -e
+                logandrun ./ml/translate_models.sh all ${channel} ${tag}
+                logandrun ./ml/export_lwtnn.sh all ${channel}  ${tag} ) &
                 condwait
             done
-        done
+        else
+            for era in ${eras[@]}; do
+                for channel in ${channels[@]}; do
+                    (
+                    set -e
+                    logandrun ./ml/translate_models.sh ${era} ${channel} ${tag}
+                    logandrun ./ml/export_lwtnn.sh ${era} ${channel}  ${tag} ) &
+                    condwait
+                done
+            done
+        fi
     done
     wait
 }
@@ -434,6 +459,8 @@ function compareSignRes {
 #################################################################################################
 
 function main() {
+    logerror "This is a function library, not a script."
+    exit 1
     read -p " Start new run? y/[n]" yn
     if [[ ! $yn == "y" ]]; then
         exit 0
