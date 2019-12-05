@@ -4,6 +4,7 @@ import ROOT
 ROOT.PyConfig.IgnoreCommandLineOptions = True
 import argparse
 import logging
+import numpy as np
 logger = logging.getLogger("sum_training_weights")
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
@@ -64,7 +65,12 @@ def main(args):
             logger.fatal("Tree %s does not exist in file.", name)
             raise Exception
         for event in tree:
-            sum_ += getattr(event, args.weight_branch)
+            evw=getattr(event, args.weight_branch)
+            if np.isnan( evw):
+                logger.fatal("Fatal: no event weight in class {} with ID {}".format(name,getattr(event, "event")))
+                raise Exception
+            else:
+                sum_ += evw
         sum_all += sum_
         counts.append(sum_)
 
