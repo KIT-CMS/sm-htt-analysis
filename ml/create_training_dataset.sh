@@ -1,5 +1,8 @@
 #!/bin/bash
 set -e
+
+export PARALLEL=1
+
 if uname -a | grep ekpdeepthought
 then
     echo "Not possible here, use another machine"
