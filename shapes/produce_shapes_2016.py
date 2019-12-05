@@ -645,7 +645,7 @@ def main(args):
                         Weight("(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(bindown=bindown, binup=binup),"taubyIsoIdWeight"), "Down"))
             
         for variation in tau_id_variations:
-            for process_nick in ["ZTT", "TTT", "TTL", "VVT", "VVL", "EMB", "FAKES"
+            for process_nick in ["ZTT", "TTT", "TTL", "VVT", "VVL", "EMB",
                             ] + signal_nicks:
                 if "et" in [args.gof_channel] + args.channels and "et" in channel:
                     systematics.add_systematic_variation(
@@ -681,12 +681,12 @@ def main(args):
     # temorary fix for dm 11
     tau_id_variations.append(
                 ReplaceWeight("CMS_eff_t_dm11_Run2016".format(dm=decaymode), "taubyIsoIdWeight",
-                    Weight("((((decayMode_1==11)*{dm11_up})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))*(((decayMode_2==11)*{dm11_up})+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2)))".format(dm=decaymode, dm11_up=dm11_up), "taubyIsoIdWeight"), "Up"))
+                    Weight("((gen_match_1 == 5)*(((decayMode_1==11)*{dm11_up})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))+(gen_match_1 != 5))*((gen_match_1 == 5)*(((decayMode_2==11)*{dm11_up})+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))+(gen_match_2 != 5))".format(dm=decaymode, dm11_up=dm11_up), "taubyIsoIdWeight"), "Up"))
     tau_id_variations.append(
                 ReplaceWeight("CMS_eff_t_dm11_Run2016".format(dm=decaymode), "taubyIsoIdWeight",
-                    Weight("(((decayMode_1==11)*{dm11_down})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*((decayMode_2==11)*{dm11_down})+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(dm=decaymode, dm11_down=dm11_down), "taubyIsoIdWeight"), "Down"))
+                    Weight("((gen_match_1 == 5)*(((decayMode_1==11)*{dm11_down})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))+(gen_match_1 != 5))*((gen_match_1 == 5)*(((decayMode_2==11)*{dm11_down})+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))+(gen_match_2 != 5))".format(dm=decaymode, dm11_down=dm11_down), "taubyIsoIdWeight"), "Down"))
     for variation in tau_id_variations:
-        for process_nick in ["ZTT", "TTT", "TTL", "VVT", "VVL", "EMB", "FAKES"
+        for process_nick in ["ZTT", "TTT", "TTL", "VVT", "VVL", "EMB",
                         ] + signal_nicks:
             if "tt" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
@@ -1188,10 +1188,10 @@ def main(args):
     # temorary fix for dm 11
     tau_id_variations.append(
                 ReplaceWeight("CMS_eff_emb_t_dm11_Run2016".format(dm=decaymode), "taubyIsoIdWeight",
-                    Weight("((((decayMode_1==11)*{dm11_up})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))*(((decayMode_2==11)*{dm11_up})+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2)))".format(dm=decaymode, dm11_up=dm11_up), "taubyIsoIdWeight"), "Up"))
+                    Weight("((gen_match_1 == 5)*(((decayMode_1==11)*{dm11_up})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))+(gen_match_1 != 5))*((gen_match_1 == 5)*(((decayMode_2==11)*{dm11_up})+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))+(gen_match_2 != 5))".format(dm=decaymode, dm11_up=dm11_up), "taubyIsoIdWeight"), "Up"))
     tau_id_variations.append(
                 ReplaceWeight("CMS_eff_emb_t_dm11_Run2016".format(dm=decaymode), "taubyIsoIdWeight",
-                    Weight("(((decayMode_1==11)*{dm11_down})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*((decayMode_2==11)*{dm11_down})+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(dm=decaymode, dm11_down=dm11_down), "taubyIsoIdWeight"), "Down"))
+                    Weight("((gen_match_1 == 5)*(((decayMode_1==11)*{dm11_down})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))+(gen_match_1 != 5))*((gen_match_1 == 5)*(((decayMode_2==11)*{dm11_down})+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))+(gen_match_2 != 5))".format(dm=decaymode, dm11_down=dm11_down), "taubyIsoIdWeight"), "Down"))
     for variation in tau_id_variations:
         for process_nick in ["EMB"]:
             if "tt" in [args.gof_channel] + args.channels:
