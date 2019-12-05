@@ -56,6 +56,7 @@ then
     SVFit_Friends=$SVFit_Friends_2018
     MELA_Friends=$MELA_Friends_2018
     FF_Friends=$FF_Friends_2018
+<<<<<<< HEAD
 fi
 
 ### check if there are valid local friend trees and, if yes overwrite the friend tree directory with the local ones
@@ -77,7 +78,7 @@ ARTUS_FRIENDS_FAKE_FACTOR=$FF_Friends
 
 ### for "backwards compability". Should be removed at some point. DO not use these variables
 
-
+ARTUS_FRIENDS_FAKE_FACTOR=$FF_Friends
 ARTUS_FRIENDS_FAKE_FACTOR_INCL=$FF_Friends
 ARTUS_FRIENDS_FAKE_FACTOR_2016=$FF_Friends_2016
 ARTUS_FRIENDS_FAKE_FACTOR_INCL_2016=$ARTUS_FRIENDS_FAKE_FACTOR_2016
