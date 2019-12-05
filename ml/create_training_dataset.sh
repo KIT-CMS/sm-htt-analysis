@@ -36,14 +36,14 @@ function run_procedure() {
     fi
     source utils/setup_samples.sh $ERA $TAG
     if [[ $ERA == *"all"* ]]; then
-      [[ -z $TAG ]] && outdir=output/ml/all_eras_${CHANNEL} ||  outdir=output/ml/all_eras_${CHANNEL}_${TAG}
+      outdir=output/ml/all_eras_${CHANNEL}_${TAG}
       logandrun python ml/create_combined_config.py \
                 --tag ${TAG} \
                 --channel ${CHANNEL} \
                 --output_dir ${outdir}
       exit
     else
-      [[ -z $TAG ]] && outdir=output/ml/${ERA}_${CHANNEL} ||  outdir=output/ml/${ERA}_${CHANNEL}_${TAG}
+      outdir=output/ml/${ERA}_${CHANNEL}_${TAG}
     fi
     mkdir -p $outdir
 
@@ -81,7 +81,7 @@ function run_procedure() {
          --output-config $outdir/dataset_config.yaml
 
     # Create dataset files from config
-     logandrun ./htt-ml/dataset/create_training_dataset.py $outdir/dataset_config.yaml
+    logandrun ./htt-ml/dataset/create_training_dataset.py $outdir/dataset_config.yaml
 
     #  Reweight STXS stage 1 signals so that each stage 1 signal is weighted equally but
     #  conserve the overall weight of the stage 0 signal

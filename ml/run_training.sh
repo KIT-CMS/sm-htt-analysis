@@ -2,6 +2,11 @@
 set -e
 ERA=$1
 CHANNEL=$2
+if [[ -z $3 ]]; then
+  TAG="default"
+else
+  TAG=$3
+fi
 
 source utils/bashFunctionCollection.sh
 # source /cvmfs/sft.cern.ch/lcg/views/LCG_95apython3/x86_64-ubuntu1604-gcc54-opt/setup.sh
@@ -23,21 +28,15 @@ else
     export PATH=$HOME/.local/pylibs-$(hostname)/bin:$PATH
 fi
 
-if [[ -z $3 ]]; then
-  TAG="default"
-else
-  TAG=$3
-fi
-
 if [[ $ERA == *"all"* ]]
 then
-  [[ -z $TAG ]] && outdir=output/ml/all_eras_${CHANNEL} || outdir=output/ml/all_eras_${CHANNEL}_${TAG}
+  outdir=output/ml/all_eras_${CHANNEL}_${TAG}
 
   mkdir -p $outdir
   logandrun python htt-ml/training/keras_training.py ${outdir}/dataset_config.yaml 0 --balance-batches 1 --conditional 1
   logandrun python htt-ml/training/keras_training.py ${outdir}/dataset_config.yaml 1 --balance-batches 1 --conditional 1
 else
-  [[ -z $TAG ]] && outdir=output/ml/${ERA}_${CHANNEL} || outdir=output/ml/${ERA}_${CHANNEL}_${TAG}
+  outdir=output/ml/${ERA}_${CHANNEL}_${TAG}
 
   mkdir -p $outdir
   logandrun python htt-ml/training/keras_training.py ${outdir}/dataset_config.yaml 0 --balance-batches 1
