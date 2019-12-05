@@ -673,7 +673,7 @@ def main(args):
                     Weight("((gen_match_1 == 5)*(((decayMode_1==11)*{dm11_up})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))+(gen_match_1 != 5))*((gen_match_1 == 5)*(((decayMode_2==11)*{dm11_up})+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))+(gen_match_2 != 5))".format(dm=decaymode, dm11_up=dm11_up), "taubyIsoIdWeight"), "Up"))
     tau_id_variations.append(
                 ReplaceWeight("CMS_eff_t_dm11_Run2017".format(dm=decaymode), "taubyIsoIdWeight",
-                    Weight("((gen_match_1 == 5)*(((decayMode_1==11)*{dm11_down})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))+(gen_match_1 != 5))*((gen_match_1 == 5)*(((decayMode_2==11)*{dm11_down})+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))+(gen_match_2 != 5))".format(dm=decaymode, dm11_down=dm11_down), "taubyIsoIdWeight"), "Down")), "Down"))
+                    Weight("((gen_match_1 == 5)*(((decayMode_1==11)*{dm11_down})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))+(gen_match_1 != 5))*((gen_match_1 == 5)*(((decayMode_2==11)*{dm11_down})+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))+(gen_match_2 != 5))".format(dm=decaymode, dm11_down=dm11_down), "taubyIsoIdWeight"), "Down"))
     for variation in tau_id_variations:
         for process_nick in ["ZTT", "TTT", "TTL", "VVT", "VVL", "EMB",
                         ] + signal_nicks:
