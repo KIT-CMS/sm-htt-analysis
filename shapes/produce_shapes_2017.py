@@ -624,7 +624,7 @@ def main(args):
                         Weight("(((pt_2 >= {bindown})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(bindown=bindown), "taubyIsoIdWeight"), "Up"))
                 tau_id_variations.append(
                     ReplaceWeight("CMS_eff_t_{}-{}_Run2017".format(bindown, binup), "taubyIsoIdWeight",
-                            Weight("(((pt_2 >= {bindown})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(bindown=bindown),"taubyIsoIdWeight"), "Down"))
+                        Weight("(((pt_2 >= {bindown})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(bindown=bindown),"taubyIsoIdWeight"), "Down"))
             else:
                 tau_id_variations.append(
                     ReplaceWeight("CMS_eff_t_{}-{}_Run2017".format(bindown, binup), "taubyIsoIdWeight",
@@ -1174,7 +1174,7 @@ def main(args):
                         Weight("(((pt_2 >= {bindown})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(bindown=bindown),"taubyIsoIdWeight"), "Up"))
                 tau_id_variations.append(
                     ReplaceWeight("CMS_eff_emb_t_{}-{}_Run2017".format(bindown, binup), "taubyIsoIdWeight",
-                            Weight("(((pt_2 >= {bindown})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(bindown=bindown),"taubyIsoIdWeight"), "Down"))
+                        Weight("(((pt_2 >= {bindown})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(bindown=bindown),"taubyIsoIdWeight"), "Down"))
             else:
                 tau_id_variations.append(
                     ReplaceWeight("CMS_eff_emb_t_{}-{}_Run2017".format(bindown, binup), "taubyIsoIdWeight",
