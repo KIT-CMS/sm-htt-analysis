@@ -28,6 +28,10 @@ if [[ $cluster = "etp7" ]]; then
     eventsPerJob=2000000
     walltime=10000
 elif [[ $cluster == "lxplus7" ]]; then
+    export remote="cern"
+    export streamext="--extended_file_access root://eosuser.cern.ch/"
+    export sw_src_dir="/afs/cern.ch/user/${USER::1}/${USER}/CMSSW_10_2_14/src"
+    export batch_out="/afs/cern.ch/work/${USER::1}/${USER}/batch-out"
     eventsPerJob=200000
     walltime=3000
     case $era in
@@ -47,33 +51,30 @@ elif [[ $cluster == "lxplus7" ]]; then
             ARTUS_FRIENDS="/eos/user/m/mscham/htautau/2018/ff_friends /eos/user/m/mscham/htautau/2018/mela_friends /eos/user/m/mscham/htautau/2018/svfit_friends"
             ;;
     esac
-    export remote="cern"
-    export streamext="--extended_file_access root://eosuser.cern.ch/"
-    export sw_src_dir="/afs/cern.ch/user/${USER::1}/${USER}/CMSSW_10_2_14/src"
-    export batch_out="/afs/cern.ch/work/${USER::1}/${USER}/batch-out"
 elif [[ $cluster == "naf7" ]]; then
+    export remote="naf"
+    export sw_src_dir="/afs/desy.de/user/m/mscham/CMSSW_10_2_14/src"
+    export batch_out="/nfs/dust/cms/user/mscham/NNScoreApp"
     eventsPerJob=2000000
     walltime=2000
     case $era in
         "2016" )
             logerror No friend trees for $era on lxplus7
             exit 1
-            ARTUS_OUTPUTS="/nfs/dust/cms/group/higgs-kit/ekp/2016/ntuples"
-            ARTUS_FRIENDS="/nfs/dust/cms/group/higgs-kit/ekp/2016/ff_friends /nfs/dust/cms/group/higgs-kit/ekp/2016/mela_friends /nfs/dust/cms/group/higgs-kit/ekp/2016/svfit_friends"
+            ARTUS_OUTPUTS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/2016/ntuples"
+            ARTUS_FRIENDS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/friends/2016/FakeFactors /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2016/MELA /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2016/SVFIT"
             ;;
         "2017" )
-            ARTUS_OUTPUTS="/nfs/dust/cms/group/higgs-kit/ekp/2017/ntuples"
-            ARTUS_FRIENDS="/nfs/dust/cms/group/higgs-kit/ekp/2017/ff_friends /nfs/dust/cms/group/higgs-kit/ekp/2017/mela_friends /nfs/dust/cms/group/higgs-kit/ekp/2017/svfit_friends"
+            ARTUS_OUTPUTS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/2017/ntuples"
+            ARTUS_FRIENDS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/friends/2017/FakeFactors /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2017/MELA/merged /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2017/SVFIT"
             ;;
         "2018" )
-            ARTUS_OUTPUTS="/nfs/dust/cms/group/higgs-kit/ekp/2018/ntuples"
-            ARTUS_FRIENDS="/nfs/dust/cms/group/higgs-kit/ekp/2018/ff_friends /nfs/dust/cms/group/higgs-kit/ekp/2018/mela_friends /nfs/dust/cms/group/higgs-kit/ekp/2018/svfit_friends"
+            ARTUS_OUTPUTS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/2018/ntuples"
+            ARTUS_FRIENDS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/friends/2018/FakeFactors /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2018/MELA /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2018/SVFIT"
             ;;
     esac
-    export remote="naf"
-    export sw_src_dir="/afs/desy.de/user/m/mscham/CMSSW_10_2_14/src"
-    export batch_out="/nfs/dust/cms/user/mscham/NNScoreApp"
 fi
+
 export workdir=$batch_out/$outdir
 export submitlock=$workdir/$era-$2.lock
 export jm=$sw_src_dir/HiggsAnalysis/friend-tree-producer/scripts/job_management.py

@@ -20,7 +20,9 @@ export cluster=etp7 #naf7 #lxplus7 # etp7
 export sm_htt_analysis_dir=$( pwd ) ### local sm-htt repo !
 export cmssw_src_local="/portal/ekpbms3/home/${USER}/CMSSW_10_2_14/src" ### local CMSSW !
 export batch_out_local=${sm_htt_analysis_dir}/output/friend_trees
+
 source utils/bashFunctionCollection.sh
+ensureoutdirs
 
 
 if [[ $USE_BATCH_SYSTEM == "1" ]]; then
@@ -32,8 +34,8 @@ if [[ $USE_BATCH_SYSTEM == "1" ]]; then
         export remote="cern"
     elif [[ $cluster == "naf7" ]]; then
         export remote="naf"
-        export cmssw_src_dir="/afs/desy.de/user/m/mscham/CMSSW_10_2_14/src"
-        export batch_out="/nfs/dust/cms/user/mscham/NNScoreApp"
+        export cmssw_src_dir="/afs/desy.de/user/${USER::1}/${USER}/CMSSW_10_2_14/src"
+        export batch_out="/nfs/dust/cms/user/${USER}/NNScoreApp"
     else
         logerror No such cluster: $cluster
         exit 1
@@ -238,7 +240,7 @@ function copyFromCluster() {
 export JETFAKES=1 EMBEDDING=1 CATEGORIES="stxs_stage1p1"
 
 export redoConversion=0
-function genshapes() {
+function genShapesLocal() {
     ensureoutdirs
     for tag in ${tags[@]}; do
         for era in ${eras[@]}; do
@@ -253,7 +255,7 @@ function genshapes() {
     done
 }
 
-function subshapes(){
+function submitShapes(){
     ensureoutdirs
     for tag in ${tags[@]}; do
         for era in ${eras[@]}; do
@@ -269,7 +271,7 @@ function subshapes(){
     logandrun condor_jobs/submit.sh
 }
 
-function syncshapes() {
+function syncShapes() {
     for channel in ${channels[@]}; do
         for era in ${eras[@]}; do
             for tag in ${tags[@]}; do
@@ -288,7 +290,7 @@ function syncshapes() {
 
 
 
-function gendatacards(){
+function genDatacards(){
     ensureoutdirs
     for era in ${eras[@]}; do
         for STXS_SIGNALS in "stxs_stage0" "stxs_stage1p1"; do
@@ -304,7 +306,7 @@ function gendatacards(){
     wait
 }
 
-function genworkspaces(){
+function genWorkspaces(){
     ensureoutdirs
     for era in ${eras[@]}; do
         for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do
