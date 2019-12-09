@@ -16,7 +16,7 @@ unset PYTHONUSERBASE
 shopt -s checkjobs # wait for all jobs before exiting
 export PARALLEL=1
 export USE_BATCH_SYSTEM=1
-export cluster=etp7 #naf7 #lxplus7 # etp7
+export cluster=naf #naf7 #lxplus7 # etp7
 export sm_htt_analysis_dir=$( pwd ) ### local sm-htt repo !
 export cmssw_src_local="/portal/ekpbms3/home/${USER}/CMSSW_10_2_14/src" ### local CMSSW !
 export batch_out_local=${sm_htt_analysis_dir}/output/friend_trees
@@ -32,7 +32,7 @@ if [[ $USE_BATCH_SYSTEM == "1" ]]; then
         export batch_out="/afs/cern.ch/work/${USER::1}/${USER}/batch-out"
         export cmssw_src_dir="/afs/cern.ch/user/${USER::1}/${USER}/CMSSW_10_2_14/src" ## Remote CMSSW!
         export remote="cern"
-    elif [[ $cluster == "naf7" ]]; then
+    elif [[ $cluster == "naf" ]]; then
         export remote="naf"
         export cmssw_src_dir="/afs/desy.de/user/${USER::1}/${USER}/CMSSW_10_2_14/src"
         export batch_out="/nfs/dust/cms/user/${USER}/NNScoreApp"
@@ -62,6 +62,9 @@ fi
 [[ "" = $( echo ${tags} ) ]] && tags=("default") tagsarg="default"
 
 loginfo Eras: ${erasarg}  Channels: ${channelsarg}   Training Dataset Generation tag: ${tagsarg} Sourced: $sourced
+loginfo Following functions are provided: $( grep -E  '^function .*{' compareAll.sh | sed "s@function \(\w\+\).*@\1@" | tr "\n" " " )
+
+
 
 if [[ ! -z ${4:-} ]]; then
     logerror only takes 3 arguments, seperate multiple eras and channels by comma eg: 2016,2018 mt,em   or \"\" em
@@ -493,4 +496,3 @@ function main() {
 
 [[ $sourced == 1 ]] && [[ ! "bash" =~ $0 ]] && logerror "shell is sourced by another shell than bash, aborting" && exit 1
 [[ $sourced == 0 ]] && main
-echo

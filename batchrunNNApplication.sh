@@ -15,8 +15,8 @@ if [[ ! "submit collect rungc delete" =~ $modus || -z $modus ]]; then
     logerror "modus must be submit or collect but is $modus !"
     exit 1
 fi
-if [[ ! "etp7 lxplus7 naf7" =~ $cluster || -z $cluster ]]; then
-    logerror "cluster must be etp7, lxplus7 or naf7, but is $cluster!"
+if [[ ! "etp7 lxplus7 naf" =~ $cluster || -z $cluster ]]; then
+    logerror "cluster must be etp7, lxplus7 or naf, but is $cluster!"
     exit 1
 fi
 
@@ -51,7 +51,7 @@ elif [[ $cluster == "lxplus7" ]]; then
             ARTUS_FRIENDS="/eos/user/m/mscham/htautau/2018/ff_friends /eos/user/m/mscham/htautau/2018/mela_friends /eos/user/m/mscham/htautau/2018/svfit_friends"
             ;;
     esac
-elif [[ $cluster == "naf7" ]]; then
+elif [[ $cluster == "naf" ]]; then
     export remote="naf"
     export sw_src_dir="/afs/desy.de/user/m/mscham/CMSSW_10_2_14/src"
     export batch_out="/nfs/dust/cms/user/mscham/NNScoreApp"
@@ -59,18 +59,16 @@ elif [[ $cluster == "naf7" ]]; then
     walltime=2000
     case $era in
         "2016" )
-            logerror No friend trees for $era on lxplus7
-            exit 1
             ARTUS_OUTPUTS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/2016/ntuples"
-            ARTUS_FRIENDS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/friends/2016/FakeFactors /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2016/MELA /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2016/SVFIT"
+            ARTUS_FRIENDS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/2016/friends/FakeFactors /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2016/friends/MELA /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2016/friends/SVFit"
             ;;
         "2017" )
             ARTUS_OUTPUTS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/2017/ntuples"
-            ARTUS_FRIENDS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/friends/2017/FakeFactors /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2017/MELA/merged /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2017/SVFIT"
+            ARTUS_FRIENDS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/2017/friends/FakeFactors /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2017/friends/MELA /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2017/friends/SVFit"
             ;;
         "2018" )
             ARTUS_OUTPUTS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/2018/ntuples"
-            ARTUS_FRIENDS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/friends/2018/FakeFactors /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2018/MELA /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2018/SVFIT"
+            ARTUS_FRIENDS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/2018/friends/FakeFactors /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2018/friends/MELA /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2018/friends/SVFit"
             ;;
     esac
 fi
