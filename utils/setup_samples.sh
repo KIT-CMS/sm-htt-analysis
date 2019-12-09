@@ -5,12 +5,12 @@ ERA=$1
 TAG=$2
 [[ ! -z $3 ]] && WD=$3 || WD=$( pwd -P )
 # Samples Run2016
-basedir="/ceph/htautau"
+basedir="/ceph/htautau/deeptau"
 ARTUS_OUTPUTS_2016="$basedir/2016/ntuples/"
-NNScore_Friends_2016=""
-SVFit_Friends_2016="$basedir/2016/svfit_friends_v2/"
-MELA_Friends_2016="$basedir/2016/mela_friends/"
-FF_Friends_2016="$basedir/2016/ff_friends/"
+#NNScore_Friends_2016="$basedir/2016/friends/NNScore/"
+SVFit_Friends_2016="$basedir/2016/friends/SVFit/"
+MELA_Friends_2016="$basedir/2016/friends/MELA/"
+FF_Friends_2016="$basedir/2016/friends/FakeFactors/"
 if [[ -d output/friend_trees ]]; then
     DIR=${WD}/output/friend_trees/2016/nnscore_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && NNScore_Friends_2016=$DIR
     DIR=${WD}/output/friend_trees/2016/svfit_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && SVFit_Friends_2016=$DIR
@@ -32,7 +32,7 @@ basedir="/ceph/htautau/deeptau"
 ARTUS_OUTPUTS_2017="$basedir/2017/ntuples/"
 #NNScore_Friends_2017="$basedir/2017/friends/NNScore/"
 SVFit_Friends_2017="$basedir/2017/friends/SVFit/"
-MELA_Friends_2017="$basedir/2017/friends/MELA/merged/"
+MELA_Friends_2017="$basedir/2017/friends/MELA/"
 FF_Friends_2017="$basedir/2017/friends/FakeFactors/"
 if [[ -d output/friend_trees ]]; then
     DIR=${WD}/output/friend_trees/2017/nnscore_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && NNScore_Friends_2017=$DIR
@@ -53,7 +53,7 @@ ARTUS_OUTPUTS_EM_2017=""
 # Samples Run2018
 basedir="/ceph/htautau/deeptau"
 ARTUS_OUTPUTS_2018="$basedir/2018/ntuples/"
-NNScore_Friends_2018="$basedir/2018/friends/NNScore/"
+#NNScore_Friends_2018="$basedir/2018/friends/NNScore/"
 SVFit_Friends_2018="$basedir/2018/friends/SVFit/"
 MELA_Friends_2018="$basedir/2018/friends/MELA/"
 FF_Friends_2018="$basedir/2018/friends/FakeFactors/"
