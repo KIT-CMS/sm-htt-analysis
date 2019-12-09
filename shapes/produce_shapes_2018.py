@@ -196,8 +196,8 @@ def main(args):
 
     mt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, mt, [mt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], mt_processes["data"], friend_directory=mt_friend_directory+[ff_friend_directory]))
     mt_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, mt,
-            [mt_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL"]],
-            mt_processes["data"], friend_directory=mt_friend_directory, extrapolation_factor=1.00))
+            [mt_processes[process] for process in ["EMB", "ZL", "ZJ", "W", "TTJ", "TTL", "VVJ", "VVL"]],
+            mt_processes["data"], friend_directory=mt_friend_directory, extrapolation_factor=1.17))
 
     et = ETSM2018()
     et_processes = {
@@ -231,8 +231,8 @@ def main(args):
 
     et_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, et, [et_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], et_processes["data"], friend_directory=et_friend_directory+[ff_friend_directory]))
     et_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, et,
-            [et_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL"]],
-            et_processes["data"], friend_directory=et_friend_directory, extrapolation_factor=1.00))
+            [et_processes[process] for process in ["EMB", "ZL", "ZJ", "W", "TTJ", "TTL", "VVJ", "VVL"]],
+            et_processes["data"], friend_directory=et_friend_directory, extrapolation_factor=1.17))
 
     tt = TTSM2018()
     tt_processes = {
@@ -266,7 +266,7 @@ def main(args):
 
     tt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationTT(era, directory, tt, [tt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], tt_processes["data"], friend_directory=tt_friend_directory+[ff_friend_directory]))
     tt_processes["QCD"] = Process("QCD", QCDEstimation_ABCD_TT_ISO2(era, directory, tt,
-            [tt_processes[process] for process in ["ZTT", "ZL", "ZJ", "W", "TTT", "TTJ", "TTL", "VVT", "VVJ", "VVL"]],
+            [tt_processes[process] for process in ["EMB", "ZL", "ZJ", "W", "TTJ", "TTL", "VVJ", "VVL"]],
             tt_processes["data"], friend_directory=tt_friend_directory))
 
     em = EMSM2018()
@@ -296,7 +296,7 @@ def main(args):
     for qqH_htxs in qqHEstimation.htxs_dict:
         em_processes[qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, em, friend_directory=em_friend_directory))
 
-    em_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, em, [em_processes[process] for process in ["EMB", "ZL", "W", "TTL", "VVL"]], em_processes["data"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
+    em_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, em, [em_processes[process] for process in ["EMB", "ZL", "W", "TTL", "VVL"]], em_processes["data"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_osss_binned_Weight","qcd_weight")))
 
     # Variables and categories
     binning = yaml.load(open(args.binning), Loader=yaml.Loader)
@@ -1555,56 +1555,56 @@ def main(args):
     qcd_variations = []
     qcd_variations.append(ReplaceWeight(
         "CMS_htt_qcd_0jet_rate_Run2018", "qcd_weight",
-        Weight("em_qcd_osss_0jet_rateup_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        Weight("em_qcd_osss_0jet_rateup_Weight", "qcd_weight"),
         "Up"))
     qcd_variations.append(ReplaceWeight(
         "CMS_htt_qcd_0jet_rate_Run2018", "qcd_weight",
-        Weight("em_qcd_osss_0jet_ratedown_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        Weight("em_qcd_osss_0jet_ratedown_Weight", "qcd_weight"),
         "Down"))
 
     qcd_variations.append(ReplaceWeight(
         "CMS_htt_qcd_0jet_shape_Run2018", "qcd_weight",
-        Weight("em_qcd_osss_0jet_shapeup_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        Weight("em_qcd_osss_0jet_shapeup_Weight", "qcd_weight"),
         "Up"))
     qcd_variations.append(ReplaceWeight(
         "CMS_htt_qcd_0jet_shape_Run2018", "qcd_weight",
-        Weight("em_qcd_osss_0jet_shapedown_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        Weight("em_qcd_osss_0jet_shapedown_Weight", "qcd_weight"),
         "Down"))
 
     qcd_variations.append(ReplaceWeight(
         "CMS_htt_qcd_1jet_rate_Run2018", "qcd_weight",
-        Weight("em_qcd_osss_1jet_rateup_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        Weight("em_qcd_osss_1jet_rateup_Weight", "qcd_weight"),
         "Up"))
     qcd_variations.append(ReplaceWeight(
         "CMS_htt_qcd_1jet_rate_Run2018", "qcd_weight",
-        Weight("em_qcd_osss_1jet_ratedown_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        Weight("em_qcd_osss_1jet_ratedown_Weight", "qcd_weight"),
         "Down"))
 
 
     qcd_variations.append(ReplaceWeight(
         "CMS_htt_qcd_1jet_shape_Run2018", "qcd_weight",
-        Weight("em_qcd_osss_1jet_shapeup_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        Weight("em_qcd_osss_1jet_shapeup_Weight", "qcd_weight"),
         "Up"))
     qcd_variations.append(ReplaceWeight(
         "CMS_htt_qcd_1jet_shape_Run2018", "qcd_weight",
-        Weight("em_qcd_osss_1jet_shapedown_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        Weight("em_qcd_osss_1jet_shapedown_Weight", "qcd_weight"),
         "Down"))
 
     qcd_variations.append(ReplaceWeight(
         "CMS_htt_qcd_iso_Run2018", "qcd_weight",
-        Weight("em_qcd_extrap_up_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        Weight("em_qcd_extrap_up_Weight", "qcd_weight"),
         "Up"))
     qcd_variations.append(ReplaceWeight(
         "CMS_htt_qcd_iso_Run2018", "qcd_weight",
-        Weight("em_qcd_osss_binned_Weight", "qcd_weight"),
+        Weight("em_qcd_extrap_down_Weight", "qcd_weight"),
         "Down"))
     qcd_variations.append(ReplaceWeight(
         "CMS_htt_qcd_iso", "qcd_weight",
-        Weight("em_qcd_extrap_up_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight"),
+        Weight("em_qcd_extrap_up_Weight", "qcd_weight"),
         "Up"))
     qcd_variations.append(ReplaceWeight(
         "CMS_htt_qcd_iso", "qcd_weight",
-        Weight("em_qcd_osss_binned_Weight", "qcd_weight"),
+        Weight("em_qcd_extrap_down_Weight", "qcd_weight"),
         "Down"))
 
 
