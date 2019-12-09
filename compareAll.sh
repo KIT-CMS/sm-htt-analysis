@@ -115,7 +115,7 @@ function compenv() {
     done
 }
 
-function create_training_dataset() {
+function genTrainingDS() {
     ensuremldirs
     for tag in ${tags[@]}; do
         logandrun ./ml/create_training_dataset.sh ${erasarg} ${channelsarg} ${tag}
@@ -204,7 +204,7 @@ function provideCluster() {
     fi
 }
 
-function runCluster(){
+function applyOnCluster(){
     set -e
     for tag in ${tags[@]}; do
         export tag
@@ -243,7 +243,7 @@ function copyFromCluster() {
 export JETFAKES=1 EMBEDDING=1 CATEGORIES="stxs_stage1p1"
 
 export redoConversion=0
-function genShapesLocal() {
+function genShapes() {
     ensureoutdirs
     for tag in ${tags[@]}; do
         for era in ${eras[@]}; do
@@ -495,4 +495,4 @@ function main() {
 }
 
 [[ $sourced == 1 ]] && [[ ! "bash" =~ $0 ]] && logerror "shell is sourced by another shell than bash, aborting" && exit 1
-[[ $sourced == 0 ]] && main
+[[ $sourced == 0 ]] && main || :
