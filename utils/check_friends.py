@@ -72,7 +72,7 @@ def main(args):
                 print "\033[92m"+"Same number of events in {} channel!".format(ch)+"\033[0m"
     print "\n"
     if len(buggy_files) == 0:
-        print "\033[92m"+"All friend files look good! Well done".format(username)+"\033[0m"
+        print "\033[92m"+"All friend files look good. Well done {}!".format(username)+"\033[0m"
     else:
         print "\033[91m"+"These files are buggy :( :( :("+"\033[0m"
         for bfile in buggy_files:
