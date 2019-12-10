@@ -114,6 +114,15 @@ analysis:
     db:           *fine_binning_8classes
     ggh_unrolled: *ggh_fine_full_unrolling_8classes
     qqh_unrolled: *qqh_fine_full_unrolling_8classes
+    vbftopo_highmjj:    *fine_binning_8classes
+    ggh_1J_PTH0to120:   *fine_binning_8classes
+    vbftopo_lowmjj:     *fine_binning_8classes
+    ggh_1J_PTH120to200: *fine_binning_8classes
+    qqh_2J:             *fine_binning_8classes
+    ggh_0J:             *fine_binning_8classes
+    ggh_PTHGT200:       *fine_binning_8classes
+    qqh_PTHGT200:       *fine_binning_8classes
+    ggh_2J:             *fine_binning_8classes
   et:
     ggh:          *fine_binning_8classes
     qqh:          *fine_binning_8classes
@@ -127,6 +136,15 @@ analysis:
     misc:         *fine_binning_8classes
     ggh_unrolled: *ggh_fine_full_unrolling_8classes
     qqh_unrolled: *qqh_fine_full_unrolling_8classes
+    vbftopo_highmjj:    *fine_binning_8classes
+    ggh_1J_PTH0to120:   *fine_binning_8classes
+    vbftopo_lowmjj:     *fine_binning_8classes
+    ggh_1J_PTH120to200: *fine_binning_8classes
+    qqh_2J:             *fine_binning_8classes
+    ggh_0J:             *fine_binning_8classes
+    ggh_PTHGT200:       *fine_binning_8classes
+    qqh_PTHGT200:       *fine_binning_8classes
+    ggh_2J:             *fine_binning_8classes
   mt:
     ggh:          *fine_binning_8classes
     qqh:          *fine_binning_8classes
@@ -140,6 +158,15 @@ analysis:
     misc:         *fine_binning_8classes
     ggh_unrolled: *ggh_fine_full_unrolling_8classes
     qqh_unrolled: *qqh_fine_full_unrolling_8classes
+    vbftopo_highmjj:    *fine_binning_8classes
+    ggh_1J_PTH0to120:   *fine_binning_8classes
+    vbftopo_lowmjj:     *fine_binning_8classes
+    ggh_1J_PTH120to200: *fine_binning_8classes
+    qqh_2J:             *fine_binning_8classes
+    ggh_0J:             *fine_binning_8classes
+    ggh_PTHGT200:       *fine_binning_8classes
+    qqh_PTHGT200:       *fine_binning_8classes
+    ggh_2J:             *fine_binning_8classes
   tt:
     ggh:          *fine_binning_5classes
     qqh:          *fine_binning_5classes
@@ -150,6 +177,15 @@ analysis:
     misc:         *fine_binning_5classes
     ggh_unrolled: *ggh_fine_full_unrolling_5classes
     qqh_unrolled: *qqh_fine_full_unrolling_5classes
+    vbftopo_highmjj:    *fine_binning_8classes
+    ggh_1J_PTH0to120:   *fine_binning_8classes
+    vbftopo_lowmjj:     *fine_binning_8classes
+    ggh_1J_PTH120to200: *fine_binning_8classes
+    qqh_2J:             *fine_binning_8classes
+    ggh_0J:             *fine_binning_8classes
+    ggh_PTHGT200:       *fine_binning_8classes
+    qqh_PTHGT200:       *fine_binning_8classes
+    ggh_2J:             *fine_binning_8classes
 
 # Define STXS stage 1 cuts for unrolling
 stxs_stage1:
@@ -672,7 +708,7 @@ gof:
       expression: "d0_1"
     dZ_1:
       bins: [-0.015,-0.014,-0.013,-0.012,-0.011,-0.01,-0.009,-0.008,-0.007,-0.006,-0.005,-0.004,-0.003,-0.002,-0.001,-0.0,0.001,0.002,0.003,0.004,0.005,0.006,0.007,0.008,0.009,0.01,0.011,0.012,0.013,0.014,0.015]
-      expression: "dZ_1" 
+      expression: "dZ_1"
     ME_D:
       bins: [0.0, 0.025, 0.05, 0.075, 0.1, 0.125, 0.15, 0.175, 0.2, 0.225, 0.25, 0.275, 0.3, 0.325, 0.35, 0.375, 0.4, 0.425, 0.45, 0.475, 0.5, 0.525, 0.55, 0.575, 0.6, 0.625, 0.65, 0.675, 0.7, 0.725, 0.75, 0.775, 0.8, 0.825, 0.85, 0.875, 0.9, 0.925, 0.95, 0.975, 1.0]
       expression: "ME_D"
@@ -802,7 +838,7 @@ gof:
 control:
   mt:
     DiTauDeltaR:
-      bins: [0. , 0.2, 0.4, 0.6, 0.8, 1. , 1.2, 1.4, 1.6, 1.8, 2. , 2.2, 2.4, 2.6, 2.8, 3. , 3.2, 3.4, 3.6, 3.8, 4. , 4.2, 4.4, 4.6, 4.8, 5.] 
+      bins: [0. , 0.2, 0.4, 0.6, 0.8, 1. , 1.2, 1.4, 1.6, 1.8, 2. , 2.2, 2.4, 2.6, 2.8, 3. , 3.2, 3.4, 3.6, 3.8, 4. , 4.2, 4.4, 4.6, 4.8, 5.]
       expression: "DiTauDeltaR"
     mTdileptonMET:
       bins: [  0.,   4.,   8.,  12.,  16.,  20.,  24.,  28.,  32.,  36.,  40., 44.,  48.,  52.,  56.,  60.,  64.,  68.,  72.,  76.,  80.,  84., 88.,  92.,  96., 100., 104., 108., 112., 116., 120., 124., 128., 132., 136., 140., 144., 148., 152., 156., 160., 164., 168., 172., 176., 180., 184., 188., 192., 196., 200.]
@@ -1105,7 +1141,7 @@ control:
       expression: "d0_1"
     dZ_1:
       bins: [-0.015,-0.014,-0.013,-0.012,-0.011,-0.01,-0.009,-0.008,-0.007,-0.006,-0.005,-0.004,-0.003,-0.002,-0.001,-0.0,0.001,0.002,0.003,0.004,0.005,0.006,0.007,0.008,0.009,0.01,0.011,0.012,0.013,0.014,0.015]
-      expression: "dZ_1" 
+      expression: "dZ_1"
     bpt_1:
       bins: [0,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160]
       expression: "bpt_1"
@@ -1120,7 +1156,7 @@ control:
       expression: "beta_2"
   em:
     DiTauDeltaR:
-      bins: [0. , 0.2, 0.4, 0.6, 0.8, 1. , 1.2, 1.4, 1.6, 1.8, 2. , 2.2, 2.4, 2.6, 2.8, 3. , 3.2, 3.4, 3.6, 3.8, 4. , 4.2, 4.4, 4.6, 4.8, 5.] 
+      bins: [0. , 0.2, 0.4, 0.6, 0.8, 1. , 1.2, 1.4, 1.6, 1.8, 2. , 2.2, 2.4, 2.6, 2.8, 3. , 3.2, 3.4, 3.6, 3.8, 4. , 4.2, 4.4, 4.6, 4.8, 5.]
       expression: "DiTauDeltaR"
     mTdileptonMET:
       bins: [  0.,   4.,   8.,  12.,  16.,  20.,  24.,  28.,  32.,  36.,  40., 44.,  48.,  52.,  56.,  60.,  64.,  68.,  72.,  76.,  80.,  84., 88.,  92.,  96., 100., 104., 108., 112., 116., 120., 124., 128., 132., 136., 140., 144., 148., 152., 156., 160., 164., 168., 172., 176., 180., 184., 188., 192., 196., 200.]
@@ -1477,7 +1513,7 @@ control:
       expression: "d0_1"
     dZ_1:
       bins: [-0.015,-0.014,-0.013,-0.012,-0.011,-0.01,-0.009,-0.008,-0.007,-0.006,-0.005,-0.004,-0.003,-0.002,-0.001,-0.0,0.001,0.002,0.003,0.004,0.005,0.006,0.007,0.008,0.009,0.01,0.011,0.012,0.013,0.014,0.015]
-      expression: "dZ_1" 
+      expression: "dZ_1"
     bpt_1:
       bins: [0,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160]
       expression: "bpt_1"
@@ -1492,7 +1528,7 @@ control:
       expression: "beta_2"
   et:
     DiTauDeltaR:
-      bins: [0. , 0.2, 0.4, 0.6, 0.8, 1. , 1.2, 1.4, 1.6, 1.8, 2. , 2.2, 2.4, 2.6, 2.8, 3. , 3.2, 3.4, 3.6, 3.8, 4. , 4.2, 4.4, 4.6, 4.8, 5.] 
+      bins: [0. , 0.2, 0.4, 0.6, 0.8, 1. , 1.2, 1.4, 1.6, 1.8, 2. , 2.2, 2.4, 2.6, 2.8, 3. , 3.2, 3.4, 3.6, 3.8, 4. , 4.2, 4.4, 4.6, 4.8, 5.]
       expression: "DiTauDeltaR"
     mTdileptonMET:
       bins: [  0.,   4.,   8.,  12.,  16.,  20.,  24.,  28.,  32.,  36.,  40., 44.,  48.,  52.,  56.,  60.,  64.,  68.,  72.,  76.,  80.,  84., 88.,  92.,  96., 100., 104., 108., 112., 116., 120., 124., 128., 132., 136., 140., 144., 148., 152., 156., 160., 164., 168., 172., 176., 180., 184., 188., 192., 196., 200.]
@@ -1795,7 +1831,7 @@ control:
       expression: "d0_1"
     dZ_1:
       bins: [-0.015,-0.014,-0.013,-0.012,-0.011,-0.01,-0.009,-0.008,-0.007,-0.006,-0.005,-0.004,-0.003,-0.002,-0.001,-0.0,0.001,0.002,0.003,0.004,0.005,0.006,0.007,0.008,0.009,0.01,0.011,0.012,0.013,0.014,0.015]
-      expression: "dZ_1" 
+      expression: "dZ_1"
     bpt_1:
       bins: [0,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160]
       expression: "bpt_1"
@@ -1810,7 +1846,7 @@ control:
       expression: "beta_2"
   tt:
     DiTauDeltaR:
-      bins: [0. , 0.2, 0.4, 0.6, 0.8, 1. , 1.2, 1.4, 1.6, 1.8, 2. , 2.2, 2.4, 2.6, 2.8, 3. , 3.2, 3.4, 3.6, 3.8, 4. , 4.2, 4.4, 4.6, 4.8, 5.] 
+      bins: [0. , 0.2, 0.4, 0.6, 0.8, 1. , 1.2, 1.4, 1.6, 1.8, 2. , 2.2, 2.4, 2.6, 2.8, 3. , 3.2, 3.4, 3.6, 3.8, 4. , 4.2, 4.4, 4.6, 4.8, 5.]
       expression: "DiTauDeltaR"
     mTdileptonMET:
       bins: [  0.,   4.,   8.,  12.,  16.,  20.,  24.,  28.,  32.,  36.,  40., 44.,  48.,  52.,  56.,  60.,  64.,  68.,  72.,  76.,  80.,  84., 88.,  92.,  96., 100., 104., 108., 112., 116., 120., 124., 128., 132., 136., 140., 144., 148., 152., 156., 160., 164., 168., 172., 176., 180., 184., 188., 192., 196., 200.]
@@ -2113,7 +2149,7 @@ control:
       expression: "d0_1"
     dZ_1:
       bins: [-0.015,-0.014,-0.013,-0.012,-0.011,-0.01,-0.009,-0.008,-0.007,-0.006,-0.005,-0.004,-0.003,-0.002,-0.001,-0.0,0.001,0.002,0.003,0.004,0.005,0.006,0.007,0.008,0.009,0.01,0.011,0.012,0.013,0.014,0.015]
-      expression: "dZ_1" 
+      expression: "dZ_1"
     bpt_1:
       bins: [0,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160]
       expression: "bpt_1"
@@ -2425,7 +2461,7 @@ control:
       expression: "d0_1"
     dZ_1:
       bins: [-0.015,-0.014,-0.013,-0.012,-0.011,-0.01,-0.009,-0.008,-0.007,-0.006,-0.005,-0.004,-0.003,-0.002,-0.001,-0.0,0.001,0.002,0.003,0.004,0.005,0.006,0.007,0.008,0.009,0.01,0.011,0.012,0.013,0.014,0.015]
-      expression: "dZ_1" 
+      expression: "dZ_1"
     bpt_1:
       bins: [0,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160]
       expression: "bpt_1"
