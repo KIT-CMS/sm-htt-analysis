@@ -554,8 +554,8 @@ def main(args):
 
     # Prefiring weights
     prefiring_variaitons = [
-        ReplaceWeight("CMS_prefiring_Run2016", "prefireWeight", Weight("prefiringweightup", "prefireWeight"),"Up"),
-        ReplaceWeight("CMS_prefiring_Run2016", "prefireWeight", Weight("prefiringweightdown", "prefireWeight"),"Down"),
+        ReplaceWeight("CMS_prefiring", "prefireWeight", Weight("prefiringweightup", "prefireWeight"),"Up"),
+        ReplaceWeight("CMS_prefiring", "prefireWeight", Weight("prefiringweightdown", "prefireWeight"),"Down"),
     ]
     for variation in prefiring_variaitons:
         for process_nick in [
