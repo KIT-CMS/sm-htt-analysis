@@ -27,7 +27,7 @@ logandrun python shapes/produce_shapes_$ERA.py \
     --tag ${TAG} \
     --channels $CHANNELS \
     --era $ERA \
-    --num-threads 10
+    --num-threads 8
 
 # Normalize fake-factor shapes to nominal
 logandrun python fake-factor-application/normalize_shifts.py output/shapes/${ERA}-${TAG}-${CHANNELS}-shapes.root
