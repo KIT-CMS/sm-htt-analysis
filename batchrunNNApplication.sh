@@ -25,6 +25,7 @@ if [[ $cluster = "etp7" ]]; then
     export sw_src_dir="/portal/ekpbms3/home/${USER}/CMSSW_10_2_14/src"
     export batch_out="/portal/ekpbms3/home/${USER}/batch-out"
     source utils/setup_samples.sh $era $tag
+    ARTUS_FRIENDS="${ARTUS_FRIENDS_EM} ${ARTUS_FRIENDS_FAKE_FACTOR}"
     eventsPerJob=2000000
     walltime=10000
 elif [[ $cluster == "lxplus7" ]]; then

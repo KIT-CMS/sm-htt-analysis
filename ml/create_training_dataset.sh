@@ -47,9 +47,9 @@ function run_procedure() {
     fi
     mkdir -p $outdir
 
-    if [ ${CHANNEL} == 'em' ]
+    if [ ${CHANNEL} != 'em' ]
     then
-        ARTUS_FRIENDS=${ARTUS_FRIENDS_EM}
+        ARTUS_FRIENDS="${ARTUS_FRIENDS_EM} ${ARTUS_FRIENDS_FAKE_FACTOR}"
     fi
     # Write dataset config
      logandrun python ml/write_dataset_config.py \
