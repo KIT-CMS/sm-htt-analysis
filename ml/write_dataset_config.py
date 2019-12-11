@@ -243,9 +243,6 @@ qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200125", era, args.base_path, cha
             raise Exception
 
         if args.training_jetfakes_estimation_method == "ff" and args.channel != "em":
-            if not args.era in ["2017", "2018"]:
-                logger.fatal("FF training not implemented for {}".format(args.era))
-                raise Exception
             classes_map.update({
                 "ff": "ff"
             })
