@@ -57,20 +57,8 @@ elif [[ $cluster == "naf" ]]; then
     export batch_out="/nfs/dust/cms/user/mscham/NNScoreApp"
     eventsPerJob=2000000
     walltime=2000
-    case $era in
-        "2016" )
-            ARTUS_OUTPUTS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/2016/ntuples"
-            ARTUS_FRIENDS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/2016/friends/FakeFactors /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2016/friends/MELA /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2016/friends/SVFit"
-            ;;
-        "2017" )
-            ARTUS_OUTPUTS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/2017/ntuples"
-            ARTUS_FRIENDS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/2017/friends/FakeFactors /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2017/friends/MELA /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2017/friends/SVFit"
-            ;;
-        "2018" )
-            ARTUS_OUTPUTS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/2018/ntuples"
-            ARTUS_FRIENDS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/2018/friends/FakeFactors /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2018/friends/MELA /nfs/dust/cms/group/higgs-kit/ekp/deeptau/2018/friends/SVFit"
-            ;;
-    esac
+    ARTUS_OUTPUTS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/$era/ntuples"
+    ARTUS_FRIENDS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/$era/friends/FakeFactors /nfs/dust/cms/group/higgs-kit/ekp/deeptau/$era/friends/MELA /nfs/dust/cms/group/higgs-kit/ekp/deeptau/$era/friends/SVFit"
 fi
 
 export workdir=$batch_out/$outdir
