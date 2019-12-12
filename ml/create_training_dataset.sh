@@ -1,10 +1,7 @@
 #!/bin/bash
 set -e
-
 if uname -a | grep ekpdeepthought
 then
-    #source /cvmfs/sft.cern.ch/lcg/views/LCG_94/x86_64-ubuntu1604-gcc54-opt/setup.sh
-    #source /cvmfs/sft.cern.ch/lcg/views/LCG_95/x86_64-ubuntu1804-gcc8-opt/setup.sh
     echo "Not possible here, use another machine"
     exit 1
 fi
@@ -47,22 +44,9 @@ function run_procedure() {
     fi
     mkdir -p $outdir
 
-    ARTUS_FRIENDS=""
-    if [ ${CHANNEL} == 'mt' ]
+    if [ ${CHANNEL} != 'em' ]
     then
-        ARTUS_FRIENDS="${ARTUS_FRIENDS_MT} $ARTUS_FRIENDS_FAKE_FACTOR"
-    fi
-    if [ ${CHANNEL} == 'et' ]
-    then
-        ARTUS_FRIENDS="${ARTUS_FRIENDS_ET} $ARTUS_FRIENDS_FAKE_FACTOR"
-    fi
-    if [ ${CHANNEL} == 'tt' ]
-    then
-        ARTUS_FRIENDS="${ARTUS_FRIENDS_TT} $ARTUS_FRIENDS_FAKE_FACTOR"
-    fi
-    if [ ${CHANNEL} == 'em' ]
-    then
-        ARTUS_FRIENDS=${ARTUS_FRIENDS_EM}
+        ARTUS_FRIENDS="${ARTUS_FRIENDS_EM} ${ARTUS_FRIENDS_FAKE_FACTOR}"
     fi
     # Write dataset config
      logandrun python ml/write_dataset_config.py \
@@ -75,6 +59,7 @@ function run_procedure() {
          --output-filename training_dataset.root \
          --tree-path ${CHANNEL}_nominal/ntuple \
          --event-branch event \
+         --training-stxs1p1 \
          --training-weight-branch training_weight \
          --training-z-estimation-method $tauEstimation \
          --training-jetfakes-estimation-method $jetEstimation \

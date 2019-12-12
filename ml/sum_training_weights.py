@@ -104,7 +104,7 @@ def main(args):
             odDict[key]=newWeightsDict[key]
             del newWeightsDict[key]
     ## add classes that are not in the priolist at the end
-    for key in newWeightsDict:
+    for key in sorted(newWeightsDict):
         odDict[key]=newWeightsDict[key]
     del newWeightsDict
 

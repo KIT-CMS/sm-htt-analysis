@@ -116,64 +116,57 @@ def main(args):
         if args.training_stxs1p1:
             classes_map = {
 # class1
-"ggH_GG2H_PTH_GT200125": "class1",
+"ggH_GG2H_PTH_GT200125": "ggh_PTHGT200",
 # class2
-"ggH_GG2H_0J_PTH_0_10125": "class2",
-"ggH_GG2H_0J_PTH_GT10125": "class2",
+"ggH_GG2H_0J_PTH_0_10125": "ggh_0J",
+"ggH_GG2H_0J_PTH_GT10125": "ggh_0J",
 # class3
-"ggH_GG2H_1J_PTH_0_60125": "class3",
-"ggH_GG2H_1J_PTH_60_120125": "class3",
-"ggH_GG2H_1J_PTH_120_200125": "class3",
+"ggH_GG2H_1J_PTH_0_60125": "ggh_1J_PTH0to120",
+"ggH_GG2H_1J_PTH_60_120125": "ggh_1J_PTH0to120",
 # class4
-"ggH_GG2H_GE2J_MJJ_0_350_PTH_0_60125": "class4",
-"ggH_GG2H_GE2J_MJJ_0_350_PTH_60_120125": "class4",
-"ggH_GG2H_GE2J_MJJ_0_350_PTH_120_200125": "class4",
+"ggH_GG2H_1J_PTH_120_200125": "ggh_1J_PTH120to200",
 # class5
-"ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25125": "class5",
-"ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25125": "class5",
-"qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25125": "class5",
-"qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25125": "class5",
+"ggH_GG2H_GE2J_MJJ_0_350_PTH_0_60125": "ggh_2J",
+"ggH_GG2H_GE2J_MJJ_0_350_PTH_60_120125": "ggh_2J",
+"ggH_GG2H_GE2J_MJJ_0_350_PTH_120_200125": "ggh_2J",
 # class6
-"ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25125": "class6",
-"ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25125": "class6",
-"qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25125": "class6",
-"qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25125": "class6",
+"ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25125": "vbftopo_lowmjj",
+"ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25125": "vbftopo_lowmjj",
+"qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25125": "vbftopo_lowmjj",
+"qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25125": "vbftopo_lowmjj",
 # class7
-"qqH_QQ2HQQ_GE2J_MJJ_0_60125": "class7",
-"qqH_QQ2HQQ_GE2J_MJJ_60_120125": "class7",
-"qqH_QQ2HQQ_GE2J_MJJ_120_350125": "class7",
+"ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25125": "vbftopo_highmjj",
+"ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25125": "vbftopo_highmjj",
+"qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25125": "vbftopo_highmjj",
+"qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25125": "vbftopo_highmjj",
 # class8
-"qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200125": "class8",
+"qqH_QQ2HQQ_GE2J_MJJ_0_60125": "qqh_2J",
+"qqH_QQ2HQQ_GE2J_MJJ_60_120125": "qqh_2J",
+"qqH_QQ2HQQ_GE2J_MJJ_120_350125": "qqh_2J",
+# class9
+"qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200125": "qqh_PTHGT200",
             }
             estimationMethodList = [
-# class1
 ggHEstimation("ggH_GG2H_PTH_GT200125", era, args.base_path, channel),
-# class2
 ggHEstimation("ggH_GG2H_0J_PTH_0_10125", era, args.base_path, channel),
 ggHEstimation("ggH_GG2H_0J_PTH_GT10125", era, args.base_path, channel),
-# class3
 ggHEstimation("ggH_GG2H_1J_PTH_0_60125", era, args.base_path, channel),
 ggHEstimation("ggH_GG2H_1J_PTH_60_120125", era, args.base_path, channel),
 ggHEstimation("ggH_GG2H_1J_PTH_120_200125", era, args.base_path, channel),
-# class4
 ggHEstimation("ggH_GG2H_GE2J_MJJ_0_350_PTH_0_60125", era, args.base_path, channel),
 ggHEstimation("ggH_GG2H_GE2J_MJJ_0_350_PTH_60_120125", era, args.base_path, channel),
 ggHEstimation("ggH_GG2H_GE2J_MJJ_0_350_PTH_120_200125", era, args.base_path, channel),
-# class5
 ggHEstimation("ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25125", era, args.base_path, channel),
 ggHEstimation("ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25125", era, args.base_path, channel),
 qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25125", era, args.base_path, channel),
 qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25125", era, args.base_path, channel),
-# class5
 ggHEstimation("ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25125", era, args.base_path, channel),
 ggHEstimation("ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25125", era, args.base_path, channel),
 qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25125", era, args.base_path, channel),
 qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25125", era, args.base_path, channel),
-# class6
 qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_0_60125", era, args.base_path, channel),
 qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_60_120125", era, args.base_path, channel),
 qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_120_350125", era, args.base_path, channel),
-# class7
 qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200125", era, args.base_path, channel),
             ]
         else:
@@ -250,9 +243,6 @@ qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200125", era, args.base_path, cha
             raise Exception
 
         if args.training_jetfakes_estimation_method == "ff" and args.channel != "em":
-            if not args.era in ["2017", "2018"]:
-                logger.fatal("FF training not implemented for {}".format(args.era))
-                raise Exception
             classes_map.update({
                 "ff": "ff"
             })
