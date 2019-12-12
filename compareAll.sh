@@ -240,7 +240,7 @@ function copyFromCluster() {
     fi
 }
 
-export JETFAKES=1 EMBEDDING=1 CATEGORIES="stxs_stage1p1"
+
 
 export redoConversion=0
 function genShapes() {
@@ -292,7 +292,7 @@ function syncShapes() {
 }
 
 
-
+export JETFAKES=1 EMBEDDING=1 CATEGORIES="stxs_stage1p1"
 function genDatacards(){
     ensureoutdirs
     for era in ${eras[@]}; do
