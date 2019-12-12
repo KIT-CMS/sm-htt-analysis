@@ -16,7 +16,7 @@ elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
     STXS_SIGNALS=stxs_stage1p1
 fi
 WORKSPACE=$DATACARDDIR/${ERA}-${STXS_FIT}-workspace.root
-if [ $HESSE == "robustHesse" ];then
+if [[ $HESSE == "robustHesse" ]];then
     LOGFILE="output/log/hesse-$ERA-$TAG-$CHANNEL-$STXS_FIT.log"
     OUTPUTFILE="output/signalStrength/hesse-$ERA-$TAG-$CHANNEL-$STXS_FIT.txt"
 else
@@ -27,7 +27,7 @@ fi
 # combining all ERAs
 ulimit -s unlimited
 
-if [ $HESSE == "robustHesse" ]
+if [[ $HESSE == "robustHesse" ]]
 then
     logandrun combine \
         -M FitDiagnostics \
