@@ -329,11 +329,30 @@ function genWorkspaces(){
     wait
 }
 
-export JETFAKES=1 EMBEDDING=1 CATEGORIES="stxs_stage1p1"
 
-function genMCprefitshapes(){
+function plotPrefitShapes(){
+    if [[ -z $1 ]]; then
+        logerror "first arg needs to be cmb or a channel"
+        return 1
+    fi
     ensureoutdirs
-    export JETFAKES=0 EMBEDDING=0 CATEGORIES="stxs_stage1p1"
+    for tag in ${tags[@]}; do
+        for era in ${eras[@]}; do
+            STXS_FIT="stxs_stage0"
+            STXS_SIGNALS="stxs_stage0"
+            DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_FIT}/$1/125
+            logandrun ./combine/prefit_postfit_shapes.sh ${era} ${STXS_FIT} ${DATACARDDIR} ${tag}
+            EMBEDDING=1
+            JETFAKES=1
+            logandrun ./plotting/plot_shapes.sh $era $tag ${channelsarg} $STXS_SIGNALS $STXS_FIT $CATEGORIES $JETFAKES $EMBEDDING
+        done
+    done
+}
+
+
+function plotMCprefitshapes(){
+    ensureoutdirs
+    JETFAKES=0 EMBEDDING=0 CATEGORIES="stxs_stage1p1"
     for tag in ${tags[@]}; do
         export tag
         for era in ${eras[@]}; do

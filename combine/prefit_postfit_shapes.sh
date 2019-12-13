@@ -1,6 +1,6 @@
 #!/bin/bash
 source utils/setup_cmssw.sh
-set -x
+
 ERA=$1
 STXS_FIT=$2
 DATACARDDIR=$3
