@@ -264,7 +264,7 @@ function submitShapes(){
         for era in ${eras[@]}; do
             for channel in ${channels[@]}; do
                 fn=output/shapes/${era}-${tag}-${channel}-shapes.root
-                if [[ ! -f $fn || $( stat -c%s $fn ) -le 2000 ]]; then
+                if [[ ! -f $fn || $( stat -c%s $fn ) -le 5000 ]]; then
                     echo "$era $channel $tag $(pwd -P)"
                     redoConversion=1
                 fi

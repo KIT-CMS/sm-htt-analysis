@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 source utils/setup_cmssw.sh
 source utils/setup_python.sh
 
