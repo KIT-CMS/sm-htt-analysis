@@ -20,18 +20,18 @@ FF_Friends_2016="$basedir/2016/friends/FakeFactors/"
 # Samples Run2017
 basedir="/ceph/htautau/deeptau"
 ARTUS_OUTPUTS_2017="$basedir/2017/ntuples/"
-#NNScore_Friends_2017="$basedir/2017/friends/NNScore/"
+#NNScore_Friends_2017=""
 SVFit_Friends_2017="$basedir/2017/friends/SVFit/"
 MELA_Friends_2017="$basedir/2017/friends/MELA/"
 FF_Friends_2017="$basedir/2017/friends/FakeFactors/"
 
 # Samples Run2018
 basedir="/ceph/htautau/deeptau"
-ARTUS_OUTPUTS_2018="$basedir/2018/ntuples/"
-#NNScore_Friends_2018="$basedir/2018/friends/NNScore/"
-SVFit_Friends_2018="$basedir/2018/friends/SVFit/"
-MELA_Friends_2018="$basedir/2018/friends/MELA/"
-FF_Friends_2018="$basedir/2018/friends/FakeFactors/"
+ARTUS_OUTPUTS_2018="/portal/ekpbms3/home/jbechtel/deeptau/2018/ntuples/"
+#NNScore_Friends_2018=""
+SVFit_Friends_2018="/portal/ekpbms3/home/jbechtel/deeptau/2018/friends/SVFit/"
+MELA_Friends_2018="/portal/ekpbms3/home/jbechtel/deeptau/2018/friends/MELA/"
+FF_Friends_2018="/portal/ekpbms3/home/jbechtel/deeptau/2018/friends/FakeFactors/"
 
 
 # ERA handling
