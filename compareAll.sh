@@ -77,7 +77,7 @@ for era in ${eras[@]}; do
     fi
 done
 for channel in ${channels[@]}; do
-    if [[ ! "em et tt mt" =~ ${channel} ]]; then
+    if [[ ! "em et tt mt cmb all" =~ ${channel} ]]; then
         logerror ${channel} is not a valid channel.
         [[ $sourced != 1 ]] && exit 1
     fi
@@ -212,8 +212,6 @@ function applyOnCluster(){
             provideCluster $tag $era
             logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "submit" ${tag}
             [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "rungc" ${tag}
-            #[ $? ] && read -p " Collect? y/[n]" yn
-            #[[ $yn == "y" ]]
             [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "collect" ${tag}
             [ $? ] && copyFromCluster
             [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "delete" ${tag} || return 1
@@ -222,11 +220,6 @@ function applyOnCluster(){
 }
 
 function copyFromCluster() {
-    # read -p "Sync files from $USER@lxplus.cern.ch:$batch_out/${era}_${tag} to $batch_out_local/${era}_${tag} now? y/[n]" yn
-    # if [[ ! $yn == "y" ]]; then
-    #     logerror "!=y \n aborting"
-    #     [[ $sourced != 1 ]] && exit 0
-    # fi
     nnscorefolder=$batch_out_local/${era}/nnscore_friends/${tag}
     [[ ! -d $nnscorefolder  ]] && mkdir -p $nnscorefolder
     if [[ $cluster == etp7 ]]; then
@@ -330,73 +323,6 @@ function genWorkspaces(){
 }
 
 
-function plotPrefitShapes(){
-    if [[ -z $1 ]]; then
-        logerror "first arg needs to be cmb or a channel"
-        return 1
-    fi
-    ensureoutdirs
-    for tag in ${tags[@]}; do
-        for era in ${eras[@]}; do
-            STXS_FIT="stxs_stage0"
-            STXS_SIGNALS="stxs_stage0"
-            DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_FIT}/$1/125
-            logandrun ./combine/prefit_postfit_shapes.sh ${era} ${STXS_FIT} ${DATACARDDIR} ${tag}
-            EMBEDDING=1
-            JETFAKES=1
-            logandrun ./plotting/plot_shapes.sh $era $tag ${channelsarg} $STXS_SIGNALS $STXS_FIT $CATEGORIES $JETFAKES $EMBEDDING
-        done
-    done
-}
-
-
-function plotMCprefitshapes(){
-    ensureoutdirs
-    JETFAKES=0 EMBEDDING=0 CATEGORIES="stxs_stage1p1"
-    for tag in ${tags[@]}; do
-        export tag
-        for era in ${eras[@]}; do
-            for STXS_SIGNALS in "stxs_stage0"; do
-                    DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}
-                    [ -d $DATACARDDIR ] || mkdir -p $DATACARDDIR
-                    logandrun ./datacards/produce_datacard.sh ${era} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${tag} ${channelsarg}
-            done
-            for STXS_FIT in "stxs_stage0"; do
-                fn="output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/cmb/125/${era}-${STXS_FIT}-workspace.root"
-                if [[ ! -f $fn ]]; then
-                    logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${tag}
-                    [[ $? == 0 ]] || return $?
-                else
-                    loginfo "skipping workspace creation, as  $fn exists"
-                fi
-            done
-    STXS_FIT="stxs_stage0"
-    DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_FIT}/cmb/125
-    FILE="${DATACARDDIR}/prefitshape-${era}-${tag}-${STXS_FIT}.root"
-    logandrun ./combine/prefit_postfit_shapes.sh ${era} ${STXS_FIT} ${DATACARDDIR} ${tag}
-
-                OPTION="--png"
-                (
-                    source utils/setup_cvmfs_sft.sh
-                    source utils/setup_python.sh
-                    if [[ $tag =~ "ff" ]]; then
-                        TRAINFF=True
-                    else
-                        TRAINFF=False
-                    fi
-                    if [[ $tag =~ "emb" ]]; then
-                        TRAINEMB=True
-                    else
-                        TRAINEMB=False
-                    fi
-                    PLOTDIR=output/plots/${era}-${tag}_prefit-plots
-                    mkdir -p $PLOTDIR
-                    logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channels[@]} -e $era $OPTION --categories $CATEGORIES --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB
-                )
-        done
-    done
-}
-
 ### Subroutine called by runstages
 ### do not run this parallel! it writes to fit.root in the main dir and is then moved
 function runana() {
@@ -411,12 +337,20 @@ function runana() {
                     elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
                         STXS_SIGNALS=stxs_stage1p1
                     fi
-                    DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}
-                    for channel in ${channels[@]}; do
-                         logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR/$channel/125 $channel ${tag} #&
-                         condwait
+                    if [[ ${#channels[@]} == 4 ]]; then
+                        channelsPlusCmb=("${channels[@]}" "cmb")
+                    else
+                        channelsPlusCmb=("${channels[@]}")
+                    fi
+                    for channel in ${channelsPlusCmb[@]}; do
+                        DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/$channel/125
+                        logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR $channel ${tag} #&
+                        condwait
                     done
-                    logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR/cmb/125 cmb ${tag} #&
+
+                        DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/cmb/125
+                        logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR cmb ${tag} #&
+
                     condwait
                 done
             fi
@@ -425,8 +359,8 @@ function runana() {
 }
 
 ### Subroutine called by runstages
-### do not run this parallel! it writes to fit.root in the main dir and is then moved
-function plot_shapes() {
+### generate postfitshape
+function plotPreFitShapes() {
     ensureoutdirs
     for tag in ${tags[@]}; do
         export tag
@@ -437,32 +371,130 @@ function plot_shapes() {
             elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
                 STXS_SIGNALS=stxs_stage1p1
             fi
-            DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_FIT}/cmb/125
-            FILE="${DATACARDDIR}/prefitshape-${era}-${tag}-${STXS_FIT}.root"
-            [[ -f $FILE ]] || logandrun ./combine/prefit_postfit_shapes.sh ${era} ${STXS_FIT} ${DATACARDDIR} ${tag}
 
-            # OPTION="--png"
-            # (
-            #     source utils/setup_cvmfs_sft.sh
-            #     source utils/setup_python.sh
-            #     if [[ $tag =~ "ff" ]]; then
-            #         TRAINFF=True
-            #     else
-            #         TRAINFF=False
-            #     fi
-            #     if [[ $tag =~ "emb" ]]; then
-            #         TRAINEMB=True
-            #     else
-            #         TRAINEMB=False
-            #     fi
-            #     PLOTDIR=output/plots/${era}-${tag}_prefit-plots
-            #     [ -d $PLOTDIR ] || mkdir -p $PLOTDIR
-            #     logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channels[@]} -e $era $OPTION --categories $CATEGORIES --fake-factor --embedding --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB
-            # )
-            logandrun ./plotting/plot_shapes.sh $era $tag ${channelsarg} $STXS_SIGNALS $STXS_FIT $CATEGORIES $JETFAKES $EMBEDDING
+            for channel in ${channels[@]}; do
+                DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/$channel/125
+
+                # generate the postfitshape
+                FILE="${DATACARDDIR}/prefitshape-${era}-${tag}-${STXS_FIT}.root"
+                [[ -f $FILE ]] || (
+                    source utils/setup_cmssw.sh
+                    WORKSPACE=$DATACARDDIR/${era}-${STXS_FIT}-workspace.root
+                    logandrun PostFitShapesFromWorkspace \
+                        -m 125 -w ${WORKSPACE} \
+                        -d ${DATACARDDIR}/combined.txt.cmb \
+                        -o ${FILE}
+                )
+                ## plot the preditshape and postfitshape
+                (
+                    source utils/setup_cvmfs_sft.sh
+                    source utils/setup_python.sh
+                    PLOTDIR=output/plots/${era}-${tag}-${channel}_prefit-plots
+                    [ -d $PLOTDIR ] || mkdir -p $PLOTDIR
+                    logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channel} -e $era $OPTION --categories $CATEGORIES --fake-factor --embedding --normalize-by-bin-width -l --train-ff True --train-emb True
+                )
+                done
         done
     done
 }
+
+function plotPostFitShapes(){
+    ensureoutdirs
+    for tag in ${tags[@]}; do
+        export tag
+        for era in ${eras[@]}; do
+            STXS_FIT="stxs_stage0"
+            if [[ $STXS_FIT == "inclusive" || $STXS_FIT == "stxs_stage0" ]]; then
+                STXS_SIGNALS=stxs_stage0
+            elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
+                STXS_SIGNALS=stxs_stage1p1
+            fi
+
+            for channel in ${channels[@]}; do
+                DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/$channel/125
+
+                # Generate the fitDiagnostics
+                FITFILE=$DATACARDDIR/fitDiagnostics${era}-${STXS_FIT}.MultiDimFit.mH125.root
+                [[ -f $FITFILE ]] || logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR $channel ${tag} "robustHesse"
+
+                # generate the postfitshape
+                FILE="${DATACARDDIR}/postfitshape-${era}-${tag}-${STXS_FIT}.root"
+                [[ -f $FILE ]] || (
+                    source utils/setup_cmssw.sh
+                    WORKSPACE=$DATACARDDIR/${era}-${STXS_FIT}-workspace.root
+                    logandrun PostFitShapesFromWorkspace \
+                        -m 125 -w ${WORKSPACE} \
+                        -d ${DATACARDDIR}/combined.txt.cmb \
+                        -o ${FILE} \
+                        -f ${FITFILE}:fit_s \
+                        --postfit
+                )
+                ## plot the preditshape and postfitshape
+                (
+                    source utils/setup_cvmfs_sft.sh
+                    source utils/setup_python.sh
+                    PLOTDIR=output/plots/${era}-${tag}-${channel}_postfit-plots
+                    [ -d $PLOTDIR ] || mkdir -p $PLOTDIR
+                    logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channel} -e $era $OPTION --categories $CATEGORIES --fake-factor --embedding --normalize-by-bin-width -l --train-ff True --train-emb True
+                )
+                done
+        done
+    done
+}
+
+
+
+function plotMCprefitshapes(){
+        ensureoutdirs
+        JETFAKES=0 EMBEDDING=0 CATEGORIES="stxs_stage1p1"
+        for tag in ${tags[@]}; do
+            export tag
+            for era in ${eras[@]}; do
+                for STXS_SIGNALS in "stxs_stage0"; do
+                        DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}
+                        [ -d $DATACARDDIR ] || mkdir -p $DATACARDDIR
+                        logandrun ./datacards/produce_datacard.sh ${era} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${tag} ${channelsarg}
+                done
+                for STXS_FIT in "stxs_stage0"; do
+                    fn="output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/cmb/125/${era}-${STXS_FIT}-workspace.root"
+                    if [[ ! -f $fn ]]; then
+                        logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${tag}
+                        [[ $? == 0 ]] || return $?
+                    else
+                        loginfo "skipping workspace creation, as  $fn exists"
+                    fi
+                done
+        STXS_FIT="stxs_stage0"
+        DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_FIT}/cmb/125
+        FILE="${DATACARDDIR}/prefitshape-${era}-${tag}-${STXS_FIT}.root"
+        logandrun ./combine/prefit_postfit_shapes.sh ${era} ${STXS_FIT} ${DATACARDDIR} ${tag}
+
+        OPTION="--png"
+        (
+            source utils/setup_cvmfs_sft.sh
+            source utils/setup_python.sh
+            if [[ $tag =~ "ff" ]]; then
+                TRAINFF=True
+            else
+                TRAINFF=False
+            fi
+            if [[ $tag =~ "emb" ]]; then
+                TRAINEMB=True
+            else
+                TRAINEMB=False
+            fi
+            PLOTDIR=output/plots/${era}-${tag}_prefit-plots
+            mkdir -p $PLOTDIR
+            logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channels[@]} -e $era $OPTION --categories $CATEGORIES --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB
+        )
+        done
+    done
+}
+
+
+
+
+
 
 ### compares Signal strengths of the Samples classified on the training based on MCvsEMB dataset creation
 function compareSignRes {
