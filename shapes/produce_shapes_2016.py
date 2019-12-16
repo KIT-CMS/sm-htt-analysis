@@ -1631,7 +1631,7 @@ def main(args):
                       "Up"))
         ggh_variations.append(
             AddWeight(unc, "{}_weight".format(unc),
-                      Weight("(1.0/{})".format(unc), "{}_weight".format(unc)),
+                      Weight("(2.0-{})".format(unc), "{}_weight".format(unc)),
                       "Down"))
     for variation in ggh_variations:
         for process_nick in [nick for nick in signal_nicks if "ggH" in nick]:
