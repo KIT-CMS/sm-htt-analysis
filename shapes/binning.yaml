@@ -57,6 +57,10 @@ fine_binning_8classes: &fine_binning_8classes
     [ 0.125, 0.15,  0.2,   0.25,  0.3,   0.35,  0.4,   0.45,  0.5,   0.55,  0.6,
       0.65,  0.7,   0.75,  0.8,   0.85,  0.9,   0.95,  1.   ]
 
+fine_binning_Xclasses: &fine_binning_Xclasses
+    [ 0.0, 0.3, 0.4, 0.45, 0.5, 0.55,  0.6, 0.65, 0.7,
+      0.75, 0.8, 0.85, 0.9, 0.92, 0.94, 0.96, 0.98, 1.]
+
 # Manually defined binning
 ggh_full_unrolling_5classes: &ggh_full_unrolling_5classes
          [0.2, 0.4, 0.5, 0.6, 1.0, # 103
@@ -105,87 +109,87 @@ analysis:
   em:
     ggh:          *fine_binning_8classes
     qqh:          *fine_binning_8classes
-    ztt:          *fine_binning_8classes
-    tt:           *fine_binning_8classes
-    ss:           *fine_binning_8classes
-    ff:           *fine_binning_8classes
-    emb:           *fine_binning_8classes
-    misc:         *fine_binning_8classes
-    db:           *fine_binning_8classes
+    ztt:          *fine_binning_Xclasses
+    tt:           *fine_binning_Xclasses
+    ss:           *fine_binning_Xclasses
+    ff:           *fine_binning_Xclasses
+    emb:           *fine_binning_Xclasses
+    misc:         *fine_binning_Xclasses
+    db:           *fine_binning_Xclasses
     ggh_unrolled: *ggh_fine_full_unrolling_8classes
     qqh_unrolled: *qqh_fine_full_unrolling_8classes
-    vbftopo_highmjj:    *fine_binning_8classes
-    ggh_1J_PTH0to120:   *fine_binning_8classes
-    vbftopo_lowmjj:     *fine_binning_8classes
-    ggh_1J_PTH120to200: *fine_binning_8classes
-    qqh_2J:             *fine_binning_8classes
-    ggh_0J:             *fine_binning_8classes
-    ggh_PTHGT200:       *fine_binning_8classes
-    qqh_PTHGT200:       *fine_binning_8classes
-    ggh_2J:             *fine_binning_8classes
+    vbftopo_highmjj:    *fine_binning_Xclasses
+    ggh_1J_PTH0to120:   *fine_binning_Xclasses
+    vbftopo_lowmjj:     *fine_binning_Xclasses
+    ggh_1J_PTH120to200: *fine_binning_Xclasses
+    qqh_2J:             *fine_binning_Xclasses
+    ggh_0J:             *fine_binning_Xclasses
+    ggh_PTHGT200:       *fine_binning_Xclasses
+    qqh_PTHGT200:       *fine_binning_Xclasses
+    ggh_2J:             *fine_binning_Xclasses
   et:
     ggh:          *fine_binning_8classes
     qqh:          *fine_binning_8classes
-    ztt:          *fine_binning_8classes
-    zll:          *fine_binning_8classes
-    w:            *fine_binning_8classes
-    ff:           *fine_binning_8classes
-    emb:           *fine_binning_8classes
-    tt:           *fine_binning_8classes
-    ss:           *fine_binning_8classes
-    misc:         *fine_binning_8classes
+    ztt:          *fine_binning_Xclasses
+    zll:          *fine_binning_Xclasses
+    w:            *fine_binning_Xclasses
+    ff:           *fine_binning_Xclasses
+    emb:           *fine_binning_Xclasses
+    tt:           *fine_binning_Xclasses
+    ss:           *fine_binning_Xclasses
+    misc:         *fine_binning_Xclasses
     ggh_unrolled: *ggh_fine_full_unrolling_8classes
     qqh_unrolled: *qqh_fine_full_unrolling_8classes
-    vbftopo_highmjj:    *fine_binning_8classes
-    ggh_1J_PTH0to120:   *fine_binning_8classes
-    vbftopo_lowmjj:     *fine_binning_8classes
-    ggh_1J_PTH120to200: *fine_binning_8classes
-    qqh_2J:             *fine_binning_8classes
-    ggh_0J:             *fine_binning_8classes
-    ggh_PTHGT200:       *fine_binning_8classes
-    qqh_PTHGT200:       *fine_binning_8classes
-    ggh_2J:             *fine_binning_8classes
+    vbftopo_highmjj:    *fine_binning_Xclasses
+    ggh_1J_PTH0to120:   *fine_binning_Xclasses
+    vbftopo_lowmjj:     *fine_binning_Xclasses
+    ggh_1J_PTH120to200: *fine_binning_Xclasses
+    qqh_2J:             *fine_binning_Xclasses
+    ggh_0J:             *fine_binning_Xclasses
+    ggh_PTHGT200:       *fine_binning_Xclasses
+    qqh_PTHGT200:       *fine_binning_Xclasses
+    ggh_2J:             *fine_binning_Xclasses
   mt:
     ggh:          *fine_binning_8classes
     qqh:          *fine_binning_8classes
-    ztt:          *fine_binning_8classes
-    zll:          *fine_binning_8classes
-    w:            *fine_binning_8classes
-    ff:           *fine_binning_8classes
-    emb:           *fine_binning_8classes
-    tt:           *fine_binning_8classes
-    ss:           *fine_binning_8classes
-    misc:         *fine_binning_8classes
+    ztt:          *fine_binning_Xclasses
+    zll:          *fine_binning_Xclasses
+    w:            *fine_binning_Xclasses
+    ff:           *fine_binning_Xclasses
+    emb:           *fine_binning_Xclasses
+    tt:           *fine_binning_Xclasses
+    ss:           *fine_binning_Xclasses
+    misc:         *fine_binning_Xclasses
     ggh_unrolled: *ggh_fine_full_unrolling_8classes
     qqh_unrolled: *qqh_fine_full_unrolling_8classes
-    vbftopo_highmjj:    *fine_binning_8classes
-    ggh_1J_PTH0to120:   *fine_binning_8classes
-    vbftopo_lowmjj:     *fine_binning_8classes
-    ggh_1J_PTH120to200: *fine_binning_8classes
-    qqh_2J:             *fine_binning_8classes
-    ggh_0J:             *fine_binning_8classes
-    ggh_PTHGT200:       *fine_binning_8classes
-    qqh_PTHGT200:       *fine_binning_8classes
-    ggh_2J:             *fine_binning_8classes
+    vbftopo_highmjj:    *fine_binning_Xclasses
+    ggh_1J_PTH0to120:   *fine_binning_Xclasses
+    vbftopo_lowmjj:     *fine_binning_Xclasses
+    ggh_1J_PTH120to200: *fine_binning_Xclasses
+    qqh_2J:             *fine_binning_Xclasses
+    ggh_0J:             *fine_binning_Xclasses
+    ggh_PTHGT200:       *fine_binning_Xclasses
+    qqh_PTHGT200:       *fine_binning_Xclasses
+    ggh_2J:             *fine_binning_Xclasses
   tt:
     ggh:          *fine_binning_5classes
     qqh:          *fine_binning_5classes
-    ztt:          *fine_binning_5classes
-    ff:           *fine_binning_8classes
-    emb:           *fine_binning_8classes
-    noniso:       *fine_binning_5classes
-    misc:         *fine_binning_5classes
+    ztt:          *fine_binning_Xclasses
+    ff:           *fine_binning_Xclasses
+    emb:           *fine_binning_Xclasses
+    noniso:       *fine_binning_Xclasses
+    misc:         *fine_binning_Xclasses
     ggh_unrolled: *ggh_fine_full_unrolling_5classes
     qqh_unrolled: *qqh_fine_full_unrolling_5classes
-    vbftopo_highmjj:    *fine_binning_8classes
-    ggh_1J_PTH0to120:   *fine_binning_8classes
-    vbftopo_lowmjj:     *fine_binning_8classes
-    ggh_1J_PTH120to200: *fine_binning_8classes
-    qqh_2J:             *fine_binning_8classes
-    ggh_0J:             *fine_binning_8classes
-    ggh_PTHGT200:       *fine_binning_8classes
-    qqh_PTHGT200:       *fine_binning_8classes
-    ggh_2J:             *fine_binning_8classes
+    vbftopo_highmjj:    *fine_binning_Xclasses
+    ggh_1J_PTH0to120:   *fine_binning_Xclasses
+    vbftopo_lowmjj:     *fine_binning_Xclasses
+    ggh_1J_PTH120to200: *fine_binning_Xclasses
+    qqh_2J:             *fine_binning_Xclasses
+    ggh_0J:             *fine_binning_Xclasses
+    ggh_PTHGT200:       *fine_binning_Xclasses
+    qqh_PTHGT200:       *fine_binning_Xclasses
+    ggh_2J:             *fine_binning_Xclasses
 
 # Define STXS stage 1 cuts for unrolling
 stxs_stage1:
