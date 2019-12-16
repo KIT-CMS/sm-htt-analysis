@@ -154,10 +154,10 @@ def main(args):
             "102": "ggh 1-jet p_{T}^{H} [120,#infty]",
             "103": "ggh #geq 2-jet",
             "2": "qqh",
-            "200": "qqh #leq 1-jet",
-            "201": "qqh #geq 2-jet m_{jj} [0,350]",
-            "202": "qqh #geq 2-jet m_{jj} [350,#infty] p_{T}^{H} [0,200]",
-            "203": "qqh #geq 2-jet m_{jj} [350,#infty] p_{T}^{H} [200,#infty]",
+            "200": "qqh 2J",
+            "201": "qqh p_{T}^{H} #gth 200",
+            "202": "qqh vbftopo_highmjj",
+            "203": "qqh vbftopo lowmjj",
             "12": "ztt",
             "15": "zll",
             "11": "wjets",
@@ -287,9 +287,9 @@ def main(args):
             total_bkg = rootfile.get(era, channel, category, "TotalBkg")
             ggHHist = rootfile.get(era, channel, category, "ggH")
             qqHHist = rootfile.get(era, channel, category, "qqH")
-            total_bkg.Add(ggHHist, -1)
-            if qqHHist:
-                total_bkg.Add(qqHHist, -1)
+            # total_bkg.Add(ggHHist, -1)
+            # if qqHHist:
+            #     total_bkg.Add(qqHHist, -1)
             plot.add_hist(total_bkg, "total_bkg")
 
             plot.subplot(0).setGraphStyle("data_obs", "e0")
@@ -491,4 +491,3 @@ if __name__ == "__main__":
     args = parse_arguments()
     setup_logging("{}_plot_shapes.log".format(args.era), logging.INFO)
     main(args)
-
