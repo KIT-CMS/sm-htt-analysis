@@ -16,7 +16,7 @@ EMBEDDING=$8
 
 TRAINFF=True
 TRAINEMB=True
-if [ $STXS_SIGNALS == 1 ]
+if [[ $STXS_SIGNALS != "stxs_stage0" ]]
 then
     echo "[ERROR] Plotting for STXS stage 1 signals is not yet implemented."
     exit 1
@@ -33,17 +33,19 @@ if [ $JETFAKES == 1 ]
 then
     JETFAKES_ARG="--fake-factor"
 fi
-DATACARDDIR=output/datacards/${ERA}-${TAG}-smhtt-ML/${STXS_SIGNALS}
-PREFITFILEDIR="${DATACARDDIR}/cmb/125"
 
-PLOTDIR=output/plots/${ERA}-${TAG}_prefit-plots
-[ -d $PLOTDIR ] || mkdir -p $PLOTDIR
+for channel in ${CHANNELS[@]}; do
+    DATACARDDIR=output/datacards/${ERA}-${TAG}-smhtt-ML/${STXS_SIGNALS}/${channel}/125
 
-for FILE in "${PREFITFILEDIR}/prefitshape-${ERA}-${TAG}-${STXS_FIT}.root" #"${PREFITFILEDIR}/postfitshape-${ERA}-${TAG}-${STXS_FIT}.root"
-do
-    [[ -f $FILE ]] || ( logerror $FILE not fould && exit 2 )
-    for OPTION in "" "--png"
+    PLOTDIR=output/plots/${ERA}-${TAG}_prefit-plots
+    [ -d $PLOTDIR ] || mkdir -p $PLOTDIR
+
+    for FILE in "${DATACARDDIR}/postfitshape-${ERA}-${TAG}-${STXS_FIT}.root"  "${DATACARDDIR}/prefitshape-${ERA}-${TAG}-${STXS_FIT}.root"
     do
-        logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${CHANNELS[@]} -e $ERA $OPTION --categories $CATEGORIES --fake-factor --embedding --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB
+        [[ -f $FILE ]] || ( logerror $FILE not found && exit 2 )
+        for OPTION in "" "--png"
+        do
+            logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c $channel -e $ERA $OPTION --categories $CATEGORIES --fake-factor --embedding --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB
+        done
     done
 done
