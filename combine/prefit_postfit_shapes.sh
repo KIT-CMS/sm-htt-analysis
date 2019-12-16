@@ -17,6 +17,8 @@ WORKSPACE=$DATACARDDIR/${ERA}-${STXS_FIT}-workspace.root
 PostFitShapesFromWorkspace -m 125 -w ${WORKSPACE} \
     -d ${DATACARDDIR}/combined.txt.cmb -o ${DATACARDDIR}/prefit${OUTPUTFILE}
 
+
 # Postfit shapes
+#FITFILE=$DATACARDDIR/fitDiagnostics${ERA}-${STXS_FIT}.MultiDimFit.mH125.root
 #PostFitShapesFromWorkspace -m 125 -w ${WORKSPACE} \
-    #-d ${DATACARDDIR}/combined.txt.cmb -o ${DATACARDDIR}/postfit${OUTPUTFILE} -f fitDiagnostics${ERA}.root:fit_s --postfit
+    #-d ${DATACARDDIR}/combined.txt.cmb -o ${DATACARDDIR}/postfit${OUTPUTFILE} -f ${FITFILE}:fit_s --postfit

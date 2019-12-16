@@ -38,8 +38,10 @@ then
         --X-rtd MINIMIZER_analytic \
         --cminDefaultMinimizerStrategy 0 \
         | tee $LOGFILE
+    FITFILE=$DATACARDDIR/fitDiagnostics${ERA}-${STXS_FIT}.MultiDimFit.mH125.root
+    mv fitDiagnostics${ERA}.root $FITFILE
     #python combine/check_mlfit.py fitDiagnostics${ERA}.root
-    root -l fitDiagnostics${ERA}.root <<< "fit_b->Print(); fit_s->Print()" \
+    logandrun root -l $FITFILE <<< "fit_b->Print(); fit_s->Print()" \
     | tee -a $LOGFILE | tee $OUTPUTFILE
 else
     FITFILE=$DATACARDDIR/higgsCombine${ERA}-${STXS_FIT}.MultiDimFit.mH125.root
@@ -54,6 +56,6 @@ else
         -t -1 --expectSignal 1 \
         -n $ERA -v1 \
         | tee $LOGFILE
-    [[ ! -f higgsCombine${ERA}.MultiDimFit.mH125.root ]] || mv higgsCombine${ERA}.MultiDimFit.mH125.root $FITFILE
+    mv higgsCombine${ERA}.MultiDimFit.mH125.root $FITFILE
     logandrun python combine/print_fitresult.py $FITFILE | tee -a $LOGFILE | sed "s@\[INFO\] @@" | tail -n +2 | sort | sed -E "s@\s*:@@" | grep -E '^r' | tee $OUTPUTFILE
 fi
