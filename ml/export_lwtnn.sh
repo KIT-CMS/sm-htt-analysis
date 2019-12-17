@@ -34,8 +34,9 @@ then
   do
       python3 htt-ml/lwtnn/converters/keras2json.py ${outdir}/fold${fold}_keras_architecture.json  ${outdir}/fold${fold}_keras_variables.json ${outdir}/fold${fold}_keras_weights.h5 >  ${outdir}/fold${fold}_lwtnn.json
       for era in "2016" "2017" "2018"; do
-        [[ -z $tag ]] && era_out=output/ml/${ERA}_${CHANNEL} || era_out=output/ml/${ERA}_${CHANNEL}_${tag}
+        [[ -z $tag ]] && era_out=output/ml/${era}_${CHANNEL} || era_out=output/ml/${era}_${CHANNEL}_${tag}
         cp ${outdir}/fold${fold}_lwtnn.json ${era_out}
+        ls ${era_out}/fold${fold}_lwtnn.json -lrth
       done
   done
 else

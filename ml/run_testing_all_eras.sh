@@ -45,3 +45,14 @@ python htt-ml/testing/keras_taylor_1D.py \
 python htt-ml/testing/keras_taylor_1D.py \
     ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${CHANNEL}.yaml 1 --era $ERA
 fi
+
+# Taylor analysis (ranking)
+export KERAS_BACKEND=tensorflow
+#TEST_TAYLOR_RANKING=1
+if [ -n "$TEST_TAYLOR_RANKING" ]; then
+logandrun python htt-ml/testing/keras_taylor_ranking.py \
+    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${channel}_testing.yaml 0
+
+logandrun python htt-ml/testing/keras_taylor_ranking.py \
+    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${channel}_testing.yaml 1
+fi
