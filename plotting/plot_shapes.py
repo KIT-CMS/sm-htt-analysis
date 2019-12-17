@@ -66,6 +66,11 @@ def parse_arguments():
         default=True,
         help="Use fake factor training category")
     parser.add_argument(
+        "--background-only",
+        type=lambda x:bool(distutils.util.strtobool(x)),
+        default=False,
+        help="Plot only the background categories")
+    parser.add_argument(
         "--train-ff",
         type=lambda x:bool(distutils.util.strtobool(x)),
         default=True,
@@ -92,7 +97,11 @@ def setup_logging(output_file, level=logging.DEBUG):
 
 
 def main(args):
-    stxs_stage1p1_cats = [str(100+i) for i in range(4)] + [str(200+i) for i in range(4)]
+    #### plot signals
+    if args.background_only:
+        stxs_stage1p1_cats = []
+    else:
+        stxs_stage1p1_cats = [str(100+i) for i in range(5)] + [str(200+i) for i in range(4)]
     print(args)
     if args.gof_variable != None:
         channel_categories = {
@@ -153,6 +162,7 @@ def main(args):
             "101": "ggh 1-jet p_{T}^{H} [0,120]",
             "102": "ggh 1-jet p_{T}^{H} [120,#infty]",
             "103": "ggh #geq 2-jet",
+            "104": "ggh p_{T}^{H} #gth 200",
             "2": "qqh",
             "200": "qqh 2J",
             "201": "qqh p_{T}^{H} #gth 200",
