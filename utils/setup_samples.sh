@@ -28,7 +28,7 @@ FF_Friends_2017="$basedir/2017/friends/FakeFactors/"
 # Samples Run2018
 basedir="/ceph/htautau/deeptau"
 ARTUS_OUTPUTS_2018="/portal/ekpbms3/home/jbechtel/deeptau/2018/ntuples/"
-NNScore_Friends_2018="~mscham/sm-htt/output/friend_trees/2018/nnscore_friends/default/"
+NNScore_Friends_2018="/portal/ekpbms3/home/jbechtel/deeptau/2018/friends/NNScore/"
 SVFit_Friends_2018="/portal/ekpbms3/home/jbechtel/deeptau/2018/friends/SVFit/"
 MELA_Friends_2018="/portal/ekpbms3/home/jbechtel/deeptau/2018/friends/MELA/"
 FF_Friends_2018="/portal/ekpbms3/home/jbechtel/deeptau/2018/friends/FakeFactors/"
