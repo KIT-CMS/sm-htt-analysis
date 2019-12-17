@@ -26,8 +26,8 @@ function run_procedure() {
     ERA=$1
     CHANNEL=$2
     TAG=$3
-    tauEstimation=mc
-    jetEstimation=mc
+    tauEstimation=emb
+    jetEstimation=ff
     if [[ $TAG == *"mc_"* ]]; then
         tauEstimation=mc
     fi
