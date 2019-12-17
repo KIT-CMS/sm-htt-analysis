@@ -33,8 +33,8 @@ then
   outdir=output/ml/all_eras_${CHANNEL}_${TAG}
 
   mkdir -p $outdir
-  logandrun python htt-ml/training/keras_training.py ${outdir}/dataset_config.yaml 0 --balance-batches 1 --conditional 1
-  logandrun python htt-ml/training/keras_training.py ${outdir}/dataset_config.yaml 1 --balance-batches 1 --conditional 1
+  logandrun python htt-ml/training/keras_training.py ${outdir}/dataset_config.yaml 0 --balance-batches 1 --conditional 1 #--randomization 1
+  logandrun python htt-ml/training/keras_training.py ${outdir}/dataset_config.yaml 1 --balance-batches 1 --conditional 1 #--randomization 1
 else
   outdir=output/ml/${ERA}_${CHANNEL}_${TAG}
 

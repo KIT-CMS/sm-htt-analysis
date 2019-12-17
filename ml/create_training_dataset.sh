@@ -26,8 +26,8 @@ function run_procedure() {
     ERA=$1
     CHANNEL=$2
     TAG=$3
-    tauEstimation=emb
-    jetEstimation=ff
+    tauEstimation=mc
+    jetEstimation=mc
     if [[ $TAG == *"mc_"* ]]; then
         tauEstimation=mc
     fi
@@ -36,12 +36,14 @@ function run_procedure() {
     fi
     source utils/setup_samples.sh $ERA $TAG
     if [[ $ERA == *"all"* ]]; then
+      echo "Creating dataset config for conditional training"
       outdir=output/ml/all_eras_${CHANNEL}_${TAG}
+      mkdir -p $outdir
       logandrun python ml/create_combined_config.py \
                 --tag ${TAG} \
                 --channel ${CHANNEL} \
                 --output_dir ${outdir}
-      exit
+      return
     else
       outdir=output/ml/${ERA}_${CHANNEL}_${TAG}
     fi
@@ -62,7 +64,6 @@ function run_procedure() {
          --output-filename training_dataset.root \
          --tree-path ${CHANNEL}_nominal/ntuple \
          --event-branch event \
-         --training-stxs1p1 \
          --training-weight-branch training_weight \
          --training-z-estimation-method $tauEstimation \
          --training-jetfakes-estimation-method $jetEstimation \
