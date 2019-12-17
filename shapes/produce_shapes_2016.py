@@ -847,7 +847,7 @@ def main(args):
         DifferentPipeline)
     for variation in recoil_resolution_variations + recoil_response_variations:
         for process_nick in [
-                "ZTT", "ZL", "ZJ", "W"] + signal_nicks:
+                "ZTT", "ZL", "ZJ", "W"] + [x for x in signal_nicks if not "ttH125" in x]:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
@@ -1620,6 +1620,7 @@ def main(args):
 
     # Gluon-fusion WG1 uncertainty scheme
     ggh_variations = []
+   
     for unc in [
             "THU_ggH_Mig01", "THU_ggH_Mig12", "THU_ggH_Mu", "THU_ggH_PT120",
             "THU_ggH_PT60", "THU_ggH_Res", "THU_ggH_VBF2j", "THU_ggH_VBF3j",
@@ -1634,7 +1635,7 @@ def main(args):
                       Weight("(2.0-{})".format(unc), "{}_weight".format(unc)),
                       "Down"))
     for variation in ggh_variations:
-        for process_nick in [nick for nick in signal_nicks if "ggH" in nick]:
+        for process_nick in [nick for nick in signal_nicks if (("ggH" in nick) and not ("ggHWW" in nick))]:
             if "et" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
