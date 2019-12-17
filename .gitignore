@@ -9,8 +9,6 @@
 *.txt
 .nfs*
 fold*
-*.json
-*.yaml
 *.html
 CMSSW_7_4_7/
 CMSSW_8_0_4/
