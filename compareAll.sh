@@ -389,9 +389,12 @@ function plotPreFitShapes() {
                 (
                     source utils/setup_cvmfs_sft.sh
                     source utils/setup_python.sh
-                    PLOTDIR=output/plots/${era}-${tag}-${channel}_prefit-plots
+                    PLOTDIR=output/plots/${era}-${tag}-${channel}_shape-plots
                     [ -d $PLOTDIR ] || mkdir -p $PLOTDIR
-                    logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channel} -e $era $OPTION --categories $CATEGORIES --fake-factor --embedding --normalize-by-bin-width -l --train-ff True --train-emb True
+                    for OPTION in "--png" ""
+                    do
+                        logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channel} -e $era $OPTION --png --categories $CATEGORIES --fake-factor --embedding --normalize-by-bin-width -l --train-ff True --train-emb True
+                    done
                 )
                 done
         done
@@ -433,9 +436,12 @@ function plotPostFitShapes(){
                 (
                     source utils/setup_cvmfs_sft.sh
                     source utils/setup_python.sh
-                    PLOTDIR=output/plots/${era}-${tag}-${channel}_postfit-plots
+                    PLOTDIR=output/plots/${era}-${tag}-${channel}_shape-plots
                     [ -d $PLOTDIR ] || mkdir -p $PLOTDIR
-                    logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channel} -e $era $OPTION --categories $CATEGORIES --fake-factor --embedding --normalize-by-bin-width -l --train-ff True --train-emb True
+                    for OPTION in "--png" ""
+                    do
+                        logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channel} -e $era $OPTION --categories $CATEGORIES --fake-factor --embedding --normalize-by-bin-width -l --train-ff True --train-emb True
+                    done
                 )
                 done
         done

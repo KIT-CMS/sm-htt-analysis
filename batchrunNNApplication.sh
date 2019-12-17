@@ -44,18 +44,18 @@ elif [[ $cluster == "lxplus7" ]]; then
         "2017" )
             ARTUS_OUTPUTS="/eos/user/a/aakhmets/merged_ntuples/07-06-2019_full_analysis"
             ARTUS_FRIENDS="/eos/user/a/aakhmets/merged_ntuples/07-06-2019_full_analysis_MELA/MELA_collected /eos/user/a/aakhmets/merged_ntuples/07-06-2019_full_analysis_SVFit/SVFit_collected"
-            ARTUS_OUTPUTS="/eos/user/m/mscham/htautau/2017/ntuples"
-            ARTUS_FRIENDS="/eos/user/m/mscham/htautau/2017/ff_friends /eos/user/m/mscham/htautau/2017/mela_friends /eos/user/m/mscham/htautau/2017/svfit_friends"
+            ARTUS_OUTPUTS="/eos/user/${USER::1}/${USER}/htautau/2017/ntuples"
+            ARTUS_FRIENDS="/eos/user/${USER::1}/${USER}/htautau/2017/ff_friends /eos/user/${USER::1}/${USER}/htautau/2017/mela_friends /eos/user/${USER::1}/${USER}/htautau/2017/svfit_friends"
             ;;
         "2018" )
-            ARTUS_OUTPUTS="/eos/user/m/mscham/htautau/2018/ntuples"
-            ARTUS_FRIENDS="/eos/user/m/mscham/htautau/2018/ff_friends /eos/user/m/mscham/htautau/2018/mela_friends /eos/user/m/mscham/htautau/2018/svfit_friends"
+            ARTUS_OUTPUTS="/eos/user/${USER::1}/${USER}/htautau/2018/ntuples"
+            ARTUS_FRIENDS="/eos/user/${USER::1}/${USER}/htautau/2018/ff_friends /eos/user/${USER::1}/${USER}/htautau/2018/mela_friends /eos/user/${USER::1}/${USER}/htautau/2018/svfit_friends"
             ;;
     esac
 elif [[ $cluster == "naf" ]]; then
     export remote="naf"
-    export sw_src_dir="/afs/desy.de/user/m/mscham/CMSSW_10_2_14/src"
-    export batch_out="/nfs/dust/cms/user/mscham/NNScoreApp"
+    export sw_src_dir="/afs/desy.de/user/${USER::1}/${USER}/CMSSW_10_2_14/src"
+    export batch_out="/nfs/dust/cms/user/${USER}/NNScoreApp"
     eventsPerJob=2000000
     walltime=2000
     ARTUS_OUTPUTS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/$era/ntuples"
