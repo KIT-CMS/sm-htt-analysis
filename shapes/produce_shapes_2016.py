@@ -866,7 +866,7 @@ def main(args):
                     process=tt_processes[process_nick],
                     channel=tt,
                     era=era)
-        for process_nick in ["ZTT", "ZL", "W"] + signal_nicks:
+        for process_nick in ["ZTT", "ZL", "W"] + [x for x in signal_nicks if not "ttH125" in x]:
             if "em" in [args.gof_channel] + args.channels:
                 systematics.add_systematic_variation(
                     variation=variation,
