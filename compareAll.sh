@@ -227,7 +227,7 @@ function copyFromCluster() {
     else
         logandrun alogrsync $remote -rLPthz $remote:$batch_out/${era}_${tag}/NNScore_workdir/NNScore_collected/ $nnscorefolder
     fi
-    if [[ $( du -bs $nnscorefolder | cut -f1 ) -lt 10000000000 ]]; then
+    if [[ $( du -bs $nnscorefolder | cut -f1 ) -lt 11812544 ]]; then
         logerror Recieved NNScore Friend folder to small!
         return 1
     fi
@@ -310,8 +310,8 @@ function genWorkspaces(){
             export tag
                 fn="output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/cmb/125/${era}-${STXS_FIT}-workspace.root"
                 if [[ ! -f $fn ]]; then
-                    logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${tag}
-                    #condwait
+                    logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${tag} &
+                    condwait
                     #[[ $? == 0 ]] || return $?
                 else
                     loginfo "skipping workspace creation, as  $fn exists"
@@ -347,10 +347,6 @@ function runana() {
                         logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR $channel ${tag} #&
                         condwait
                     done
-
-                        DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/cmb/125
-                        logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR cmb ${tag} #&
-
                     condwait
                 done
             fi
@@ -394,6 +390,7 @@ function plotPreFitShapes() {
                     for OPTION in "--png" ""
                     do
                         logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channel} -e $era $OPTION --png --categories $CATEGORIES --fake-factor --embedding --normalize-by-bin-width -l --train-ff True --train-emb True
+                        #--background-only True
                     done
                 )
                 done
