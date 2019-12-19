@@ -11,24 +11,16 @@ KAPPA_DATABASE=datasets/datasets.json
 #### ERA specific part. If a sample is not available comment it out here.
 # Samples Run2016
 basedir="/ceph/htautau/deeptau"
-<<<<<<< HEAD
 ARTUS_OUTPUTS_2016="/portal/ekpbms2/home/jbechtel/deeptau/2016/ntuples/"
 #NNScore_Friends_2016="$basedir/2016/friends/NNScore/"
 SVFit_Friends_2016="/portal/ekpbms2/home/jbechtel/deeptau/2016/friends/SVFit/"
 MELA_Friends_2016="/portal/ekpbms2/home/jbechtel/deeptau/2016/friends/MELA/"
 FF_Friends_2016="/portal/ekpbms2/home/jbechtel/deeptau/2016/friends/FakeFactors/"
-=======
-ARTUS_OUTPUTS_2016="$basedir/2016/ntuples/"
-NNScore_Friends_2016=""
-SVFit_Friends_2016="$basedir/2016/friends/SVFit/"
-MELA_Friends_2016="$basedir/2016/friends/MELA/"
-FF_Friends_2016="$basedir/2016/friends/FakeFactors/"
->>>>>>> Conditional era training fixes and addition of taylor rankings for conditional testing
 
 # Samples Run2017
 basedir="/ceph/htautau/deeptau"
 ARTUS_OUTPUTS_2017="$basedir/2017/ntuples/"
-NNScore_Friends_2017=""
+#NNScore_Friends_2017=""
 SVFit_Friends_2017="$basedir/2017/friends/SVFit/"
 MELA_Friends_2017="$basedir/2017/friends/MELA/"
 FF_Friends_2017="$basedir/2017/friends/FakeFactors/"
@@ -68,10 +60,10 @@ fi
 
 ### check if there are valid local friend trees and, if yes overwrite the friend tree directory with the local ones
 if [[ -d output/friend_trees ]]; then
-    DIR=${WD}/output/friend_trees/$ERA/nnscore_friends/${TAG}/NNScore_workdir/NNScore_collected/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && NNScore_Friends=$DIR
-    DIR=${WD}/output/friend_trees/$ERA/svfit_friends/${TAG}/NNScore_workdir/NNScore_collected/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && SVFit_Friends=$DIR
-    DIR=${WD}/output/friend_trees/$ERA/mela_friends/${TAG}/NNScore_workdir/NNScore_collected/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && MELA_Friends=$DIR
-    DIR=${WD}/output/friend_trees/$ERA/ff_friends/${TAG}/NNScore_workdir/NNScore_collected/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && FF_Friends=$DIR
+    DIR=${WD}/output/friend_trees/$ERA/nnscore_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && NNScore_Friends=$DIR
+    DIR=${WD}/output/friend_trees/$ERA/svfit_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && SVFit_Friends=$DIR
+    DIR=${WD}/output/friend_trees/$ERA/mela_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && MELA_Friends=$DIR
+    DIR=${WD}/output/friend_trees/$ERA/ff_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && FF_Friends=$DIR
 fi
 
 ### channels specific friend tree.

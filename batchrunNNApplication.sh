@@ -7,9 +7,12 @@ channels=$( echo $2 | tr "," " " )
 cluster=$3
 modus=$4
 tag=$5
+all_eras=$6
 outdir=${era}_${tag}
 source utils/bashFunctionCollection.sh
 #export SCRAM_ARCH="slc6_amd64_gcc700"
+
+echo "All eras is set to $all_eras"
 
 if [[ ! "submit collect rungc delete" =~ $modus || -z $modus ]]; then
     logerror "modus must be submit or collect but is $modus !"
@@ -22,10 +25,10 @@ fi
 
 if [[ $cluster = "etp7" ]]; then
     #### use local resources
-    export sw_src_dir="/portal/ekpbms3/home/${USER}/CMSSW_10_2_14/src"
-    export batch_out="/portal/ekpbms3/home/${USER}/batch-out"
+    export sw_src_dir="/portal/ekpbms2/home/${USER}/CMSSW_10_2_14/src"
+    export batch_out="/portal/ekpbms2/home/${USER}/batch-out"
     source utils/setup_samples.sh $era $tag
-    ARTUS_FRIENDS="${ARTUS_FRIENDS_EM} ${ARTUS_FRIENDS_FAKE_FACTOR}"
+    ARTUS_FRIENDS="${ARTUS_FRIENDS} ${ARTUS_FRIENDS_FAKE_FACTOR}"
     eventsPerJob=2000000
     walltime=10000
 elif [[ $cluster == "lxplus7" ]]; then
@@ -91,6 +94,22 @@ fi
 
 if [[ "submit" == $modus ]]; then
 if [[ ! -f $submitlock ]]; then
+if [[ $all_eras == 1 ]]; then
+echo Executing with conditional argument
+$jm --executable NNScore \\
+                  --batch_cluster $cluster \\
+                  --command $modus \\
+                  --input_ntuples_directory $ARTUS_OUTPUTS  \\
+                  --walltime $walltime  \\
+                  --events_per_job $eventsPerJob \\
+                  --friend_ntuples_directories $ARTUS_FRIENDS \\
+                  --cores 5 \\
+                  --restrict_to_channels $channels \\
+                  --conditional 1 \\
+                  --custom_workdir_path $workdir && touch $submitlock
+
+else
+echo Executing without conditional argument
 $jm --executable NNScore \\
                   --batch_cluster $cluster \\
                   --command $modus \\
@@ -101,6 +120,7 @@ $jm --executable NNScore \\
                   --cores 5 \\
                   --restrict_to_channels $channels \\
                   --custom_workdir_path $workdir && touch $submitlock
+fi
 else
 echo Skipping submission, because $submitlock exists
 fi
