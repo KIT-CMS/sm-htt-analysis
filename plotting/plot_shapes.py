@@ -160,14 +160,14 @@ def main(args):
             "1": "ggh",
             "100": "ggh 0-jet",
             "101": "ggh 1-jet p_{T}^{H} [0,120]",
-            "102": "ggh 1-jet p_{T}^{H} [120,#infty]",
+            "102": "ggh 1-jet p_{T}^{H} [120,200]",
             "103": "ggh #geq 2-jet",
-            "104": "ggh p_{T}^{H} #gt 200",
+            "104": "ggh p_{T}^{H}>200",
             "2": "qqh",
-            "200": "qqh 2J",
-            "201": "qqh p_{T}^{H} #gt 200",
-            "202": "qqh vbftopo_highmjj",
-            "203": "qqh vbftopo lowmjj",
+            "200": "qqh 2J low mjj",
+            "201": "qqh p_{T}^{H}>200",
+            "202": "qqh vbftopo mjj>700",
+            "203": "qqh vbftopo mjj [350,700]",
             "12": "ztt",
             "15": "zll",
             "11": "wjets",
@@ -295,10 +295,10 @@ def main(args):
             plot.add_hist(
                 rootfile.get(era, channel, category, "data_obs"), "data_obs")
             total_bkg = rootfile.get(era, channel, category, "TotalBkg")
-            ggHHist = rootfile.get(era, channel, category, "ggH")
-            qqHHist = rootfile.get(era, channel, category, "qqH")
-            # total_bkg.Add(ggHHist, -1)
-            # if qqHHist:
+            #ggHHist = rootfile.get(era, channel, category, "ggH")
+            #qqHHist = rootfile.get(era, channel, category, "qqH")
+            #total_bkg.Add(ggHHist, -1)
+            #if qqHHist:
             #     total_bkg.Add(qqHHist, -1)
             plot.add_hist(total_bkg, "total_bkg")
 
