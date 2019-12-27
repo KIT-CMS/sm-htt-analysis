@@ -61,24 +61,24 @@ function recommendCPUs() {
 
 
 function loginfo {
-    echo -e "\e[46m[INFO]\e[0m" $( date +"%y-%m-%d %R" ): $@
+    echo -e "\e[46m[INFO]\e[0m" $( date +"%y-%m-%d %R" ): $@ | tee -a output/log/logutil.log
 }
 function logwarn {
-    echo -e "\e[45m[WARN]\e[0m" $( date +"%y-%m-%d %R" ): $@
+    echo -e "\e[45m[WARN]\e[0m" $( date +"%y-%m-%d %R" ): $@ | tee -a output/log/logutil.log
 }
 function logerror {
     echo -e "\e[41m[ERROR]\e[0m" $( date +"%y-%m-%d %R" ): $@
 }
 function logandrun() {
-    echo -e "\e[43m[RUN]\e[0m" $( date +"%y-%m-%d %R" ): $@
+    echo -e "\e[43m[RUN]\e[0m" $( date +"%y-%m-%d %R" ): $@ | tee -a output/log/logutil.log
     start=`date +%s`
     $@
     return_code=$?
     end=`date +%s`
     if [[ $return_code == 0 ]]; then
-        echo -e "\e[42m[COMPLETE]\e[0m" $( date +"%y-%m-%d %R" ): $@ "     \e[104m{$((end-start))s}\e[0m"
+        echo -e "\e[42m[COMPLETE]\e[0m" $( date +"%y-%m-%d %R" ): $@ "     \e[104m{$((end-start))s}\e[0m" | tee -a output/log/logutil.log
     else
-        logerror Error Code $return_code  $@ "     \e[104m{$((end-start))s}\e[0m"
+        logerror Error Code $return_code  $@ "     \e[104m{$((end-start))s}\e[0m"  | tee -a output/log/logutil.log
     fi
     return $return_code
 }
