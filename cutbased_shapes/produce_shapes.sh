@@ -8,6 +8,7 @@ CHANNEL=$5
 
 BINNING=cutbased_shapes/binning.yaml
 
+export LCG_RELEASE=96
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
 source utils/setup_samples.sh $ERA
