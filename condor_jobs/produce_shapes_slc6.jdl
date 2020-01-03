@@ -9,6 +9,6 @@ Requirements = ( (Target.ProvidesCPU == True) && (TARGET.ProvidesEKPResources ==
 +ExperimentalJob = True
 RequestMemory = 20000
 request_disk = 204800
-RequestCpus = 12
+RequestCpus = 8
 accounting_group = cms.higgs
 queue arguments from condor_jobs/arguments.txt
