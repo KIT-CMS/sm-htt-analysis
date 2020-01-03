@@ -8,9 +8,6 @@ VARIABLE=$4
 SHAPEGROUP=$5
 CHANNEL=$6
 
-source utils/setup_python.sh
-source utils/setup_samples.sh $ERA
-
 # Produce shapes
 ./cutbased_shapes/produce_shapes.sh ${NUMCORES} ${ERA} ${VARIABLE} ${SHAPEGROUP} ${CHANNEL}
 
