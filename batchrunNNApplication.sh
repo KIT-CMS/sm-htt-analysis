@@ -15,8 +15,8 @@ if [[ ! "submit collect rungc delete" =~ $modus || -z $modus ]]; then
     logerror "modus must be submit or collect but is $modus !"
     exit 1
 fi
-if [[ ! "etp7 lxplus7 naf" =~ $cluster || -z $cluster ]]; then
-    logerror "cluster must be etp7, lxplus7 or naf, but is $cluster!"
+if [[ ! "etp7 lxplus7 naf7" =~ $cluster || -z $cluster ]]; then
+    logerror "cluster must be etp7, lxplus7 or naf7, but is $cluster!"
     exit 1
 fi
 
@@ -52,7 +52,7 @@ elif [[ $cluster == "lxplus7" ]]; then
             ARTUS_FRIENDS="/eos/user/${USER::1}/${USER}/htautau/2018/ff_friends /eos/user/${USER::1}/${USER}/htautau/2018/mela_friends /eos/user/${USER::1}/${USER}/htautau/2018/svfit_friends"
             ;;
     esac
-elif [[ $cluster == "naf" ]]; then
+elif [[ $cluster == "naf7" ]]; then
     export remote="naf"
     export sw_src_dir="/afs/desy.de/user/${USER::1}/${USER}/CMSSW_10_2_14/src"
     export batch_out="/nfs/dust/cms/user/${USER}/NNScoreApp"
