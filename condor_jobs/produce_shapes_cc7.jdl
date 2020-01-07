@@ -1,9 +1,7 @@
 universe = docker
-docker_image = mschnepf/docker_cc7
+docker_image = mschnepf/slc7-condocker
 executable = shapes/produce_shapes.sh
-output = output/log/condorShapes/$(Process).out
-error = output/log/condorShapes/$(Process).err
-log = output/log/condorShapes/$(Process).log
+
 Requirements = ( (Target.ProvidesCPU == True) && (TARGET.ProvidesEKPResources == True ) )
 +RequestWalltime = 36000
 +ExperimentalJob = True
@@ -11,4 +9,10 @@ RequestMemory = 20000
 request_disk = 204800
 RequestCpus = 8
 accounting_group = cms.higgs
-queue arguments from condor_jobs/arguments.txt
+
+arguments = $(a1) $(a2) $(a3) $(a4)
+output = output/log/condorShapes/$(a1)-$(a3)-$(a2).$(cluster).$(Process).out
+error = output/log/condorShapes/$(a1)-$(a3)-$(a2).$(cluster).$(Process).err
+log = output/log/condorShapes/$(a1)-$(a3)-$(a2).$(cluster).$(Process).log
+
+queue a1,a2,a3,a4 from condor_jobs/arguments.txt
