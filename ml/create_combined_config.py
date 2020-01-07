@@ -40,6 +40,8 @@ def main(args):
     if not os.path.exists(args.output_dir):
         os.mkdir(args.output_dir)
 
+    all_era_template["classes"] = configs[0]["classes"]
+
     all_era_template["output_path"] = args.output_dir
 
     output_file = args.output_dir + "/dataset_config.yaml"

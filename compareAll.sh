@@ -18,7 +18,7 @@ export PARALLEL=1
 export USE_BATCH_SYSTEM=1
 export cluster=naf7 #lxplus7 # etp7
 export sm_htt_analysis_dir=$( pwd ) ### local sm-htt repo !
-export cmssw_src_local="/portal/ekpbms3/home/${USER}/CMSSW_10_2_14/src" ### local CMSSW !
+export cmssw_src_local="/portal/ekpbms2/home/${USER}/pruning/CMSSW_10_2_14/src" ### local CMSSW !
 export batch_out_local=${sm_htt_analysis_dir}/output/friend_trees
 
 source utils/bashFunctionCollection.sh
@@ -50,7 +50,8 @@ erasarg=$1
 channelsarg=$2
 tagsarg=$3
 
-if [[ $eras == "all" ]]; then
+if [[ $erasarg == "all" ]]; then
+    loginfo CONDITIONAL_TRAINING is on
     CONDITIONAL_TRAINING=1
     eras=""
 else
@@ -117,9 +118,15 @@ function compenv() {
 
 function genTrainingDS() {
     ensuremldirs
-    for tag in ${tags[@]}; do
-        logandrun ./ml/create_training_dataset.sh ${erasarg} ${channelsarg} ${tag}
-    done
+    if [[ $CONDITIONAL_TRAINING == 1 ]]; then
+      for tag in ${tags[@]}; do
+          logandrun ./ml/create_training_dataset.sh all ${channelsarg} ${tag}
+      done
+    else
+      for tag in ${tags[@]}; do
+          logandrun ./ml/create_training_dataset.sh ${erasarg} ${channelsarg} ${tag}
+      done
+    fi
 }
 
 function mltrain() {
@@ -143,8 +150,10 @@ function mltest() {
     ensuremldirs
     for tag in ${tags[@]}; do
         if [[ $CONDITIONAL_TRAINING == 1 ]]; then
-            for channel in ${channels[@]}; do
-                logandrun ./ml/run_testing.sh all ${channel} ${tag}
+            for era in ${eras[@]}; do
+                for channel in ${channels[@]}; do
+                    logandrun ./ml/run_testing_all_eras.sh ${era} ${channel} ${tag}
+                done
             done
         else
             for era in ${eras[@]}; do
@@ -210,11 +219,12 @@ function applyOnCluster(){
         export tag
         for era in ${eras[@]}; do
             provideCluster $tag $era
-            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "submit" ${tag}
-            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "rungc" ${tag}
-            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "collect" ${tag}
+            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "submit" ${tag} $CONDITIONAL_TRAINING
+            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "rungc" ${tag} $CONDITIONAL_TRAINING
+            [ $? ] &&
+            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "collect" ${tag} $CONDITIONAL_TRAINING
             [ $? ] && copyFromCluster
-            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "delete" ${tag} || return 1
+            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "delete" ${tag} $CONDITIONAL_TRAINING || return 1
         done
     done
 }
@@ -288,6 +298,7 @@ function syncShapes() {
 export JETFAKES=1 EMBEDDING=1 CATEGORIES="stxs_stage1p1"
 function genDatacards(){
     ensureoutdirs
+    #CATEGORIES="stxs_stage0_stage1"
     for era in ${eras[@]}; do
         for STXS_SIGNALS in "stxs_stage0" "stxs_stage1p1"; do
             for tag in ${tags[@]}; do

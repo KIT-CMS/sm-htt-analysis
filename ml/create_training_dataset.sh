@@ -1,5 +1,8 @@
 #!/bin/bash
 set -e
+
+export PARALLEL=1
+
 if uname -a | grep ekpdeepthought
 then
     echo "Not possible here, use another machine"
@@ -33,12 +36,14 @@ function run_procedure() {
     fi
     source utils/setup_samples.sh $ERA $TAG
     if [[ $ERA == *"all"* ]]; then
+      echo "Creating dataset config for conditional training"
       outdir=output/ml/all_eras_${CHANNEL}_${TAG}
+      mkdir -p $outdir
       logandrun python ml/create_combined_config.py \
                 --tag ${TAG} \
                 --channel ${CHANNEL} \
                 --output_dir ${outdir}
-      exit
+      return
     else
       outdir=output/ml/${ERA}_${CHANNEL}_${TAG}
     fi
@@ -59,11 +64,11 @@ function run_procedure() {
          --output-filename training_dataset.root \
          --tree-path ${CHANNEL}_nominal/ntuple \
          --event-branch event \
-         --training-stxs1p1 \
          --training-weight-branch training_weight \
          --training-z-estimation-method $tauEstimation \
          --training-jetfakes-estimation-method $jetEstimation \
-         --output-config $outdir/dataset_config.yaml
+         --output-config $outdir/dataset_config.yaml \
+         --training-stxs1p1
 
     # Create dataset files from config
     logandrun ./htt-ml/dataset/create_training_dataset.py $outdir/dataset_config.yaml
