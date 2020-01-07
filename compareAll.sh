@@ -49,9 +49,8 @@ IFS=',' read -r -a tags <<< $3
 erasarg=$1
 channelsarg=$2
 tagsarg=$3
-conditional_arg=$4
 
-if [[ $eras == "all" ]]; then
+if [[ $erasarg == "all" ]]; then
     loginfo CONDITIONAL_TRAINING is on
     CONDITIONAL_TRAINING=1
     eras=""
@@ -370,7 +369,6 @@ function runana() {
 ### generate postfitshape
 function plotPreFitShapes() {
     ensureoutdirs
-    CATEGORIES="stxs_stage1p1"
     for tag in ${tags[@]}; do
         export tag
         for era in ${eras[@]}; do

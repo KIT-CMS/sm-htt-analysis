@@ -12,7 +12,9 @@ outdir=${era}_${tag}
 source utils/bashFunctionCollection.sh
 #export SCRAM_ARCH="slc6_amd64_gcc700"
 
-echo "All eras is set to $all_eras"
+if [[ $all_eras == 1 ]]; then
+  echo "Using conditional training!"
+fi
 
 if [[ ! "submit collect rungc delete" =~ $modus || -z $modus ]]; then
     logerror "modus must be submit or collect but is $modus !"
