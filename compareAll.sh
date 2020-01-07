@@ -51,7 +51,7 @@ channelsarg=$2
 tagsarg=$3
 conditional_arg=$4
 
-if [[ $eras == "all" || $conditional_arg == 1 ]]; then
+if [[ $eras == "all" ]]; then
     loginfo CONDITIONAL_TRAINING is on
     CONDITIONAL_TRAINING=1
     eras=""
@@ -68,8 +68,8 @@ loginfo Following functions are provided: $( grep -E  '^function .*{' compareAll
 
 
 
-if [[ ! -z ${5:-} ]]; then
-    logerror only takes 4 arguments, seperate multiple eras and channels by comma eg: 2016,2018 mt,em   or \"\" em
+if [[ ! -z ${4:-} ]]; then
+    logerror only takes 3 arguments, seperate multiple eras and channels by comma eg: 2016,2018 mt,em   or \"\" em
     [[ $sourced != 1 ]] && exit 1
 fi
 for era in ${eras[@]}; do
@@ -299,7 +299,7 @@ function syncShapes() {
 export JETFAKES=1 EMBEDDING=1 CATEGORIES="stxs_stage1p1"
 function genDatacards(){
     ensureoutdirs
-    CATEGORIES="stxs_stage0_stage1"
+    #CATEGORIES="stxs_stage0_stage1"
     for era in ${eras[@]}; do
         for STXS_SIGNALS in "stxs_stage0" "stxs_stage1p1"; do
             for tag in ${tags[@]}; do
