@@ -251,11 +251,12 @@ function genShapes() {
     for tag in ${tags[@]}; do
         for era in ${eras[@]}; do
             export redoConversion=0
-            if [[ ! -f output/shapes/${era}-${tag}-${channelsarg}-shapes.root  ]]; then
+            fn=output/shapes/${era}-${tag}-${channelsarg}-shapes.root
+            if [[ ! -f $fn  ]]; then
                 logandrun ./shapes/produce_shapes.sh ${era} ${channelsarg} ${tag} || return 1
                 redoConversion=1
             else
-                loginfo Skipping shape generation as ${era}_${tag}_shapes.root exists
+                loginfo Skipping shape generation as $fn exists
             fi
         done
     done
