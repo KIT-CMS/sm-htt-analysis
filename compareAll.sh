@@ -14,33 +14,14 @@
 unset PYTHONPATH
 unset PYTHONUSERBASE
 shopt -s checkjobs # wait for all jobs before exiting
-export PARALLEL=1
-export USE_BATCH_SYSTEM=1
-export cluster=naf7 #lxplus7 # etp7
-export sm_htt_analysis_dir=$( pwd ) ### local sm-htt repo !
-export cmssw_src_local="/portal/ekpbms2/home/${USER}/pruning/CMSSW_10_2_14/src" ### local CMSSW !
-export batch_out_local=${sm_htt_analysis_dir}/output/friend_trees
 
 source utils/bashFunctionCollection.sh
+
+## make sure all the output directories are there
 ensureoutdirs
 
-
-if [[ $USE_BATCH_SYSTEM == "1" ]]; then
-    if [[ $cluster == "etp7" ]]; then
-        export batch_out=$batch_out_local
-    elif [[ $cluster == "lxplus7" ]]; then
-        export batch_out="/afs/cern.ch/work/${USER::1}/${USER}/batch-out"
-        export cmssw_src_dir="/afs/cern.ch/user/${USER::1}/${USER}/CMSSW_10_2_14/src" ## Remote CMSSW!
-        export remote="cern"
-    elif [[ $cluster == "naf7" ]]; then
-        export remote="naf"
-        export cmssw_src_dir="/afs/desy.de/user/${USER::1}/${USER}/CMSSW_10_2_14/src"
-        export batch_out="/nfs/dust/cms/user/${USER}/NNScoreApp"
-    else
-        logerror No such cluster: $cluster
-        exit 1
-    fi
-fi
+## set the user specific paths (cluster, remote, batch_out, cmssw_src)
+source .userconfig
 
 ########### Argument handling and Tests ##################
 IFS=',' read -r -a eras <<< $1
@@ -109,8 +90,8 @@ function ensuremldirs() {
 
 
 function compenv() {
-    varnames=(era channel tag eras  channels  tags erasarg channelsarg tagsarg mldir trainingConfFile anaSSStep  llwtnndir temp_file PROD_NEW_DATACARDS redoConversion fn JETFAKES EMBEDDING CATEGORIES PROD_NEW_DATACARDS STXS_SIGNALS STXS_FIT USE_BATCH_SYSTEM)
-    IFS='°' read -r -a vars <<< "${era[@]}"°"${channel[@]}"°"${tag[@]}"°"${eras[@]}"°"${channels[@]}"°"${tags[@]}"°"${erasarg[@]}"°"${channelsarg[@]}"°"${tagsarg[@]}"°"${mldir[@]}"°"${trainingConfFile[@]}"°"${anaSSStep[@]}"°"${llwtnndir[@]}"°"${temp_file[@]}"°"${PROD_NEW_DATACARDS[@]}"°"${redoConversion[@]}"°"${fn[@]}"°"${JETFAKES[@]}"°"${EMBEDDING[@]}"°"${CATEGORIES[@]}"°"${PROD_NEW_DATACARDS[@]}"°"${STXS_SIGNALS[@]}"°"${STXS_FIT[@]}"°$USE_BATCH_SYSTEM
+    varnames=(era channel tag eras  channels  tags erasarg channelsarg tagsarg mldir trainingConfFile anaSSStep  llwtnndir temp_file PROD_NEW_DATACARDS fn JETFAKES EMBEDDING CATEGORIES PROD_NEW_DATACARDS STXS_SIGNALS STXS_FIT)
+    IFS='°' read -r -a vars <<< "${era[@]}"°"${channel[@]}"°"${tag[@]}"°"${eras[@]}"°"${channels[@]}"°"${tags[@]}"°"${erasarg[@]}"°"${channelsarg[@]}"°"${tagsarg[@]}"°"${mldir[@]}"°"${trainingConfFile[@]}"°"${anaSSStep[@]}"°"${llwtnndir[@]}"°"${temp_file[@]}"°"${PROD_NEW_DATACARDS[@]}"°"${fn[@]}"°"${JETFAKES[@]}"°"${EMBEDDING[@]}"°"${CATEGORIES[@]}"°"${PROD_NEW_DATACARDS[@]}"°"${STXS_SIGNALS[@]}"°"${STXS_FIT[@]}"
     for (( i=0; i<${#vars[@]}; i++ )); do
         echo "${varnames[$i]}=${vars[$i]}"
     done
@@ -209,7 +190,7 @@ function provideCluster() {
     # done
     updateSymlink $sm_htt_analysis_dir/datasets/datasets.json $cmssw_src_local/HiggsAnalysis/friend-tree-producer/data/input_params/datasets.json
     if [[ ! $cluster =~ "etp"  ]]; then
-        logandrun alogrsync $remote -rLPthz ${cmssw_src_local}/HiggsAnalysis/friend-tree-producer/data/ $remote:${cmssw_src_dir}/HiggsAnalysis/friend-tree-producer/data
+        logandrun alogrsync $remote -rLPthz ${cmssw_src_local}/HiggsAnalysis/friend-tree-producer/data/ $remote:${cmssw_src}/HiggsAnalysis/friend-tree-producer/data
     fi
 }
 
@@ -219,12 +200,12 @@ function applyOnCluster(){
         export tag
         for era in ${eras[@]}; do
             provideCluster $tag $era
-            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "submit" ${tag} $CONDITIONAL_TRAINING
-            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "rungc" ${tag} $CONDITIONAL_TRAINING
+            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "submit" ${tag} $CONDITIONAL_TRAINING
+            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "rungc" ${tag} $CONDITIONAL_TRAINING
             [ $? ] &&
-            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "collect" ${tag} $CONDITIONAL_TRAINING
+            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg}  "collect" ${tag} $CONDITIONAL_TRAINING
             [ $? ] && copyFromCluster
-            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} $cluster "delete" ${tag} $CONDITIONAL_TRAINING || return 1
+            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "delete" ${tag} $CONDITIONAL_TRAINING || return 1
         done
     done
 }
@@ -244,20 +225,18 @@ function copyFromCluster() {
 }
 
 
-
-export redoConversion=0
 function genShapes() {
     ensureoutdirs
     for tag in ${tags[@]}; do
         for era in ${eras[@]}; do
-            export redoConversion=0
-            fn=output/shapes/${era}-${tag}-${channelsarg}-shapes.root
-            if [[ ! -f $fn  ]]; then
-                logandrun ./shapes/produce_shapes.sh ${era} ${channelsarg} ${tag} || return 1
-                redoConversion=1
-            else
-                loginfo Skipping shape generation as $fn exists
-            fi
+            for channel in ${channels[@]}; do
+                fn=output/shapes/${era}-${tag}-${channel}-shapes.root
+                if [[ ! -f $fn  ]]; then
+                    logandrun ./shapes/produce_shapes.sh ${era} ${channel} ${tag} || return 1
+                else
+                    loginfo Skipping shape generation as $fn exists
+                fi
+            done
         done
     done
 }
@@ -270,7 +249,6 @@ function submitShapes(){
                 fn=output/shapes/${era}-${tag}-${channel}-shapes.root
                 if [[ ! -f $fn || $( stat -c%s $fn ) -le 5000 ]]; then
                     echo "$era $channel $tag $(pwd -P)"
-                    redoConversion=1
                 fi
             done
         done
@@ -283,11 +261,11 @@ function syncShapes() {
         for era in ${eras[@]}; do
             for tag in ${tags[@]}; do
 		        fn=output/shapes/${era}-${tag}-${channel}-synced-ML.root
-                if [[ $redoConversion == 1 || ! -f $fn  || $( stat -c%s $fn ) -le 2000 ]]; then
+                #if [[ ! -f $fn  || $( stat -c%s $fn ) -le 2000 ]]; then
                     logandrun ./shapes/convert_to_synced_shapes.sh ${era} ${channel} ${tag} &
-                else
-                    loginfo Skipping shape syncing as $fn exists
-                fi
+                #else
+                #    loginfo Skipping shape syncing as $fn exists
+                #fi
             done
             condwait
         done
@@ -524,40 +502,9 @@ function compareSignRes {
     # done
 }
 
-#################################################################################################
-### Main procedure. Ensures, no completed step is run again by sourcing completedMilestones
-### in the beginning and overwriting variables upon completion of the step
-#################################################################################################
-
 function main() {
     logerror "This is a function library, not a script."
     exit 1
-    read -p " Start new run? y/[n]" yn
-    if [[ ! $yn == "y" ]]; then
-        exit 0
-    fi
-    create_training_dataset
-    mltrain
-    mltest
-    if [[ $USE_BATCH_SYSTEM == 1 ]]; then
-        exportForApplication
-        provideCluster
-        submitCluster; exit
-        resubmitCluster; exit
-        collectCluster
-        copyFromCluster
-    else
-        for era in ${eras[@]}; do
-            for channel in ${channels[@]}; do
-                ./ml/run_application ${era} ${channel}
-            done
-        done
-    fi
-    genshapes
-    gendatacards
-    genworkspaces
-    runana
-    compareSignRes
 }
 
 [[ $sourced == 1 ]] && [[ ! "bash" =~ $0 ]] && logerror "shell is sourced by another shell than bash, aborting" && exit 1

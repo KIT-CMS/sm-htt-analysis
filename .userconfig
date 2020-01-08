@@ -1,0 +1,23 @@
+### batch system for NNScore application
+export cluster=naf7 #lxplus7 # etp7
+export sm_htt_analysis_dir=$( pwd ) ### local sm-htt repo !
+
+### local = etp paths for the friend tree producer
+export cmssw_src_local="/portal/ekpbms3/home/${USER}/CMSSW_10_2_14/src" ### local CMSSW !
+export batch_out_local=${sm_htt_analysis_dir}/output/friend_trees
+
+if [[ $cluster == "etp7" ]]; then
+    export batch_out=$batch_out_local
+    export cmssw_src=$cmssw_src_local
+elif [[ $cluster == "lxplus7" ]]; then
+    export remote="cern"
+    export batch_out="/afs/cern.ch/work/${USER::1}/${USER}/batch-out"
+    export cmssw_src="/afs/cern.ch/user/${USER::1}/${USER}/CMSSW_10_2_14/src"
+elif [[ $cluster == "naf7" ]]; then
+    export remote="naf"
+    export cmssw_src="/afs/desy.de/user/${USER::1}/${USER}/CMSSW_10_2_14/src"
+    export batch_out="/nfs/dust/cms/user/${USER}/NNScoreApp"
+else
+    logerror No such cluster: $cluster
+    exit 1
+fi

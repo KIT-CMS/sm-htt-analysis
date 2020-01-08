@@ -4,13 +4,13 @@ shopt -s checkjobs # wait for all jobs before exiting
 
 era=$1
 channels=$( echo $2 | tr "," " " )
-cluster=$3
-modus=$4
-tag=$5
-all_eras=$6
+modus=$3
+tag=$4
+all_eras=$5
 outdir=${era}_${tag}
 source utils/bashFunctionCollection.sh
-#export SCRAM_ARCH="slc6_amd64_gcc700"
+## set the user specific paths (cluster, remote, batch_out, cmssw_src)
+source .userconfig
 
 if [[ $all_eras == 1 ]]; then
   echo "Using conditional training!"
@@ -26,18 +26,12 @@ if [[ ! "etp7 lxplus7 naf7" =~ $cluster || -z $cluster ]]; then
 fi
 
 if [[ $cluster = "etp7" ]]; then
-    #### use local resources
-    export sw_src_dir="/portal/ekpbms2/home/${USER}/CMSSW_10_2_14/src"
-    export batch_out="/portal/ekpbms2/home/${USER}/batch-out"
     source utils/setup_samples.sh $era $tag
     ARTUS_FRIENDS="${ARTUS_FRIENDS} ${ARTUS_FRIENDS_FAKE_FACTOR}"
     eventsPerJob=2000000
     walltime=10000
 elif [[ $cluster == "lxplus7" ]]; then
-    export remote="cern"
     export streamext="--extended_file_access root://eosuser.cern.ch/"
-    export sw_src_dir="/afs/cern.ch/user/${USER::1}/${USER}/CMSSW_10_2_14/src"
-    export batch_out="/afs/cern.ch/work/${USER::1}/${USER}/batch-out"
     eventsPerJob=200000
     walltime=3000
     case $era in
@@ -58,9 +52,6 @@ elif [[ $cluster == "lxplus7" ]]; then
             ;;
     esac
 elif [[ $cluster == "naf7" ]]; then
-    export remote="naf"
-    export sw_src_dir="/afs/desy.de/user/${USER::1}/${USER}/CMSSW_10_2_14/src"
-    export batch_out="/nfs/dust/cms/user/${USER}/NNScoreApp"
     eventsPerJob=2000000
     walltime=2000
     ARTUS_OUTPUTS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau/$era/ntuples"
@@ -69,7 +60,7 @@ fi
 
 export workdir=$batch_out/$outdir
 export submitlock=$workdir/$era-$2.lock
-export jm=$sw_src_dir/HiggsAnalysis/friend-tree-producer/scripts/job_management.py
+export jm=$cmssw_src/HiggsAnalysis/friend-tree-producer/scripts/job_management.py
 
 set -x
 echo "run this on $cluster"
@@ -77,7 +68,7 @@ tmp=$( mktemp )
 cat << eof > $tmp
 set -e
 source /cvmfs/cms.cern.ch/cmsset_default.sh
-pushd $sw_src_dir
+pushd $cmssw_src
 eval \`scramv1 runtime -sh\`
 export PATH=\$PATH:\$PWD/grid-control:\$PWD/grid-control/scripts
 popd

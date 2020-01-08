@@ -24,6 +24,7 @@ ml/out
 output
 .env
 .vscode
+.userconfig
 *.code-workspace
 tmp-*
 combine_logger.out
