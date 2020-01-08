@@ -2,6 +2,7 @@
 
 import argparse
 import os
+import sys
 import yaml
 
 
@@ -25,20 +26,40 @@ def parse_args():
     return parser.parse_args()
 
 
+def build_cat_names(channel):
+    # Read in binning dictionary.
+    if (sys.version_info.major <= 2
+            and sys.version_info.minor <= 7
+            and sys.version_info.micro <= 15):
+        binning = yaml.load(open("binning.yaml"))
+    else:
+        binning = yaml.load(open("binning.yaml"),
+                            Loader=yaml.FullLoader)
+    categories = []
+    for cat in binning["cutbased"][channel]:
+        categories.append(cat)
+        if cat in ["nobtag", "nobtag_lowmsv"]:
+            for subcat in binning["stxs_stage1p1_v2"][channel]:
+                categories.append("_".join([cat, subcat]))
+    return categories
+
+
 def main(args):
-    tmp_str = "{} {} {} {} {} {}\n"
+    tmp_str = "{} {} {} {} {} {} {}\n"
     with open("arguments.txt", "w") as f:
         for ch in args.channels:
-            for shape_group in args.shape_groups:
-                f.write(
-                    tmp_str.format(
-                        os.path.dirname(os.getcwd()),
-                        args.cores,
-                        args.era,
-                        args.variable,
-                        shape_group,
-                        ch)
-                    )
+            for category in build_cat_names(ch):
+                for shape_group in args.shape_groups:
+                    f.write(
+                        tmp_str.format(
+                            os.path.dirname(os.getcwd()),
+                            args.cores,
+                            args.era,
+                            args.variable,
+                            shape_group,
+                            category,
+                            ch)
+                        )
     return
 
 

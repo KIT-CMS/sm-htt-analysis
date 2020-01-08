@@ -4,7 +4,8 @@ NUMCORES=$1
 ERA=$2
 VARIABLE=$3
 SHAPEGROUP=$4
-CHANNEL=$5
+CATEGORY=$5
+CHANNEL=$6
 
 BINNING=cutbased_shapes/binning.yaml
 
@@ -22,8 +23,9 @@ python cutbased_shapes/produce_shapes_$ERA.py \
     --channels $CHANNEL \
     --discriminator-variable $VARIABLE \
     --era $ERA \
-    --tag ${ERA}_${CHANNEL}_${SHAPEGROUP} \
+    --tag ${ERA}_${CHANNEL}_${SHAPEGROUP}_${CATEGORY} \
     --shape-group $SHAPEGROUP \
+    --category $CATEGORY \
     --et-friend-directory $ARTUS_FRIENDS_ET \
     --em-friend-directory $ARTUS_FRIENDS_EM \
     --mt-friend-directory $ARTUS_FRIENDS_MT \

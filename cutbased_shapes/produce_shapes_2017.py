@@ -34,6 +34,19 @@ def construct_variable(binning_configuration, variablename):
     bins = np.concatenate([np.arange(start, end, step) for start, end, step in binning_structure] + [np.array([end])])
     return Variable(variablename, VariableBinning(sorted(bins)), expression)
 
+
+def create_cut_map(binning, channel):
+    cut_map = {}
+    for cat, cut in binning["cutbased"][channel].iteritems():
+        cut_map[cat] = [Cut(cut, cat)]
+        if cat in ["nobtag", "nobtag_lowmsv"]:
+            for subcat, add_cut in binning["stxs_stage1p1_v2"][channel].iteritems():
+                cut_list = copy.deepcopy(cut_map[cat])
+                cut_list.append(Cut(add_cut, "_".join([cat, subcat])))
+                cut_map["_".join([cat, subcat])] = cut_list
+    return cut_map
+
+
 def setup_logging(output_file, level=logging.DEBUG):
     logger.setLevel(level)
     formatter = logging.Formatter("%(name)s - %(levelname)s - %(message)s")
@@ -134,6 +147,11 @@ def parse_arguments():
         choices=["backgrounds", "sm_signals", "bbH", "ggH_t", "ggH_b", "ggH_i", "ggA_i", "ggA_t", "ggA_b", "ggh_i", "ggh_t", "ggh_b"],
         type=str,
         help="Process groups to be considered within the shape production")
+    parser.add_argument(
+        "--category",
+        default="nobtag",
+        type=str,
+        help="Category to be considered within the shape production")
     return parser.parse_args()
 
 
@@ -246,14 +264,11 @@ def main(args):
 
     for ch in args.channels:
         discriminator = construct_variable(binning, args.discriminator_variable)
-        for category in binning["cutbased"][ch]:
-            cuts = Cuts(Cut(binning["cutbased"][ch][category], category))
-            categories[ch].append(Category(category, channel_dict[ch], cuts, variable=discriminator))
-            if category in [ "nobtag", "nobtag_lowmsv"]:
-                for subcategory in sorted(binning["stxs_stage1p1_v2"][ch]):
-                    stage1p1cuts = copy.deepcopy(cuts)
-                    stage1p1cuts.add(Cut(binning["stxs_stage1p1_v2"][ch][subcategory], category + "_" + subcategory))
-                    categories[ch].append(Category(category + "_" + subcategory, channel_dict[ch], stage1p1cuts, variable=discriminator))
+        # Get dictionary mapping category name to cut objects.
+        cut_dict = create_cut_map(binning, ch)
+        # Create full set of cuts from dict and create category using these cuts.
+        cuts = Cuts(*cut_dict[args.category])
+        categories[ch].append(Category(args.category, channel_dict[ch], cuts, variable=discriminator))
 
 
     # Choice of activated signal processes
@@ -301,12 +316,18 @@ def main(args):
         ReplaceWeight("CMS_prefiring_Run2017", "prefireWeight", Weight("prefiringweightdown", "prefireWeight"),"Down"),
     ]
 
-    # Splitted JES shapes
-    jet_es_variations = create_systematic_variations("CMS_scale_j_eta0to3_Run2017", "jecUncEta0to3", DifferentPipeline)
-    jet_es_variations += create_systematic_variations("CMS_scale_j_eta0to5_Run2017", "jecUncEta0to5", DifferentPipeline)
-    jet_es_variations += create_systematic_variations("CMS_scale_j_eta3to5_Run2017", "jecUncEta3to5", DifferentPipeline)
-    jet_es_variations += create_systematic_variations("CMS_scale_j_RelativeBal_Run2017", "jecUncRelativeBal", DifferentPipeline)
-    jet_es_variations += create_systematic_variations("CMS_scale_j_RelativeSample_Run2017", "jecUncRelativeSample",DifferentPipeline)
+    # Split JES shapes
+    jet_es_variations = create_systematic_variations("CMS_scale_j_Absolute", "jecUncAbsolute", DifferentPipeline)
+    jet_es_variations += create_systematic_variations("CMS_scale_j_Absolute_Run2017", "jecUncAbsoluteYear", DifferentPipeline)
+    jet_es_variations += create_systematic_variations("CMS_scale_j_BBEC1", "jecUncBBEC1", DifferentPipeline)
+    jet_es_variations += create_systematic_variations("CMS_scale_j_BBEC1_Run2017", "jecUncBBEC1Year", DifferentPipeline)
+    jet_es_variations += create_systematic_variations("CMS_scale_j_EC2", "jecUncEC2", DifferentPipeline)
+    jet_es_variations += create_systematic_variations("CMS_scale_j_EC2_Run2017", "jecUncEC2Year", DifferentPipeline)
+    jet_es_variations += create_systematic_variations("CMS_scale_j_FlavorQCD", "jecUncFlavorQCD", DifferentPipeline)
+    jet_es_variations += create_systematic_variations("CMS_scale_j_HF", "jecUncHF", DifferentPipeline)
+    jet_es_variations += create_systematic_variations("CMS_scale_j_HF_Run2017", "jecUncHFYear", DifferentPipeline)
+    jet_es_variations += create_systematic_variations("CMS_scale_j_RelativeBal", "jecUncRelativeBal", DifferentPipeline)
+    jet_es_variations += create_systematic_variations("CMS_scale_j_RelativeSample_Run2017", "jecUncRelativeSampleYear", DifferentPipeline)
 
     # B-tagging
     btag_eff_variations = create_systematic_variations("CMS_htt_eff_b_Run2017", "btagEff", DifferentPipeline)
