@@ -70,7 +70,6 @@ function logerror {
     echo -e "\e[41m[ERROR]\e[0m" $( date +"%y-%m-%d %R" ): $@ | tee -a $( pwd )/output/log/logutil.log
 }
 function logandrun() {
-    set -e
     set -o pipefail
     logfile=$( pwd )/output/log/logandrun-$( echo "$@" | cut -d' ' -f1,2 | sed 's@\./@@' | sed -E "s@[/ ]@\-@g" ).log
     echo -e "\e[43m[RUN]\e[0m" $( date +"%y-%m-%d %R" ): $@ | tee -a $( pwd )/output/log/logutil.log | tee -a $logfile
