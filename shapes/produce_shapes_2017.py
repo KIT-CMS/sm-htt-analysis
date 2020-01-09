@@ -301,14 +301,16 @@ def main(args):
     # Variables and categories
     binning = yaml.load(open(args.binning), Loader=yaml.Loader)
 
-    def readclasses(c):
-        if args.tag == "":
-            confFileName="output/ml/2017_{}/dataset_config.yaml".format(c,args.tag)
+    def readclasses(channelname):
+        import os
+        if args.tag == "" or args.tag == None or not os.path.isfile("output/ml/{}_{}_{}/dataset_config.yaml".format(args.era,channelname,args.tag)) :
+            logger.warn("No tag given, using template.")
+            confFileName="ml/templates/shape-producer_{}.yaml".format(channelname)
         else:
-            confFileName="output/ml/2017_{}_{}/dataset_config.yaml".format(c,args.tag)
+            confFileName="output/ml/{}_{}_{}/dataset_config.yaml".format(args.era,channelname,args.tag)
         logger.debug("Parse classes from "+confFileName)
         confdict= yaml.load(open(confFileName, "r"))
-        logger.debug("Classes for {} loaded: {}".format(c, str(confdict["classes"])))
+        logger.debug("Classes for {} loaded: {}".format(channelname, str(confdict["classes"])))
         return confdict["classes"]
 
     et_categories = []
@@ -609,7 +611,7 @@ def main(args):
     #                 channel=tt,
     #                 era=era)
 
-    # Tau ID 
+    # Tau ID
     # in et and mt one nuisance per pT bin
     # [30., 35., 40., 500., 1000. ,$\le$ 1000.]
     for channel in ["et" , "mt"]:
@@ -632,7 +634,7 @@ def main(args):
                 tau_id_variations.append(
                     ReplaceWeight("CMS_eff_t_{}-{}_Run2017".format(bindown, binup), "taubyIsoIdWeight",
                         Weight("(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(bindown=bindown, binup=binup),"taubyIsoIdWeight"), "Down"))
-            
+
         for variation in tau_id_variations:
             for process_nick in ["ZTT", "TTT", "TTL", "VVT", "VVL", "EMB",
                             ] + signal_nicks:
@@ -1159,7 +1161,7 @@ def main(args):
 
     # Embedded event specifics
 
-       # Tau ID 
+       # Tau ID
     # in et and mt one nuisance per pT bin
     # [30., 35., 40., 500., 1000. ,$\le$ 1000.]
     for channel in ["et" , "mt"]:
@@ -1182,7 +1184,7 @@ def main(args):
                 tau_id_variations.append(
                     ReplaceWeight("CMS_eff_emb_t_{}-{}_Run2017".format(bindown, binup), "taubyIsoIdWeight",
                         Weight("(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(bindown=bindown, binup=binup),"taubyIsoIdWeight"), "Down"))
-            
+
         for variation in tau_id_variations:
             for process_nick in ["EMB"]:
                 if "et" in [args.gof_channel] + args.channels and "et" in channel:

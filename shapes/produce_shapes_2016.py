@@ -192,9 +192,9 @@ def main(args):
 
     mt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, mt, [mt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], mt_processes["data"], friend_directory=mt_friend_directory+[ff_friend_directory]))
     mt_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, mt, [mt_processes[process] for process in ["EMB", "ZL", "ZJ", "W", "TTJ", "TTL", "VVJ", "VVL"]], mt_processes["data"], extrapolation_factor=1.17))
-      
-    
-    
+
+
+
     et = ETSM2016()
     if args.QCD_extrap_fit:
         et.cuts.remove("ele_iso")
@@ -203,7 +203,7 @@ def main(args):
     et_processes = {
         "data"  : Process("data_obs", DataEstimation      (era, directory, et, friend_directory=et_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, et, friend_directory=et_friend_directory)),
-        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation  (era, directory, et, friend_directory=et_friend_directory)), 
+        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation  (era, directory, et, friend_directory=et_friend_directory)),
         "ZJ"    : Process("ZJ",       ZJEstimation        (era, directory, et, friend_directory=et_friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimation        (era, directory, et, friend_directory=et_friend_directory)),
         "TTT"   : Process("TTT",      TTTEstimation       (era, directory, et, friend_directory=et_friend_directory)),
@@ -241,7 +241,7 @@ def main(args):
     tt_processes = {
         "data"  : Process("data_obs", DataEstimation      (era, directory, tt, friend_directory=tt_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
-        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation  (era, directory, tt, friend_directory=tt_friend_directory)), 
+        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation  (era, directory, tt, friend_directory=tt_friend_directory)),
         "ZJ"    : Process("ZJ",       ZJEstimation        (era, directory, tt, friend_directory=tt_friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimation        (era, directory, tt, friend_directory=tt_friend_directory)),
         "TTT"   : Process("TTT",      TTTEstimation       (era, directory, tt, friend_directory=tt_friend_directory)),
@@ -266,7 +266,7 @@ def main(args):
         tt_processes[ggH_htxs] = Process(ggH_htxs, ggHEstimation(ggH_htxs, era, directory, tt, friend_directory=tt_friend_directory))
     for qqH_htxs in qqHEstimation.htxs_dict:
         tt_processes[qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, tt, friend_directory=tt_friend_directory))
-   
+
     tt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationTT(era, directory, tt, [tt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], tt_processes["data"], friend_directory=tt_friend_directory+[ff_friend_directory]))
     tt_processes["QCD"] = Process("QCD", QCDEstimationTT(era, directory, tt, [tt_processes[process] for process in ["EMB", "ZL", "ZJ", "W", "TTJ", "TTL", "VVJ", "VVL"]], tt_processes["data"]))
 
@@ -276,7 +276,7 @@ def main(args):
     em_processes = {
         "data"  : Process("data_obs", DataEstimation      (era, directory, em, friend_directory=em_friend_directory)),
         "ZTT"   : Process("ZTT",      ZTTEstimation       (era, directory, em, friend_directory=em_friend_directory)),
-        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation  (era, directory, em, friend_directory=em_friend_directory)), 
+        "EMB"   : Process("EMB",      ZTTEmbeddedEstimation  (era, directory, em, friend_directory=em_friend_directory)),
         "ZJ"    : Process("ZJ",       ZJEstimation        (era, directory, em, friend_directory=em_friend_directory)),
         "ZL"    : Process("ZL",       ZLEstimation        (era, directory, em, friend_directory=em_friend_directory)),
         "TTT"   : Process("TTT",      TTTEstimation       (era, directory, em, friend_directory=em_friend_directory)),
@@ -301,20 +301,22 @@ def main(args):
         em_processes[ggH_htxs] = Process(ggH_htxs, ggHEstimation(ggH_htxs, era, directory, em, friend_directory=em_friend_directory))
     for qqH_htxs in qqHEstimation.htxs_dict:
         em_processes[qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, em, friend_directory=em_friend_directory))
-   
+
     em_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, em, [em_processes[process] for process in ["EMB", "ZL", "W", "VVL", "TTL"]], em_processes["data"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_osss_binned_Weight","qcd_weight")))
 
     # Variables and categories
     binning = yaml.load(open(args.binning), Loader=yaml.Loader)
 
-    def readclasses(c):
-        if args.tag == "":
-            confFileName="output/ml/2016_{}/dataset_config.yaml".format(c,args.tag)
+    def readclasses(channelname):
+        import os
+        if args.tag == "" or args.tag == None or not os.path.isfile("output/ml/{}_{}_{}/dataset_config.yaml".format(args.era,channelname,args.tag)) :
+            logger.warn("No tag given, using template.")
+            confFileName="ml/templates/shape-producer_{}.yaml".format(channelname)
         else:
-            confFileName="output/ml/2016_{}_{}/dataset_config.yaml".format(c,args.tag)
+            confFileName="output/ml/{}_{}_{}/dataset_config.yaml".format(args.era,channelname,args.tag)
         logger.debug("Parse classes from "+confFileName)
         confdict= yaml.load(open(confFileName, "r"))
-        logger.debug("Classes for {} loaded: {}".format(c, str(confdict["classes"])))
+        logger.debug("Classes for {} loaded: {}".format(channelname, str(confdict["classes"])))
         return confdict["classes"]
 
     et_categories = []
@@ -616,7 +618,7 @@ def main(args):
     #                 channel=tt,
     #                 era=era)
 
-    # Tau ID 
+    # Tau ID
     # in et and mt one nuisance per pT bin
     # [30., 35., 40., 500., 1000. ,$\le$ 1000.]
     for channel in ["et" , "mt"]:
@@ -639,7 +641,7 @@ def main(args):
                 tau_id_variations.append(
                     ReplaceWeight("CMS_eff_t_{}-{}_Run2016".format(bindown, binup), "taubyIsoIdWeight",
                         Weight("(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(bindown=bindown, binup=binup),"taubyIsoIdWeight"), "Down"))
-            
+
         for variation in tau_id_variations:
             for process_nick in ["ZTT", "TTT", "TTL", "VVT", "VVL", "EMB",
                             ] + signal_nicks:
@@ -1044,7 +1046,7 @@ def main(args):
                     process=mt_processes[process_nick],
                     channel=mt,
                     era=era)
-    
+
 
     # # Zll reweighting !!! replaced by log normal uncertainties: CMS_eFakeTau_Run2016 15.5%; CMS_mFakeTau_Run2016 27.2%
     # '''zll_et_weight_variations = []
@@ -1125,9 +1127,9 @@ def main(args):
                     process=em_processes[process_nick],
                     channel=em,
                     era=era)
-    # # Embedded event specifics 
+    # # Embedded event specifics
 
-       # Tau ID 
+       # Tau ID
     # in et and mt one nuisance per pT bin
     # [30., 35., 40., 500., 1000. ,$\le$ 1000.]
     for channel in ["et" , "mt"]:
@@ -1150,7 +1152,7 @@ def main(args):
                 tau_id_variations.append(
                     ReplaceWeight("CMS_eff_emb_t_{}-{}_Run2016".format(bindown, binup), "taubyIsoIdWeight",
                         Weight("(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(bindown=bindown, binup=binup),"taubyIsoIdWeight"), "Down"))
-            
+
         for variation in tau_id_variations:
             for process_nick in ["EMB"]:
                 if "et" in [args.gof_channel] + args.channels and "et" in channel:
