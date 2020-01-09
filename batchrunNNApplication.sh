@@ -59,7 +59,8 @@ elif [[ $cluster == "naf7" ]]; then
 fi
 
 export workdir=$batch_out/$outdir
-export submitlock=$workdir/$era-$2.lock
+export submitlock=$workdir/$era-$2.submit.lock
+export collectlock=$workdir/$era-$2.collect.lock
 export jm=$cmssw_src/HiggsAnalysis/friend-tree-producer/scripts/job_management.py
 
 set -x
@@ -85,8 +86,7 @@ if [[ ! -d $workdir ]]; then
 mkdir -p $workdir
 fi
 
-if [[ "submit" == $modus ]]; then
-if [[ ! -f $submitlock ]]; then
+if [[ "submit" == $modus && ! -f $submitlock  ]]; then
 if [[ $all_eras == 1 ]]; then
 echo Executing with conditional argument
 $jm --executable NNScore \\
@@ -117,7 +117,6 @@ fi
 else
 echo Skipping submission, because $submitlock exists
 fi
-fi
 
 
 if [[ "rungc" == $modus ]]; then
@@ -127,7 +126,7 @@ go.py $workdir/NNScore_workdir/grid_control_NNScore.conf -Gc -m 10
 fi
 
 
-if [[ "collect" == $modus ]]; then
+if [[ "collect" == $modus && ! -f $collectlock  ]]; then
 $jm --executable NNScore \\
                   --batch_cluster $cluster \\
                   --command $modus \\
@@ -137,7 +136,7 @@ $jm --executable NNScore \\
                   --friend_ntuples_directories $ARTUS_FRIENDS \\
                   --cores 5 \\
                   --restrict_to_channels $channels \\
-                  --custom_workdir_path $workdir
+                  --custom_workdir_path $workdir && touch $collectlock
 fi
 
 if [[ "delete" == $modus ]]; then
