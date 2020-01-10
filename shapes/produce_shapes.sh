@@ -16,18 +16,18 @@ source utils/bashFunctionCollection.sh
 
 # Produce shapes
 logandrun python shapes/produce_shapes_$ERA.py \
+    --tag ${TAG} \
+    --era ${ERA} \
+    --channels ${CHANNELS} \
+    --datasets $KAPPA_DATABASE \
+    --binning $BINNING \
+    --num-threads 8 \
     --directory $ARTUS_OUTPUTS \
     --et-friend-directory $ARTUS_FRIENDS_ET \
     --em-friend-directory $ARTUS_FRIENDS_EM \
     --mt-friend-directory $ARTUS_FRIENDS_MT \
     --tt-friend-directory $ARTUS_FRIENDS_TT \
-    --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR \
-    --datasets $KAPPA_DATABASE \
-    --binning $BINNING \
-    --tag ${TAG} \
-    --channels $CHANNELS \
-    --era $ERA \
-    --num-threads 8
+    --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR
 
 # Normalize fake-factor shapes to nominal
 logandrun python fake-factor-application/normalize_shifts.py output/shapes/${ERA}-${TAG}-${CHANNELS}-shapes.root
