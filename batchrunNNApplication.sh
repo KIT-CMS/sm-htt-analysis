@@ -68,6 +68,7 @@ echo "run this on $cluster"
 tmp=$( mktemp )
 cat << eof > $tmp
 set -e
+hostname
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 pushd $cmssw_src
 eval \`scramv1 runtime -sh\`

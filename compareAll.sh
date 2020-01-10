@@ -334,7 +334,7 @@ function runana() {
                     fi
                     for channel in ${channelsPlusCmb[@]}; do
                         DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/$channel/125
-                        logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR $channel ${tag} #&
+                        logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR $channel ${tag} &
                         condwait
                     done
                     condwait

@@ -17,12 +17,12 @@ elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
 fi
 WORKSPACE=$DATACARDDIR/${ERA}-${STXS_FIT}-workspace.root
 if [[ $HESSE == "robustHesse" ]];then
-    LOGFILE="output/log/hesse-$ERA-$TAG-$CHANNEL-$STXS_FIT.log"
-    OUTPUTFILE="output/signalStrength/hesse-$ERA-$TAG-$CHANNEL-$STXS_FIT.txt"
+    ID=hesse-$ERA-$TAG-$CHANNEL-$STXS_FIT
 else
-    LOGFILE="output/log/signal-strength-$ERA-$TAG-$CHANNEL-$STXS_FIT.log"
-    OUTPUTFILE="output/signalStrength/signal-strength-$ERA-$TAG-$CHANNEL-$STXS_FIT.txt"
+    ID=signal-strength-$ERA-$TAG-$CHANNEL-$STXS_FIT
 fi
+LOGFILE="output/log/$ID.log"
+OUTPUTFILE="output/signalStrength/$ID.txt"
 # Set stack size to unlimited, otherwise the T2W tool throws a segfault if
 # combining all ERAs
 ulimit -s unlimited
@@ -32,30 +32,32 @@ then
     logandrun combine \
         -M FitDiagnostics \
         -m 125 -d $WORKSPACE \
-        --robustFit 1 -n $ERA -v1 \
+        --robustFit 1 -v1 \
         --robustHesse 1 \
+        -n .$ID \
         -t -1 --expectSignal 1 \
         --X-rtd MINIMIZER_analytic \
         --cminDefaultMinimizerStrategy 0 \
         | tee $LOGFILE
-    FITFILE=$DATACARDDIR/fitDiagnostics${ERA}-${STXS_FIT}.MultiDimFit.mH125.root
-    mv fitDiagnostics${ERA}.root $FITFILE
+    FITFILE=$DATACARDDIR/fitDiagnostics.${ID}.MultiDimFit.mH125.root
+    mv fitDiagnostics.${ID}.root $FITFILE
     #python combine/check_mlfit.py fitDiagnostics${ERA}.root
     logandrun root -l $FITFILE <<< "fit_b->Print(); fit_s->Print()" \
     | tee -a $LOGFILE | tee $OUTPUTFILE
 else
-    FITFILE=$DATACARDDIR/higgsCombine${ERA}-${STXS_FIT}.MultiDimFit.mH125.root
+    FITFILE=$DATACARDDIR/higgsCombine.${ID}.MultiDimFit.mH125.root
     logandrun combineTool.py \
         -M MultiDimFit\
         -m 125 -d $WORKSPACE \
         --algo singles \
         --robustFit 1 \
+        -n .$ID \
         --X-rtd MINIMIZER_analytic \
         --cminDefaultMinimizerStrategy 0 \
         --floatOtherPOIs 1 \
         -t -1 --expectSignal 1 \
-        -n $ERA -v1 \
+        -v1 \
         | tee $LOGFILE
-    mv higgsCombine${ERA}.MultiDimFit.mH125.root $FITFILE
+    mv higgsCombine.${ID}.MultiDimFit.mH125.root $FITFILE
     logandrun python combine/print_fitresult.py $FITFILE | tee -a $LOGFILE | sed "s@\[INFO\] @@" | tail -n +2 | sort | sed -E "s@\s*:@@" | grep -E '^r' | tee $OUTPUTFILE
 fi
