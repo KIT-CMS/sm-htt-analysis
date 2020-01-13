@@ -831,7 +831,7 @@ def main(args):
 
     # Z pt reweighting
     zpt_variations = create_systematic_variations(
-        "CMS_htt_dyShape_Run2018", "zPtReweightWeight", SquareAndRemoveWeight)
+        "CMS_htt_dyShape", "zPtReweightWeight", SquareAndRemoveWeight)
     for variation in zpt_variations:
         for process_nick in ["ZTT", "ZL", "ZJ"]:
             if "et" in [args.gof_channel] + args.channels:
