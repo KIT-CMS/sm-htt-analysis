@@ -30,11 +30,11 @@ ulimit -s unlimited
 if [[ $HESSE == "robustHesse" ]]
 then
     logandrun combine \
+        -n .$ID \
         -M FitDiagnostics \
         -m 125 -d $WORKSPACE \
         --robustFit 1 -v1 \
         --robustHesse 1 \
-        -n .$ID \
         -t -1 --expectSignal 1 \
         --X-rtd MINIMIZER_analytic \
         --cminDefaultMinimizerStrategy 0 \
@@ -47,11 +47,11 @@ then
 else
     FITFILE=$DATACARDDIR/higgsCombine.${ID}.MultiDimFit.mH125.root
     logandrun combineTool.py \
+        -n .$ID \
         -M MultiDimFit\
         -m 125 -d $WORKSPACE \
         --algo singles \
         --robustFit 1 \
-        -n .$ID \
         --X-rtd MINIMIZER_analytic \
         --cminDefaultMinimizerStrategy 0 \
         --floatOtherPOIs 1 \

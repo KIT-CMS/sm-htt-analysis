@@ -48,7 +48,7 @@ function updateSymlink() {
 
 }
 function condwait(){
-    if [[ $(jobs | wc -l ) -gt 12 ]]; then
+    if [[ $(jobs | wc -l ) -gt 15 ]]; then
         wait
     fi
 }
@@ -70,20 +70,37 @@ function logerror {
     echo -e "\e[41m[ERROR]\e[0m" $( date +"%y-%m-%d %R" ): $@ | tee -a $( pwd )/output/log/logutil.log
 }
 function logandrun() {
+    # set bash to exit if as soon as a part of a pipe has a non-zero exit value
     set -o pipefail
+    # set the name of the logfile based on the command
     logfile=$( pwd )/output/log/logandrun-$( echo "$@" | cut -d' ' -f1,2 | sed 's@\./@@' | sed -E "s@[/ ]@\-@g" ).log
+    # print the startmessage and log it
     echo -e "\e[43m[RUN]\e[0m" $( date +"%y-%m-%d %R" ): $@ | tee -a $( pwd )/output/log/logutil.log | tee -a $logfile
+    # evaluate the current date in seconds as the start date
     start=`date +%s`
+    # execute the command and log it
     $@ | tee -a $logfile
+    # capture the return code ( without  pipefail this would be the exit code of tee )
     return_code=$?
     end=`date +%s`
+    # evaluate the end data
+    # if the there was no error...
     if [[ $return_code == 0 ]]; then
+        # print the message and log it
         echo -e "\e[42m[COMPLETE]\e[0m" $( date +"%y-%m-%d %R" ): $@ "     \e[104m{$((end-start))s}\e[0m" | tee -a $( pwd )/output/log/logutil.log | tee -a $logfile
     else
+        # print a message with the return code
         logerror Error Code $return_code  $@ "     \e[104m{$((end-start))s}\e[0m"  | tee -a $( pwd )/output/log/logutil.log | tee -a $logfile
+    fi
+    # check if the script has been running for more than 2400s = 40 min AND
+    # there is a script to notify the user
+    if [[ $((end-start)) -gt 2400 ]] && hash sendmsg.py 2>/dev/null ; then
+        #notify the user
+        sendmsg.py "$( date +"%y-%m-%d %R" ) {$((end-start))s} $return_code: $@ " 2>/dev/null
     fi
     return $return_code
 }
+# this function makes sure all the output directories exit
 function ensureoutdirs() {
     [[ -d output ]] || mkdir output
     pushd output  >/dev/null
