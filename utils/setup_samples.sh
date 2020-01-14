@@ -18,6 +18,7 @@ MELA_Friends_2016="$basedir/2016/friends/MELA/"
 FF_Friends_2016="$basedir/2016/friends/FakeFactors/"
 
 # Samples Run2017
+basedir="/ceph/htautau/deeptau_eoy"
 ARTUS_OUTPUTS_2017="$basedir/2017/ntuples/"
 #NNScore_Friends_2017="$basedir/2017/friends/NNScore/"
 SVFit_Friends_2017="$basedir/2017/friends/SVFit/"
