@@ -196,8 +196,8 @@ def main(args):
 
     mt_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, mt, [mt_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], mt_processes["data"], friend_directory=mt_friend_directory+[ff_friend_directory]))
     mt_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, mt,
-            [mt_processes[process] for process in ["EMB", "ZL", "ZJ", "W", "TTL", "TTJ", "VVL", "VVJ"]],
-            mt_processes["data"], friend_directory=mt_friend_directory, extrapolation_factor=1.00))
+        [mt_processes[process] for process in ["EMB", "ZL", "ZJ", "W", "TTJ", "TTL", "VVJ", "VVL"]],
+        mt_processes["data"], friend_directory=mt_friend_directory, extrapolation_factor=1.00))
 
     et = ETSM2017()
     et_processes = {
@@ -231,8 +231,8 @@ def main(args):
 
     et_processes["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, et, [et_processes[process] for process in ["EMB", "ZL", "TTL", "VVL"]], et_processes["data"], friend_directory=et_friend_directory+[ff_friend_directory]))
     et_processes["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, et,
-            [et_processes[process] for process in ["EMB", "ZL", "ZJ", "W", "TTL", "TTJ", "VVL", "VVJ"]],
-            et_processes["data"], friend_directory=et_friend_directory, extrapolation_factor=1.00))
+        [et_processes[process] for process in ["EMB", "ZL", "ZJ", "W", "TTJ", "TTL", "VVJ", "VVL"]],
+        et_processes["data"], friend_directory=et_friend_directory, extrapolation_factor=1.00))
 
     tt = TTSM2017()
     tt_processes = {
