@@ -1,25 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import logging
+import yaml
+import argparse
+from itertools import product
+from shape_producer.estimation_methods import AddHistogramEstimationMethod
+from shape_producer.process import Process
+from shape_producer.systematic_variations import Nominal, DifferentPipeline, SquareAndRemoveWeight, create_systematic_variations, AddWeight, ReplaceWeight, Relabel
+from shape_producer.variable import Variable
+from shape_producer.binning import ConstantBinning, VariableBinning
+from shape_producer.categories import Category
+from shape_producer.systematics import Systematics, Systematic
+from shape_producer.cutstring import Cut, Cuts, Weight
 import ROOT
-ROOT.PyConfig.IgnoreCommandLineOptions = True  # disable ROOT internal argument parser
+# disable ROOT internal argument parser
+ROOT.PyConfig.IgnoreCommandLineOptions = True
 ROOT.gErrorIgnoreLevel = ROOT.kError
 
-from shape_producer.cutstring import Cut, Cuts, Weight
-from shape_producer.systematics import Systematics, Systematic
-from shape_producer.categories import Category
-from shape_producer.binning import ConstantBinning, VariableBinning
-from shape_producer.variable import Variable
-from shape_producer.systematic_variations import Nominal, DifferentPipeline, SquareAndRemoveWeight, create_systematic_variations, AddWeight, ReplaceWeight, Relabel
-from shape_producer.process import Process
-from shape_producer.estimation_methods import AddHistogramEstimationMethod
 
-from itertools import product
-
-import argparse
-import yaml
-
-import logging
 logger = logging.getLogger()
 
 
@@ -49,39 +48,34 @@ def parse_arguments():
         type=str,
         default=[],
         nargs='+',
-        help=
-        "Directories arranged as Artus output and containing a friend tree for et."
+        help="Directories arranged as Artus output and containing a friend tree for et."
     )
     parser.add_argument(
         "--mt-friend-directory",
         type=str,
         default=[],
         nargs='+',
-        help=
-        "Directories arranged as Artus output and containing a friend tree for mt."
+        help="Directories arranged as Artus output and containing a friend tree for mt."
     )
     parser.add_argument(
         "--fake-factor-friend-directory",
         default=None,
         type=str,
-        help=
-        "Directory arranged as Artus output and containing friend trees to data files with fake factors."
+        help="Directory arranged as Artus output and containing friend trees to data files with fake factors."
     )
     parser.add_argument(
         "--tt-friend-directory",
         type=str,
         default=[],
         nargs='+',
-        help=
-        "Directories arranged as Artus output and containing a friend tree for tt."
+        help="Directories arranged as Artus output and containing a friend tree for tt."
     )
     parser.add_argument(
         "--em-friend-directory",
         type=str,
         default=[],
         nargs='+',
-        help=
-        "Directories arranged as Artus output and containing a friend tree for em."
+        help="Directories arranged as Artus output and containing a friend tree for em."
     )
     parser.add_argument(
         "--QCD-extrap-fit",
@@ -184,13 +178,17 @@ def main(args):
     # Channels and processes
     # yapf: disable
     directory = args.directory
-    friend_directory= {"mt":args.mt_friend_directory,"et":args.et_friend_directory,"tt":args.tt_friend_directory,"em":args.em_friend_directory}
+    friend_directory = {
+        "mt": args.mt_friend_directory,
+        "et": args.et_friend_directory,
+        "tt": args.tt_friend_directory,
+        "em": args.em_friend_directory}
 
-    ## QCD extrapolation_factor 1.17 for mt et 2016
-    if args.era=="2016":
-        extrapolation_factor=1.17
+    # QCD extrapolation_factor 1.17 for mt et 2016
+    if args.era == "2016":
+        extrapolation_factor = 1.17
     else:
-        extrapolation_factor=1.
+        extrapolation_factor = 1.
     mt = smChannelsDict["mt"]
     et = smChannelsDict["et"]
     tt = smChannelsDict["tt"]
@@ -203,96 +201,146 @@ def main(args):
         tt.cuts.get("os").invert()
         em.cuts.get("os").invert()
 
-    pnameToEstD={
+    pnameToEstD = {
         "data_obs": DataEstimation,
-        "EMB":ZTTEmbeddedEstimation,
-        "TTT":TTTEstimation,
-        "VVT":VVTEstimation,
-        "ZTT":ZTTEstimation,
-        "TTL":TTLEstimation,
-        "VVL":VVLEstimation,
-        "ZL":ZLEstimation,
-        "W":WEstimation,
-        "VVJ":VVJEstimation,
-        "TTJ":TTJEstimation,
-        "ZJ":ZJEstimation,
-        "VH125":VHEstimation,
-        "WH125":WHEstimation,
-        "ZH125":ZHEstimation,
-        "ttH125":ttHEstimation,
-        "ggHWW125":ggHWWEstimation,
-        "qqHWW125":qqHWWEstimation,
+        "EMB": ZTTEmbeddedEstimation,
+        "TTT": TTTEstimation,
+        "VVT": VVTEstimation,
+        "ZTT": ZTTEstimation,
+        "TTL": TTLEstimation,
+        "VVL": VVLEstimation,
+        "ZL": ZLEstimation,
+        "W": WEstimation,
+        "VVJ": VVJEstimation,
+        "TTJ": TTJEstimation,
+        "ZJ": ZJEstimation,
+        "VH125": VHEstimation,
+        "WH125": WHEstimation,
+        "ZH125": ZHEstimation,
+        "ttH125": ttHEstimation,
+        "ggHWW125": ggHWWEstimation,
+        "qqHWW125": qqHWWEstimation,
     }
     bac
-    commonProcessesL=["data", "EMB", "ZL", "TTL", "VVL", "VH125", "WH125", "ZH125", "ttH125", "ggHWW125", "qqHWW125"]
-    allChannelNameList = ["mt","et","tt","em"]
-    processesToAdd={}
+    commonProcessesL = [
+        "data",
+        "EMB",
+        "ZL",
+        "TTL",
+        "VVL",
+        "VH125",
+        "WH125",
+        "ZH125",
+        "ttH125",
+        "ggHWW125",
+        "qqHWW125"]
+    allChannelNameList = ["mt", "et", "tt", "em"]
+    processesToAdd = {}
     for channelname_ in allChannelNameList:
-        processesToAdd[channelname_]=channelname_
+        processesToAdd[channelname_] = channelname_
 
-    processes={}
+    processes = {}
     for channelname_, ch_ in smChannelsDict.items():
         # Add all processes, than dont
         processes[channelname_] = {
-            processname: Process(processname, pnameToEstD[processname](era, directory, ch_, friend_directory=friend_directory[channelname_]))
-            for processname in commonProcessesL
-        }
+            processname: Process(
+                processname,
+                pnameToEstD[processname](
+                    era,
+                    directory,
+                    ch_,
+                    friend_directory=friend_directory[channelname_])) for processname in commonProcessesL}
         # Stage 0 and 1.1 signals for ggH & qqH
         for ggH_htxs in ggHEstimation.htxs_dict:
-            processes[ggH_htxs] = Process(ggH_htxs, ggHEstimation(ggH_htxs, era, directory, ch_, friend_directory=friend_directory[channelname_]))
+            processes[ggH_htxs] = Process(
+                ggH_htxs,
+                ggHEstimation(
+                    ggH_htxs, era, directory, ch_,
+                    friend_directory=friend_directory[channelname_]))
         for qqH_htxs in qqHEstimation.htxs_dict:
-            processes[qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, ch_, friend_directory=friend_directory[channelname_]))
+            processes[qqH_htxs] = Process(
+                qqH_htxs,
+                qqHEstimation(
+                    qqH_htxs, era, directory, ch_,
+                    friend_directory=friend_directory[channelname_]))
 
     for channelname_, ch_ in smChannelsDict.items():
-        catsL_=catsListD[channelname_]
+        catsL_ = catsListD[channelname_]
 
-        fpL= ["EMB", "ZL", "TTL", "VVL"]
-        if channelname_ == "em": fpL.append("W")
+        fpL = ["EMB", "ZL", "TTL", "VVL"]
+        if channelname_ == "em":
+            fpL.append("W")
 
-        processes[channelname_]["FAKES"] = Process("jetFakes", NewFakeEstimationLT(era, directory, ch_, [processes[channelname_][process] for process in fpl], processes[channelname_]["data"], friend_directory=friend_directory[channelname_]+[args.fake_factor_friend_directory]))
+        processes[channelname_]["FAKES"] = Process(
+            "jetFakes",
+            NewFakeEstimationLT(
+                era, directory, ch_,
+                [processes[channelname_][process] for process in fpl],
+                processes[channelname_]["data"],
+                friend_directory=friend_directory[channelname_] +
+                [args.fake_factor_friend_directory]))
 
         if channelname_ != "em":
-            qcdpL=["EMB", "ZL", "ZJ", "W", "TTJ", "TTL", "VVJ", "VVL"]
-            qcd_weight = Weight("1","qcd_weight")
+            qcdpL = ["EMB", "ZL", "ZJ", "W", "TTJ", "TTL", "VVJ", "VVL"]
+            qcd_weight = Weight("1", "qcd_weight")
         else:
-            qcdpL= ["EMB", "ZL", "W", "TTL", "VVL"]
-            qcd_weight = Weight("em_qcd_osss_binned_Weight","qcd_weight")
+            qcdpL = ["EMB", "ZL", "W", "TTL", "VVL"]
+            qcd_weight = Weight("em_qcd_osss_binned_Weight", "qcd_weight")
 
-        if channelname_ != "tt": est_ =QCDEstimation_SStoOS_MTETEM
-        else: est_ =QCDEstimation_ABCD_TT_ISO2
+        if channelname_ != "tt":
+            est_ = QCDEstimation_SStoOS_MTETEM
+        else:
+            est_ = QCDEstimation_ABCD_TT_ISO2
 
-        processes[channelname_]["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, ch_,
-            [processes[channelname_][process] for process in qcdpL],
-            processes[channelname_]["data"], friend_directory=friend_directory[channelname_], extrapolation_factor=extrapolation_factor ))
+        processes[channelname_]["QCD"] = Process(
+            "QCD",
+            QCDEstimation_SStoOS_MTETEM(
+                era, directory, ch_,
+                [processes[channelname_][process] for process in qcdpL],
+                processes[channelname_]["data"],
+                friend_directory=friend_directory[channelname_],
+                extrapolation_factor=extrapolation_factor))
 
     # Variables and categories
     binning = yaml.load(open(args.binning), Loader=yaml.Loader)
 
     def readclasses(channelname):
         import os
-        if args.tag == "" or args.tag == None or not os.path.isfile("output/ml/{}_{}_{}/dataset_config.yaml".format(args.era,channelname,args.tag)) :
+        if args.tag == "" or args.tag is None or not os.path.isfile(
+                "output/ml/{}_{}_{}/dataset_config.yaml".format(args.era, channelname, args.tag)):
             logger.warn("No tag given, using template.")
-            confFileName="ml/templates/shape-producer_{}.yaml".format(channelname)
+            confFileName = "ml/templates/shape-producer_{}.yaml".format(
+                channelname)
         else:
-            confFileName="output/ml/{}_{}_{}/dataset_config.yaml".format(args.era,channelname,args.tag)
-        logger.debug("Parse classes from "+confFileName)
-        confdict= yaml.load(open(confFileName, "r"))
-        logger.debug("Classes for {} loaded: {}".format(channelname, str(confdict["classes"])))
+            confFileName = "output/ml/{}_{}_{}/dataset_config.yaml".format(
+                args.era, channelname, args.tag)
+        logger.debug("Parse classes from " + confFileName)
+        confdict = yaml.load(open(confFileName, "r"))
+        logger.debug(
+            "Classes for {} loaded: {}".format(
+                channelname, str(
+                    confdict["classes"])))
         return confdict["classes"]
 
     # Initialise categorie lists
-    selelctedChannelsTuples={c_:smChannelsDict[c_] for c_ in args.channels}.items()
-    selelctedChannelsTuplesNoEM={c_:smChannelsDict[c_] for c_ in args.channels if c_ != em }.items()
-    catsListD={ channelname_:[] for channelname_ in allChannelNameList}
+    selelctedChannelsTuples = {
+        c_: smChannelsDict[c_] for c_ in args.channels}.items()
+    selelctedChannelsTuplesNoEM = {
+        c_: smChannelsDict[c_] for c_ in args.channels if c_ != em}.items()
+    catsListD = {channelname_: [] for channelname_ in allChannelNameList}
     # if not a gof test:Analysis shapes
-    if args.gof_variable == None:
-        for channelname_,ch_ in selelctedChannelsTuples:
-            catsL_=catsListD[channelname_]
+    if args.gof_variable is None:
+        for channelname_, ch_ in selelctedChannelsTuples:
+            catsL_ = catsListD[channelname_]
             for i, label in enumerate(readclasses(channelname_)):
                 score = Variable(
                     "{}_max_score".format(channelname_),
                     VariableBinning(binning["analysis"][channelname_][label]))
-                maxIdxCut=Cut("{channel}_max_index=={index}".format(channel=channelname_,index=i), "exclusive_score")
+                maxIdxCut = Cut(
+                    "{channel}_max_index=={index}".format(
+                        channel=channelname_,
+                        index=i),
+                    "exclusive_score")
                 catsL_.append(
                     Category(
                         label,
@@ -303,29 +351,32 @@ def main(args):
                     stxs = 100 if label == "ggh" else 200
                     for i_e, e in enumerate(binning["stxs_stage1p1"][label]):
                         score = Variable(
-                            "{}_max_score".format(channelname_),
-                            VariableBinning(binning["analysis"][channelname_][label]))
+                            "{}_max_score".format(channelname_), VariableBinning(
+                                binning["analysis"][channelname_][label]))
                         catsL_.append(
                             Category(
-                                "{}_{}".format(label,str(stxs+i_e)),
+                                "{}_{}".format(label, str(stxs + i_e)),
                                 ch_,
                                 Cuts(maxIdxCut,
-                                    Cut(e, "stxs_stage1p1_cut")),
+                                     Cut(e, "stxs_stage1p1_cut")),
                                 variable=score))
 
-    ## if gof test
+    # if gof test
     else:
         # Goodness of fit shapes
-        for channelname_,ch_ in selelctedChannelsTuples:
-            catsL_=catsListD[channelname_]
-            score = Variable(
-                    args.gof_variable,
-                    VariableBinning(binning["gof"][channelname_][args.gof_variable]["bins"]),
-                    expression=binning["gof"][channelname_][args.gof_variable]["expression"])
+        for channelname_, ch_ in selelctedChannelsTuples:
+            catsL_ = catsListD[channelname_]
+            score = Variable(args.gof_variable,
+                             VariableBinning(
+                                 binning["gof"][channelname_]
+                                 [args.gof_variable]["bins"]),
+                             expression=binning["gof"][channelname_]
+                             [args.gof_variable]["expression"])
             if "cut" in binning["gof"][channelname_][args.gof_variable].keys():
-                cuts=Cuts(Cut(binning["gof"][channelname_][args.gof_variable]["cut"], "binning"))
+                cuts = Cuts(
+                    Cut(binning["gof"][channelname_][args.gof_variable]["cut"], "binning"))
             else:
-                cuts=Cuts()
+                cuts = Cuts()
             catsL_.append(
                 Category(
                     args.gof_variable,
@@ -335,12 +386,12 @@ def main(args):
 
     # Nominal histograms
     signal_nicks = ["WH125", "ZH125", "VH125", "ttH125"]
-    ww_nicks = [] #["ggHWW125", "qqHWW125"]
-    if args.gof_variable == None:
-        signal_nicks += [ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict] + [qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict] + ww_nicks
+    ww_nicks = []  # ["ggHWW125", "qqHWW125"]
+    if args.gof_variable is None:
+        signal_nicks += [ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict] + [
+            qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict] + ww_nicks
     else:
         signal_nicks += ["ggH125", "qqH125"] + ww_nicks
-
 
     # yapf: enable
     for channelname_, ch_ in selelctedChannelsTuples:
@@ -362,7 +413,7 @@ def main(args):
          for process_nick in processes[channelname_]}
         for channelname_, _ in selelctedChannelsTuples
     }
-    ###end
+    # end
     for channelname_, ch_ in selelctedChannelsTuples:
         for process_nick in processes[channelname_]:
             for variation_ in variationsTooAdd[channelname_][process_nick]:
@@ -465,7 +516,8 @@ def main(args):
             if "em" in args.channels:
                 variationsTooAdd["em"][process_nick].append(variation_)
 
-    # MET energy scale. Note: only those variations for non-resonant processes are used in the stat. inference
+    # MET energy scale. Note: only those variations for non-resonant processes
+    # are used in the stat. inference
     met_unclustered_variations = create_systematic_variations(
         "CMS_scale_met_unclustered", "metUnclusteredEn", DifferentPipeline)
     for variation_ in met_unclustered_variations:  # + met_clustered_variations:
@@ -736,7 +788,8 @@ def main(args):
                     channel=et,
                     era=era)
 
-    # Zll reweighting !!! replaced by log normal uncertainties: CMS_eFakeTau_Run2018 16%; CMS_mFakeTau_Run2018 26%
+    # Zll reweighting !!! replaced by log normal uncertainties:
+    # CMS_eFakeTau_Run2018 16%; CMS_mFakeTau_Run2018 26%
     '''zll_et_weight_variations = []
     zll_et_weight_variations.append(
         AddWeight(
@@ -925,7 +978,8 @@ def main(args):
                     process=tt_processes[process_nick],
                     channel=tt,
                     era=era)
-    # 10% removed events in ttbar simulation (ttbar -> real tau tau events) will be added/subtracted to ZTT shape to use as systematic
+    # 10% removed events in ttbar simulation (ttbar -> real tau tau events)
+    # will be added/subtracted to ZTT shape to use as systematic
     tttautau_process_mt = Process(
         "TTT",
         TTTEstimation(era,
@@ -1090,18 +1144,18 @@ def main(args):
             "ff_qcd{ch}_syst_Run2018{shift}",
             "ff_qcd_dm0_njet0{ch}_stat_Run2018{shift}",
             "ff_qcd_dm0_njet1{ch}_stat_Run2018{shift}",
-            #"ff_qcd_dm1_njet0{ch}_stat_Run2018{shift}",
-            #"ff_qcd_dm1_njet1{ch}_stat_Run2018{shift}",
+            # "ff_qcd_dm1_njet0{ch}_stat_Run2018{shift}",
+            # "ff_qcd_dm1_njet1{ch}_stat_Run2018{shift}",
             "ff_w_syst_Run2018{shift}",
             "ff_w_dm0_njet0{ch}_stat_Run2018{shift}",
             "ff_w_dm0_njet1{ch}_stat_Run2018{shift}",
-            #"ff_w_dm1_njet0{ch}_stat_Run2018{shift}",
-            #"ff_w_dm1_njet1{ch}_stat_Run2018{shift}",
+            # "ff_w_dm1_njet0{ch}_stat_Run2018{shift}",
+            # "ff_w_dm1_njet1{ch}_stat_Run2018{shift}",
             "ff_tt_syst_Run2018{shift}",
             "ff_tt_dm0_njet0_stat_Run2018{shift}",
             "ff_tt_dm0_njet1_stat_Run2018{shift}",
-            #"ff_tt_dm1_njet0_stat_Run2018{shift}",
-            #"ff_tt_dm1_njet1_stat_Run2018{shift}"
+            # "ff_tt_dm1_njet0_stat_Run2018{shift}",
+            # "ff_tt_dm1_njet1_stat_Run2018{shift}"
     ]:
         for shift_direction in ["Up", "Down"]:
             fake_factor_variations_et.append(
@@ -1143,8 +1197,8 @@ def main(args):
             "ff_qcd{ch}_syst_Run2018{shift}",
             "ff_qcd_dm0_njet0{ch}_stat_Run2018{shift}",
             "ff_qcd_dm0_njet1{ch}_stat_Run2018{shift}",
-            #"ff_qcd_dm1_njet0{ch}_stat_Run2018{shift}",
-            #"ff_qcd_dm1_njet1{ch}_stat_Run2018{shift}",
+            # "ff_qcd_dm1_njet0{ch}_stat_Run2018{shift}",
+            # "ff_qcd_dm1_njet1{ch}_stat_Run2018{shift}",
             "ff_w{ch}_syst_Run2018{shift}",
             "ff_tt{ch}_syst_Run2018{shift}",
             "ff_w_frac{ch}_syst_Run2018{shift}",
@@ -1196,11 +1250,13 @@ def main(args):
                 "qcd_weight"), "Up"))
     qcd_variations.append(
         ReplaceWeight(
-            "CMS_htt_qcd_0jet_shape_Run{era}".format(era=args.era),
+            "CMS_htt_qcd_0jet_shape_Run{era}".format(
+                era=args.era),
             "qcd_weight",
             Weight(
                 "em_qcd_osss_0jet_shapedown_Weight*em_qcd_extrap_uncert_Weight",
-                "qcd_weight"), "Down"))
+                "qcd_weight"),
+            "Down"))
 
     qcd_variations.append(
         ReplaceWeight(
@@ -1226,11 +1282,13 @@ def main(args):
                 "qcd_weight"), "Up"))
     qcd_variations.append(
         ReplaceWeight(
-            "CMS_htt_qcd_1jet_shape_Run{era}".format(era=args.era),
+            "CMS_htt_qcd_1jet_shape_Run{era}".format(
+                era=args.era),
             "qcd_weight",
             Weight(
                 "em_qcd_osss_1jet_shapedown_Weight*em_qcd_extrap_uncert_Weight",
-                "qcd_weight"), "Down"))
+                "qcd_weight"),
+            "Down"))
 
     qcd_variations.append(
         ReplaceWeight(
