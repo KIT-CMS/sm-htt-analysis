@@ -28,3 +28,6 @@
 [submodule "fake-factor-derivation"]
 	path = fake_factor_derivation
 	url = git@github.com:KIT-CMS/fake-factor-derivation.git
+[submodule "dump-fits-to-tex"]
+	path = dump-fits-to-tex
+	url = git@github.com:swozniewski/dump-fits-to-tex.git
