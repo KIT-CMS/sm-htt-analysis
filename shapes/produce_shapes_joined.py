@@ -304,7 +304,8 @@ def main(args):
                 [processes[channelname_][process] for process in qcdpL],
                 processes[channelname_]["data"],
                 friend_directory=friend_directory[channelname_],
-                extrapolation_factor=extrapolation_factor))
+                extrapolation_factor=extrapolation_factor,
+                qcd_weight=qcd_weight))
 
     # Variables and categories
     binning = yaml.load(open(args.binning), Loader=yaml.Loader)
@@ -509,7 +510,12 @@ def main(args):
                 variationsTooAdd[channelname_][process_nick].append(variation_)
 
     # Z pt reweighting
-    zpt_variations = create_systematic_variations(
+    if args.era == "2018":
+        zpt_variations = create_systematic_variations(
+        "CMS_htt_dyShape", "zPtReweightWeight",
+        SquareAndRemoveWeight)
+    else:
+        zpt_variations = create_systematic_variations(
         "CMS_htt_dyShape_Run{era}".format(era=args.era), "zPtReweightWeight",
         SquareAndRemoveWeight)
     for variation_ in zpt_variations:
