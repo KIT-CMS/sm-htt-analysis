@@ -351,14 +351,16 @@ function runana() {
 ## methods for combining eras
 function genCmbDatacards() {
     ensureoutdirs
-    for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do
-        if [[ ${#channels[@]} == 4 ]]; then
-            channelsPlusCmb=("${channels[@]}" "cmb")
-        else
-            channelsPlusCmb=("${channels[@]}")
-        fi
-        for channel in ${channelsPlusCmb[@]}; do
-            ./datacards/combine_datacards.sh $erasarg $channel $tagsarg $STXS_FIT
+    for tag in ${tags[@]}; do
+        for STXS_SIGNALS in "stxs_stage0" "stxs_stage1p1"; do
+            if [[ ${#channels[@]} == 4 ]]; then
+                channelsPlusCmb=("${channels[@]}" "cmb")
+            else
+                channelsPlusCmb=("${channels[@]}")
+            fi
+            for channel in ${channelsPlusCmb[@]}; do
+                ./datacards/combine_datacards.sh $erasarg $channel $tag $STXS_SIGNALS
+            done
         done
     done
 }
@@ -370,34 +372,38 @@ function genCmbWorkspaces(){
         elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
             STXS_SIGNALS=stxs_stage1p1
         fi
-        era=all
-        tag=comberas
-        fn="output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/cmb/125/${era}-${STXS_FIT}-workspace.root"
-        logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${tag} &
-        condwait
-    done
-}
-function runCmbAna() {
-    ensureoutdirs
-    for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do
-        if [[ $STXS_FIT == "inclusive" || $STXS_FIT == "stxs_stage0" ]]; then
-            STXS_SIGNALS=stxs_stage0
-        elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
-            STXS_SIGNALS=stxs_stage1p1
-        fi
-        era=all
-        tag=comberas
-        if [[ ${#channels[@]} == 4 ]]; then
-            channelsPlusCmb=("${channels[@]}" "cmb")
-        else
-            channelsPlusCmb=("${channels[@]}")
-        fi
-        for channel in ${channelsPlusCmb[@]}; do
-            DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/$channel/125
-            logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR $channel ${tag} &
+        for tag in ${tags[@]}; do
+            era=all
+            fn="output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/cmb/125/${era}-${STXS_FIT}-workspace.root"
+            logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${tag} &
             condwait
         done
     done
+    wait
+}
+function runCmbAna() {
+    ensureoutdirs
+    for tag in ${tags[@]}; do
+        for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do
+            if [[ $STXS_FIT == "inclusive" || $STXS_FIT == "stxs_stage0" ]]; then
+                STXS_SIGNALS=stxs_stage0
+            elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
+                STXS_SIGNALS=stxs_stage1p1
+            fi
+            era=all
+            if [[ ${#channels[@]} == 4 ]]; then
+                channelsPlusCmb=("${channels[@]}" "cmb")
+            else
+                channelsPlusCmb=("${channels[@]}")
+            fi
+            for channel in ${channelsPlusCmb[@]}; do
+                DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/$channel/125
+                logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR $channel ${tag} &
+                condwait
+            done
+        done
+    done
+    wait
 }
 
 
