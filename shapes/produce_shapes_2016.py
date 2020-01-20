@@ -1589,6 +1589,23 @@ def main(args):
         "Down"))
 
     qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_2jet_rate_Run2016", "qcd_weight",
+        Weight("em_qcd_osss_2jet_rateup_Weight", "qcd_weight"),
+        "Up"))
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_2jet_rate_Run2016", "qcd_weight",
+        Weight("em_qcd_osss_2jet_ratedown_Weight", "qcd_weight"),
+        "Down"))
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_2jet_shape_Run2016", "qcd_weight",
+        Weight("em_qcd_osss_2jet_shapeup_Weight", "qcd_weight"),
+        "Up"))
+    qcd_variations.append(ReplaceWeight(
+        "CMS_htt_qcd_2jet_shape_Run2016", "qcd_weight",
+        Weight("em_qcd_osss_2jet_shapedown_Weight", "qcd_weight"),
+        "Down"))
+
+    qcd_variations.append(ReplaceWeight(
         "CMS_htt_qcd_iso_Run2016", "qcd_weight",
         Weight("em_qcd_extrap_up_Weight", "qcd_weight"),
         "Up"))
