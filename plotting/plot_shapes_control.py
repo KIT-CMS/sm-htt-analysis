@@ -129,6 +129,7 @@ def main(info):
     if args.category_postfix is not None:
         category += "_%s"%args.category_postfix
     rootfile = rootfile_parser.Rootfile_parser(args.input.replace(".root","_"+channel+"_"+args.era+".root"), "smhtt", era, variable, "125")
+    print rootfile
     bkg_processes = [b for b in all_bkg_processes]
     if "em" in channel:
         if not args.embedding:
@@ -198,28 +199,34 @@ def main(info):
             VH = rootfile.get(channel, category, "VH125").Clone()
             ttH = rootfile.get(channel, category, "ttH125").Clone()
             HWW = rootfile.get(channel, category, "HWW").Clone()
-            if ggH.Integral() > 0:
-                ggH_scale = 0.5*data_norm/ggH.Integral()
-            else:
-                ggH_scale = 0.0
-            if qqH.Integral() > 0:
-                qqH_scale = 0.5*data_norm/qqH.Integral()
-            else:
-                qqH_scale = 0.0
-            if VH.Integral() > 0:
-                VH_scale =  0.25*data_norm/VH.Integral()
-            else:
-                VH_scale = 0.0
-            if ttH.Integral() > 0:
-                ttH_scale =  0.25*data_norm/ttH.Integral()
-            else:
-                ttH_scale = 0.0
-            if HWW.Integral() > 0:
-                HWW_scale =  0.25*data_norm/HWW.Integral()
-                if HWW_scale > 10000:
-                    HWW_scale = 0.0
-            else:
-                HWW_scale = 0.0
+            # if ggH.Integral() > 0:
+            #     ggH_scale = 0.5*data_norm/ggH.Integral()
+            # else:
+            #     ggH_scale = 0.0
+            # if qqH.Integral() > 0:
+            #     qqH_scale = 0.5*data_norm/qqH.Integral()
+            # else:
+            #     qqH_scale = 0.0
+            # if VH.Integral() > 0:
+            #     VH_scale =  0.25*data_norm/VH.Integral()
+            # else:
+            #     VH_scale = 0.0
+            # if ttH.Integral() > 0:
+            #     ttH_scale =  0.25*data_norm/ttH.Integral()
+            # else:
+            #     ttH_scale = 0.0
+            # if HWW.Integral() > 0:
+            #     HWW_scale =  0.25*data_norm/HWW.Integral()
+            #     if HWW_scale > 10000:
+            #         HWW_scale = 0.0
+            # else:
+            #     HWW_scale = 0.0
+            ggH_scale = 10
+            qqH_scale = 10
+            ttH_scale = 10
+            VH_scale = 10
+            ttH_scale = 10
+            HWW_scale = 10
             if i in [0,1]:
                 ggH.Scale(ggH_scale)
                 qqH.Scale(qqH_scale)
@@ -306,9 +313,9 @@ def main(info):
             1.0,
             1000 * plot.subplot(0).get_hist("data_obs").GetMaximum())
 
-    plot.subplot(2).setYlims(0.45, 2.05)
+    plot.subplot(2).setYlims(0.65, 1.65)
     if category in ["2"]:
-        plot.subplot(2).setYlims(0.45, 2.05)
+        plot.subplot(2).setYlims(0.65, 1.65)
     if category in ["1", "2"]:
         plot.subplot(0).setYlims(0.1, 150000000)
         if channel == "em":
@@ -441,7 +448,7 @@ def main(info):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    setup_logging("{}_plot_shapes.log".format(args.era), logging.INFO)
+    setup_logging("{}_plot_shapes.log".format(args.era), logging.DEBUG)
     variables = args.variables.split(",")
     channels = args.channels.split(",")
     infolist = []
@@ -457,10 +464,12 @@ if __name__ == "__main__":
 
     if not os.path.exists("%s_plots_%s"%(args.era,postfix)):
         os.mkdir("%s_plots_%s"%(args.era,postfix))
+    print channels
     for ch in channels:
         if not os.path.exists("%s_plots_%s/%s"%(args.era,postfix,ch)):
             os.mkdir("%s_plots_%s/%s"%(args.era,postfix,ch))
         for v in variables:
             infolist.append({"args" : args, "channel" : ch, "variable" : v})
-    pool = Pool(20)
+    print infolist
+    pool = Pool(1)
     pool.map(main, infolist)
