@@ -277,11 +277,16 @@ function syncShapes() {
 export JETFAKES=1 EMBEDDING=1 CATEGORIES="stxs_stage1p1"
 function genDatacards(){
     ensureoutdirs
-    #CATEGORIES="stxs_stage0_stage1"
     for era in ${eras[@]}; do
         for STXS_SIGNALS in "stxs_stage0" "stxs_stage1p1"; do
             for tag in ${tags[@]}; do
-            export tag
+                if [[ $TAG == *"stage0"* ]]; then
+                    CATEGORIES="stxs_stage0"
+                elif [[ $TAG == *"inc"* ]]; then
+                    CATEGORIES="inclusive"
+                else
+                    CATEGORIES="stxs_stage1p1"
+                fi
                 DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}
                 [ -d $DATACARDDIR ] || mkdir -p $DATACARDDIR
                 logandrun ./datacards/produce_datacard.sh ${era} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${tag} ${channelsarg} &
@@ -297,14 +302,18 @@ function genWorkspaces(){
     for era in ${eras[@]}; do
         for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do
             for tag in ${tags[@]}; do
-            export tag
+                if [[ $STXS_FIT == "inclusive" || $STXS_FIT == "stxs_stage0" ]]; then
+                    STXS_SIGNALS=stxs_stage0
+                elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
+                    STXS_SIGNALS=stxs_stage1p1
+                fi
                 fn="output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/cmb/125/${era}-${STXS_FIT}-workspace.root"
                 if [[ ! -f $fn ]]; then
                     logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${tag} &
                     condwait
                     #[[ $? == 0 ]] || return $?
                 else
-                    loginfo "skipping workspace creation, as  $fn exists"
+                    logwarn "skipping workspace creation, as  $fn exists"
                 fi
             done
         done
@@ -312,37 +321,87 @@ function genWorkspaces(){
     wait
 }
 
-
 ### Subroutine called by runstages
 ### do not run this parallel! it writes to fit.root in the main dir and is then moved
 function runana() {
     ensureoutdirs
-    for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do #
-        export tag
+    for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do
+        if [[ $STXS_FIT == "inclusive" || $STXS_FIT == "stxs_stage0" ]]; then
+            STXS_SIGNALS=stxs_stage0
+        elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
+            STXS_SIGNALS=stxs_stage1p1
+        fi
         for era in ${eras[@]}; do
-            if [[ True ]]; then
-                for tag in ${tags[@]}; do
-                    if [[ $STXS_FIT == "inclusive" || $STXS_FIT == "stxs_stage0" ]]; then
-                        STXS_SIGNALS=stxs_stage0
-                    elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
-                        STXS_SIGNALS=stxs_stage1p1
-                    fi
-                    if [[ ${#channels[@]} == 4 ]]; then
-                        channelsPlusCmb=("${channels[@]}" "cmb")
-                    else
-                        channelsPlusCmb=("${channels[@]}")
-                    fi
-                    for channel in ${channelsPlusCmb[@]}; do
-                        DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/$channel/125
-                        logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR $channel ${tag} &
-                        condwait
-                    done
+            for tag in ${tags[@]}; do
+                if [[ ${#channels[@]} == 4 ]]; then
+                    channelsPlusCmb=("${channels[@]}" "cmb")
+                else
+                    channelsPlusCmb=("${channels[@]}")
+                fi
+                for channel in ${channelsPlusCmb[@]}; do
+                    DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/$channel/125
+                    logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR $channel ${tag} &
                     condwait
                 done
-            fi
+            done
         done
     done
 }
+
+## methods for combining eras
+function genCmbDatacards() {
+    ensureoutdirs
+    for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do
+        if [[ ${#channels[@]} == 4 ]]; then
+            channelsPlusCmb=("${channels[@]}" "cmb")
+        else
+            channelsPlusCmb=("${channels[@]}")
+        fi
+        for channel in ${channelsPlusCmb[@]}; do
+            ./datacards/combine_datacards.sh $erasarg $channel $tagsarg $STXS_FIT
+        done
+    done
+}
+function genCmbWorkspaces(){
+    ensureoutdirs
+    for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do
+        if [[ $STXS_FIT == "inclusive" || $STXS_FIT == "stxs_stage0" ]]; then
+            STXS_SIGNALS=stxs_stage0
+        elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
+            STXS_SIGNALS=stxs_stage1p1
+        fi
+        era=all
+        tag=comberas
+        fn="output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/cmb/125/${era}-${STXS_FIT}-workspace.root"
+        logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${tag} &
+        condwait
+    done
+}
+function runCmbAna() {
+    ensureoutdirs
+    for STXS_FIT in "inclusive" "stxs_stage0" "stxs_stage1p1"; do
+        if [[ $STXS_FIT == "inclusive" || $STXS_FIT == "stxs_stage0" ]]; then
+            STXS_SIGNALS=stxs_stage0
+        elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
+            STXS_SIGNALS=stxs_stage1p1
+        fi
+        era=all
+        tag=comberas
+        if [[ ${#channels[@]} == 4 ]]; then
+            channelsPlusCmb=("${channels[@]}" "cmb")
+        else
+            channelsPlusCmb=("${channels[@]}")
+        fi
+        for channel in ${channelsPlusCmb[@]}; do
+            DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/$channel/125
+            logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR $channel ${tag} &
+            condwait
+        done
+    done
+}
+
+
+
 
 ### Subroutine called by runstages
 ### generate postfitshape
