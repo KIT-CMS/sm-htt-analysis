@@ -44,11 +44,18 @@ def parse_arguments():
     parser.add_argument(
         "--event-branch", required=True, help="Branch with event numbers")
     parser.add_argument(
-        "--training-stxs1p1",
+        "--training_stxs1p1",
         required=False,
         default=False,
         action='store_true',
-        help="Train on stage1p1 cathegories"
+        help="Train on stage1p1 categories"
+    )
+    parser.add_argument(
+        "--training_inclusive",
+        required=False,
+        default=False,
+        action="store_true",
+        help="Train on inclusive categories"
     )
     parser.add_argument(
         "--training-jetfakes-estimation-method",
@@ -168,6 +175,16 @@ qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_0_60125", era, args.base_path, channel),
 qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_60_120125", era, args.base_path, channel),
 qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_120_350125", era, args.base_path, channel),
 qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200125", era, args.base_path, channel),
+            ]
+        elif args.training_inclusive:
+            classes_map = {
+                "ggH125": "xxh",
+                "qqH125": "xxh",
+            }
+            estimationMethodList = [
+                ggHEstimation("ggH125", era, args.base_path, channel),
+                qqHEstimation("qqH125", era, args.base_path, channel),
+
             ]
         else:
             classes_map = {

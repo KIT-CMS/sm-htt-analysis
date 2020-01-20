@@ -101,7 +101,7 @@ def main(args):
     if args.background_only:
         stxs_stage1p1_cats = []
     else:
-        stxs_stage1p1_cats = [str(100+i) for i in range(5)] + [str(200+i) for i in range(4)]
+        stxs_stage1p1_cats = [str(100+i) for i in range(4)] + [str(200+i) for i in range(4)]
     print(args)
     if args.gof_variable != None:
         channel_categories = {

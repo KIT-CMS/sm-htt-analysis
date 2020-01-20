@@ -68,7 +68,7 @@ function run_procedure() {
          --training-z-estimation-method $tauEstimation \
          --training-jetfakes-estimation-method $jetEstimation \
          --output-config $outdir/dataset_config.yaml \
-         --training-stxs1p1
+         --training_stxs1p1
 
     # Create dataset files from config
     logandrun ./htt-ml/dataset/create_training_dataset.py $outdir/dataset_config.yaml

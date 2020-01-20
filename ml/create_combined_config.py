@@ -41,6 +41,7 @@ def main(args):
         os.mkdir(args.output_dir)
 
     all_era_template["classes"] = configs[0]["classes"]
+    all_era_template["variables"] = configs[0]["variables"]
 
     all_era_template["output_path"] = args.output_dir
 

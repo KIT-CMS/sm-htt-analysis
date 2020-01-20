@@ -107,6 +107,7 @@ standard_binning_8classes: &standard_binning_8classes
 # Define binning used in analysis
 analysis:
   em:
+    xxh:          *fine_binning_8classes
     ggh:          *fine_binning_8classes
     qqh:          *fine_binning_8classes
     ztt:          *fine_binning_Xclasses
@@ -128,6 +129,7 @@ analysis:
     qqh_PTHGT200:       *fine_binning_Xclasses
     ggh_2J:             *fine_binning_Xclasses
   et:
+    xxh:          *fine_binning_8classes
     ggh:          *fine_binning_8classes
     qqh:          *fine_binning_8classes
     ztt:          *fine_binning_Xclasses
@@ -150,6 +152,7 @@ analysis:
     qqh_PTHGT200:       *fine_binning_Xclasses
     ggh_2J:             *fine_binning_Xclasses
   mt:
+    xxh:          *fine_binning_8classes
     ggh:          *fine_binning_8classes
     qqh:          *fine_binning_8classes
     ztt:          *fine_binning_Xclasses
@@ -172,6 +175,7 @@ analysis:
     qqh_PTHGT200:       *fine_binning_Xclasses
     ggh_2J:             *fine_binning_Xclasses
   tt:
+    xxh:          *fine_binning_5classes
     ggh:          *fine_binning_5classes
     qqh:          *fine_binning_5classes
     ztt:          *fine_binning_Xclasses
