@@ -96,7 +96,7 @@ function logandrun() {
     # there is a script to notify the user
     if [[ $((end-start)) -gt 2400 ]] && hash sendmsg.py 2>/dev/null ; then
         #notify the user
-        sendmsg.py "$( date +"%y-%m-%d %R" ) {$((end-start))s} $return_code: $@ " 2>/dev/null
+        sendmsg.py "$(hostname) $( date +"%y-%m-%d %R" ) {$((end-start))s} $return_code: $@ " 2>/dev/null
     fi
     return $return_code
 }
