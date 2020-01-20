@@ -13,9 +13,10 @@ source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
 source utils/setup_samples.sh $ERA $TAG
 source utils/bashFunctionCollection.sh
+ensureoutdirs
 
 # Produce shapes
-logandrun python shapes/produce_shapes_$ERA.py \
+logandrun python shapes/produce_shapes_joined.py \
     --tag ${TAG} \
     --era ${ERA} \
     --channels ${CHANNELS} \
