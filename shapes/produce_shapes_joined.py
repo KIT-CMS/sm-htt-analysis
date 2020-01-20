@@ -236,8 +236,8 @@ def main(args):
     jetFakeBkgD = {
         "et": jetFakeBkgS,
         "mt": jetFakeBkgS,
-        "et": jetFakeBkgS,
-        "em": ["W"],
+        "tt": jetFakeBkgS,
+        "em": {"W"},
     }
 
     ### collect all MC backgrounds
@@ -280,32 +280,45 @@ def main(args):
                 [args.fake_factor_friend_directory]))
 
     for channelname_, ch_ in selectedChannelsTuples:
-        if channelname_ != "em":
-            qcdpL = {"EMB"} | leptonTauBkgS | jetFakeBkgS
-            qcd_weight = Weight("1", "qcd_weight")
-        else:
-            qcdpL = {"EMB"} | leptonTauBkgS | {"W"}
-            qcd_weight = Weight("em_qcd_osss_binned_Weight", "qcd_weight")
-
         if channelname_ != "tt":
             est_ = QCDEstimation_SStoOS_MTETEM
         else:
             est_ = QCDEstimation_ABCD_TT_ISO2
-        # QCD extrapolation_factor 1.17 for mt et 2016
-        if args.era == "2016" and channelname_ in ["mt", "et"]:
-            extrapolation_factor = 1.17
-        else:
-            extrapolation_factor = 1.
+        if channelname_ != "em": qcdpL = {"EMB"} | leptonTauBkgS | jetFakeBkgS
+        else: qcdpL = {"EMB"} | leptonTauBkgS | {"W"}
 
-        processes[channelname_]["QCD"] = Process(
-            "QCD",
-            est_(
-                era, directory, ch_,
-                [processes[channelname_][process] for process in qcdpL],
-                processes[channelname_]["data"],
-                friend_directory=friend_directory[channelname_],
-                extrapolation_factor=extrapolation_factor,
-                qcd_weight=qcd_weight))
+
+
+        if channelname_ in ["mt", "et"]:
+            if args.era == "2016": extrapolation_factor = 1.17
+            else:   extrapolation_factor = 1.
+            # QCD extrapolation_factor 1.17 for mt et 2016
+            processes[channelname_]["QCD"] = Process(
+                "QCD",
+                est_(
+                    era, directory, ch_,
+                    [processes[channelname_][process] for process in qcdpL],
+                    processes[channelname_]["data"],
+                    friend_directory=friend_directory[channelname_],
+                    extrapolation_factor=extrapolation_factor))
+        elif channelname_ =="tt":
+            processes[channelname_]["QCD"] = Process(
+                "QCD",
+                est_(
+                    era, directory, ch_,
+                    [processes[channelname_][process] for process in qcdpL],
+                    processes[channelname_]["data"],
+                    friend_directory=friend_directory[channelname_]))
+        else:
+            qcd_weight = Weight("em_qcd_osss_binned_Weight", "qcd_weight")
+            processes[channelname_]["QCD"] = Process(
+                "QCD",
+                est_(
+                    era, directory, ch_,
+                    [processes[channelname_][process] for process in qcdpL],
+                    processes[channelname_]["data"],
+                    friend_directory=friend_directory[channelname_],
+                    qcd_weight=qcd_weight))
 
     # Variables and categories
     binning = yaml.load(open(args.binning), Loader=yaml.Loader)
@@ -450,8 +463,7 @@ def main(args):
                                                       DifferentPipeline)
     for variation_ in ele_es_variations:
         for channelname_ in selectedChannels & {"et", "em"}:
-            for process_nick in signal_nicks + trueTauBkgS + \
-                    leptonTauBkgS + jetFakeBkgD[channelname_]:
+            for process_nick in signal_nicks | trueTauBkgS | leptonTauBkgS | jetFakeBkgD[channelname_]:
                 variationsTooAdd[channelname_][process_nick].append(variation_)
 
     # Jet energy scale
@@ -521,9 +533,9 @@ def main(args):
     for variation_ in zpt_variations:
         for channelname_ in selectedChannels:
             if channelname_ != "em":
-                pS_ = signal_nicks | {"ZTT", "ZL", "ZJ"}
+                pS_ = {"ZTT", "ZL", "ZJ"}
             else:
-                pS_ = signal_nicks | {"ZTT", "ZL"}
+                pS_ = {"ZTT", "ZL"}
             for process_nick in pS_:
                 variationsTooAdd[channelname_][process_nick].append(variation_)
 
@@ -534,9 +546,9 @@ def main(args):
     for variation_ in top_pt_variations:
         for channelname_ in selectedChannels:
             if channelname_ != "em":
-                pS_ = signal_nicks | {"TTT", "TTL", "TTJ"}
+                pS_ = {"TTT", "TTL", "TTJ"}
             else:
-                pS_ = signal_nicks | {"TTT", "TTL"}
+                pS_ = {"TTT", "TTL"}
             for process_nick in pS_:
                 variationsTooAdd[channelname_][process_nick].append(variation_)
 
@@ -553,7 +565,7 @@ def main(args):
                   Weight("min(1.0+pt_2*0.002, 1.4)",
                          "jetToTauFake_weight"), "Down"))
     for variation_ in jet_to_tau_fake_variations:
-        for process_nick in ["ZJ", "TTJ", "W", "VVJ"]:
+        for process_nick in jetFakeBkgS:
             for channelname_ in selectedChannels - {"em"}:
                 variationsTooAdd[channelname_][process_nick].append(variation_)
 
