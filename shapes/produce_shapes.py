@@ -135,13 +135,23 @@ def main(args):
     # Container for all distributions to be drawn
     logger.info("Set up shape variations.")
     if len(args.categories) > 0 and len(args.processes) > 0:
+        path = "output/shapes/{TAG}/{ERA}/{CHANNEL}".format(
+            ERA=args.era, TAG=args.tag, CHANNEL=",".join(args.channels))
+        if not os.path.exists(path):
+            os.makedirs(path)
         systematics = Systematics(
-            "shape.root",
+            "{PATH}/{ERA}-{TAG}-{CHANNEL}-{PROCESS}-{CATEGORIES}-shapes.root".format(
+                PATH=path,
+                ERA=args.era,
+                TAG=args.tag,
+                CHANNEL=",".join(args.channels),
+                PROCESS=",".join(args.processes),
+                CATEGORIES=",".join(args.categories)),
             num_threads=args.num_threads,
             skip_systematic_variations=args.skip_systematic_variations)
     else:
         path = "output/shapes/{TAG}".format(
-                TAG=args.tag)
+            TAG=args.tag)
         if not os.path.exists(path):
             os.makedirs(path)
         systematics = Systematics(
@@ -149,6 +159,7 @@ def main(args):
                 ERA=args.era, TAG=args.tag, CHANNELS=",".join(args.channels)),
             num_threads=args.num_threads,
             skip_systematic_variations=args.skip_systematic_variations)
+
     # Era selection
     if "2016" == args.era:
         from shape_producer.channel import ETSM2016, MTSM2016, TTSM2016, EMSM2016
