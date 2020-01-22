@@ -26,6 +26,7 @@ logandrun python shapes/produce_shapes.py \
     --categories ${CATGEGORIES} \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
+    --num-threads 1 \
     --directory $ARTUS_OUTPUTS \
     --et-friend-directory $ARTUS_FRIENDS_ET \
     --em-friend-directory $ARTUS_FRIENDS_EM \
