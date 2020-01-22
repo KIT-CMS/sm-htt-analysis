@@ -51,14 +51,16 @@ function run_procedure() {
 
     if [ ${CHANNEL} != 'em' ]
     then
-        ARTUS_FRIENDS="${ARTUS_FRIENDS_EM} ${ARTUS_FRIENDS_FAKE_FACTOR}"
+        FRIENDS="${SVFit_Friends} ${MELA_Friends} ${FF_Friends}"
+    else
+        FRIENDS="${SVFit_Friends} ${MELA_Friends}"
     fi
     # Write dataset config
      logandrun python ml/write_dataset_config.py \
          --era ${ERA} \
          --channel ${CHANNEL} \
          --base-path $ARTUS_OUTPUTS \
-         --friend-paths $ARTUS_FRIENDS \
+         --friend-paths $FRIENDS \
          --database $KAPPA_DATABASE \
          --output-path $outdir \
          --output-filename training_dataset.root \
