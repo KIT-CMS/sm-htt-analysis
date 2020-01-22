@@ -142,7 +142,7 @@ def main(args):
             skip_systematic_variations=args.skip_systematic_variations)
     else:
         path = "output/shapes/{TAG}".format(
-            TAG=args.tag)
+                TAG=args.tag)
         if not os.path.exists(path):
             os.makedirs(path)
         systematics = Systematics(
@@ -150,7 +150,6 @@ def main(args):
                 ERA=args.era, TAG=args.tag, CHANNELS=",".join(args.channels)),
             num_threads=args.num_threads,
             skip_systematic_variations=args.skip_systematic_variations)
-
     # Era selection
     if "2016" == args.era:
         from shape_producer.channel import ETSM2016, MTSM2016, TTSM2016, EMSM2016
@@ -212,6 +211,10 @@ def main(args):
         smChannelsDict["em"].cuts.get("os").invert()
 
     selectedChannels = set(args.channels) - {None}
+    selectedCategories = set(args.categories)
+
+    selectedProcesses = set(args.processes)
+
     selectedCategories = set(args.categories)
 
     selectedChannelsTuples = {
