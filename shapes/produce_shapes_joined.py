@@ -149,10 +149,10 @@ def main(args):
         systematics = Systematics(
             "{PATH}/{ERA}-{TAG}-{CHANNEL}-{PROCESS}-{CATEGORIES}-shapes.root".format(
                 PATH=path,
-                ERA=args.era, 
-                TAG=args.tag, 
-                CHANNEL=",".join(args.channels), 
-                PROCESS=",".join(args.processes), 
+                ERA=args.era,
+                TAG=args.tag,
+                CHANNEL=",".join(args.channels),
+                PROCESS=",".join(args.processes),
                 CATEGORIES=",".join(args.categories)),
             num_threads=args.num_threads,
             skip_systematic_variations=args.skip_systematic_variations)
@@ -239,7 +239,7 @@ def main(args):
         c_: smChannelsDict[c_] for c_ in selectedChannels if c_ != "em"}.items()
 
     pnameToEstD = {
-        "data": DataEstimation,
+        "data_obs": DataEstimation,
         "EMB": ZTTEmbeddedEstimation,
         "TTT": TTTEstimation,
         "VVT": VVTEstimation,
@@ -259,14 +259,19 @@ def main(args):
         "qqHWW125": qqHWWEstimation,
     }
 
-
     pnameToEstD.update(
         {ggH_htxs: lambda era, directory, channel,
-         friend_directory: ggHEstimation(ggH_htxs, era, directory, channel, friend_directory=friend_directory)
+         friend_directory:
+         ggHEstimation(
+             ggH_htxs, era, directory, channel,
+             friend_directory=friend_directory)
          for ggH_htxs in ggHEstimation.htxs_dict})
     pnameToEstD.update(
         {qqH_htxs: lambda era, directory, channel,
-         friend_directory: qqHEstimation(qqH_htxs, era, directory, channel, friend_directory=friend_directory)
+         friend_directory:
+         qqHEstimation(
+             qqH_htxs, era, directory, channel,
+             friend_directory=friend_directory)
          for qqH_htxs in qqHEstimation.htxs_dict})
     # define sets to select the correct processes
     trueTauBkgS = {"ZTT", "TTT", "VVT"}
@@ -279,10 +284,12 @@ def main(args):
         "em": {"W"},
     }
 
-    ### collect all MC backgrounds
-    MCBkgDS = { cn_: trueTauBkgS | leptonTauBkgS | jetFakeBkgD[cn_] for cn_ in selectedChannels }
+    # collect all MC backgrounds
+    MCBkgDS = {
+        cn_: trueTauBkgS | leptonTauBkgS | jetFakeBkgD[cn_]
+        for cn_ in selectedChannels}
 
-    ## defines the signal sets
+    # defines the signal sets
     ww_nicks = set()  # {"ggHWW125", "qqHWW125"}
     if args.gof_variable is None:
         signal_nicks = {
@@ -292,9 +299,10 @@ def main(args):
     else:
         signal_nicks = {"ggHWW125", "qqHWW125"} | ww_nicks
 
+    # Generate dict mapping processnames to proceses
     processes = {}
     for channelname_, ch_ in selectedChannelsTuples:
-        pL_ = {"data"} | signal_nicks | MCBkgDS[channelname_] | {"EMB"}
+        pL_ = {"data_obs"} | signal_nicks | MCBkgDS[channelname_] | {"EMB"}
         if channelname_ != "em":
             pL_ = pL_ | {"EMB"}
         processes[channelname_] = {
@@ -304,17 +312,21 @@ def main(args):
                     era,
                     directory,
                     ch_,
-        friend_directory=friend_directory[channelname_])) for processname in
-        pL_ }
+                    friend_directory=friend_directory[channelname_])) for processname in
+            pL_}
 
     for channelname_, ch_ in selectedChannelsTuplesNoEM:
+        if channelname_ != "tt":
+            est_ = NewFakeEstimationLT
+        else:
+            est_ = NewFakeEstimationTT
         processes[channelname_]["FAKES"] = Process(
             "jetFakes",
-            NewFakeEstimationLT(
+            est_(
                 era, directory, ch_,
                 [processes[channelname_][process]
                     for process in {"EMB"} | leptonTauBkgS],
-                processes[channelname_]["data"],
+                processes[channelname_]["data_obs"],
                 friend_directory=friend_directory[channelname_] +
                 [args.fake_factor_friend_directory]))
 
@@ -323,30 +335,32 @@ def main(args):
             est_ = QCDEstimation_SStoOS_MTETEM
         else:
             est_ = QCDEstimation_ABCD_TT_ISO2
-        if channelname_ != "em": qcdpL = {"EMB"} | leptonTauBkgS | jetFakeBkgS
-        else: qcdpL = {"EMB"} | leptonTauBkgS | {"W"}
-
-
+        if channelname_ != "em":
+            qcdpL = {"EMB"} | leptonTauBkgS | jetFakeBkgS
+        else:
+            qcdpL = {"EMB"} | leptonTauBkgS | {"W"}
 
         if channelname_ in ["mt", "et"]:
-            if args.era == "2016": extrapolation_factor = 1.17
-            else:   extrapolation_factor = 1.
+            if args.era == "2016":
+                extrapolation_factor = 1.17
+            else:
+                extrapolation_factor = 1.
             # QCD extrapolation_factor 1.17 for mt et 2016
             processes[channelname_]["QCD"] = Process(
                 "QCD",
                 est_(
                     era, directory, ch_,
                     [processes[channelname_][process] for process in qcdpL],
-                    processes[channelname_]["data"],
+                    processes[channelname_]["data_obs"],
                     friend_directory=friend_directory[channelname_],
                     extrapolation_factor=extrapolation_factor))
-        elif channelname_ =="tt":
+        elif channelname_ == "tt":
             processes[channelname_]["QCD"] = Process(
                 "QCD",
                 est_(
                     era, directory, ch_,
                     [processes[channelname_][process] for process in qcdpL],
-                    processes[channelname_]["data"],
+                    processes[channelname_]["data_obs"],
                     friend_directory=friend_directory[channelname_]))
         else:
             qcd_weight = Weight("em_qcd_osss_binned_Weight", "qcd_weight")
@@ -355,15 +369,16 @@ def main(args):
                 est_(
                     era, directory, ch_,
                     [processes[channelname_][process] for process in qcdpL],
-                    processes[channelname_]["data"],
+                    processes[channelname_]["data_obs"],
                     friend_directory=friend_directory[channelname_],
                     qcd_weight=qcd_weight))
 
     if selectedProcesses is not None:
-        for channel in processes.keys():
-            for process in processes[channel].keys():
+        for channelname_ in processes.keys():
+            for process in processes[channelname_].keys():
                 if process not in selectedProcesses:
-                    del processes[channel][process]
+                    del processes[channelname_][process]
+
     # Variables and categories
     binning = yaml.load(open(args.binning), Loader=yaml.Loader)
 
@@ -488,23 +503,109 @@ def main(args):
             for channelname_, _ in selectedChannelsTuplesNoEM:
                 variationsTooAdd[channelname_][process_nick].append(variation_)
 
-    # Tau energy scale
-    tau_es_3prong_variations = create_systematic_variations(
-        "CMS_scale_t_3prong_Run{era}".format(era=args.era), "tauEsThreeProng",
-        DifferentPipeline)
-    tau_es_1prong_variations = create_systematic_variations(
-        "CMS_scale_t_1prong_Run{era}".format(era=args.era), "tauEsOneProng",
-        DifferentPipeline)
-    tau_es_1prong1pizero_variations = create_systematic_variations(
-        "CMS_scale_t_1prong1pizero_Run{era}".format(era=args.era),
-        "tauEsOneProngOnePiZero", DifferentPipeline)
+    # Tau ID
+    # in et and mt one nuisance per pT bin
+    # [30., 35., 40., 500., 1000. ,$\le$ 1000.]
 
-    for variation_ in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
-        for process_nick in buildprocesslist(signal_nicks | trueTauBkgS | {
-                "TTL", "VVL", "EMB", "FAKES"
-        }):
-            for channelname_, _ in selectedChannelsTuplesNoEM:
-                variationsTooAdd[channelname_][process_nick].append(variation_)
+    if len(selectedChannels & {"et", "mt"}) > 0:
+        pt = [30, 35, 40, 500, 1000, "inf"]
+        for histname_, pL_ in {
+            "CMS_eff_t_{}-{}_Run2018": signal_nicks | {"EMB", "VVL", "TTL"} |
+                trueTauBkgS, "CMS_eff_emb_t_{}-{}_Run2018": {"EMB"}}.items():
+            tau_id_variations = []
+            for shift_direction in ["Up", "Down"]:
+                for i, ptbin in enumerate(pt[:-1]):
+                    bindown = ptbin
+                    binup = pt[i + 1]
+                    if binup == "inf":
+                        weightstr = "(((pt_2 >= {bindown})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
+                    else:
+                        weightstr = "(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
+                    tau_id_variations.append(
+                        ReplaceWeight(
+                            histname_.format(bindown, binup),
+                            "taubyIsoIdWeight",
+                            Weight(
+                                weightstr.format(
+                                    bindown=bindown, binup=binup,
+                                    shift_direction=shift_direction),
+                                "taubyIsoIdWeight"),
+                            shift_direction))
+
+            for variation_ in tau_id_variations:
+                for channelname_ in selectedChannels & {"et", "mt"}:
+                    for process_nick in pL_:
+                        variationsTooAdd[channelname_][process_nick].append(
+                            variation_)
+
+    # for tautau, the id is split by decay mode, and each decay mode is assosicated one nuicance
+    # version after fix of dm11:
+    # tau_id_variations.append(
+    #             ReplaceWeight("CMS_eff_t_dm{dm}_Run2018".format(dm=decaymode), "taubyIsoIdWeight",
+    #                 Weight("(((decayMode_1=={dm})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(dm=decaymode), "taubyIsoIdWeight"), "Up"))
+    # tau_id_variations.append(
+    #             ReplaceWeight("CMS_eff_t_dm{dm}_Run2018".format(dm=decaymode), "taubyIsoIdWeight",
+    # Weight("(((decayMode_1=={dm})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(dm=decaymode),
+    # "taubyIsoIdWeight"), "Down"))
+    for channelname_ in selectedChannels & {"tt"}:
+        dm11 = {"Up": 1.1324026, "Down": 0.80605859, "Nom": 0.96923059}
+        for histname_, pL_ in {
+            "CMS_eff_t_dm{dm}_Run2018": signal_nicks | {"EMB", "VVL", "TTL"} |
+                trueTauBkgS, "CMS_eff_emb_t_dm{dm}_Run2018": {"EMB"}}.items():
+            tau_id_variations = []
+            for shift_direction in ["Up", "Down"]:
+                for decaymode in [0, 1, 10,11]:
+                    if decaymode != 11:
+                        weightstr = "(((gen_match_1 == 5)*(((decayMode_1=={dm})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*(((decayMode_1==11)*{dm11_nom})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))))+(gen_match_1 != 5))*((gen_match_2 == 5)*(((decayMode_2=={dm})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*(((decayMode_2==11)*{dm11_nom})+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))))+(gen_match_2 != 5)))"
+                    else:
+                        # temorary fix for dm 11
+                        weightstr = "((gen_match_1 == 5)*(((decayMode_1=={dm})*{dm11shift})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))+(gen_match_1 != 5))*((gen_match_1 == 5)*(((decayMode_2=={dm})*{dm11shift})+((decayMode_2!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))+(gen_match_2 != 5))"
+                    tau_id_variations.append(
+                        ReplaceWeight(
+                            histname_.format(
+                                dm=decaymode),
+                            "taubyIsoIdWeight",
+                            Weight(
+                                weightstr.format(
+                                    dm=decaymode,
+                                    dm11_nom=dm11["Nom"],
+                                    dm11shift=dm11[shift_direction],
+                                    shift_direction=shift_direction),
+                                "taubyIsoIdWeight"),
+                            shift_direction))
+            # run two times, one for regular, one for embedding
+            for variation_ in tau_id_variations:
+                for process_nick in pL_:
+                    variationsTooAdd[channelname_][process_nick].append(
+                        variation_)
+
+    # Tau energy scale
+        # Tau energy scale
+    for name_, pL_ in {
+        "_emb_": {
+            "EMB", "FAKES"}, "_": signal_nicks | trueTauBkgS | {
+            "TTL", "VVL", "EMB", "FAKES"}}.items():
+        tau_es_3prong_variations = create_systematic_variations(
+            "CMS_scale{name}t_3prong_Run{era}".format(
+                name=name_, era=args.era),
+            "tauEsThreeProng", DifferentPipeline)
+        tau_es_3prong1pizero_variations = create_systematic_variations(
+            "CMS_scale{name}t_3prong1pizero_Run{era}".format(
+                name=name_, era=args.era),
+            "tauEsThreeProngOnePiZero", DifferentPipeline)
+        tau_es_1prong_variations = create_systematic_variations(
+            "CMS_scale{name}t_1prong_Run{era}".format(
+                name=name_, era=args.era),
+            "tauEsOneProng", DifferentPipeline)
+        tau_es_1prong1pizero_variations = create_systematic_variations(
+            "CMS_scale{name}t_1prong1pizero_Run{era}".format(
+                name=name_, era=args.era), "tauEsOneProngOnePiZero", DifferentPipeline)
+        for variation_ in tau_es_3prong_variations + tau_es_1prong_variations + \
+                tau_es_1prong1pizero_variations + tau_es_3prong1pizero_variations:
+            for process_nick in buildprocesslist(pL_):
+                for channelname_ in selectedChannels - {"em"}:
+                    variationsTooAdd[channelname_][process_nick].append(
+                        variation_)
 
     # MC ele energy scale & smear uncertainties
     ele_es_variations = create_systematic_variations("CMS_scale_mc_e",
@@ -576,12 +677,12 @@ def main(args):
     # Z pt reweighting
     if args.era == "2018":
         zpt_variations = create_systematic_variations(
-        "CMS_htt_dyShape", "zPtReweightWeight",
-        SquareAndRemoveWeight)
+            "CMS_htt_dyShape", "zPtReweightWeight",
+            SquareAndRemoveWeight)
     else:
         zpt_variations = create_systematic_variations(
-        "CMS_htt_dyShape_Run{era}".format(era=args.era), "zPtReweightWeight",
-        SquareAndRemoveWeight)
+            "CMS_htt_dyShape_Run{era}".format(era=args.era),
+            "zPtReweightWeight", SquareAndRemoveWeight)
     for variation_ in zpt_variations:
         for channelname_ in selectedChannels:
             if channelname_ != "em":
@@ -771,6 +872,7 @@ def main(args):
     # Zll reweighting !!! replaced by log normal uncertainties:
     # CMS_eFakeTau_Run2018 16%; CMS_mFakeTau_Run2018 26%
 
+    # Embedded event specifics
     # b tagging
     btag_eff_variations = create_systematic_variations(
         "CMS_htt_eff_b_Run{era}".format(era=args.era), "btagEff",
@@ -781,22 +883,6 @@ def main(args):
     for variation_ in btag_eff_variations + mistag_eff_variations:
         for channelname_ in selectedChannels:
             for process_nick in buildprocesslist(signal_nicks | MCBkgDS[channelname_]):
-                variationsTooAdd[channelname_][process_nick].append(variation_)
-
-    # Embedded event specifics
-    # Tau energy scale
-    tau_es_3prong_variations = create_systematic_variations(
-        "CMS_scale_emb_t_3prong_Run{era}".format(era=args.era),
-        "tauEsThreeProng", DifferentPipeline)
-    tau_es_1prong_variations = create_systematic_variations(
-        "CMS_scale_emb_t_1prong_Run{era}".format(era=args.era),
-        "tauEsOneProng", DifferentPipeline)
-    tau_es_1prong1pizero_variations = create_systematic_variations(
-        "CMS_scale_emb_t_1prong1pizero_Run{era}".format(era=args.era),
-        "tauEsOneProngOnePiZero", DifferentPipeline)
-    for variation_ in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
-        for process_nick in buildprocesslist(["EMB", "FAKES"]):
-            for channelname_ in selectedChannels - {"em"}:
                 variationsTooAdd[channelname_][process_nick].append(variation_)
 
     # Ele energy scale
@@ -886,6 +972,7 @@ def main(args):
                 variationsTooAdd["tt"][process_nick].append(variation_)
     # 10% removed events in ttbar simulation (ttbar -> real tau tau events)
     # will be added/subtracted to ZTT shape to use as systematic
+
     if "EMB" in selectedProcesses:
         tttautau_processD = {
             channelname_: Process(
@@ -922,63 +1009,56 @@ def main(args):
         fake_factor_weight = {}
         for channelname_ in selectedChannels & {"et", "mt"}:
             fake_factor_variations[channelname_] = [
-                "ff_qcd{ch}_syst_Run2018{shift}",
-                "ff_qcd_dm0_njet0{ch}_stat_Run2018{shift}",
-                "ff_qcd_dm0_njet1{ch}_stat_Run2018{shift}",
-                # "ff_qcd_dm1_njet0{ch}_stat_Run2018{shift}",
-                # "ff_qcd_dm1_njet1{ch}_stat_Run2018{shift}",
-                "ff_w_syst_Run2018{shift}",
-                "ff_w_dm0_njet0{ch}_stat_Run2018{shift}",
-                "ff_w_dm0_njet1{ch}_stat_Run2018{shift}",
-                # "ff_w_dm1_njet0{ch}_stat_Run2018{shift}",
-                # "ff_w_dm1_njet1{ch}_stat_Run2018{shift}",
-                "ff_tt_syst_Run2018{shift}",
-                "ff_tt_dm0_njet0_stat_Run2018{shift}",
-                "ff_tt_dm0_njet1_stat_Run2018{shift}",
-                # "ff_tt_dm1_njet0_stat_Run2018{shift}",
-                # "ff_tt_dm1_njet1_stat_Run2018{shift}"
+                "ff_qcd{ch}_syst{era}{shift}",
+                "ff_qcd_dm0_njet0{ch}_stat{era}{shift}",
+                "ff_qcd_dm0_njet1{ch}_stat{era}{shift}",
+                # "ff_qcd_dm1_njet0{ch}_stat{era}{shift}",
+                # "ff_qcd_dm1_njet1{ch}_stat{era}{shift}",
+                "ff_w_syst{era}{shift}",
+                "ff_w_dm0_njet0{ch}_stat{era}{shift}",
+                "ff_w_dm0_njet1{ch}_stat{era}{shift}",
+                # "ff_w_dm1_njet0{ch}_stat{era}{shift}",
+                # "ff_w_dm1_njet1{ch}_stat{era}{shift}",
+                "ff_tt_syst{era}{shift}",
+                "ff_tt_dm0_njet0_stat{era}{shift}",
+                "ff_tt_dm0_njet1_stat{era}{shift}",
+                # "ff_tt_dm1_njet0_stat{era}{shift}",
+                # "ff_tt_dm1_njet1_stat{era}{shift}"
             ]
             fake_factor_weight[channelname_] = "ff2_{syst}"
         for channelname_ in selectedChannels & {"tt"}:
             fake_factor_variations[channelname_] = [
-                "ff_qcd{ch}_syst_Run2018{shift}",
-                "ff_qcd_dm0_njet0{ch}_stat_Run2018{shift}",
-                "ff_qcd_dm0_njet1{ch}_stat_Run2018{shift}",
-                # "ff_qcd_dm1_njet0{ch}_stat_Run2018{shift}",
-                # "ff_qcd_dm1_njet1{ch}_stat_Run2018{shift}",
-                "ff_w{ch}_syst_Run2018{shift}",
-                "ff_tt{ch}_syst_Run2018{shift}",
-                "ff_w_frac{ch}_syst_Run2018{shift}",
-                "ff_tt_frac{ch}_syst_Run2018{shift}"
+                "ff_qcd{ch}_syst{era}{shift}",
+                "ff_qcd_dm0_njet0{ch}_stat{era}{shift}",
+                "ff_qcd_dm0_njet1{ch}_stat{era}{shift}",
+                # "ff_qcd_dm1_njet0{ch}_stat{era}{shift}",
+                # "ff_qcd_dm1_njet1{ch}_stat{era}{shift}",
+                "ff_w{ch}_syst{era}{shift}",
+                "ff_tt{ch}_syst{era}{shift}",
+                "ff_w_frac{ch}_syst{era}{shift}",
+                "ff_tt_frac{ch}_syst{era}{shift}"
             ]
             fake_factor_weight[channelname_] = "(0.5*ff1_{syst}*(byTightDeepTau2017v2p1VSjet_1<0.5)+0.5*ff2_{syst}*(byTightDeepTau2017v2p1VSjet_2<0.5))"
         for channelname_, ch_ in selectedChannelsTuplesNoEM:
             for shift_direction in ["Up", "Down"]:
                 for systematic_shift in fake_factor_variations[channelname_]:
+                    hname_ = "CMS_" + systematic_shift.format(
+                        ch="_" + channelname_, shift="", era="_Run" + args.era).replace("_dm0", "")
+                    systname_ = systematic_shift.format(
+                        ch="",
+                        shift="_" + shift_direction.lower(),
+                        era=""
+                    )
+                    print("Adding histogramm {} with systematic {}".format(hname_,systname_,))
                     variation_ = ReplaceWeight(
-                        "CMS_%s" %
-                        (systematic_shift.format(
-                            ch='_' +
-                            channelname_,
-                            shift="").replace(
-                            "_dm0",
-                            "")),
-                        "fake_factor",
-                        Weight(
+                        hname_, "fake_factor", Weight(
                             fake_factor_weight[channelname_].format(
-                                syst=systematic_shift.format(
-                                    ch="",
-                                    shift="_%s" %
-                                    shift_direction.lower()).replace(
-                                    "_Run{era}".format(
-                                        era=args.era),
-                                    "")),
-                            "fake_factor"),
-                        shift_direction)
-                    systematics.add_systematic_variation(
-                        variation=variation_,
-                        process=processes[channelname_]["FAKES"],
-                        channel=ch_, era=era)
+                                syst=systname_), "fake_factor"), shift_direction)
+                    # systematics.add_systematic_variation(
+                    #     variation=variation_,
+                    #     process=processes[channelname_]["FAKES"],
+                    #     channel=ch_, era=era)
+                    variationsTooAdd[channelname_]["FAKES"].append(variation_)
 
     # QCD for em
     qcd_variations = []
