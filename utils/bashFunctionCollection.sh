@@ -47,8 +47,13 @@ function updateSymlink() {
     fi
 
 }
+function myCpuUsage() {
+    top -b -n 1 -u $USER | awk 'NR>7 { sum += $9; } END { printf "%3.0f\n", sum/100; }'
+}
+
 function condwait(){
-    if [[ $(jobs | wc -l ) -gt 15 ]]; then
+    sleep .1
+    if [[ $( myCpuUsage ) -gt 20 ]]; then
         wait
     fi
 }
@@ -61,21 +66,25 @@ function recommendCPUs() {
 
 
 function loginfo {
-    echo -e "\e[46m[INFO]\e[0m" $( date +"%y-%m-%d %R" ): $@ | tee -a $( pwd )/output/log/logutil.log
+    echo -e "\e[46m[INFO]\e[0m" $( date +"%y-%m-%d %R" ): $@ | tee -a $( pwd )/output/log/logandrun/event.log
 }
 function logwarn {
-    echo -e "\e[45m[WARN]\e[0m" $( date +"%y-%m-%d %R" ): $@ | tee -a $( pwd )/output/log/logutil.log
+    echo -e "\e[45m[WARN]\e[0m" $( date +"%y-%m-%d %R" ): $@ | tee -a $( pwd )/output/log/logandrun/event.log
+}
+function logerrormsg {
+    echo -e "\e[41m[ERROR]\e[0m" $( date +"%y-%m-%d %R" ): $@ | tee -a $( pwd )/output/log/logandrun/event.log
 }
 function logerror {
-    echo -e "\e[41m[ERROR]\e[0m" $( date +"%y-%m-%d %R" ): $@ | tee -a $( pwd )/output/log/logutil.log
+    logerrormsg $@
+    return 1
 }
 function logandrun() {
     # set bash to exit if as soon as a part of a pipe has a non-zero exit value
     set -o pipefail
     # set the name of the logfile based on the command
-    logfile=$( pwd )/output/log/logandrun-$( echo "$@" | cut -d' ' -f1,2 | sed 's@\./@@' | sed -E "s@[/ ]@\-@g" ).log
+    logfile=$( pwd )/output/log/logandrun/$( echo "$@" | cut -d' ' -f1-4 | sed 's@\./@@' | sed -E "s@[/ ]@\-@g" ).log
     # print the startmessage and log it
-    echo -e "\e[43m[RUN]\e[0m" $( date +"%y-%m-%d %R" ): $@ | tee -a $( pwd )/output/log/logutil.log | tee -a $logfile
+    echo -e "\e[43m[RUN]\e[0m" $( date +"%y-%m-%d %R" ): $@ | tee -a $( pwd )/output/log/logandrun/event.log | tee -a $logfile
     # evaluate the current date in seconds as the start date
     start=`date +%s`
     # execute the command and log it
@@ -87,10 +96,10 @@ function logandrun() {
     # if the there was no error...
     if [[ $return_code == 0 ]]; then
         # print the message and log it
-        echo -e "\e[42m[COMPLETE]\e[0m" $( date +"%y-%m-%d %R" ): $@ "     \e[104m{$((end-start))s}\e[0m" | tee -a $( pwd )/output/log/logutil.log | tee -a $logfile
+        echo -e "\e[42m[COMPLETE]\e[0m" $( date +"%y-%m-%d %R" ): $@ "     \e[104m{$((end-start))s}\e[0m" | tee -a $( pwd )/output/log/logandrun/event.log | tee -a $logfile
     else
         # print a message with the return code
-        logerror Error Code $return_code  $@ "     \e[104m{$((end-start))s}\e[0m"  | tee -a $( pwd )/output/log/logutil.log | tee -a $logfile
+        logerrormsg Error Code $return_code  $@ "     \e[104m{$((end-start))s}\e[0m"  | tee -a $( pwd )/output/log/logandrun/event.log | tee -a $logfile
     fi
     # check if the script has been running for more than 2400s = 40 min AND
     # there is a script to notify the user
@@ -104,7 +113,7 @@ function logandrun() {
 function ensureoutdirs() {
     [[ -d output ]] || mkdir output
     pushd output  >/dev/null
-    for folder in datacards  log  plots  shapes ml signalStrength; do
+    for folder in datacards log log/logandrun plots  shapes ml signalStrength; do
         [[ ! -d $folder ]] && mkdir $folder
     done
     [[ -d log/condorShapes ]] || mkdir log/condorShapes
