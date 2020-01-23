@@ -403,7 +403,6 @@ def main(args):
             return classdict
 
     catsListD = {chname_: [] for chname_ in selectedChannels}
-
     # if not a gof test:Analysis shapes
     # add the max nnscore as variables
     if args.gof_variable is None:
