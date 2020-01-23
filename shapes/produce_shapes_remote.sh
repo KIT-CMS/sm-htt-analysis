@@ -1,13 +1,6 @@
 #!/bin/bash
 set -e
-ERA=$1
-CHANNELS=$2
-TAG=$3
-CATGEGORIES=$4
-PROCESSES=$5
-[[ ! -z $6 ]] && PWD=$6 || PWD=$( pwd  )
 BINNING=shapes/binning.yaml
-cd $PWD
 
 export LCG_RELEASE=96
 source utils/setup_cvmfs_sft.sh
@@ -23,7 +16,7 @@ logandrun python shapes/produce_shapes.py \
     --era ${ERA} \
     --channels ${CHANNELS} \
     --processes ${PROCESSES} \
-    --categories ${CATGEGORIES} \
+    --categories ${CATEGORIES} \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
     --num-threads 1 \
@@ -35,4 +28,4 @@ logandrun python shapes/produce_shapes.py \
     --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR
 
 # Normalize fake-factor shapes to nominal
-logandrun python fake-factor-application/normalize_shifts.py output/shapes/${ERA}-${TAG}-${CHANNELS}-shapes.root
+logandrun python fake-factor-application/normalize_shifts.py output/shapes/${TAG}/${ERA}/${CHANNEL}/${ERA}-${TAG}-${CHANNEL}-${PROCESS}-${CATEGORIES}-shapes.root
