@@ -295,9 +295,9 @@ def main(args):
     # Generate dict mapping processnames to proceses
     processes = {}
     for chname_, ch_ in selectedChannelsTuples:
-        pL_ = {"data_obs"} | signal_nicks | MCBkgDS[chname_] | {"EMB"}
+        pL_ = {"data_obs"} | signal_nicks | MCBkgDS[chname_]
         if chname_ != "em":
-            pL_ = pL_ | {"EMB"}
+            pL_ = pL_  {"EMB"}
         processes[chname_] = {
             processname: Process(
                 processname,
@@ -328,10 +328,8 @@ def main(args):
             est_ = QCDEstimation_SStoOS_MTETEM
         else:
             est_ = QCDEstimation_ABCD_TT_ISO2
-        if chname_ != "em":
-            qcdpL = {"EMB"} | leptonTauBkgS | jetFakeBkgS
-        else:
-            qcdpL = {"EMB"} | leptonTauBkgS | {"W"}
+
+        qcdpL = {"EMB"} | leptonTauBkgS | jetFakeBkgD[chname_]
 
         if chname_ in ["mt", "et"]:
             if args.era == "2016":
