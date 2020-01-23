@@ -280,9 +280,9 @@ function genDatacards(){
     for era in ${eras[@]}; do
         for STXS_SIGNALS in "stxs_stage0" "stxs_stage1p1"; do
             for tag in ${tags[@]}; do
-                if [[ $TAG == *"stage0"* ]]; then
+                if [[ $tag == *"stage0"* ]]; then
                     CATEGORIES="stxs_stage0"
-                elif [[ $TAG == *"inc"* ]]; then
+                elif [[ $tag == *"inc"* ]]; then
                     CATEGORIES="inclusive"
                 else
                     CATEGORIES="stxs_stage1p1"
