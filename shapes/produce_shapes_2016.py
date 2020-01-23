@@ -588,35 +588,6 @@ def main(args):
                     channel=em,
                     era=era)
 
-    # # MC tau energy scale
-    # tau_es_3prong_variations = create_systematic_variations(
-    #     "CMS_scale_mc_t_3prong_Run2016", "tauEsThreeProng", DifferentPipeline)
-    # tau_es_1prong_variations = create_systematic_variations(
-    #     "CMS_scale_mc_t_1prong_Run2016", "tauEsOneProng", DifferentPipeline)
-    # tau_es_1prong1pizero_variations = create_systematic_variations(
-    #     "CMS_scale_mc_t_1prong1pizero_Run2016", "tauEsOneProngOnePiZero",
-    #     DifferentPipeline)
-    # for variation in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
-    #     for process_nick in ["ZTT", "TTT", "TTL", "VVL", "VVT", "FAKES"
-    #                         ] + signal_nicks:
-    #         if "et" in [args.gof_channel] + args.channels:
-    #             systematics.add_systematic_variation(
-    #                 variation=variation,
-    #                 process=et_processes[process_nick],
-    #                 channel=et,
-    #                 era=era)
-    #         if "mt" in [args.gof_channel] + args.channels:
-    #             systematics.add_systematic_variation(
-    #                 variation=variation,
-    #                 process=mt_processes[process_nick],
-    #                 channel=mt,
-    #                 era=era)
-    #         if "tt" in [args.gof_channel] + args.channels:
-    #             systematics.add_systematic_variation(
-    #                 variation=variation,
-    #                 process=tt_processes[process_nick],
-    #                 channel=tt,
-    #                 era=era)
 
     # Tau ID
     # in et and mt one nuisance per pT bin
@@ -657,10 +628,9 @@ def main(args):
                         process=mt_processes[process_nick],
                         channel=mt,
                         era=era)
-    # for tautau, the id is split by decay mode, and each decay mode is assosicated one nuicance
+    # for tautau, the id is split by decay mode, and each decay mode is assosicated one nuisance
     tau_id_variations = []
     for decaymode in [0, 1, 10, 11]:
-        version after fix of dm11:
         tau_id_variations.append(
                     ReplaceWeight("CMS_eff_t_dm{dm}_Run2016".format(dm=decaymode), "taubyIsoIdWeight",
                         Weight("(((decayMode_1=={dm})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(dm=decaymode), "taubyIsoIdWeight"), "Up"))
@@ -776,6 +746,9 @@ def main(args):
         DifferentPipeline)
     jet_es_variations += create_systematic_variations(
         "CMS_scale_j_RelativeSample_Run2016", "jecUncRelativeSampleYear",
+        DifferentPipeline)
+    jet_es_variations += create_systematic_variations(
+        "CMS_reso_j", "jerUnc",
         DifferentPipeline)
 
     for variation in jet_es_variations:
@@ -979,10 +952,16 @@ def main(args):
 
     # ZL fakes energy scale
     ele_fake_es_1prong_variations = create_systematic_variations(
-        "CMS_ZLShape_et_1prong_Run2016", "tauEleFakeEsOneProng",
+        "CMS_ZLShape_et_1prong_barrel_Run2016", "tauEleFakeEsOneProngBarrel",
+        DifferentPipeline)
+    ele_fake_es_1prong_variations += create_systematic_variations(
+        "CMS_ZLShape_et_1prong_endcap_Run2016", "tauEleFakeEsOneProngEndcap",
         DifferentPipeline)
     ele_fake_es_1prong1pizero_variations = create_systematic_variations(
-        "CMS_ZLShape_et_1prong1pizero_Run2016", "tauEleFakeEsOneProngPiZeros",
+        "CMS_ZLShape_et_1prong1pizero_barrel_Run2016", "tauEleFakeEsOneProngPiZerosBarrel",
+        DifferentPipeline)
+    ele_fake_es_1prong1pizero_variations += create_systematic_variations(
+        "CMS_ZLShape_et_1prong1pizero_endcap_Run2016", "tauEleFakeEsOneProngPiZerosEndcap",
         DifferentPipeline)
 
     if "et" in [args.gof_channel] + args.channels:
@@ -1141,50 +1120,321 @@ def main(args):
        # Tau ID
     # in et and mt one nuisance per pT bin
     # [30., 35., 40., 500., 1000. ,$\le$ 1000.]
-    for channel in ["et" , "mt"]:
-        pt = [30, 35, 40, 500, 1000, "inf"]
-        tau_id_variations = []
-        for i, ptbin in enumerate(pt[:-1]):
-            bindown = ptbin
-            binup = pt[i+1]
-            if binup == "inf":
-                tau_id_variations.append(
-                    ReplaceWeight("CMS_eff_emb_t_{}-{}_Run2016".format(bindown, binup), "taubyIsoIdWeight",
-                        Weight("(((pt_2 >= {bindown})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(bindown=bindown),"taubyIsoIdWeight"), "Up"))
-                tau_id_variations.append(
-                    ReplaceWeight("CMS_eff_emb_t_{}-{}_Run2016".format(bindown, binup), "taubyIsoIdWeight",
-                        Weight("(((pt_2 >= {bindown})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(bindown=bindown),"taubyIsoIdWeight"), "Down"))
-            else:
-                tau_id_variations.append(
-                    ReplaceWeight("CMS_eff_emb_t_{}-{}_Run2016".format(bindown, binup), "taubyIsoIdWeight",
-                        Weight("(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(bindown=bindown, binup=binup),"taubyIsoIdWeight"), "Up"))
-                tau_id_variations.append(
-                    ReplaceWeight("CMS_eff_emb_t_{}-{}_Run2016".format(bindown, binup), "taubyIsoIdWeight",
-                        Weight("(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(bindown=bindown, binup=binup),"taubyIsoIdWeight"), "Down"))
+    # for channel in ["et" , "mt"]:
+    #     pt = [30, 35, 40, 500, 1000, "inf"]
+    #     tau_id_variations = []
+    #     for i, ptbin in enumerate(pt[:-1]):
+    #         bindown = ptbin
+    #         binup = pt[i+1]
+    #         if binup == "inf":
+    #             tau_id_variations.append(
+    #                 ReplaceWeight("CMS_eff_emb_t_{}-{}_Run2016".format(bindown, binup), "taubyIsoIdWeight",
+    #                     Weight("(((pt_2 >= {bindown})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(bindown=bindown),"taubyIsoIdWeight"), "Up"))
+    #             tau_id_variations.append(
+    #                 ReplaceWeight("CMS_eff_emb_t_{}-{}_Run2016".format(bindown, binup), "taubyIsoIdWeight",
+    #                     Weight("(((pt_2 >= {bindown})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(bindown=bindown),"taubyIsoIdWeight"), "Down"))
+    #         else:
+    #             tau_id_variations.append(
+    #                 ReplaceWeight("CMS_eff_emb_t_{}-{}_Run2016".format(bindown, binup), "taubyIsoIdWeight",
+    #                     Weight("(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(bindown=bindown, binup=binup),"taubyIsoIdWeight"), "Up"))
+    #             tau_id_variations.append(
+    #                 ReplaceWeight("CMS_eff_emb_t_{}-{}_Run2016".format(bindown, binup), "taubyIsoIdWeight",
+    #                     Weight("(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(bindown=bindown, binup=binup),"taubyIsoIdWeight"), "Down"))
 
-        for variation in tau_id_variations:
-            for process_nick in ["EMB"]:
-                if "et" in [args.gof_channel] + args.channels and "et" in channel:
-                    systematics.add_systematic_variation(
-                        variation=variation,
-                        process=et_processes[process_nick],
-                        channel=et,
-                        era=era)
-                if "mt" in [args.gof_channel] + args.channels and "mt" in channel:
-                    systematics.add_systematic_variation(
-                        variation=variation,
-                        process=mt_processes[process_nick],
-                        channel=mt,
-                        era=era)
+    #     for variation in tau_id_variations:
+    #         for process_nick in ["EMB"]:
+    #             if "et" in [args.gof_channel] + args.channels and "et" in channel:
+    #                 systematics.add_systematic_variation(
+    #                     variation=variation,
+    #                     process=et_processes[process_nick],
+    #                     channel=et,
+    #                     era=era)
+    #             if "mt" in [args.gof_channel] + args.channels and "mt" in channel:
+    #                 systematics.add_systematic_variation(
+    #                     variation=variation,
+    #                     process=mt_processes[process_nick],
+    #                     channel=mt,
+    #                     era=era)
+    # cent: "((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.957493126392+(pt_2>25.0&&pt_2<=30.0)*0.935592770576+(pt_2>30.0&&pt_2<=35.0)*0.938238978386+(pt_2>35.0&&pt_2<=40.0)*0.936523973942+0.933579729906*(pt_2>40.))*(gen_match_2==5)+(gen_match_2!=5)"
+    # up: "(pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*1.0139516592+(pt_2>25.0&&pt_2<=30.0)*0.987483620644+(pt_2>30.0&&pt_2<=35.0)*0.988588929176+(pt_2>35.0&&pt_2<=40.0)*0.986798584461+(0.933579729906+0.0313727959897)*(pt_2>40.&&pt_2<=500)+(0.933579729906+0.0313727959897*(pt_2/500.))*(pt_2>500.&&pt_2<=1000.)+(0.933579729906+2*0.0313727959897)*(pt_2>1000.)"
+    # down: "(pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.904088199139+(pt_2>25.0&&pt_2<=30.0)*0.886572599411+(pt_2>30.0&&pt_2<=35.0)*0.890235245228+(pt_2>35.0&&pt_2<=40.0)*0.888508796692+(0.933579729906-0.0313382383834)*(pt_2>40.&&pt_2<=500)+(0.933579729906-0.0313382383834*(pt_2/500.))*(pt_2>500.&&pt_2<=1000.)+(0.933579729906-2*0.0313382383834)*(pt_2>1000.)"
+    tau_id_variations = []
+    # 30 to 35
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_emb_t_30-35_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.957493126392+(pt_2>25.0&&pt_2<=30.0)*0.935592770576+(pt_2>30.0&&pt_2<=35.0)*0.988588929176+(pt_2>35.0&&pt_2<=40.0)*0.936523973942+0.933579729906*(pt_2>40.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_emb_t_30-35_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.957493126392+(pt_2>25.0&&pt_2<=30.0)*0.935592770576+(pt_2>30.0&&pt_2<=35.0)*0.890235245228+(pt_2>35.0&&pt_2<=40.0)*0.936523973942+0.933579729906*(pt_2>40.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Down"))
+    # 35 to 40
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_emb_t_35-40_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.957493126392+(pt_2>25.0&&pt_2<=30.0)*0.935592770576+(pt_2>30.0&&pt_2<=35.0)*0.938238978386+(pt_2>35.0&&pt_2<=40.0)*0.986798584461+0.933579729906*(pt_2>40.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_emb_t_35-40_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.957493126392+(pt_2>25.0&&pt_2<=30.0)*0.935592770576+(pt_2>30.0&&pt_2<=35.0)*0.938238978386+(pt_2>35.0&&pt_2<=40.0)*0.888508796692+0.933579729906*(pt_2>40.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Down"))
+    # 40 to 500
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_emb_t_40-500_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.957493126392+(pt_2>25.0&&pt_2<=30.0)*0.935592770576+(pt_2>30.0&&pt_2<=35.0)*0.938238978386+(pt_2>35.0&&pt_2<=40.0)*0.936523973942+(0.933579729906+0.0313727959897)*(pt_2>40.&&pt_2<=500)+0.933579729906*(pt_2>500.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_emb_t_40-500_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.957493126392+(pt_2>25.0&&pt_2<=30.0)*0.935592770576+(pt_2>30.0&&pt_2<=35.0)*0.938238978386+(pt_2>35.0&&pt_2<=40.0)*0.936523973942+(0.933579729906-0.0313382383834)*(pt_2>40.&&pt_2<=500)+0.933579729906*(pt_2>500.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Down"))
+    # 500 to 1000
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_emb_t_500-1000_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.957493126392+(pt_2>25.0&&pt_2<=30.0)*0.935592770576+(pt_2>30.0&&pt_2<=35.0)*0.938238978386+(pt_2>35.0&&pt_2<=40.0)*0.936523973942+0.933579729906*(pt_2>40.&&pt_2<=500)+(0.933579729906+0.0313727959897*(p     t_2/500.))*(pt_2>500.&&pt_2<=1000.)+0.933579729906*(pt_2>1000.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_emb_t_500-1000_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.957493126392+(pt_2>25.0&&pt_2<=30.0)*0.935592770576+(pt_2>30.0&&pt_2<=35.0)*0.938238978386+(pt_2>35.0&&pt_2<=40.0)*0.936523973942+0.933579729906*(pt_2>40.&&pt_2<=500)+(0.933579729906-0.0313382383834*(pt_2/500.))*(pt_2>500.&&pt_2<=1000.)+0.933579729906*(pt_2>1000.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Down"))
+    # 1000 to inf
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_emb_t_1000-inf_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.957493126392+(pt_2>25.0&&pt_2<=30.0)*0.935592770576+(pt_2>30.0&&pt_2<=35.0)*0.938238978386+(pt_2>35.0&&pt_2<=40.0)*0.936523973942+0.933579729906*(pt_2>40.&&pt_2<=1000.)+(0.933579729906+2*0.0313727959897)*(pt_2>1000.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_emb_t_1000-inf_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.957493126392+(pt_2>25.0&&pt_2<=30.0)*0.935592770576+(pt_2>30.0&&pt_2<=35.0)*0.938238978386+(pt_2>35.0&&pt_2<=40.0)*0.936523973942+0.933579729906*(pt_2>40.&&pt_2<=1000.)+(0.933579729906-2*0.0313382383834)*(pt_2>1000.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Down"))
+    # Variation correlated with MC for EMB
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_t_30-35_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.957493126392+(pt_2>25.0&&pt_2<=30.0)*0.935592770576+(pt_2>30.0&&pt_2<=35.0)*0.988588929176+(pt_2>35.0&&pt_2<=40.0)*0.936523973942+0.933579729906*(pt_2>40.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_t_30-35_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.957493126392+(pt_2>25.0&&pt_2<=30.0)*0.935592770576+(pt_2>30.0&&pt_2<=35.0)*0.890235245228+(pt_2>35.0&&pt_2<=40.0)*0.936523973942+0.933579729906*(pt_2>40.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Down"))
+    # 35 to 40
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_t_35-40_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.957493126392+(pt_2>25.0&&pt_2<=30.0)*0.935592770576+(pt_2>30.0&&pt_2<=35.0)*0.938238978386+(pt_2>35.0&&pt_2<=40.0)*0.986798584461+0.933579729906*(pt_2>40.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_t_35-40_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.957493126392+(pt_2>25.0&&pt_2<=30.0)*0.935592770576+(pt_2>30.0&&pt_2<=35.0)*0.938238978386+(pt_2>35.0&&pt_2<=40.0)*0.888508796692+0.933579729906*(pt_2>40.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Down"))
+    # 40 to 500
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_t_40-500_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.957493126392+(pt_2>25.0&&pt_2<=30.0)*0.935592770576+(pt_2>30.0&&pt_2<=35.0)*0.938238978386+(pt_2>35.0&&pt_2<=40.0)*0.936523973942+(0.933579729906+0.0313727959897)*(pt_2>40.&&pt_2<=500)+0.933579729906*(pt_2>500.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_t_40-500_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.957493126392+(pt_2>25.0&&pt_2<=30.0)*0.935592770576+(pt_2>30.0&&pt_2<=35.0)*0.938238978386+(pt_2>35.0&&pt_2<=40.0)*0.936523973942+(0.933579729906-0.0313382383834)*(pt_2>40.&&pt_2<=500)+0.933579729906*(pt_2>500.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Down"))
+    # 500 to 1000
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_t_500-1000_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.957493126392+(pt_2>25.0&&pt_2<=30.0)*0.935592770576+(pt_2>30.0&&pt_2<=35.0)*0.938238978386+(pt_2>35.0&&pt_2<=40.0)*0.936523973942+0.933579729906*(pt_2>40.&&pt_2<=500)+(0.933579729906+0.0313727959897*(p     t_2/500.))*(pt_2>500.&&pt_2<=1000.)+0.933579729906*(pt_2>1000.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_t_500-1000_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.957493126392+(pt_2>25.0&&pt_2<=30.0)*0.935592770576+(pt_2>30.0&&pt_2<=35.0)*0.938238978386+(pt_2>35.0&&pt_2<=40.0)*0.936523973942+0.933579729906*(pt_2>40.&&pt_2<=500)+(0.933579729906-0.0313382383834*(pt_2/500.))*(pt_2>500.&&pt_2<=1000.)+0.933579729906*(pt_2>1000.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Down"))
+    # 1000 to inf
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_t_1000-inf_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.957493126392+(pt_2>25.0&&pt_2<=30.0)*0.935592770576+(pt_2>30.0&&pt_2<=35.0)*0.938238978386+(pt_2>35.0&&pt_2<=40.0)*0.936523973942+0.933579729906*(pt_2>40.&&pt_2<=1000.)+(0.933579729906+2*0.0313727959897)*(pt_2>1000.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_t_1000-inf_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.957493126392+(pt_2>25.0&&pt_2<=30.0)*0.935592770576+(pt_2>30.0&&pt_2<=35.0)*0.938238978386+(pt_2>35.0&&pt_2<=40.0)*0.936523973942+0.933579729906*(pt_2>40.&&pt_2<=1000.)+(0.933579729906-2*0.0313382383834)*(pt_2>1000.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Down"))
+    for variation in tau_id_variations:
+        for process_nick in ["EMB"]:
+            if "mt" in [args.gof_channel] + args.channels and "mt" in channel:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+    # cent: "((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.910910189152+(pt_2>25.0&&pt_2<=30.0)*0.914702177048+(pt_2>30.0&&pt_2<=35.0)*0.891808986664+(pt_2>35.0&&pt_2<=40.0)*0.897880613804+0.886464495618*(pt_2>40.))*(gen_match_2==5)+(gen_match_2!=5)"
+    # up: "(pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.966068923473+(pt_2>25.0&&pt_2<=30.0)*0.965670824051+(pt_2>30.0&&pt_2<=35.0)*0.94088858366+(pt_2>35.0&&pt_2<=40.0)*0.946944594383+(0.886464495618+0.0311505054401)*(pt_2>40.&&pt_2<=500)+(0.886464495618+0.0311505054401*(pt_2/500.))*(pt_2>500.&&pt_2<=1000.)+(0.886464495618+2*0.0311505054401)*(pt_2>1000.)"
+    # down: "(pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.858520150185+(pt_2>25.0&&pt_2<=30.0)*0.866796374321+(pt_2>30.0&&pt_2<=35.0)*0.845394432545+(pt_2>35.0&&pt_2<=40.0)*0.851988017559+(0.886464495618-0.0306230640296)*(pt_2>40.&&pt_2<=500)+(0.886464495618-0.0306230640296*(pt_2/500.))*(pt_2>500.&&pt_2<=1000.)+(0.886464495618-2*0.0306230640296)*(pt_2>1000.)"
+    tau_id_variations = []
+    # 30 to 35
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_emb_t_30-35_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.910910189152+(pt_2>25.0&&pt_2<=30.0)*0.914702177048+(pt_2>30.0&&pt_2<=35.0)*0.94088858366+(pt_2>35.0&&pt_2<=40.0)*0.897880613804+0.886464495618*(pt_2>40.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_emb_t_30-35_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.910910189152+(pt_2>25.0&&pt_2<=30.0)*0.914702177048+(pt_2>30.0&&pt_2<=35.0)*0.845394432545+(pt_2>35.0&&pt_2<=40.0)*0.897880613804+0.886464495618*(pt_2>40.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Down"))
+    # 35 to 40
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_emb_t_35-40_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.910910189152+(pt_2>25.0&&pt_2<=30.0)*0.914702177048+(pt_2>30.0&&pt_2<=35.0)*0.891808986664+(pt_2>35.0&&pt_2<=40.0)*0.946944594383+0.886464495618*(pt_2>40.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_emb_t_35-40_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.910910189152+(pt_2>25.0&&pt_2<=30.0)*0.914702177048+(pt_2>30.0&&pt_2<=35.0)*0.891808986664+(pt_2>35.0&&pt_2<=40.0)*0.851988017559+0.886464495618*(pt_2>40.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Down"))
+    # 40 to 500
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_emb_t_40-500_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.910910189152+(pt_2>25.0&&pt_2<=30.0)*0.914702177048+(pt_2>30.0&&pt_2<=35.0)*0.891808986664+(pt_2>35.0&&pt_2<=40.0)*0.897880613804+(0.886464495618+0.0311505054401)*(pt_2>40.&&pt_2<=500.)+0.886464495618*(pt_2>500.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_emb_t_40-500_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.910910189152+(pt_2>25.0&&pt_2<=30.0)*0.914702177048+(pt_2>30.0&&pt_2<=35.0)*0.891808986664+(pt_2>35.0&&pt_2<=40.0)*0.897880613804+(0.886464495618-0.0306230640296)*(pt_2>40.&&pt_2<=500)+0.886464495618*(pt_2>500.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Down"))
+    # 500 to 1000
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_emb_t_500-1000_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.910910189152+(pt_2>25.0&&pt_2<=30.0)*0.914702177048+(pt_2>30.0&&pt_2<=35.0)*0.891808986664+(pt_2>35.0&&pt_2<=40.0)*0.897880613804+0.886464495618*(pt_2>40.&&pt_2<=500)+(0.886464495618+0.0311505054401*(pt_2/500.))*(pt_2>500&&pt_2<=1000.)+0.886464495618*(pt_2>1000.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_emb_t_500-1000_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.910910189152+(pt_2>25.0&&pt_2<=30.0)*0.914702177048+(pt_2>30.0&&pt_2<=35.0)*0.891808986664+(pt_2>35.0&&pt_2<=40.0)*0.897880613804+0.886464495618*(pt_2>40.&&pt_2<=500)+(0.886464495618-0.0306230640296*(pt_2/500.))*(pt_2>500&&pt_2<=1000.)+0.886464495618*(pt_2>1000.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Down"))
+    # 1000 to inf
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_emb_t_1000-inf_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.910910189152+(pt_2>25.0&&pt_2<=30.0)*0.914702177048+(pt_2>30.0&&pt_2<=35.0)*0.891808986664+(pt_2>35.0&&pt_2<=40.0)*0.897880613804+0.886464495618*(pt_2>40.&&pt_2<=1000.)+(0.886464495618+2*0.0311505054401)*(pt_2>1000.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_emb_t_1000-inf_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.910910189152+(pt_2>25.0&&pt_2<=30.0)*0.914702177048+(pt_2>30.0&&pt_2<=35.0)*0.891808986664+(pt_2>35.0&&pt_2<=40.0)*0.897880613804+0.886464495618*(pt_2>40.&&pt_2<=1000.)+(0.886464495618-2*0.0306230640296)*(pt_2>1000.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Down"))
+    # Variation correlated between MC and EMB for EMB
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_t_30-35_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.910910189152+(pt_2>25.0&&pt_2<=30.0)*0.914702177048+(pt_2>30.0&&pt_2<=35.0)*0.94088858366+(pt_2>35.0&&pt_2<=40.0)*0.897880613804+0.886464495618*(pt_2>40.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_t_30-35_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.910910189152+(pt_2>25.0&&pt_2<=30.0)*0.914702177048+(pt_2>30.0&&pt_2<=35.0)*0.845394432545+(pt_2>35.0&&pt_2<=40.0)*0.897880613804+0.886464495618*(pt_2>40.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Down"))
+    # 35 to 40
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_t_35-40_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.910910189152+(pt_2>25.0&&pt_2<=30.0)*0.914702177048+(pt_2>30.0&&pt_2<=35.0)*0.891808986664+(pt_2>35.0&&pt_2<=40.0)*0.946944594383+0.886464495618*(pt_2>40.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_t_35-40_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.910910189152+(pt_2>25.0&&pt_2<=30.0)*0.914702177048+(pt_2>30.0&&pt_2<=35.0)*0.891808986664+(pt_2>35.0&&pt_2<=40.0)*0.851988017559+0.886464495618*(pt_2>40.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Down"))
+    # 40 to 500
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_t_40-500_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.910910189152+(pt_2>25.0&&pt_2<=30.0)*0.914702177048+(pt_2>30.0&&pt_2<=35.0)*0.891808986664+(pt_2>35.0&&pt_2<=40.0)*0.897880613804+(0.886464495618+0.0311505054401)*(pt_2>40.&&pt_2<=500.)+0.886464495618*(pt_2>500.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_t_40-500_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.910910189152+(pt_2>25.0&&pt_2<=30.0)*0.914702177048+(pt_2>30.0&&pt_2<=35.0)*0.891808986664+(pt_2>35.0&&pt_2<=40.0)*0.897880613804+(0.886464495618-0.0306230640296)*(pt_2>40.&&pt_2<=500)+0.886464495618*(pt_2>500.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Down"))
+    # 500 to 1000
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_t_500-1000_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.910910189152+(pt_2>25.0&&pt_2<=30.0)*0.914702177048+(pt_2>30.0&&pt_2<=35.0)*0.891808986664+(pt_2>35.0&&pt_2<=40.0)*0.897880613804+0.886464495618*(pt_2>40.&&pt_2<=500)+(0.886464495618+0.0311505054401*(pt_2/500.))*(pt_2>500&&pt_2<=1000.)+0.886464495618*(pt_2>1000.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_t_500-1000_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.910910189152+(pt_2>25.0&&pt_2<=30.0)*0.914702177048+(pt_2>30.0&&pt_2<=35.0)*0.891808986664+(pt_2>35.0&&pt_2<=40.0)*0.897880613804+0.886464495618*(pt_2>40.&&pt_2<=500)+(0.886464495618-0.0306230640296*(pt_2/500.))*(pt_2>500&&pt_2<=1000.)+0.886464495618*(pt_2>1000.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Down"))
+    # 1000 to inf
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_t_1000-inf_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.910910189152+(pt_2>25.0&&pt_2<=30.0)*0.914702177048+(pt_2>30.0&&pt_2<=35.0)*0.891808986664+(pt_2>35.0&&pt_2<=40.0)*0.897880613804+0.886464495618*(pt_2>40.&&pt_2<=1000.)+(0.886464495618+2*0.0311505054401)*(pt_2>1000.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+        ReplaceWeight("CMS_eff_t_1000-inf_Run2016", "taubyIsoIdWeight",
+            Weight("((pt_2<=20.0)*0+(pt_2>20.0&&pt_2<=25.0)*0.910910189152+(pt_2>25.0&&pt_2<=30.0)*0.914702177048+(pt_2>30.0&&pt_2<=35.0)*0.891808986664+(pt_2>35.0&&pt_2<=40.0)*0.897880613804+0.886464495618*(pt_2>40.&&pt_2<=1000.)+(0.886464495618-2*0.0306230640296)*(pt_2>1000.))*(gen_match_2==5)+(gen_match_2!=5)",
+                "taubyIsoIdWeight"), "Down"))
+    for variation in tau_id_variations:
+        for process_nick in ["EMB"]:
+            if "et" in [args.gof_channel] + args.channels and "et" in channel:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+
     # for tautau, the id is split by decay mode, and each decay mode is assosicated one nuicance
     tau_id_variations = []
-    for decaymode in [0, 1, 10, 11]:
-        tau_id_variations.append(
-                    ReplaceWeight("CMS_eff_t_dm{dm}_Run2016".format(dm=decaymode), "taubyIsoIdWeight",
-                        Weight("(((decayMode_1=={dm})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(dm=decaymode), "taubyIsoIdWeight"), "Up"))
-        tau_id_variations.append(
-                    ReplaceWeight("CMS_eff_t_dm{dm}_Run2016".format(dm=decaymode), "taubyIsoIdWeight",
-                        Weight("(((decayMode_1=={dm})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(dm=decaymode), "taubyIsoIdWeight"), "Down"))
+    # for decaymode in [0, 1, 10, 11]:
+    #     tau_id_variations.append(
+    #                 ReplaceWeight("CMS_eff_emb_t_dm{dm}_Run2016".format(dm=decaymode), "taubyIsoIdWeight",
+    #                     Weight("(((decayMode_1=={dm})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(dm=decaymode), "taubyIsoIdWeight"), "Up"))
+    #     tau_id_variations.append(
+    #                 ReplaceWeight("CMS_eff_emb_t_dm{dm}_Run2016".format(dm=decaymode), "taubyIsoIdWeight",
+    #                     Weight("(((decayMode_1=={dm})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(dm=decaymode), "taubyIsoIdWeight"), "Down"))
+    # cent: "((gen_match_1==5)*(0.911051*(decayMode_1==0)+0.957154*(decayMode_1==1||decayMode_1==2)+0.921861*(decayMode_1==10)+0.83207*(decayMode_1==11))+(gen_match_1!=5))*((gen_match_2==5)*(0.911051*(decayMode_2==0)+0.957154*(decayMode_2==1||decayMode_2==2)+0.921861*(decayMode_2==10)+0.83207*(decayMode_2==11))+(gen_match_2!=5))"
+    tau_id_variations.append(
+                ReplaceWeight("CMS_eff_emb_t_dm0_Run2016", "taubyIsoIdWeight",
+                    Weight("((gen_match_1==5)*(0.963178*(decayMode_1==0)+0.957154*(decayMode_1==1||decayMode_1==2)+0.921861*(decayMode_1==10)+0.83207*(decayMode_1==11))+(gen_match_1!=5))*((gen_match_2==5)*(0.963178*(decayMode_2==0)+0.957154*(decayMode_2==1||decayMode_2==2)+0.921861*(decayMode_2==10)+0.83207*(decayMode_2==11))+(gen_match_2!=5))",
+                        "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+                ReplaceWeight("CMS_eff_emb_t_dm0_Run2016", "taubyIsoIdWeight",
+                    Weight("((gen_match_1==5)*(0.858923*(decayMode_1==0)+0.957154*(decayMode_1==1||decayMode_1==2)+0.921861*(decayMode_1==10)+0.83207*(decayMode_1==11))+(gen_match_1!=5))*((gen_match_2==5)*(0.858923*(decayMode_2==0)+0.957154*(decayMode_2==1||decayMode_2==2)+0.921861*(decayMode_2==10)+0.83207*(decayMode_2==11))+(gen_match_2!=5))",
+                        "taubyIsoIdWeight"), "Down"))
+    tau_id_variations.append(
+                ReplaceWeight("CMS_eff_emb_t_dm1_Run2016", "taubyIsoIdWeight",
+                    Weight("((gen_match_1==5)*(0.911051*(decayMode_1==0)+1.01028*(decayMode_1==1||decayMode_1==2)+0.921861*(decayMode_1==10)+0.83207*(decayMode_1==11))+(gen_match_1!=5))*((gen_match_2==5)*(0.911051*(decayMode_2==0)+1.01028*(decayMode_2==1||decayMode_2==2)+0.921861*(decayMode_2==10)+0.83207*(decayMode_2==11))+(gen_match_2!=5))",
+                        "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+                ReplaceWeight("CMS_eff_emb_t_dm1_Run2016", "taubyIsoIdWeight",
+                    Weight("((gen_match_1==5)*(0.911051*(decayMode_1==0)+0.904025*(decayMode_1==1||decayMode_1==2)+0.921861*(decayMode_1==10)+0.83207*(decayMode_1==11))+(gen_match_1!=5))*((gen_match_2==5)*(0.911051*(decayMode_2==0)+0.904025*(decayMode_2==1||decayMode_2==2)+0.921861*(decayMode_2==10)+0.83207*(decayMode_2==11))+(gen_match_2!=5))",
+                        "taubyIsoIdWeight"), "Down"))
+    tau_id_variations.append(
+                ReplaceWeight("CMS_eff_emb_t_dm10_Run2016", "taubyIsoIdWeight",
+                    Weight("((gen_match_1==5)*(0.911051*(decayMode_1==0)+0.957154*(decayMode_1==1||decayMode_1==2)+0.982182*(decayMode_1==10)+0.83207*(decayMode_1==11))+(gen_match_1!=5))*((gen_match_2==5)*(0.911051*(decayMode_2==0)+0.957154*(decayMode_2==1||decayMode_2==2)+0.982182*(decayMode_2==10)+0.83207*(decayMode_2==11))+(gen_match_2!=5))",
+                        "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+                ReplaceWeight("CMS_eff_emb_t_dm10_Run2016", "taubyIsoIdWeight",
+                    Weight("((gen_match_1==5)*(0.911051*(decayMode_1==0)+0.957154*(decayMode_1==1||decayMode_1==2)+0.861541*(decayMode_1==10)+0.83207*(decayMode_1==11))+(gen_match_1!=5))*((gen_match_2==5)*(0.911051*(decayMode_2==0)+0.957154*(decayMode_2==1||decayMode_2==2)+0.861541*(decayMode_2==10)+0.83207*(decayMode_2==11))+(gen_match_2!=5))",
+                        "taubyIsoIdWeight"), "Down"))
+    tau_id_variations.append(
+                ReplaceWeight("CMS_eff_emb_t_dm11_Run2016", "taubyIsoIdWeight",
+                    Weight("((gen_match_1==5)*(0.911051*(decayMode_1==0)+0.957154*(decayMode_1==1||decayMode_1==2)+0.921861*(decayMode_1==10)+0.883777*(decayMode_1==11))+(gen_match_1!=5))*((gen_match_2==5)*(0.911051*(decayMode_2==0)+0.957154*(decayMode_2==1||decayMode_2==2)+0.921861*(decayMode_2==10)+0.883777*(decayMode_2==11))+(gen_match_2!=5))",
+                        "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+                ReplaceWeight("CMS_eff_emb_t_dm11_Run2016", "taubyIsoIdWeight",
+                    Weight("((gen_match_1==5)*(0.911051*(decayMode_1==0)+0.957154*(decayMode_1==1||decayMode_1==2)+0.921861*(decayMode_1==10)+0.780362*(decayMode_1==11))+(gen_match_1!=5))*((gen_match_2==5)*(0.911051*(decayMode_2==0)+0.957154*(decayMode_2==1||decayMode_2==2)+0.921861*(decayMode_2==10)+0.780362*(decayMode_2==11))+(gen_match_2!=5))",
+                        "taubyIsoIdWeight"), "Down"))
+    # Variations correlated between MC and EMB for EMB
+    tau_id_variations.append(
+                ReplaceWeight("CMS_eff_t_dm0_Run2016", "taubyIsoIdWeight",
+                    Weight("((gen_match_1==5)*(0.963178*(decayMode_1==0)+0.957154*(decayMode_1==1||decayMode_1==2)+0.921861*(decayMode_1==10)+0.83207*(decayMode_1==11))+(gen_match_1!=5))*((gen_match_2==5)*(0.963178*(decayMode_2==0)+0.957154*(decayMode_2==1||decayMode_2==2)+0.921861*(decayMode_2==10)+0.83207*(decayMode_2==11))+(gen_match_2!=5))",
+                        "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+                ReplaceWeight("CMS_eff_t_dm0_Run2016", "taubyIsoIdWeight",
+                    Weight("((gen_match_1==5)*(0.858923*(decayMode_1==0)+0.957154*(decayMode_1==1||decayMode_1==2)+0.921861*(decayMode_1==10)+0.83207*(decayMode_1==11))+(gen_match_1!=5))*((gen_match_2==5)*(0.858923*(decayMode_2==0)+0.957154*(decayMode_2==1||decayMode_2==2)+0.921861*(decayMode_2==10)+0.83207*(decayMode_2==11))+(gen_match_2!=5))",
+                        "taubyIsoIdWeight"), "Down"))
+    tau_id_variations.append(
+                ReplaceWeight("CMS_eff_t_dm1_Run2016", "taubyIsoIdWeight",
+                    Weight("((gen_match_1==5)*(0.911051*(decayMode_1==0)+1.01028*(decayMode_1==1||decayMode_1==2)+0.921861*(decayMode_1==10)+0.83207*(decayMode_1==11))+(gen_match_1!=5))*((gen_match_2==5)*(0.911051*(decayMode_2==0)+1.01028*(decayMode_2==1||decayMode_2==2)+0.921861*(decayMode_2==10)+0.83207*(decayMode_2==11))+(gen_match_2!=5))",
+                        "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+                ReplaceWeight("CMS_eff_t_dm1_Run2016", "taubyIsoIdWeight",
+                    Weight("((gen_match_1==5)*(0.911051*(decayMode_1==0)+0.904025*(decayMode_1==1||decayMode_1==2)+0.921861*(decayMode_1==10)+0.83207*(decayMode_1==11))+(gen_match_1!=5))*((gen_match_2==5)*(0.911051*(decayMode_2==0)+0.904025*(decayMode_2==1||decayMode_2==2)+0.921861*(decayMode_2==10)+0.83207*(decayMode_2==11))+(gen_match_2!=5))",
+                        "taubyIsoIdWeight"), "Down"))
+    tau_id_variations.append(
+                ReplaceWeight("CMS_eff_t_dm10_Run2016", "taubyIsoIdWeight",
+                    Weight("((gen_match_1==5)*(0.911051*(decayMode_1==0)+0.957154*(decayMode_1==1||decayMode_1==2)+0.982182*(decayMode_1==10)+0.83207*(decayMode_1==11))+(gen_match_1!=5))*((gen_match_2==5)*(0.911051*(decayMode_2==0)+0.957154*(decayMode_2==1||decayMode_2==2)+0.982182*(decayMode_2==10)+0.83207*(decayMode_2==11))+(gen_match_2!=5))",
+                        "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+                ReplaceWeight("CMS_eff_t_dm10_Run2016", "taubyIsoIdWeight",
+                    Weight("((gen_match_1==5)*(0.911051*(decayMode_1==0)+0.957154*(decayMode_1==1||decayMode_1==2)+0.861541*(decayMode_1==10)+0.83207*(decayMode_1==11))+(gen_match_1!=5))*((gen_match_2==5)*(0.911051*(decayMode_2==0)+0.957154*(decayMode_2==1||decayMode_2==2)+0.861541*(decayMode_2==10)+0.83207*(decayMode_2==11))+(gen_match_2!=5))",
+                        "taubyIsoIdWeight"), "Down"))
+    tau_id_variations.append(
+                ReplaceWeight("CMS_eff_t_dm11_Run2016", "taubyIsoIdWeight",
+                    Weight("((gen_match_1==5)*(0.911051*(decayMode_1==0)+0.957154*(decayMode_1==1||decayMode_1==2)+0.921861*(decayMode_1==10)+0.883777*(decayMode_1==11))+(gen_match_1!=5))*((gen_match_2==5)*(0.911051*(decayMode_2==0)+0.957154*(decayMode_2==1||decayMode_2==2)+0.921861*(decayMode_2==10)+0.883777*(decayMode_2==11))+(gen_match_2!=5))",
+                        "taubyIsoIdWeight"), "Up"))
+    tau_id_variations.append(
+                ReplaceWeight("CMS_eff_t_dm11_Run2016", "taubyIsoIdWeight",
+                    Weight("((gen_match_1==5)*(0.911051*(decayMode_1==0)+0.957154*(decayMode_1==1||decayMode_1==2)+0.921861*(decayMode_1==10)+0.780362*(decayMode_1==11))+(gen_match_1!=5))*((gen_match_2==5)*(0.911051*(decayMode_2==0)+0.957154*(decayMode_2==1||decayMode_2==2)+0.921861*(decayMode_2==10)+0.780362*(decayMode_2==11))+(gen_match_2!=5))",
+                        "taubyIsoIdWeight"), "Down"))
     for variation in tau_id_variations:
         for process_nick in ["EMB"]:
             if "tt" in [args.gof_channel] + args.channels:
