@@ -507,8 +507,8 @@ def main(args):
     if len(selectedChannels & {"et", "mt"}) > 0:
         pt = [30, 35, 40, 500, 1000, "inf"]
         for histname_, pL_ in {
-            "CMS_eff_t_{}-{}_Run2018": signal_nicks | {"EMB", "VVL", "TTL"} |
-                trueTauBkgS, "CMS_eff_emb_t_{}-{}_Run2018": {"EMB"}}.items():
+            "CMS_eff_t_{}-{}_Run{}": signal_nicks | {"EMB", "VVL", "TTL"} |
+                trueTauBkgS, "CMS_eff_emb_t_{}-{}_Run{}": {"EMB"}}.items():
             tau_id_variations = []
             for shift_direction in ["Up", "Down"]:
                 for i, ptbin in enumerate(pt[:-1]):
@@ -520,7 +520,7 @@ def main(args):
                         weightstr = "(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
                     tau_id_variations.append(
                         ReplaceWeight(
-                            histname_.format(bindown, binup),
+                            histname_.format(bindown, binup,args.era),
                             "taubyIsoIdWeight",
                             Weight(
                                 weightstr.format(
@@ -547,8 +547,8 @@ def main(args):
     for chname_ in selectedChannels & {"tt"}:
         dm11 = {"Up": 1.1324026, "Down": 0.80605859, "Nom": 0.96923059}
         for histname_, pL_ in {
-            "CMS_eff_t_dm{dm}_Run2018": signal_nicks | {"EMB", "VVL", "TTL"} |
-                trueTauBkgS, "CMS_eff_emb_t_dm{dm}_Run2018": {"EMB"}}.items():
+            "CMS_eff_t_dm{dm}_Run{era}": signal_nicks | {"EMB", "VVL", "TTL"} |
+                trueTauBkgS, "CMS_eff_emb_t_dm{dm}_Run{era}": {"EMB"}}.items():
             tau_id_variations = []
             for shift_direction in ["Up", "Down"]:
                 for decaymode in [0, 1, 10, 11]:
@@ -560,7 +560,7 @@ def main(args):
                     tau_id_variations.append(
                         ReplaceWeight(
                             histname_.format(
-                                dm=decaymode),
+                                dm=decaymode,era=args.era),
                             "taubyIsoIdWeight",
                             Weight(
                                 weightstr.format(
