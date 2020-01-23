@@ -18,7 +18,7 @@ source utils/bashFunctionCollection.sh
 ensureoutdirs
 
 # Produce shapes
-logandrun python shapes/produce_shapes_joined.py \
+logandrun python shapes/produce_shapes.py \
     --tag ${TAG} \
     --era ${ERA} \
     --channels ${CHANNELS} \
@@ -26,7 +26,6 @@ logandrun python shapes/produce_shapes_joined.py \
     --categories ${CATGEGORIES} \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
-    --num-threads 1 \
     --directory $ARTUS_OUTPUTS \
     --et-friend-directory $ARTUS_FRIENDS_ET \
     --em-friend-directory $ARTUS_FRIENDS_EM \

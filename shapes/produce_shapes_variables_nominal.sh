@@ -18,7 +18,7 @@ source utils/setup_samples.sh $ERA
 # Produce shapes
 
 
-python shapes/produce_shapes_${ERA}.py \
+python shapes/produce_shapes.py \
     --directory $ARTUS_OUTPUTS \
     --em-friend-directory $ARTUS_FRIENDS_EM \
     --et-friend-directory $ARTUS_FRIENDS_ET \
@@ -27,7 +27,7 @@ python shapes/produce_shapes_${ERA}.py \
     --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
-    --gof-channel $CHANNELS \
+    --channels $CHANNELS \
     --gof-variable $VARIABLE \
     --era $ERA \
     --num-threads 20 \
