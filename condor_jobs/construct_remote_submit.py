@@ -2,7 +2,10 @@ import yaml
 import argparse
 import os
 import shutil
+<<<<<<< HEAD
 import stat
+=======
+>>>>>>> started working on remote shape production
 from shape_producer.estimation_methods_2016 import ggHEstimation, qqHEstimation
 ###
 # this script is used to create split the submit of the shape
@@ -13,16 +16,21 @@ from shape_producer.estimation_methods_2016 import ggHEstimation, qqHEstimation
 def parse_arguments():
     parser = argparse.ArgumentParser(
         description="Produce shapes for Standard Model analysis.")
+<<<<<<< HEAD
     parser.add_argument("--workdir",
                         type=str,
                         help="path to the workdir",
                         default="condor_jobs/workdir")
+=======
+    parser.add_argument("--workdir", type=str, help="path to the workdir", default="condor_jobs/workdir")    
+>>>>>>> started working on remote shape production
     parser.add_argument(
         "--channels",
         default=[],
         type=lambda channellist:
         [channel for channel in channellist.split(',')],
         help="Channels to be considered, seperated by a comma without space")
+<<<<<<< HEAD
     parser.add_argument(
         "--eras",
         default=[],
@@ -33,6 +41,10 @@ def parse_arguments():
         type=str,
         help="Processing mode, default is gc, options are gc, condor",
         default="gc")
+=======
+    parser.add_argument("--era", type=str, help="Experiment era.")
+    parser.add_argument("--mode", type=str, help="Processing mode, default is gc, options are gc, condor", default="gc")
+>>>>>>> started working on remote shape production
     parser.add_argument("--tag",
                         default="ERA_CHANNEL",
                         type=str,
@@ -40,15 +52,26 @@ def parse_arguments():
     return parser.parse_args()
 
 
+<<<<<<< HEAD
 def readclasses(channelname, era, tag):
     if args.tag == "" or args.tag is None or not os.path.isfile(
             "output/ml/{}_{}_{}/dataset_config.yaml".format(
                 era, channelname, tag)):
+=======
+def readclasses(channelname):
+    if args.tag == "" or args.tag is None or not os.path.isfile(
+            "output/ml/{}_{}_{}/dataset_config.yaml".format(
+                args.era, channelname, args.tag)):
+>>>>>>> started working on remote shape production
         confFileName = "ml/templates/shape-producer_{}.yaml".format(
             channelname)
     else:
         confFileName = "output/ml/{}_{}_{}/dataset_config.yaml".format(
+<<<<<<< HEAD
             era, channelname, tag)
+=======
+            args.era, channelname, args.tag)
+>>>>>>> started working on remote shape production
     confdict = yaml.load(open(confFileName, "r"))
     return confdict["classes"]
 
@@ -78,9 +101,26 @@ def buildprocesses(channelname):
     return processes
 
 
+<<<<<<< HEAD
 def write_gc(era, channel, nnclasses, processes, tag, workdir):
     configfilepath = '{WORKDIR}/shapes_{ERA}_{CHANNEL}.conf'.format(
         WORKDIR=workdir, ERA=era, CHANNEL=channel)
+=======
+def writearguments(joblist, tag):
+    filename = "condor_jobs/arguments_remote.txt"
+    argfile = open(filename, 'w')
+    for job in joblist:
+        argfile.write("{era} {channel} {tag} {nnclass} {processes} \n".format(
+            era=job["era"],
+            channel=job["channel"],
+            tag=tag,
+            processes=(",").join(job["processes"]),
+            nnclass=job["nnclass"]))
+    argfile.close()
+
+def write_gc(era, channel, nnclasses, processes, tag, workdir):
+    configfilepath = os.path.abspath('{WORKDIR}/shapes_{ERA}_{CHANNEL}.conf'.format(WORKDIR=workdir, ERA=era, CHANNEL=channel))
+>>>>>>> started working on remote shape production
     shutil.copy2('condor_jobs/grid_control_c7.conf', configfilepath)
     processstring = ""
     for process in processes:
