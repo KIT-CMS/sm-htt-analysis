@@ -38,8 +38,9 @@ python shapes/produce_shapes_$ERA.py \
     --tt-friend-directory $ARTUS_FRIENDS_TT \
     --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR_INCL \
     --era $ERA \
-    --tag $ERA \
+    --tag $VARIABLE \
     --num-threads $NUM_THREADS
 
+cp output/shapes/${ERA}-${VARIABLE}-${CHANNEL}-shapes.root ${ERA}_shapes.root
 # Normalize fake-factor shapes to nominal
 python fake-factor-application/normalize_shifts.py ${ERA}_shapes.root

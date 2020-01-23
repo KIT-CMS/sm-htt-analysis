@@ -25,15 +25,15 @@ NUM_THREADS=1
 ./shapes/apply_blinding.sh $ERA
 
 # Convert shapes to synced format
-./shapes/convert_to_synced_shapes.sh $ERA
+./shapes/convert_to_synced_shapes.sh $ERA $CHANNEL $VARIABLE
 
 # Create datacard
 JETFAKES=1
 EMBEDDING=1
-./gof/produce_datacard.sh $ERA $CHANNEL $VARIABLE $JETFAKES $EMBEDDING
+./gof/produce_datacard.sh $ERA $CHANNEL $VARIABLE $JETFAKES $EMBEDDING $VARIABLE
 
 # Build workspace
-./datacards/produce_workspace.sh $ERA "inclusive" | tee ${ERA}_produce_workspace_inclusive.log
+./gof/produce_workspace.sh $ERA | tee ${ERA}_produce_workspace_inclusive.log
 
 # Run goodness of fit test
 ./gof/gof.sh $ERA

@@ -5,7 +5,7 @@ import ROOT
 ROOT.PyConfig.IgnoreCommandLineOptions = True  # disable ROOT internal argument parser
 
 from shape_producer.cutstring import Cut, Cuts
-from shape_producer.channel import EMSM2016, ETSM2016, MTSM2016, TTSM2016, EMSM2017, ETSM2017, MTSM2017, TTSM2017
+from shape_producer.channel import EMSM2016, ETSM2016, MTSM2016, TTSM2016, EMSM2017, ETSM2017, MTSM2017, TTSM2017, EMSM2018, ETSM2018, MTSM2018, TTSM2018
 from shape_producer.process import Process
 
 import argparse
@@ -83,6 +83,8 @@ def get_properties(dict_, era, channel, directory, additional_cuts):
         from shape_producer.estimation_methods_2016 import DataEstimation
     elif "2017" in era.name:
         from shape_producer.estimation_methods_2017 import DataEstimation
+    elif "2018" in era.name:
+        from shape_producer.estimation_methods_2018 import DataEstimation
     else:
         logger.fatal(
             "Can not import data estimation because era {} is not implemented.".
@@ -124,7 +126,7 @@ def build_chain(dict_, friend_directories):
         chain.AddFile(f)
         # Make sure, that friend files are put in the same order together
         for d in friendchains:
-            friendfile = os.path.join(d,f.replace(dict_["directory"] + "/", ""))
+            friendfile = os.path.join(d,f.replace(dict_["directory"], ""))
             friendchains[d].AddFile(friendfile)
     chain_numentries = chain.GetEntries()
     if not chain_numentries > 0:
@@ -141,6 +143,7 @@ def build_chain(dict_, friend_directories):
     for d in friendchains:
         friendchains[d].AddFriend(chain)
         friendchains_skimmed[d] = friendchains[d].CopyTree(dict_["cut_string"])
+    print friendchains_skimmed
     if not chain_skimmed_numentries > 0:
         logger.fatal("Chain (after skimming) does not contain any events.")
         raise Exception
@@ -149,6 +152,7 @@ def build_chain(dict_, friend_directories):
     for d in friendchains_skimmed:
         chain_skimmed.AddFriend(friendchains_skimmed[d])
 
+    print chain_skimmed
     return chain_skimmed
 
 
@@ -228,6 +232,9 @@ def main(args):
     elif "2017" in args.era:
         from shape_producer.era import Run2017
         era = Run2017(args.datasets)
+    elif "2018" in args.era:
+        from shape_producer.era import Run2018
+        era = Run2018(args.datasets)
     else:
         logger.fatal("Era {} is not implemented.".format(args.era))
         raise Exception
@@ -237,10 +244,10 @@ def main(args):
 
     # Define bins and range of binning for variables in enabled channels
     channel_dict = {
-        "em" : { "2016": EMSM2016(), "2017" : EMSM2017()},
-        "et" : { "2016": ETSM2016(), "2017" : ETSM2017()},
-        "mt" : { "2016": MTSM2016(), "2017" : MTSM2017()},
-        "tt" : { "2016": TTSM2016(), "2017" : TTSM2017()},
+        "et" : { "2016": ETSM2016(), "2017" : ETSM2017(), "2018" : ETSM2018()},
+        "mt" : { "2016": MTSM2016(), "2017" : MTSM2017(), "2018" : MTSM2018()},
+        "tt" : { "2016": TTSM2016(), "2017" : TTSM2017(), "2018" : TTSM2018()},
+        "em" : { "2016": EMSM2016(), "2017" : EMSM2017(), "2018" : EMSM2018()},
     }
     friend_directories_dict = {
         "em" : args.em_friend_directories,
@@ -253,11 +260,15 @@ def main(args):
     config = {"gof": {}}
 
     for ch in channel_dict:
+        if ch != "em":
+            continue
         # Get properties
         if "2016" in args.era:
             eraname = "2016"
         elif "2017" in args.era:
             eraname = "2017"
+        elif "2018" in args.era:
+            eraname = "2018"
         channel = channel_dict[ch][eraname]
         logger.info("Channel: %s"%ch)
         dict_ = {}

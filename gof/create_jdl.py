@@ -25,7 +25,7 @@ def main(args):
     jobs.wall_time = 1 * 60 * 60
     jobs.memory = 2048
     jobs.accounting_group = "cms.higgs"
-    jobs.image = "stwunsch/slc6-condocker:smhtt"
+    jobs.image = "mschnepf/slc7-condocker"
 
     # Build list of arguments
     arguments = []
@@ -34,7 +34,7 @@ def main(args):
 
     # 1D fits
     for channel in binning["gof"]:
-        for variable in variables["variables"]:
+        for variable in variables["selected_variables"][int(args.era)][channel]:
             arguments.append("{} {} {}".format(args.era, channel, variable))
 
     # 2D fits
