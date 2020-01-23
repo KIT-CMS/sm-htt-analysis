@@ -411,12 +411,13 @@ function runCmbAna() {
 
 ### Subroutine called by runstages
 ### generate postfitshape
-function plotPreFitShapes() {
+function plotPreFitShapes() (
     ensureoutdirs
+    set -e
     for tag in ${tags[@]}; do
         export tag
         for era in ${eras[@]}; do
-            STXS_FIT="stxs_stage0"
+            STXS_FIT="stxs_stage1p1"
             if [[ $STXS_FIT == "inclusive" || $STXS_FIT == "stxs_stage0" ]]; then
                 STXS_SIGNALS=stxs_stage0
             elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
@@ -425,18 +426,19 @@ function plotPreFitShapes() {
 
             for channel in ${channels[@]}; do
                 DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/$channel/125
-
-                # generate the postfitshape
+                WORKSPACE=$DATACARDDIR/${era}-${STXS_FIT}-workspace.root
+                [ -f $WORKSPACE ] || logerror "No workspace to plot: $WORKSPACE" #; return 1
+                [ -f ${DATACARDDIR}/combined.txt.cmb ] || logerror "No datacard to plot: ${DATACARDDIR}/combined.txt.cmb" #; return 1
+                # generate the prefitshape
                 FILE="${DATACARDDIR}/prefitshape-${era}-${tag}-${STXS_FIT}.root"
                 [[ -f $FILE ]] || (
                     source utils/setup_cmssw.sh
-                    WORKSPACE=$DATACARDDIR/${era}-${STXS_FIT}-workspace.root
                     logandrun PostFitShapesFromWorkspace \
                         -m 125 -w ${WORKSPACE} \
                         -d ${DATACARDDIR}/combined.txt.cmb \
                         -o ${FILE}
                 )
-                ## plot the preditshape and postfitshape
+                ## plot the prefitshape
                 (
                     source utils/setup_cvmfs_sft.sh
                     source utils/setup_python.sh
@@ -444,14 +446,14 @@ function plotPreFitShapes() {
                     [ -d $PLOTDIR ] || mkdir -p $PLOTDIR
                     for OPTION in "--png" ""
                     do
-                        logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channel} -e $era $OPTION --png --categories $CATEGORIES --fake-factor --embedding --normalize-by-bin-width -l --train-ff True --train-emb True
-                        #--background-only True
+                        logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channel} -e $era $OPTION --png --categories $STXS_SIGNALS --fake-factor --embedding --normalize-by-bin-width -l --train-ff True --train-emb True
                     done
                 )
                 done
         done
     done
-}
+)
+
 
 function plotPostFitShapes(){
     ensureoutdirs
