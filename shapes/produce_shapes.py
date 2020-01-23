@@ -110,15 +110,11 @@ def parse_arguments():
         [category for category in categorylist.split(',')],
         help="processes to be considered, seperated by a comma without space")
     parser.add_argument("--era", type=str, help="Experiment era.")
-    parser.add_argument("--gof-channel",
-                        default=None,
-                        type=str,
-                        help="Channel for goodness of fit shapes.")
     parser.add_argument("--gof-variable",
                         type=str,
                         help="Variable for goodness of fit shapes.")
     parser.add_argument("--num-threads",
-                        default=10,
+                        default=1,
                         type=int,
                         help="Number of threads to be used.")
     parser.add_argument("--backend",
@@ -227,7 +223,7 @@ def main(args):
         smChannelsDict["tt"].cuts.get("os").invert()
         smChannelsDict["em"].cuts.get("os").invert()
 
-    selectedChannels = set(args.channels) | {args.gof_channel} - {None}
+    selectedChannels = set(args.channels) - {None}
     selectedCategories = set(args.categories)
 
     selectedChannelsTuples = {
