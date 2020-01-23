@@ -26,11 +26,11 @@ then
 fi
 
 # Produce shapes
-python shapes/produce_shapes_$ERA.py \
+python shapes/produce_shapes.py \
     --directory $ARTUS_OUTPUTS \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
-    --gof-channel $CHANNEL \
+    --channels $CHANNEL \
     --gof-variable $VARIABLE \
     --em-friend-directory $ARTUS_FRIENDS_EM \
     --et-friend-directory $ARTUS_FRIENDS_ET \
