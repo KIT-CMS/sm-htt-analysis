@@ -376,7 +376,6 @@ def main(args):
 
     # Read the NN output classes either from the training, or from the template
     binning = yaml.load(open(args.binning), Loader=yaml.Loader)
-
     def readclasses(channelname, selectedCategories):
         import os
         if args.tag == "" or args.tag is None or not os.path.isfile(
@@ -404,6 +403,7 @@ def main(args):
             return classdict
 
     catsListD = {chname_: [] for chname_ in selectedChannels}
+
     # if not a gof test:Analysis shapes
     # add the max nnscore as variables
     if args.gof_variable is None:
