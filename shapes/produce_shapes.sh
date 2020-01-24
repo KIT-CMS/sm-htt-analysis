@@ -16,7 +16,8 @@ source utils/bashFunctionCollection.sh
 ensureoutdirs
 
 # Produce shapes
-nice -n 13 logandrun python shapes/produce_shapes.py \
+renice -n 10 $$
+logandrun python shapes/produce_shapes.py \
     --tag ${TAG} \
     --era ${ERA} \
     --channels ${CHANNELS} \
