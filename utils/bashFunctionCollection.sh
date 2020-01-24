@@ -59,9 +59,10 @@ function condwait(){
 }
 
 function recommendCPUs() {
+    ## recommeds % of free cpus
     avUsage=$(grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage}')
     ncpus=$(($(grep 'cpu' /proc/stat | wc -l)-1))
-    echo $avUsage $ncpus | awk '{print int((1-$1/100)*$2*.7)}'
+    echo $avUsage $ncpus | awk '{print int((1-$1/100)*$2*.5)}'
 }
 
 
