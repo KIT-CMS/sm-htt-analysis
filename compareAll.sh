@@ -184,19 +184,21 @@ function exportForApplication {
     wait
 }
 
-function provideCluster() {
+function provideCluster() (
+    set -e
     tag=$1
     era=$2
     llwtnndir=$cmssw_src_local/HiggsAnalysis/friend-tree-producer/data/inputs_lwtnn
-    find $llwtnndir -type l -iname "fold*_lwtnn.json" -delete
+    #find $llwtnndir -type l -iname "fold*_lwtnn.json" -delete
+    llwtnndir_sel=$llwtnndir/$tag/${era}/${channel}
     # for era in ${eras[@]}; do
         for channel in ${channels[@]}; do
             ### Supply the generated models in the hard-coded path in the friendProducer
             ### alogrsync $remote will dereference this symlink
-            [[ ! -d $llwtnndir/${era}/${channel} ]] && mkdir -p $llwtnndir/${era}/${channel}
+            [[ ! -d $llwtnndir_sel ]] && mkdir -p $llwtnndir_sel
             for fold in 0 1;
             do
-                updateSymlink $sm_htt_analysis_dir/output/ml/${era}_${channel}_${tag}/fold${fold}_lwtnn.json  $llwtnndir/${era}/${channel}/fold${fold}_lwtnn.json
+                updateSymlink $sm_htt_analysis_dir/output/ml/${era}_${channel}_${tag}/fold${fold}_lwtnn.json  $llwtnndir_sel/fold${fold}_lwtnn.json
             done
         done
     # done
