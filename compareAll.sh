@@ -4,16 +4,18 @@
 ## Detect if the script is being sourced
 #mklement0 https://stackoverflow.com/questions/2683279/how-to-detect-if-a-script-is-being-sourced
 ([[ -n $ZSH_EVAL_CONTEXT && $ZSH_EVAL_CONTEXT =~ :file$ ]] ||
- [[ -n $KSH_VERSION && $(cd "$(dirname -- "$0")" &&
-    printf '%s' "${PWD%/}/")$(basename -- "$0") != "${.sh.file}" ]] ||
- [[ -n $BASH_VERSION ]] && (return 0 2>/dev/null)) && export sourced=1 || export sourced=0
+[[ -n $KSH_VERSION && $(cd "$(dirname -- "$0")" &&
+printf '%s' "${PWD%/}/")$(basename -- "$0") != "${.sh.file}" ]] ||
+[[ -n $BASH_VERSION ]] && (return 0 2>/dev/null)) && export sourced=1 || export sourced=0
 
-[[ $sourced != 1 ]] && set -e
-#set -uo pipefail
+if [[ $sourced == 0 ]]; then
+    echo "This is a function library, not a script."
+    exit 1
+fi
+set -o pipefail
 
 unset PYTHONPATH
 unset PYTHONUSERBASE
-shopt -s checkjobs # wait for all jobs before exiting
 
 source utils/bashFunctionCollection.sh
 
@@ -24,9 +26,21 @@ ensureoutdirs
 source .userconfig
 
 ########### Argument handling and Tests ##################
+if [[ "bash" =~ $0 ]]; then
+shopt -s checkjobs # wait for all jobs before exiting
+set -u # disallow using unused variables
 IFS=',' read -r -a eras <<< $1
 IFS=',' read -r -a channels <<< $2
 IFS=',' read -r -a tags <<< $3
+else #zsh
+setopt sh_word_split
+# IFS=',' eras=("${(@f)$1}")
+setopt monitor # wait for all jobs before exiting
+IFS=',' eras=($1)
+IFS=',' channels=($2)
+IFS=',' tags=($3)
+fi
+
 erasarg=$1
 channelsarg=$2
 tagsarg=$3
@@ -89,13 +103,10 @@ function ensuremldirs() {
 }
 
 
-function compenv() {
-    varnames=(era channel tag eras  channels  tags erasarg channelsarg tagsarg mldir trainingConfFile anaSSStep  llwtnndir temp_file PROD_NEW_DATACARDS fn JETFAKES EMBEDDING CATEGORIES PROD_NEW_DATACARDS STXS_SIGNALS STXS_FIT)
-    IFS='°' read -r -a vars <<< "${era[@]}"°"${channel[@]}"°"${tag[@]}"°"${eras[@]}"°"${channels[@]}"°"${tags[@]}"°"${erasarg[@]}"°"${channelsarg[@]}"°"${tagsarg[@]}"°"${mldir[@]}"°"${trainingConfFile[@]}"°"${anaSSStep[@]}"°"${llwtnndir[@]}"°"${temp_file[@]}"°"${PROD_NEW_DATACARDS[@]}"°"${fn[@]}"°"${JETFAKES[@]}"°"${EMBEDDING[@]}"°"${CATEGORIES[@]}"°"${PROD_NEW_DATACARDS[@]}"°"${STXS_SIGNALS[@]}"°"${STXS_FIT[@]}"
-    for (( i=0; i<${#vars[@]}; i++ )); do
-        echo "${varnames[$i]}=${vars[$i]}"
-    done
-}
+function compenv()(
+    set +u
+    eval echo $(echo `cat compareAll.sh | grep -E "\w+=" | sed -E "s@^\s+@@" | grep -v -E "^#" | sed -E "s#.*( |^)(\w+)=.*#\2 = \\\${\2\[@\]}#" | sort -u | tr "\n" "#"`) | tr "#" "\n"
+)
 
 function genTrainingDS() {
     ensuremldirs
@@ -551,11 +562,6 @@ function plotMCprefitshapes(){
     done
 }
 
-
-
-
-
-
 ### compares Signal strengths of the Samples classified on the training based on MCvsEMB dataset creation
 function compareSignRes {
     for channel in ${channels[@]}; do
@@ -568,11 +574,3 @@ function compareSignRes {
     #     ./utils/inlinediff.py <(echo $mcfile; cat $mcfile ) <(echo $embfile; cat $embfile) | sort
     # done
 }
-
-function main() {
-    logerror "This is a function library, not a script."
-    exit 1
-}
-
-[[ $sourced == 1 ]] && [[ ! "bash" =~ $0 ]] && logerror "shell is sourced by another shell than bash, aborting" && exit 1
-[[ $sourced == 0 ]] && main || :
