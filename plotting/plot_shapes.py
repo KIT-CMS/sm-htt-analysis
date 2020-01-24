@@ -179,7 +179,6 @@ def main(args):
                 "101": "ggh 1-jet p_{T}^{H} [0,120]",
                 "102": "ggh 1-jet p_{T}^{H} [120,200]",
                 "103": "ggh #geq 2-jet",
-                "104": "ggh p_{T}^{H}>200",
                 "200": "qqh 2J low mjj",
                 "201": "qqh p_{T}^{H}>200",
                 "202": "qqh vbftopo mjj>700",
