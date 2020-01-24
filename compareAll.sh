@@ -28,7 +28,7 @@ source .userconfig
 ########### Argument handling and Tests ##################
 if [[ "bash" =~ $0 ]]; then
 shopt -s checkjobs # wait for all jobs before exiting
-set -u # disallow using unused variables
+#set -u # disallow using unused variables
 IFS=',' read -r -a eras <<< $1
 IFS=',' read -r -a channels <<< $2
 IFS=',' read -r -a tags <<< $3
@@ -39,6 +39,7 @@ setopt monitor # wait for all jobs before exiting
 IFS=',' eras=($1)
 IFS=',' channels=($2)
 IFS=',' tags=($3)
+IFS=' '
 fi
 
 erasarg=$1
@@ -53,11 +54,11 @@ else
     CONDITIONAL_TRAINING=0
 fi
 
-[[ "" = $( echo ${eras} ) ]] && eras=("2016" "2017" "2018") erasarg="2016,2017,2018"
-[[ "" = $( echo ${channels} ) ]] && channels=("em" "et" "tt" "mt") channelsarg="em,et,mt,tt"
-[[ "" = $( echo ${tags} ) ]] && tags=("default") tagsarg="default"
+[[ "" == ${eras[1]} ]] && eras=("2016" "2017" "2018") erasarg="2016,2017,2018"
+[[ "" ==  ${channels[1]} ]] && channels=("em" "et" "tt" "mt") channelsarg="em,et,mt,tt"
+[[ "" == ${tags[1]} ]] && tags=("default") tagsarg="default"
 
-loginfo Eras: ${erasarg}  Channels: ${channelsarg}   Training Dataset Generation tag: ${tagsarg} Sourced: $sourced
+loginfo Eras: ${erasarg}  Channels: ${channelsarg} Tag: ${tagsarg}
 loginfo Following functions are provided: $( grep -E  '^function .*{' compareAll.sh | sed "s@function \(\w\+\).*@\1@" | tr "\n" " " )
 
 
@@ -203,25 +204,25 @@ function provideCluster() {
     if [[ ! $cluster =~ "etp"  ]]; then
         logandrun alogrsync $remote -rLPthz ${cmssw_src_local}/HiggsAnalysis/friend-tree-producer/data/ $remote:${cmssw_src}/HiggsAnalysis/friend-tree-producer/data
     fi
-}
+)
 
-function applyOnCluster(){
+function applyOnCluster()(
     set -e
     for tag in ${tags[@]}; do
         export tag
         for era in ${eras[@]}; do
             provideCluster $tag $era
             logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "submit" ${tag} $CONDITIONAL_TRAINING
-            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "rungc" ${tag} $CONDITIONAL_TRAINING
-            [ $? ] &&
+            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "rungc" ${tag} $CONDITIONAL_TRAINING
             logandrun ./batchrunNNApplication.sh ${era} ${channelsarg}  "collect" ${tag} $CONDITIONAL_TRAINING
-            [ $? ] && copyFromCluster
-            [ $? ] && logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "delete" ${tag} $CONDITIONAL_TRAINING || return 1
+            copyFromCluster
+            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "delete" ${tag} $CONDITIONAL_TRAINING || return 1
         done
     done
-}
+)
 
-function copyFromCluster() {
+function copyFromCluster()(
+    set -e
     nnscorefolder=$batch_out_local/${era}/nnscore_friends/${tag}
     [[ ! -d $nnscorefolder  ]] && mkdir -p $nnscorefolder
     if [[ $cluster == etp7 ]]; then
@@ -233,7 +234,7 @@ function copyFromCluster() {
         logerror Recieved NNScore Friend folder to small!
         return 1
     fi
-}
+)
 
 
 function genShapes() {
