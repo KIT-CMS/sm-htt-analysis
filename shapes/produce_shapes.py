@@ -295,9 +295,7 @@ def main(args):
     # Generate dict mapping processnames to proceses
     processes = {}
     for chname_, ch_ in selectedChannelsTuples:
-        pL_ = {"data_obs"} | signal_nicks | MCBkgDS[chname_]
-        if chname_ != "em":
-            pL_ = pL_  {"EMB"}
+        pL_ = {"data_obs"} | signal_nicks | MCBkgDS[chname_] | {"EMB"}
         processes[chname_] = {
             processname: Process(
                 processname,
@@ -308,6 +306,7 @@ def main(args):
                     friend_directory=friend_directory[chname_])) for processname in
             pL_}
 
+    # Create the jetFakes process for all channels but em
     for chname_, ch_ in selectedChannelsTuplesNoEM:
         if chname_ != "tt":
             est_ = NewFakeEstimationLT
@@ -323,6 +322,7 @@ def main(args):
                 friend_directory=friend_directory[chname_] +
                 [args.fake_factor_friend_directory]))
 
+    # QCD process setup
     for chname_, ch_ in selectedChannelsTuples:
         if chname_ != "tt":
             est_ = QCDEstimation_SStoOS_MTETEM
@@ -364,6 +364,7 @@ def main(args):
                     friend_directory=friend_directory[chname_],
                     qcd_weight=qcd_weight))
 
+    # If no processes are passed as an argument, generate all
     if args.processes in [None, []]:
         selectedProcesses = {pname_
                              for pname_ in processes[chname_]
@@ -375,9 +376,8 @@ def main(args):
                 if process not in selectedProcesses:
                     del processes[chname_][process]
 
-    # Variables and categories
+    # Read the NN output classes either from the training, or from the template
     binning = yaml.load(open(args.binning), Loader=yaml.Loader)
-
     def readclasses(channelname, selectedCategories):
         if args.tag == "" or args.tag is None or not os.path.isfile(
                 "output/ml/{}_{}_{}/dataset_config.yaml".format(args.era, channelname, args.tag)):
@@ -399,7 +399,9 @@ def main(args):
             return confdict["classes"]
 
     catsListD = {chname_: [] for chname_ in selectedChannels}
+
     # if not a gof test:Analysis shapes
+    # add the max nnscore as variables
     if args.gof_variable is None:
         for chname_, ch_ in selectedChannelsTuples:
             catsL_ = catsListD[chname_]
@@ -419,6 +421,7 @@ def main(args):
                         ch_,
                         Cuts(maxIdxCut),
                         variable=score))
+                ## if the net was trained on stage0 signals, add the stage1p1 categories cutbased, otherwise use classes give
                 if label in ["ggh", "qqh"]:
                     stxs = 100 if label == "ggh" else 200
                     for i_e, e in enumerate(binning["stxs_stage1p1"][label]):
