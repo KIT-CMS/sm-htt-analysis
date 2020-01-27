@@ -51,9 +51,9 @@ function run_procedure() {
 
     if [ ${CHANNEL} != 'em' ]
     then
-        FRIENDS="${SVFit_Friends} ${MELA_Friends} ${FF_Friends}"
+        FRIENDS="${SVFit_Friends} ${MELA_Friends} ${TauTriggers_Friends} ${FF_Friends}"
     else
-        FRIENDS="${SVFit_Friends} ${MELA_Friends}"
+        FRIENDS="${SVFit_Friends} ${MELA_Friends} ${TauTriggers_Friends}"
     fi
     # Write dataset config
      logandrun python ml/write_dataset_config.py \
