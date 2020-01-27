@@ -24,7 +24,6 @@ ARTUS_OUTPUTS_2017="$basedir/2017/ntuples/"
 SVFit_Friends_2017="$basedir/2017/friends/SVFit/"
 MELA_Friends_2017="$basedir/2017/friends/MELA/"
 FF_Friends_2017="$basedir/2017/friends/FakeFactors/"
-# FF_Friends_2017="/ceph/htautau/deeptau_eoy/2017/friends/ff_update/FakeFactors_workdir/FakeFactors_collected/"
 TauTriggers_Friends_2017="$basedir/2017/friends/TauTriggers/"
 
 
@@ -78,7 +77,7 @@ ARTUS_FRIENDS_EM="$NNScore_Friends $SVFit_Friends $MELA_Friends"
 ARTUS_FRIENDS_ET="$NNScore_Friends $SVFit_Friends $MELA_Friends $TauTriggers_Friends"
 ARTUS_FRIENDS_MT="$NNScore_Friends $SVFit_Friends $MELA_Friends $TauTriggers_Friends"
 ARTUS_FRIENDS_TT="$NNScore_Friends $SVFit_Friends $MELA_Friends $TauTriggers_Friends"
-ARTUS_FRIENDS="$NNScore_Friends $SVFit_Friends $MELA_Friends $TauTriggers_Friends"
+ARTUS_FRIENDS="$NNScore_Friends $SVFit_Friends $MELA_Friends"
 ARTUS_FRIENDS_FAKE_FACTOR=$FF_Friends
 
 ### for "backwards compability". Should be removed at some point. DO not use these variables
