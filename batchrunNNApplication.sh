@@ -63,13 +63,12 @@ export submitlock=$workdir/$era-$2.submit.lock
 export collectlock=$workdir/$era-$2.collect.lock
 export jm=$cmssw_src/HiggsAnalysis/friend-tree-producer/scripts/job_management.py
 
-set -x
 echo "run this on $cluster"
 tmp=$( mktemp )
 cat << eof > $tmp
-set -e
 hostname
 source /cvmfs/cms.cern.ch/cmsset_default.sh
+set -e
 pushd $cmssw_src
 eval \`scramv1 runtime -sh\`
 export PATH=\$PATH:\$PWD/grid-control:\$PWD/grid-control/scripts
@@ -144,8 +143,8 @@ fi
 if [[ "delete" == $modus ]]; then
 rm -r $workdir
 fi
-
 eof
+
 
 if [[ $cluster == "etp7" ]]; then
     cat $tmp | bash
