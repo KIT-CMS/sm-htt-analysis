@@ -135,7 +135,6 @@ def parse_arguments():
 
 def main(args):
     # Container for all distributions to be drawn
-    logger.info(str(args))
     logger.info("Set up shape variations.")
     if len(args.categories) > 0 and len(args.processes) > 0:
         path = "output/shapes/{TAG}/{ERA}/{CHANNEL}".format(
@@ -389,7 +388,7 @@ def main(args):
             confFileName = "output/ml/{}_{}_{}/dataset_config.yaml".format(
                 args.era, channelname, args.tag)
         logger.debug("Parse classes from " + confFileName)
-        confdict = yaml.load(open(confFileName, "r"))
+        confdict = yaml.load(open(confFileName, "r"),Loader=yaml.Loader)
         logger.debug(
             "Classes for {} loaded: {}".format(
                 channelname, str(
