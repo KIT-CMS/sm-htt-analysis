@@ -1651,6 +1651,47 @@ def main(args):
                     process=em_processes[process_nick],
                     channel=em,
                     era=era)
+    
+    # VBF uncertainties
+    qqh_variations = []
+    for unc in ["THU_qqH_25", "THU_qqH_JET01", "THU_qqH_Mjj1000", "THU_qqH_Mjj120",
+                "THU_qqH_Mjj1500", "THU_qqH_Mjj350", "THU_qqH_Mjj60", "THU_qqH_Mjj700",
+                "THU_qqH_PTH200", "THU_qqH_TOT",
+    ]:
+        qqh_variations.append(
+            AddWeight(unc, "{}_weight".format(unc),
+                      Weight("({})".format(unc), "{}_weight".format(unc)),
+                      "Up"))
+        qqh_variations.append(
+            AddWeight(unc, "{}_weight".format(unc),
+                      Weight("(2.0-{})".format(unc), "{}_weight".format(unc)),
+                      "Down"))
+    for variation in qqh_variations:
+        for process_nick in [nick for nick in signal_nicks if "qqH" in nick and "qqHWW" not in nick]:
+            if "et" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=et_processes[process_nick],
+                    channel=et,
+                    era=era)
+            if "mt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=mt_processes[process_nick],
+                    channel=mt,
+                    era=era)
+            if "tt" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=tt_processes[process_nick],
+                    channel=tt,
+                    era=era)
+            if "em" in [args.gof_channel] + args.channels:
+                systematics.add_systematic_variation(
+                    variation=variation,
+                    process=em_processes[process_nick],
+                    channel=em,
+                    era=era)
 
     # Produce histograms
     logger.info("Start producing shapes.")
