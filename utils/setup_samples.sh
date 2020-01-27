@@ -23,7 +23,7 @@ ARTUS_OUTPUTS_2017="$basedir/2017/ntuples/"
 #NNScore_Friends_2017="$basedir/2017/friends/NNScore/"
 SVFit_Friends_2017="$basedir/2017/friends/SVFit/"
 MELA_Friends_2017="$basedir/2017/friends/MELA/"
-FF_Friends_2017="$basedir/2017/friends/FakeFactors/"
+FF_Friends_2017="$basedir/2017/friends/FakeFactors_pTcorrected/"
 TauTriggers_Friends_2017="$basedir/2017/friends/TauTriggers/"
 
 
