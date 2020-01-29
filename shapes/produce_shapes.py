@@ -230,41 +230,7 @@ def main(args):
     selectedChannelsTuplesNoEM = {
         c_: smChannelsDict[c_] for c_ in selectedChannels if c_ != "em"}.items()
 
-    pnameToEstD = {
-        "data_obs": DataEstimation,
-        "EMB": ZTTEmbeddedEstimation,
-        "TTT": TTTEstimation,
-        "VVT": VVTEstimation,
-        "ZTT": ZTTEstimation,
-        "TTL": TTLEstimation,
-        "VVL": VVLEstimation,
-        "ZL": ZLEstimation,
-        "W": WEstimation,
-        "VVJ": VVJEstimation,
-        "TTJ": TTJEstimation,
-        "ZJ": ZJEstimation,
-        "VH125": VHEstimation,
-        "WH125": WHEstimation,
-        "ZH125": ZHEstimation,
-        "ttH125": ttHEstimation,
-        "ggHWW125": ggHWWEstimation,
-        "qqHWW125": qqHWWEstimation,
-    }
-
-    pnameToEstD.update(
-        {ggH_htxs: lambda era, directory, channel,
-         friend_directory:
-         ggHEstimation(
-             ggH_htxs, era, directory, channel,
-             friend_directory=friend_directory)
-         for ggH_htxs in ggHEstimation.htxs_dict})
-    pnameToEstD.update(
-        {qqH_htxs: lambda era, directory, channel,
-         friend_directory:
-         qqHEstimation(
-             qqH_htxs, era, directory, channel,
-             friend_directory=friend_directory)
-         for qqH_htxs in qqHEstimation.htxs_dict})
+    # Define Process Nicks
     # define sets to select the correct processes
     trueTauBkgS = {"ZTT", "TTT", "VVT"}
     leptonTauBkgS = {"ZL", "TTL", "VVL"}
@@ -290,6 +256,44 @@ def main(args):
             qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict} | ww_nicks
     else:
         signal_nicks = {"ggHWW125", "qqHWW125"} | ww_nicks
+
+    pnameToEstD = {
+        "data_obs": DataEstimation,
+        "EMB": ZTTEmbeddedEstimation,
+        "TTT": TTTEstimation,
+        "VVT": VVTEstimation,
+        "ZTT": ZTTEstimation,
+        "TTL": TTLEstimation,
+        "VVL": VVLEstimation,
+        "ZL": ZLEstimation,
+        "W": WEstimation,
+        "VVJ": VVJEstimation,
+        "TTJ": TTJEstimation,
+        "ZJ": ZJEstimation,
+        "VH125": VHEstimation,
+        "WH125": WHEstimation,
+        "ZH125": ZHEstimation,
+        "ttH125": ttHEstimation,
+        "ggHWW125": ggHWWEstimation,
+        "qqHWW125": qqHWWEstimation,
+    }
+
+    # provide lambda functions, as the signal estimation methods need an
+    # additional argument to determine the stxs class
+    pnameToEstD.update(
+        {ggH_htxs: lambda era, directory, channel,
+         friend_directory, ggH_htxs=ggH_htxs:
+         ggHEstimation(
+             ggH_htxs, era, directory, channel,
+             friend_directory=friend_directory)
+         for ggH_htxs in ggHEstimation.htxs_dict})
+    pnameToEstD.update(
+        {qqH_htxs: lambda era, directory, channel,
+         friend_directory, qqH_htxs=qqH_htxs:
+         qqHEstimation(
+             qqH_htxs, era, directory, channel,
+             friend_directory=friend_directory)
+         for qqH_htxs in qqHEstimation.htxs_dict})
 
     # Generate dict mapping processnames to proceses
     processes = {}
@@ -326,8 +330,10 @@ def main(args):
         if chname_ != "tt":
             est_ = QCDEstimation_SStoOS_MTETEM
         else:
-            if args.era != "2016": est_ = QCDEstimation_ABCD_TT_ISO2
-            else: est_ = QCDEstimationTT
+            if args.era != "2016":
+                est_ = QCDEstimation_ABCD_TT_ISO2
+            else:
+                est_ = QCDEstimationTT
 
         qcdpS = {"EMB"} | leptonTauBkgS | jetFakeBkgD[chname_]
 
@@ -378,6 +384,7 @@ def main(args):
 
     # Read the NN output classes either from the training, or from the template
     binning = yaml.load(open(args.binning), Loader=yaml.Loader)
+
     def readclasses(channelname, selectedCategories):
         if args.tag == "" or args.tag is None or not os.path.isfile(
                 "output/ml/{}_{}_{}/dataset_config.yaml".format(args.era, channelname, args.tag)):
@@ -388,7 +395,7 @@ def main(args):
             confFileName = "output/ml/{}_{}_{}/dataset_config.yaml".format(
                 args.era, channelname, args.tag)
         logger.debug("Parse classes from " + confFileName)
-        confdict = yaml.load(open(confFileName, "r"),Loader=yaml.Loader)
+        confdict = yaml.load(open(confFileName, "r"), Loader=yaml.Loader)
         logger.debug(
             "Classes for {} loaded: {}".format(
                 channelname, str(
@@ -421,7 +428,8 @@ def main(args):
                         ch_,
                         Cuts(maxIdxCut),
                         variable=score))
-                ## if the net was trained on stage0 signals, add the stage1p1 categories cutbased, otherwise use classes give
+                # if the net was trained on stage0 signals, add the stage1p1
+                # categories cutbased, otherwise use classes give
                 if label in ["ggh", "qqh"]:
                     stxs = 100 if label == "ggh" else 200
                     for i_e, e in enumerate(binning["stxs_stage1p1"][label]):
@@ -435,6 +443,7 @@ def main(args):
                                 Cuts(maxIdxCut,
                                      Cut(e, "stxs_stage1p1_cut")),
                                 variable=score))
+
     # if gof test
     else:
         # Goodness of fit shapes
@@ -517,7 +526,7 @@ def main(args):
                         weightstr = "(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
                     tau_id_variations.append(
                         ReplaceWeight(
-                            histname_.format(bindown, binup,args.era),
+                            histname_.format(bindown, binup, args.era),
                             "taubyIsoIdWeight",
                             Weight(
                                 weightstr.format(
@@ -557,7 +566,7 @@ def main(args):
                     tau_id_variations.append(
                         ReplaceWeight(
                             histname_.format(
-                                dm=decaymode,era=args.era),
+                                dm=decaymode, era=args.era),
                             "taubyIsoIdWeight",
                             Weight(
                                 weightstr.format(
