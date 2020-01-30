@@ -62,10 +62,14 @@ function recommendCPUs() {
     ## recommeds % of free cpus
     avUsage=$(grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage}')
     ncpus=$(($(grep 'cpu' /proc/stat | wc -l)-1))
-    echo $avUsage $ncpus | awk '{print int((1-$1/100)*$2*.5)}'
+    # based on percentare of currently used cpus
+    #echo $avUsage $ncpus | awk '{print int((1-$1/100)*$2*.5)}'
+    # fixed to 25%
+    echo $ncpus | awk '{print int($1/4)}'
 }
 
-
+# colored output for viewing logs
+LESS=-R
 function loginfo {
     echo -e "\e[46m[INFO]\e[0m" $( date +"%y-%m-%d %R" ): $@ | tee -a $( pwd )/output/log/logandrun/event.log
 }
@@ -89,7 +93,7 @@ function logandrun() {
     # evaluate the current date in seconds as the start date
     start=`date +%s`
     # execute the command and log it
-    $@ | tee -a $logfile
+    $@ 2>&1 |  tee -a $logfile
     # capture the return code ( without  pipefail this would be the exit code of tee )
     return_code=$?
     end=`date +%s`
@@ -110,6 +114,10 @@ function logandrun() {
     fi
     return $return_code
 }
+function logclean () {
+    find output/log -type f -iname "*.log" -delete
+}
+
 # this function makes sure all the output directories exit
 function ensureoutdirs() {
     [[ -d output ]] || mkdir output
