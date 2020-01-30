@@ -249,7 +249,6 @@ def main(args):
 
     # defines the signal sets
     ww_nicks = {"ggHWW125", "qqHWW125"}
-    else
     # tmp fix, remove for eoy ntuples
     if args.era not in ["2016","2017"]:  ww_nicks = set()
 
@@ -567,8 +566,12 @@ def main(args):
     #             ReplaceWeight("CMS_eff_t_dm{dm}_Run2018".format(dm=decaymode), "taubyIsoIdWeight",
     # Weight("(((decayMode_1=={dm})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(dm=decaymode),
     # "taubyIsoIdWeight"), "Down"))
+    dm11 ={
+        "2016": {"Up": 1.0347885, "Down": 0.75489248, "Nom": 0.89484048},
+        "2017": {"Up": 0.72552593, "Down": 0.55546193, "Nom": 0.64049393},
+        "2018": {"Up": 1.1324026, "Down": 0.80605859, "Nom": 0.96923059},
+    }
     for chname_ in selectedChannels & {"tt"}:
-        dm11 = {"Up": 1.1324026, "Down": 0.80605859, "Nom": 0.96923059}
         for histname_, pS_ in {
             "CMS_eff_t_dm{dm}_Run{era}": signal_nicks | {"EMB", "VVL", "TTL"} |
                 trueTauBkgS, "CMS_eff_emb_t_dm{dm}_Run{era}": {"EMB"}}.items():
@@ -588,8 +591,8 @@ def main(args):
                             Weight(
                                 weightstr.format(
                                     dm=decaymode,
-                                    dm11_nom=dm11["Nom"],
-                                    dm11shift=dm11[shift_direction],
+                                    dm11_nom=dm11[args.era]["Nom"],
+                                    dm11shift=dm11[args.era][shift_direction],
                                     shift_direction=shift_direction),
                                 "taubyIsoIdWeight"),
                             shift_direction))
