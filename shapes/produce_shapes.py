@@ -248,7 +248,11 @@ def main(args):
         for cn_ in selectedChannels}
 
     # defines the signal sets
-    ww_nicks = set()  # {"ggHWW125", "qqHWW125"}
+    ww_nicks = {"ggHWW125", "qqHWW125"}
+    else
+    # tmp fix, remove for eoy ntuples
+    if args.era not in ["2016","2017"]:  ww_nicks = set()
+
     if args.gof_variable is None:
         signal_nicks = {
             "WH125", "ZH125", "VH125", "ttH125"} | {
@@ -488,6 +492,20 @@ def main(args):
         for chname_, _ in selectedChannelsTuples
     }
 
+    if args.era in ["2016", "2017"]:
+        # Prefiring weights
+        prefiring_variaitons = [
+            ReplaceWeight(
+                "CMS_prefiring", "prefireWeight", Weight(
+                    "prefiringweightup", "prefireWeight"), "Up"), ReplaceWeight(
+                "CMS_prefiring", "prefireWeight", Weight(
+                    "prefiringweightdown", "prefireWeight"), "Down"), ]
+        for variation_ in prefiring_variaitons:
+            for process_nick in selectedProcesses & (
+                    MCBkgDS[chname_] | signal_nicks):
+                for chname_, _ in selectedChannelsTuplesNoEM:
+                    variationsToAdd[chname_][process_nick].append(variation_)
+
     # MC tau energy scale
     tau_es_3prong_variations = create_systematic_variations(
         "CMS_scale_mc_t_3prong_Run{era}".format(era=args.era),
@@ -509,7 +527,6 @@ def main(args):
     # Tau ID
     # in et and mt one nuisance per pT bin
     # [30., 35., 40., 500., 1000. ,$\le$ 1000.]
-
     if len(selectedChannels & {"et", "mt"}) > 0:
         pt = [30, 35, 40, 500, 1000, "inf"]
         for histname_, pS_ in {
@@ -678,6 +695,8 @@ def main(args):
                 pS_ = signal_nicks | {"ZTT", "ZL", "ZJ", "W"}
             else:
                 pS_ = signal_nicks | {"ZTT", "ZL", "W"}
+            # tmp fix, remove for eoy ntuples
+            if args.era == "2016": pS_={p_ for p_ in pS_ if "ttH125" not in p_ }
             for process_nick in selectedProcesses & pS_:
                 variationsToAdd[chname_][process_nick].append(variation_)
 
@@ -755,129 +774,53 @@ def main(args):
                 variationsToAdd["mt"][process_nick].append(variation_)
 
     # lepton trigger efficiency
-    lep_trigger_eff_variations_mt_MC = []
-    lep_trigger_eff_variations_mt_MC.append(
-        AddWeight(
-            "CMS_eff_trigger_mt_Run{era}".format(era=args.era),
-            "trg_mt_eff_weight",
-            Weight("(1.0*(pt_1<=25)+1.02*(pt_1>25))",
-                   "trg_mt_eff_weight"), "Up"))
-    lep_trigger_eff_variations_mt_MC.append(
-        AddWeight(
-            "CMS_eff_trigger_mt_Run{era}".format(era=args.era),
-            "trg_mt_eff_weight",
-            Weight("(1.0*(pt_1<=25)+0.98*(pt_1>25))",
-                   "trg_mt_eff_weight"), "Down"))
-    lep_trigger_eff_variations_mt_MC.append(
-        AddWeight(
-            "CMS_eff_xtrigger_mt_Run{era}".format(era=args.era),
-            "xtrg_mt_eff_weight",
-            Weight("(1.054*(pt_1<=25)+1.0*(pt_1>25))",
-                   "xtrg_mt_eff_weight"), "Up"))
-    lep_trigger_eff_variations_mt_MC.append(
-        AddWeight(
-            "CMS_eff_xtrigger_mt_Run{era}".format(era=args.era),
-            "xtrg_mt_eff_weight",
-            Weight("(0.946*(pt_1<=25)+1.0*(pt_1>25))",
-                   "xtrg_mt_eff_weight"), "Down"))
+    lteffCutD = {
+        "mt": "25",
+        "et": "28",
+    }
+    for chname_ in selectedChannels & {"mt", "et"}:
+        if chname_ == "et" and args.era not in ["2017", "2018"]:
+            continue
+        for flag, pS_ in {
+            "_emb_": {"EMB"},
+                "_": signal_nicks | MCBkgDS[chname_]}.items():
+            lep_trigger_eff_variations = []
+            lep_trigger_eff_variations.append(
+                AddWeight(
+                    "CMS_eff_trigger{embflag}{ch}_Run{era}".format(
+                        embflag=flag, ch=chname_, era=args.era), "trg_{ch}_eff_weight".format(
+                        ch=chname_), Weight(
+                        "(1.0*(pt_1<={ptcut})+1.02*(pt_1>{ptcut}))".format(
+                            ptcut=lteffCutD[chname_]), "trg_{ch}_eff_weight".format(
+                            ch=chname_)), "Up"))
+            lep_trigger_eff_variations.append(
+                AddWeight(
+                    "CMS_eff_trigger{embflag}{ch}_Run{era}".format(
+                        embflag=flag, ch=chname_, era=args.era), "trg_{ch}_eff_weight".format(
+                        ch=chname_), Weight(
+                        "(1.0*(pt_1<={ptcut})+0.98*(pt_1>{ptcut}))".format(
+                            ptcut=lteffCutD[chname_]), "trg_{ch}_eff_weight".format(
+                            ch=chname_)), "Down"))
+            lep_trigger_eff_variations.append(
+                AddWeight(
+                    "CMS_eff_xtrigger{embflag}{ch}_Run{era}".format(
+                        embflag=flag, ch=chname_, era=args.era), "xtrg_{ch}_eff_weight".format(
+                        ch=chname_), Weight(
+                        "(1.054*(pt_1<={ptcut})+1.0*(pt_1>{ptcut}))".format(
+                            ptcut=lteffCutD[chname_]), "xtrg_{ch}_eff_weight".format(
+                            ch=chname_)), "Up"))
+            lep_trigger_eff_variations.append(
+                AddWeight(
+                    "CMS_eff_xtrigger{embflag}{ch}_Run{era}".format(
+                        embflag=flag, ch=chname_, era=args.era), "xtrg_{ch}_eff_weight".format(
+                        ch=chname_), Weight(
+                        "(0.946*(pt_1<={ptcut})+1.0*(pt_1>{ptcut}))".format(
+                            ptcut=lteffCutD[chname_]), "xtrg_{ch}_eff_weight".format(
+                            ch=chname_)), "Down"))
+            for variation_ in lep_trigger_eff_variations:
+                for process_nick in selectedProcesses & pS_:
+                    variationsToAdd[chname_][process_nick].append(variation_)
 
-    for variation_ in lep_trigger_eff_variations_mt_MC:
-        for chname_ in selectedChannels & {"mt"}:
-            for process_nick in selectedProcesses & (
-                    signal_nicks | MCBkgDS[chname_]):
-                variationsToAdd[chname_][process_nick].append(variation_)
-
-    lep_trigger_eff_variations_mt_EMB = []
-    lep_trigger_eff_variations_mt_EMB.append(
-        AddWeight(
-            "CMS_eff_trigger_emb_mt_Run{era}".format(era=args.era),
-            "trg_mt_eff_weight",
-            Weight("(1.0*(pt_1<=25)+1.02*(pt_1>25))",
-                   "trg_mt_eff_weight"), "Up"))
-    lep_trigger_eff_variations_mt_EMB.append(
-        AddWeight(
-            "CMS_eff_trigger_emb_mt_Run{era}".format(era=args.era),
-            "trg_mt_eff_weight",
-            Weight("(1.0*(pt_1<=25)+0.98*(pt_1>25))",
-                   "trg_mt_eff_weight"), "Down"))
-    lep_trigger_eff_variations_mt_EMB.append(
-        AddWeight(
-            "CMS_eff_xtrigger_emb_mt_Run{era}".format(era=args.era),
-            "xtrg_mt_eff_weight",
-            Weight("(1.054*(pt_1<=25)+1.0*(pt_1>25))",
-                   "xtrg_mt_eff_weight"), "Up"))
-    lep_trigger_eff_variations_mt_EMB.append(
-        AddWeight(
-            "CMS_eff_xtrigger_emb_mt_Run{era}".format(era=args.era),
-            "xtrg_mt_eff_weight",
-            Weight("(0.946*(pt_1<=25)+1.0*(pt_1>25))",
-                   "xtrg_mt_eff_weight"), "Down"))
-
-    for variation_ in lep_trigger_eff_variations_mt_EMB:
-        for process_nick in selectedProcesses & {"EMB"}:
-            for chname_ in selectedChannels & {"mt"}:
-                variationsToAdd[chname_][process_nick].append(variation_)
-
-    lep_trigger_eff_variations_et_MC = []
-    lep_trigger_eff_variations_et_MC.append(
-        AddWeight(
-            "CMS_eff_trigger_et_Run{era}".format(era=args.era),
-            "trg_et_eff_weight",
-            Weight("(1.0*(pt_1<=28)+1.02*(pt_1>28))",
-                   "trg_et_eff_weight"), "Up"))
-    lep_trigger_eff_variations_et_MC.append(
-        AddWeight(
-            "CMS_eff_trigger_et_Run{era}".format(era=args.era),
-            "trg_et_eff_weight",
-            Weight("(1.0*(pt_1<=28)+0.98*(pt_1>28))",
-                   "trg_et_eff_weight"), "Down"))
-    lep_trigger_eff_variations_et_MC.append(
-        AddWeight(
-            "CMS_eff_xtrigger_et_Run{era}".format(era=args.era),
-            "xtrg_et_eff_weight",
-            Weight("(1.054*(pt_1<=28)+1.0*(pt_1>28))",
-                   "xtrg_et_eff_weight"), "Up"))
-    lep_trigger_eff_variations_et_MC.append(
-        AddWeight(
-            "CMS_eff_xtrigger_et_Run{era}".format(era=args.era),
-            "xtrg_et_eff_weight",
-            Weight("(0.946*(pt_1<=28)+1.0*(pt_1>28))",
-                   "xtrg_et_eff_weight"), "Down"))
-    for variation_ in lep_trigger_eff_variations_et_MC:
-        for chname_ in selectedChannels & {"et"}:
-            for process_nick in selectedProcesses & (
-                    signal_nicks | MCBkgDS[chname_]):
-                variationsToAdd[chname_][process_nick].append(variation_)
-
-    lep_trigger_eff_variations_et_EMB = []
-    lep_trigger_eff_variations_et_EMB.append(
-        AddWeight(
-            "CMS_eff_trigger_emb_et_Run{era}".format(era=args.era),
-            "trg_et_eff_weight",
-            Weight("(1.0*(pt_1<=28)+1.02*(pt_1>28))",
-                   "trg_et_eff_weight"), "Up"))
-    lep_trigger_eff_variations_et_EMB.append(
-        AddWeight(
-            "CMS_eff_trigger_emb_et_Run{era}".format(era=args.era),
-            "trg_et_eff_weight",
-            Weight("(1.0*(pt_1<=28)+0.98*(pt_1>28))",
-                   "trg_et_eff_weight"), "Down"))
-    lep_trigger_eff_variations_et_EMB.append(
-        AddWeight(
-            "CMS_eff_xtrigger_emb_et_Run{era}".format(era=args.era),
-            "xtrg_et_eff_weight",
-            Weight("(1.054*(pt_1<=28)+1.0*(pt_1>28))",
-                   "xtrg_et_eff_weight"), "Up"))
-    lep_trigger_eff_variations_et_EMB.append(
-        AddWeight(
-            "CMS_eff_xtrigger_emb_et_Run{era}".format(era=args.era),
-            "xtrg_et_eff_weight",
-            Weight("(0.946*(pt_1<=28)+1.0*(pt_1>28))",
-                   "xtrg_et_eff_weight"), "Down"))
-    for variation_ in lep_trigger_eff_variations_et_EMB:
-        for chname_ in selectedChannels & {"et"}:
-            for process_nick in selectedProcesses & {"EMB"}:
-                variationsToAdd[chname_][process_nick].append(variation_)
     # Zll reweighting !!! replaced by log normal uncertainties:
     # CMS_eFakeTau_Run2018 16%; CMS_mFakeTau_Run2018 26%
 
@@ -984,15 +927,6 @@ def main(args):
     # will be added/subtracted to ZTT shape to use as systematic
 
     if "EMB" in selectedProcesses:
-        tttautau_processD = {
-            chname_: Process(
-                "TTT",
-                TTTEstimation(
-                    era,
-                    directory,
-                    ch_,
-                    friend_directory=friend_directory[chname_])) for chname_,
-            ch_ in selectedChannelsTuples}
         for chname_, ch_ in selectedChannelsTuples:
             for shift_direction, shift_ in {"Down": -0.1, "Up": 0.1}.items():
                 p_ = Process(
@@ -1000,7 +934,7 @@ def main(args):
                     AddHistogramEstimationMethod(
                         "AddHistogram", "nominal", era, directory, ch_,
                         [processes[chname_]["EMB"],
-                         tttautau_processD[chname_]],
+                        processes[chname_]["TTT"]],
                         [1.0, shift_]))
                 for cat_ in catsListD[chname_]:
                     systematics.add(
