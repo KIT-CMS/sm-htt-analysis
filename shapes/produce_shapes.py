@@ -132,7 +132,6 @@ def parse_arguments():
                         help="Do not produce the systematic variations.")
     return parser.parse_args()
 
-
 def main(args):
     # Container for all distributions to be drawn
     logger.info("Set up shape variations.")
@@ -403,10 +402,15 @@ def main(args):
             "Classes for {} loaded: {}".format(
                 channelname, str(
                     confdict["classes"])))
+        classdict = {}
         if len(selectedCategories) > 0:
-            return set(confdict["classes"]).intersection(selectedCategories)
+            for nnclass in set(confdict["classes"]).intersection(selectedCategories):
+                classdict[nnclass] = confdict["classes"].index(nnclass)
+            return classdict
         else:
-            return confdict["classes"]
+            for nnclass in set(confdict["classes"]):
+                classdict[nnclass] = confdict["classes"].index(nnclass)
+            return classdict
 
     catsListD = {chname_: [] for chname_ in selectedChannels}
 
@@ -415,15 +419,15 @@ def main(args):
     if args.gof_variable is None:
         for chname_, ch_ in selectedChannelsTuples:
             catsL_ = catsListD[chname_]
-            for i, label in enumerate(readclasses(
-                    chname_, selectedCategories)):
+            classdict = readclasses(chname_, selectedCategories)
+            for label in classdict.keys():
                 score = Variable(
                     "{}_max_score".format(chname_),
                     VariableBinning(binning["analysis"][chname_][label]))
                 maxIdxCut = Cut(
                     "{channel}_max_index=={index}".format(
                         channel=chname_,
-                        index=i),
+                        index=classdict[label]),
                     "exclusive_score")
                 catsL_.append(
                     Category(
