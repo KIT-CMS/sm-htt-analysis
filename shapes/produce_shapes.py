@@ -14,6 +14,7 @@ from shape_producer.categories import Category
 from shape_producer.systematics import Systematics, Systematic
 from shape_producer.cutstring import Cut, Cuts, Weight
 import ROOT
+
 # disable ROOT internal argument parser
 ROOT.PyConfig.IgnoreCommandLineOptions = True
 ROOT.gErrorIgnoreLevel = ROOT.kError
@@ -137,7 +138,7 @@ def main(args):
     # remote job in this case
     if len(args.categories) > 0 and len(args.processes) > 0:
         systematics = Systematics(
-            "shapes.root",
+            "shape.root",
             num_threads=args.num_threads,
             skip_systematic_variations=args.skip_systematic_variations)
     else:
