@@ -72,10 +72,11 @@ def buildprocesses(channelname):
          for qqH_htxs in qqHEstimation.htxs_dict} | ww_nicks
     background_nicks = set(trueTauBkgS | leptonTauBkgS
                            | jetFakeBkgD[channelname] | {"EMB"} | {"FAKES"}
-                           | {"QCD"}) | {"DATA"}
+                           | {"QCD"}) | {"data_obs"}
     processes = [[signal_nick] for signal_nick in signal_nicks]
     processes.append(list(background_nicks))
-    return processes
+    # this way, background shapes are processed first
+    return processes[::-1]
 
 
 def write_gc(era, channel, nnclasses, processes, tag, workdir):
