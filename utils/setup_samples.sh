@@ -15,7 +15,7 @@ ARTUS_OUTPUTS_2016="$basedir/2016/ntuples/"
 #NNScore_Friends_2016="$basedir/2016/friends/NNScore/"
 SVFit_Friends_2016="$basedir/2016/friends/SVFit/"
 MELA_Friends_2016="$basedir/2016/friends/MELA/"
-FF_Friends_2016="/ceph/htautau/deeptau_eoy/2016/friends/ff_update/all_shifts/FakeFactors_workdir/FakeFactors_collected/"
+FF_Friends_2016="/ceph/htautau/deeptau_eoy/2016/friends/FakeFactors_mediumTauID/"
 TauTriggers_Friends_2016="$basedir/2016/friends/TauTriggers/"
 
 # Samples Run2017
@@ -23,7 +23,7 @@ ARTUS_OUTPUTS_2017="$basedir/2017/ntuples/"
 #NNScore_Friends_2017="$basedir/2017/friends/NNScore/"
 SVFit_Friends_2017="$basedir/2017/friends/SVFit/"
 MELA_Friends_2017="$basedir/2017/friends/MELA/"
-FF_Friends_2017="/ceph/htautau/deeptau_eoy/2017/friends/ff_update/v3/all_shifts/FakeFactors_workdir/FakeFactors_collected/"
+FF_Friends_2017="/ceph/htautau/deeptau_eoy/2017/friends/FakeFactors_mediumTauID/"
 TauTriggers_Friends_2017="$basedir/2017/friends/TauTriggers/"
 
 
@@ -32,7 +32,7 @@ ARTUS_OUTPUTS_2018="$basedir/2018/ntuples/"
 #NNScore_Friends_2018="$basedir/2018/friends/NNScore/"
 SVFit_Friends_2018="$basedir/2018/friends/SVFit/"
 MELA_Friends_2018="$basedir/2018/friends/MELA/"
-FF_Friends_2018="$basedir/2018/friends/FakeFactors/"
+FF_Friends_2018="$basedir/2018/friends/FakeFactors_mediumTauID/"
 TauTriggers_Friends_2018="$basedir/2018/friends/TauTriggers/"
 
 
