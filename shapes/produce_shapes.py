@@ -506,7 +506,7 @@ def main(args):
         for variation_ in prefiring_variaitons:
             for process_nick in selectedProcesses & (
                     MCBkgDS[chname_] | signal_nicks):
-                for chname_, _ in selectedChannelsTuplesNoEM:
+                for chname_, _ in selectedChannelsTuples:
                     variationsToAdd[chname_][process_nick].append(variation_)
 
     # MC tau energy scale
@@ -781,10 +781,16 @@ def main(args):
                 variationsToAdd["mt"][process_nick].append(variation_)
 
     # lepton trigger efficiency
-    lteffCutD = {
-        "mt": "25",
-        "et": "28",
-    }
+    if args.era == "2017":
+        lteffCutD = {
+            "mt": "25",
+            "et": "28",
+        }
+    elif args.era == "2016":
+        lteffCutD = {
+            "mt": "23",
+            "et": "28",
+        }
     for chname_ in selectedChannels & {"mt", "et"}:
         if chname_ == "et" and args.era not in ["2017", "2018"]:
             continue
