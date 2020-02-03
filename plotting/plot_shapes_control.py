@@ -79,15 +79,15 @@ def main(info):
     variable = info["variable"]
     channel = info["channel"]
     channel_dict = {
-        "ee": "ee",
-        "em": "e#mu",
-        "et": "e#tau_{h}",
+        "ee": "#font[42]{#scale[0.85]{ee}}",
+        "em": "#scale[0.85]{e}#mu",
+        "et": "#font[42]{#scale[0.85]{e}}#tau_{#font[42]{h}}",
         "mm": "#mu#mu",
-        "mt": "#mu#tau_{h}",
-        "tt": "#tau_{h}#tau_{h}"
+        "mt": "#mu#tau_{#font[42]{h}}",
+        "tt": "#tau_{#font[42]{h}}#tau_{#font[42]{h}}"
     }
     if args.linear == True:
-        split_value = 0
+        split_value = 0.1
     else:
         if args.normalize_by_bin_width:
             split_value = 10001
@@ -97,11 +97,11 @@ def main(info):
     split_dict = {c: split_value for c in ["et", "mt", "tt", "em", "mm"]}
 
     bkg_processes = [
-        "VVL", "TTL", "ZL", "jetFakesEMB", "EMB"
+        "VVL", "TTL", "ZL", "jetFakes", "EMB"
     ]
     if not args.fake_factor and args.embedding:
         bkg_processes = [
-            "QCDEMB", "VVL", "VVJ", "W", "TTL", "TTJ", "ZJ", "ZL", "EMB"
+            "QCD", "VVL", "VVJ", "W", "TTL", "TTJ", "ZJ", "ZL", "EMB"
         ]
     if not args.embedding and args.fake_factor:
         bkg_processes = [
@@ -128,7 +128,7 @@ def main(info):
     category = "_".join([channel, variable])
     if args.category_postfix is not None:
         category += "_%s"%args.category_postfix
-    rootfile = rootfile_parser.Rootfile_parser(args.input.replace(".root","_"+channel+"_"+args.era+".root"), "smhtt", era, variable, "125")
+    rootfile = rootfile_parser.Rootfile_parser(args.input, "smhtt", era, variable, "125")
     bkg_processes = [b for b in all_bkg_processes]
     if "em" in channel:
         if not args.embedding:
@@ -137,7 +137,7 @@ def main(info):
             ]
         if args.embedding:
             bkg_processes = [
-                "QCDEMB", "VVL", "W", "TTL", "ZL", "EMB"
+                "QCD", "VVL", "W", "TTL", "ZL", "EMB"
             ]
 
     if "mm" in channel:
@@ -173,7 +173,7 @@ def main(info):
         # add VH, ttH & HWW to total bkg histogram
         total_bkg.Add(rootfile.get(channel, category, "VH125"))
         total_bkg.Add(rootfile.get(channel, category, "ttH125"))
-        total_bkg.Add(rootfile.get(channel, category, "HWW"))
+        # total_bkg.Add(rootfile.get(channel, category, "HWW"))
 
     plot.add_hist(total_bkg, "total_bkg")
     plot.setGraphStyle(
@@ -197,35 +197,29 @@ def main(info):
             qqH = rootfile.get(channel, category, "qqH125").Clone()
             VH = rootfile.get(channel, category, "VH125").Clone()
             ttH = rootfile.get(channel, category, "ttH125").Clone()
-            HWW = rootfile.get(channel, category, "HWW").Clone()
+            #HWW = rootfile.get(channel, category, "HWW").Clone()
             if ggH.Integral() > 0:
-                ggH_scale = 0.5*data_norm/ggH.Integral()
+                ggH_scale = 10
             else:
                 ggH_scale = 0.0
             if qqH.Integral() > 0:
-                qqH_scale = 0.5*data_norm/qqH.Integral()
+                qqH_scale = 10
             else:
                 qqH_scale = 0.0
             if VH.Integral() > 0:
-                VH_scale =  0.25*data_norm/VH.Integral()
+                VH_scale = 10
             else:
                 VH_scale = 0.0
             if ttH.Integral() > 0:
-                ttH_scale =  0.25*data_norm/ttH.Integral()
+                ttH_scale = 10
             else:
                 ttH_scale = 0.0
-            if HWW.Integral() > 0:
-                HWW_scale =  0.25*data_norm/HWW.Integral()
-                if HWW_scale > 10000:
-                    HWW_scale = 0.0
-            else:
-                HWW_scale = 0.0
             if i in [0,1]:
                 ggH.Scale(ggH_scale)
                 qqH.Scale(qqH_scale)
                 VH.Scale(VH_scale)
                 ttH.Scale(ttH_scale)
-                HWW.Scale(HWW_scale)
+                # HWW.Scale(HWW_scale)
             plot.subplot(i).add_hist(ggH, "ggH")
             plot.subplot(i).add_hist(ggH, "ggH_top")
             plot.subplot(i).add_hist(qqH, "qqH")
@@ -234,8 +228,8 @@ def main(info):
             plot.subplot(i).add_hist(VH, "VH_top")
             plot.subplot(i).add_hist(ttH, "ttH")
             plot.subplot(i).add_hist(ttH, "ttH_top")
-            plot.subplot(i).add_hist(HWW, "HWW")
-            plot.subplot(i).add_hist(HWW, "HWW_top")
+            # plot.subplot(i).add_hist(HWW, "HWW")
+            # plot.subplot(i).add_hist(HWW, "HWW_top")
 
     if "mm" not in channel:
         plot.subplot(0 if args.linear else 1).setGraphStyle(
@@ -250,9 +244,9 @@ def main(info):
         plot.subplot(0 if args.linear else 1).setGraphStyle(
             "ttH", "hist", linecolor=styles.color_dict["ttH"], linewidth=3)
         plot.subplot(0 if args.linear else 1).setGraphStyle("ttH_top", "hist", linecolor=0)
-        plot.subplot(0 if args.linear else 1).setGraphStyle(
-            "HWW", "hist", linecolor=styles.color_dict["HWW"], linewidth=3)
-        plot.subplot(0 if args.linear else 1).setGraphStyle("HWW_top", "hist", linecolor=0)
+        # plot.subplot(0 if args.linear else 1).setGraphStyle(
+            # "HWW", "hist", linecolor=styles.color_dict["HWW"], linewidth=3)
+        # plot.subplot(0 if args.linear else 1).setGraphStyle("HWW_top", "hist", linecolor=0)
 
 
     # assemble ratio
@@ -283,7 +277,7 @@ def main(info):
             "bkg_qqH_top", "data_obs"
         ], "total_bkg")
     else:
-        plot.subplot(2).normalize(["total_bkg","data_obs"], "total_bkg")
+        plot.subplot(2).normalize(["total_bkg", "data_obs"], "total_bkg")
 
     # stack background processes
     plot.create_stack(bkg_processes, "stack")
@@ -299,7 +293,7 @@ def main(info):
         max(2 * plot.subplot(0).get_hist("data_obs").GetMaximum(),
             split_dict[channel] * 2))
 
-    log_quantities = ["ME_ggh","ME_vbf","ME_z2j_1","ME_z2j_2","ME_q2v1","ME_q2v2","ME_vbf_vs_ggh","ME_ggh_vs_Z"]
+    log_quantities = ["ME_ggh", "ME_vbf", "ME_z2j_1", "ME_z2j_2", "ME_q2v1", "ME_q2v2", "ME_vbf_vs_ggh", "ME_ggh_vs_Z"]
     if variable in log_quantities:
         plot.subplot(0).setLogY()
         plot.subplot(0).setYlims(
@@ -336,7 +330,7 @@ def main(info):
         plot.subplot(0).setYlabel("N_{events}")
 
     plot.subplot(2).setYlabel("")
-
+    plot.subplot(2).setGrid()
     plot.scaleYLabelSize(0.8)
     plot.scaleYTitleOffset(1.1)
 
@@ -345,12 +339,12 @@ def main(info):
 
     # draw subplots. Argument contains names of objects to be drawn in corresponding order.
     if "mm" not in channel:
-        procs_to_draw = ["stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top", "VH", "VH_top", "ttH", "ttH_top", "HWW", "HWW_top", "data_obs"] if args.linear else ["stack", "total_bkg", "data_obs"]
+        procs_to_draw = ["stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top", "VH", "VH_top", "ttH", "ttH_top", "data_obs"] if args.linear else ["stack", "total_bkg", "data_obs"]
         plot.subplot(0).Draw(procs_to_draw)
         if args.linear != True:
             plot.subplot(1).Draw([
                 "stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top",
-                "VH", "VH_top", "ttH", "ttH_top", "HWW", "HWW_top", "data_obs"
+                "VH", "VH_top", "ttH", "ttH_top", "data_obs"
             ])
         plot.subplot(2).Draw([
             "total_bkg", "bkg_ggH", "bkg_ggH_top", "bkg_qqH",
@@ -361,7 +355,7 @@ def main(info):
         plot.subplot(0).Draw(procs_to_draw)
         if args.linear != True:
             plot.subplot(1).Draw([
-                "stack", "total_bkg","data_obs"
+                "stack", "total_bkg", "data_obs"
             ])
         plot.subplot(2).Draw([
             "total_bkg", "data_obs"
@@ -382,8 +376,8 @@ def main(info):
             plot.legend(i).add_entry(0 if args.linear else 1, "qqH%s" % suffix[i], "%s #times qq#rightarrowH"%str(int(qqH_scale)), 'l')
             plot.legend(i).add_entry(0 if args.linear else 1, "VH%s" % suffix[i], "%s #times V(lep)H"%str(int(VH_scale)), 'l')
             plot.legend(i).add_entry(0 if args.linear else 1, "ttH%s" % suffix[i], "%s #times ttH"%str(int(ttH_scale)), 'l')
-            plot.legend(i).add_entry(0 if args.linear else 1, "HWW%s" % suffix[i], "%s #times H#rightarrowWW"%str(int(HWW_scale)), 'l')
-        plot.legend(i).add_entry(0, "data_obs", "Data", 'PE')
+            # plot.legend(i).add_entry(0 if args.linear else 1, "HWW%s" % suffix[i], "%s #times H#rightarrowWW"%str(int(HWW_scale)), 'l')
+        plot.legend(i).add_entry(0, "data_obs", "Observed", 'PE2L')
         plot.legend(i).setNColumns(3)
     plot.legend(0).Draw()
     plot.legend(1).setAlpha(0.0)
@@ -391,8 +385,8 @@ def main(info):
 
     for i in range(2):
         plot.add_legend(
-            reference_subplot=2, pos=1, width=0.5, height=0.03)
-        plot.legend(i + 2).add_entry(0, "data_obs", "Data", 'PE')
+            reference_subplot=2, pos=1, width=0.6, height=0.03)
+        plot.legend(i + 2).add_entry(0, "data_obs", "Observed", 'PE2L')
         if "mm" not in channel:
             plot.legend(i + 2).add_entry(0 if args.linear else 1, "ggH%s" % suffix[i],
                                          "ggH+bkg.", 'l')
@@ -441,7 +435,7 @@ def main(info):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    setup_logging("{}_plot_shapes.log".format(args.era), logging.INFO)
+    setup_logging("{}_plot_shapes.log".format(args.era), logging.DEBUG)
     variables = args.variables.split(",")
     channels = args.channels.split(",")
     infolist = []
