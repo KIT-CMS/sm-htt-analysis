@@ -510,23 +510,6 @@ def main(args):
                 for chname_, _ in selectedChannelsTuples:
                     variationsToAdd[chname_][process_nick].append(variation_)
 
-    # MC tau energy scale
-    tau_es_3prong_variations = create_systematic_variations(
-        "CMS_scale_mc_t_3prong_Run{era}".format(era=args.era),
-        "tauEsThreeProng", DifferentPipeline)
-    tau_es_1prong_variations = create_systematic_variations(
-        "CMS_scale_mc_t_1prong_Run{era}".format(era=args.era), "tauEsOneProng",
-        DifferentPipeline)
-    tau_es_1prong1pizero_variations = create_systematic_variations(
-        "CMS_scale_mc_t_1prong1pizero_Run{era}".format(era=args.era),
-        "tauEsOneProngOnePiZero", DifferentPipeline)
-
-    for variation_ in tau_es_3prong_variations + tau_es_1prong_variations + tau_es_1prong1pizero_variations:
-        for process_nick in selectedProcesses & (
-            signal_nicks | trueTauBkgS | {
-                "TTL", "VVL", "FAKES"}):
-            for chname_, _ in selectedChannelsTuplesNoEM:
-                variationsToAdd[chname_][process_nick].append(variation_)
 
     # Tau ID
     # in et and mt one nuisance per pT bin
@@ -563,19 +546,6 @@ def main(args):
                             variation_)
 
     # for tautau, the id is split by decay mode, and each decay mode is assosicated one nuicance
-    # version after fix of dm11:
-    # tau_id_variations.append(
-    #             ReplaceWeight("CMS_eff_t_dm{dm}_Run2018".format(dm=decaymode), "taubyIsoIdWeight",
-    #                 Weight("(((decayMode_1=={dm})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(dm=decaymode), "taubyIsoIdWeight"), "Up"))
-    # tau_id_variations.append(
-    #             ReplaceWeight("CMS_eff_t_dm{dm}_Run2018".format(dm=decaymode), "taubyIsoIdWeight",
-    # Weight("(((decayMode_1=={dm})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(dm=decaymode),
-    # "taubyIsoIdWeight"), "Down"))
-    dm11 ={
-        "2016": {"Up": 1.0347885, "Down": 0.75489248, "Nom": 0.89484048},
-        "2017": {"Up": 0.72552593, "Down": 0.55546193, "Nom": 0.64049393},
-        "2018": {"Up": 1.1324026, "Down": 0.80605859, "Nom": 0.96923059},
-    }
     for chname_ in selectedChannels & {"tt"}:
         for histname_, pS_ in {
             "CMS_eff_t_dm{dm}_Run{era}": signal_nicks | {"EMB", "VVL", "TTL"} |
@@ -583,11 +553,7 @@ def main(args):
             tau_id_variations = []
             for shift_direction in ["Up", "Down"]:
                 for decaymode in [0, 1, 10, 11]:
-                    if decaymode != 11:
-                        weightstr = "(((gen_match_1 == 5)*(((decayMode_1=={dm})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*(((decayMode_1==11)*{dm11_nom})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))))+(gen_match_1 != 5))*((gen_match_2 == 5)*(((decayMode_2=={dm})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*(((decayMode_2==11)*{dm11_nom})+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))))+(gen_match_2 != 5)))"
-                    else:
-                        # temorary fix for dm 11
-                        weightstr = "((gen_match_1 == 5)*(((decayMode_1=={dm})*{dm11shift})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))+(gen_match_1 != 5))*((gen_match_1 == 5)*(((decayMode_2=={dm})*{dm11shift})+((decayMode_2!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))+(gen_match_2 != 5))"
+                    weightstr = "(((decayMode_1=={dm})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
                     tau_id_variations.append(
                         ReplaceWeight(
                             histname_.format(
@@ -595,10 +561,7 @@ def main(args):
                             "taubyIsoIdWeight",
                             Weight(
                                 weightstr.format(
-                                    dm=decaymode,
-                                    dm11_nom=dm11[args.era]["Nom"],
-                                    dm11shift=dm11[args.era][shift_direction],
-                                    shift_direction=shift_direction),
+                                    dm=decaymode,shift_direction=shift_direction),
                                 "taubyIsoIdWeight"),
                             shift_direction))
             # run two times, one for regular, one for embedding
@@ -653,25 +616,45 @@ def main(args):
 
     # Inclusive JES shapes
     jet_es_variations = []
-    '''jet_es_variations += create_systematic_variations(
-        "CMS_scale_j_Run{era}".format(era=args.era), "jecUnc", DifferentPipeline)'''
+    jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_Absolute", "jecUncAbsolute", DifferentPipeline
+    )
+    jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_AbsoluteRun{era}".format(era=args.era), "jecUncAbsoluteYear", DifferentPipeline
+    )
+    jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_BBEC1", "jecUncBBEC1", DifferentPipeline
+    )
+    jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_BBEC1Run{era}".format(era=args.era), "jecUncBBEC1Year", DifferentPipeline
+    )
+    jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_EC2", "jecUncEC2", DifferentPipeline
+    )
+    jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_EC2Run{era}".format(era=args.era), "jecUncEC2Year", DifferentPipeline
+    )
+    jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_HF", "jecUncHF", DifferentPipeline
+    )
+    jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_HFRun{era}".format(era=args.era), "jecUncHFYear", DifferentPipeline
+    )
+    jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_FlavorQCD", "jecUncFlavorQCD", DifferentPipeline
+    )
+    jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_RelativeBal", "jecUncRelativeBal", DifferentPipeline
+    )
+    jet_es_variations += create_systematic_variations(
+        "CMS_scale_j_RelativeSampleRun{era}".format(era=args.era),
+        "jecUncRelativeSampleYear",
+        DifferentPipeline,
+    )
+    jet_es_variations += create_systematic_variations(
+        "CMS_reso_j", "jerUnc", DifferentPipeline
+    )
 
-    # Splitted JES shapes
-    jet_es_variations += create_systematic_variations(
-        "CMS_scale_j_eta0to3_Run{era}".format(era=args.era), "jecUncEta0to3",
-        DifferentPipeline)
-    jet_es_variations += create_systematic_variations(
-        "CMS_scale_j_eta0to5_Run{era}".format(era=args.era), "jecUncEta0to5",
-        DifferentPipeline)
-    jet_es_variations += create_systematic_variations(
-        "CMS_scale_j_eta3to5_Run{era}".format(era=args.era), "jecUncEta3to5",
-        DifferentPipeline)
-    jet_es_variations += create_systematic_variations(
-        "CMS_scale_j_RelativeBal_Run{era}".format(era=args.era),
-        "jecUncRelativeBal", DifferentPipeline)
-    jet_es_variations += create_systematic_variations(
-        "CMS_scale_j_RelativeSample_Run{era}".format(era=args.era),
-        "jecUncRelativeSample", DifferentPipeline)
 
     for variation_ in jet_es_variations:
         for chname_ in selectedChannels:
@@ -758,12 +741,25 @@ def main(args):
 
     # ZL fakes energy scale
     ele_fake_es_1prong_variations = create_systematic_variations(
-        "CMS_ZLShape_et_1prong_Run{era}".format(era=args.era),
-        "tauEleFakeEsOneProng", DifferentPipeline)
+        "CMS_ZLShape_et_1prong_barrel_Run{era}".format(era=args.era),
+        "tauEleFakeEsOneProngBarrel",
+        DifferentPipeline,
+    )
+    ele_fake_es_1prong_variations += create_systematic_variations(
+        "CMS_ZLShape_et_1prong_endcap_Run{era}".format(era=args.era),
+        "tauEleFakeEsOneProngEndcap",
+        DifferentPipeline,
+    )
     ele_fake_es_1prong1pizero_variations = create_systematic_variations(
-        "CMS_ZLShape_et_1prong1pizero_Run{era}".format(era=args.era),
-        "tauEleFakeEsOneProngPiZeros", DifferentPipeline)
-
+        "CMS_ZLShape_et_1prong1pizero_barrel_Run{era}".format(era=args.era),
+        "tauEleFakeEsOneProngPiZerosBarrel",
+        DifferentPipeline,
+    )
+    ele_fake_es_1prong1pizero_variations += create_systematic_variations(
+        "CMS_ZLShape_et_1prong1pizero_endcap_Run{era}".format(era=args.era),
+        "tauEleFakeEsOneProngPiZerosEndcap",
+        DifferentPipeline,
+    )
     if "et" in selectedChannels:
         for process_nick in selectedProcesses & {"ZL"}:
             for variation_ in ele_fake_es_1prong_variations + ele_fake_es_1prong1pizero_variations:
@@ -1019,6 +1015,22 @@ def main(args):
     for shift_direction in ["up", "down"]:
         qcd_variations.append(
             ReplaceWeight(
+                "CMS_htt_qcd_0jet_rate_Run{era}".format(era=args.era),
+                "qcd_weight",
+                Weight("em_qcd_osss_0jet_rate{}_Weight".format(shift_direction), "qcd_weight"),
+                shift_direction.capitalize(),
+            )
+        )
+        qcd_variations.append(
+            ReplaceWeight(
+                "CMS_htt_qcd_0jet_shape_Run{era}".format(era=args.era),
+                "qcd_weight",
+                Weight("em_qcd_osss_0jet_shape{}_Weight".format(shift_direction), "qcd_weight"),
+                shift_direction.capitalize(),
+            )
+        )
+        qcd_variations.append(
+            ReplaceWeight(
                 "CMS_htt_qcd_0jet_rate_Run{era}".format(
                     era=args.era),
                 "qcd_weight",
@@ -1101,8 +1113,50 @@ def main(args):
                 nick for nick in signal_nicks
                 if "ggH" in nick and "HWW" not in nick
         }:
-            for chname_ in args.channels:
+            for chname_ in selectedChannels:
                 variationsToAdd[chname_][process_nick].append(variation_)
+
+# VBF uncertainties
+    qqh_variations = []
+    for unc in [
+        "THU_qqH_25",
+        "THU_qqH_JET01",
+        "THU_qqH_Mjj1000",
+        "THU_qqH_Mjj120",
+        "THU_qqH_Mjj1500",
+        "THU_qqH_Mjj350",
+        "THU_qqH_Mjj60",
+        "THU_qqH_Mjj700",
+        "THU_qqH_PTH200",
+        "THU_qqH_TOT",
+    ]:
+        qqh_variations.append(
+            AddWeight(
+                unc,
+                "{}_weight".format(unc),
+                Weight("({})".format(unc), "{}_weight".format(unc)),
+                "Up",
+            )
+        )
+        qqh_variations.append(
+            AddWeight(
+                unc,
+                "{}_weight".format(unc),
+                Weight("(2.0-{})".format(unc), "{}_weight".format(unc)),
+                "Down",
+            )
+        )
+
+    for variation_ in qqh_variations:
+        for process_nick in selectedProcesses & {
+                nick for nick in signal_nicks
+                if "qqH" in nick and "qqHWW" not in nick
+        }:
+            for chname_ in selectedChannels:
+                variationsToAdd[chname_][process_nick].append(variation_)
+
+
+
 
     # add all variation from the systematics
     for chname_, ch_ in selectedChannelsTuples:
