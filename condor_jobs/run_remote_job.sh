@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+export XRD_LOGLEVEL="Info"
 echo " --------------"
 echo " Unpacking tarball ..."
 tar -xf gc_tarball.tar.gz
