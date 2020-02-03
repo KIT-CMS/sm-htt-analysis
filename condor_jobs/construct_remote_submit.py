@@ -53,7 +53,7 @@ def readclasses(channelname, era, tag):
     return confdict["classes"]
 
 
-def buildprocesses(channelname):
+def buildprocesses(era, channelname):
     trueTauBkgS = {"ZTT", "TTT", "VVT"}
     leptonTauBkgS = {"ZL", "TTL", "VVL"}
     jetFakeBkgS = {"ZJ", "W", "TTJ", "VVJ"}
@@ -64,7 +64,10 @@ def buildprocesses(channelname):
         "em": {"W"},
     }
 
-    ww_nicks = set()  # {"ggHWW125", "qqHWW125"}
+    ww_nicks = {"ggHWW125", "qqHWW125"}
+    # tmp fix, remove for eoy ntuples
+    if era not in ["2016","2017"]:  ww_nicks = set()
+
     signal_nicks = {"WH125", "ZH125", "VH125", "ttH125"} | {
         ggH_htxs
         for ggH_htxs in ggHEstimation.htxs_dict
@@ -115,8 +118,8 @@ def build_tarball():
     print("finished tarball...")
 
 
-def write_while(tasks):
-    out_file = open('while.sh', 'w')
+def write_while(tasks, tag):
+    out_file = open('while_{}.sh'.format(tag), 'w')
     out_file.write('#!/bin/bash\n')
     out_file.write('\n')
     out_file.write('touch .lock\n')
@@ -130,7 +133,7 @@ def write_while(tasks):
     out_file.write('sleep 2\n')
     out_file.write('done\n')
     out_file.close()
-    os.chmod('while.sh', stat.S_IRWXU)
+    os.chmod('while_{}.sh'.format(tag), stat.S_IRWXU)
 
 
 def main(args):
@@ -145,15 +148,15 @@ def main(args):
             tasks[era] = {}
             for channel in channels:
                 tasks[era][channel] = {}
-                workdir = "{}/{}/{}".format(args.workdir, era, channel)
+                workdir = "{}/{}/{}/{}".format(args.workdir, tag, era, channel)
                 print("Selected Workdir: {}".format(workdir))
                 if not os.path.exists(workdir):
                     os.makedirs(workdir)
                 tasks[era][channel]["gc"] = write_gc(
                     era, channel, readclasses(channel, era, tag),
-                    buildprocesses(channel), tag, workdir)
-        write_while(tasks)
-        print("Start shape production by running ./while.sh")
+                    buildprocesses(era, channel), tag, workdir)
+        write_while(tasks, tag)
+        print("Start shape production by running ./while_{}.sh".format(tag))
         print("Sit back, get a coffee and enjoy :)")
         print("After all tasks are finished, run the merging using")
         print(
@@ -165,7 +168,7 @@ def main(args):
     if args.mode == "merge":
         for era in eras:
             for channel in channels:
-                workdir = "{}/{}/{}".format(args.workdir, era, channel)
+                workdir = "{}/{}/{}/{}".format(args.workdir, tag, era, channel)
                 print("Merging {} {} ...".format(era, channel))
                 os.system(
                     "hadd -f output/shapes/{era}-{tag}-{channel}-shapes.root {workdir}/output/*/*.root"
