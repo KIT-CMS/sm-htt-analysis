@@ -48,7 +48,7 @@ def filterhists(ks, shapeIdx):
         # ignore double Hists
     ignoreS = ignoreS | {"Up;2", "Down;2"}
     ## current shapes errors
-    ignoreS = ignoreS | {"CMS_prefiring", "CMS_eff_trigger", "CMS_eff_xtrigger", "_boson_", "#qqHWW125#", "#ggHWW125#"}
+    #ignoreS = ignoreS | {"CMS_prefiring", "CMS_eff_trigger", "CMS_eff_xtrigger", "_boson_", "#qqHWW125#", "#ggHWW125#"}
 
     # ignoreS= ignoreS | {"Down;"} # ignore down shifts
     # ks = {key for key in ks if key.split("#")[-1]==";1"}
@@ -80,8 +80,7 @@ samekeys = set(keyset0) & set(keyset1)
 keyCount=len(samekeys)
 print("[1/3] DONE")
 
-print("Nummer of identical keys after renaming: {}. Looking for duplicates".format(keyCount))
-print("[2/3] START Looking for duplicates".format(len(samekeys)))
+print("Computing Integral")
 integrals = []
 def getIntegral0(key):
     return((key,lkUp(key, 0).allvalues.sum()))
@@ -90,7 +89,11 @@ def getIntegral1(key):
 with Pool(nCores) as p:
     integrals.append(dict(p.map(getIntegral0, samekeys)))
     integrals.append(dict(p.map(getIntegral1, samekeys)))
-# # check shapes for dublicate histograms
+
+
+check shapes for dublicate histograms
+print("Nummer of identical keys after renaming: {}. Looking for duplicates".format(keyCount))
+print("[2/3] START Looking for duplicates".format(len(samekeys)))
 
 for key in sorted(samekeys):
     if key not in samekeys:
