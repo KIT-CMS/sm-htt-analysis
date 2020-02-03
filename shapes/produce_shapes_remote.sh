@@ -1,8 +1,9 @@
 #!/bin/bash
 set -e
+
 BINNING=shapes/binning.yaml
 
-export LCG_RELEASE=96
+export LCG_RELEASE=95
 source utils/setup_cvmfs_sft.sh
 
 source utils/setup_python.sh
@@ -28,4 +29,4 @@ logandrun python shapes/produce_shapes.py \
     --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR
 
 # Normalize fake-factor shapes to nominal
-logandrun python fake-factor-application/normalize_shifts.py shapes.root
+logandrun python fake-factor-application/normalize_shifts.py shape.root
