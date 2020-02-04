@@ -10,7 +10,7 @@ from multiprocessing import Pool
 
 ### to use this, dont source a lcg, just use python3 and pip3 install --user uproot
 
-nCores=10
+nCores = 10
 p1 = sys.argv[1]
 p2 = sys.argv[2]
 
@@ -22,39 +22,48 @@ END = '\x1b[0m'
 
 print("{} | {}".format(p1, p2))
 
-
 # code for using renamed histogramms
 
-replD = {"htt_dyShape_Run2018": "htt_dyShape", "data_obs": "data","TTTT":"TTT"}
+replD = {
+    "htt_dyShape_Run2018": "htt_dyShape",
+    "data_obs": "data",
+    "TTTT": "TTT"
+}
 
 keyLookUpDict = [{}, {}]
+
+
 def keyrep(key, shapeIdx):
     newkey = copy.deepcopy(key)
     for a, b in replD.items():
         if a in newkey:
             newkey = newkey.replace(a, b)
     keyLookUpDict[shapeIdx][newkey] = key
-    return(newkey)
+    return (newkey)
+
 
 def lkUp(key, shapeIdx):
-    k_=keyLookUpDict[shapeIdx][key].encode()
-    return(shapes[shapeIdx][k_])
+    k_ = keyLookUpDict[shapeIdx][key].encode()
+    return (shapes[shapeIdx][k_])
 
 
 def filterhists(ks, shapeIdx):
     ignoreS = {"output_tree;1"}
-    ignoreS = ignoreS | {"CMS_scale_mc_t_1prong",
-                         "CMS_scale_mc_t_3prong"}  # mc_tau energy scale added
-        # ignore double Hists
+    ignoreS = ignoreS | {"CMS_scale_mc_t_1prong", "CMS_scale_mc_t_3prong"
+                         }  # mc_tau energy scale added
+    # ignore double Hists
     ignoreS = ignoreS | {"Up;2", "Down;2"}
     ## current shapes errors
     #ignoreS = ignoreS | {"CMS_prefiring", "CMS_eff_trigger", "CMS_eff_xtrigger", "_boson_", "#qqHWW125#", "#ggHWW125#"}
 
     # ignoreS= ignoreS | {"Down;"} # ignore down shifts
     # ks = {key for key in ks if key.split("#")[-1]==";1"}
-    ks = {keyrep(key.decode(), shapeIdx) for key in ks if not any(
-        [pattern in key.decode() for pattern in ignoreS])}
-    return(ks)
+    ks = {
+        keyrep(key.decode(), shapeIdx)
+        for key in ks
+        if not any([pattern in key.decode() for pattern in ignoreS])
+    }
+    return (ks)
 
 
 keyset0 = set(shapes[0].allkeys())
@@ -77,51 +86,64 @@ if len(diffkeys) != 0:
             print(RED + "<" + END + " {key} <".format(key=key))
 
 samekeys = set(keyset0) & set(keyset1)
-keyCount=len(samekeys)
+keyCount = len(samekeys)
 print("[1/3] DONE")
 
 print("Computing Integral")
 integrals = []
+
+
 def getIntegral0(key):
-    return((key,lkUp(key, 0).allvalues.sum()))
+    return ((key, lkUp(key, 0).allvalues.sum()))
+
+
 def getIntegral1(key):
-    return((key,lkUp(key, 1).allvalues.sum()))
+    return ((key, lkUp(key, 1).allvalues.sum()))
+
+
 with Pool(nCores) as p:
     integrals.append(dict(p.map(getIntegral0, samekeys)))
     integrals.append(dict(p.map(getIntegral1, samekeys)))
 
-
-check shapes for dublicate histograms
-print("Nummer of identical keys after renaming: {}. Looking for duplicates".format(keyCount))
+# check shapes for dublicate histograms
+print("Nummer of identical keys after renaming: {}. Looking for duplicates".
+      format(keyCount))
 print("[2/3] START Looking for duplicates".format(len(samekeys)))
 
 for key in sorted(samekeys):
     if key not in samekeys:
         continue
-    samehists=[set(),set()]
+    samehists = [set(), set()]
     for shapeIdx in [0, 1]:
-        # if integrals[shapeIdx][key] == 0.0:
-        #     continue
         #prefilter the keys with calculated integrals
         samehistcandidates = {
-            ckey_ for ckey_ in samekeys if integrals[shapeIdx][key] == integrals[shapeIdx][ckey_] and key != ckey_}
+            ckey_
+            for ckey_ in samekeys
+            if integrals[shapeIdx][key] == integrals[shapeIdx][ckey_]
+            and key != ckey_
+        }
         #check if the actuall bin contents are the same
         samehists[shapeIdx] = {
-            ckey_ for ckey_ in samehistcandidates if lkUp(
-                key, shapeIdx) == lkUp(
-                ckey_, shapeIdx)}
+            ckey_
+            for ckey_ in samehistcandidates
+            if lkUp(key, shapeIdx) == lkUp(ckey_, shapeIdx)
+        }
         if len(samehists[shapeIdx]):
             print("Shape {}, Dublicate histamgrams to {} with sum {}:".format(
-                shapeIdx, key, lkUp(key, shapeIdx).allvalues.sum()))
+                shapeIdx, key,
+                lkUp(key, shapeIdx).allvalues.sum()))
             for ckey_ in sorted(samehists[shapeIdx]):
                 print("\t" + ckey_)
         # if keys hold the same histogram duplicate for both shapes, remove them from the set of keys, that we need to compare
         samekeys = samekeys - (samehists[0] & samehists[1])
 
 print("[2/3] DONE")
-print("{} duplicates removed. Remaining:".format(keyCount-len(samekeys),len(samekeys)))
+print("{} duplicates removed. Remaining:".format(keyCount - len(samekeys),
+                                                 len(samekeys)))
 
 print("[3/3] Analysing Histogramm content")
+
+
 def compareHists(key):
     if isinstance(key, bytes):
         print(key)
@@ -143,15 +165,11 @@ def compareHists(key):
         else:
             retstr += "\tsum different: {}  vs. {}\n".format(
                 arr1.sum(), arr2.sum())
-    # else:
-    #     retstr += GREEN + "=" + END + " " + key
-    return(retstr)
+    return (retstr)
 
-# res=[]
-# for key in samekeys:
-#     res.append(compareHists(key))
+
 with Pool(nCores) as p:
-    res=p.map(compareHists, samekeys)
-for r in sorted(filter(lambda x: x!="",res)):
-        print(r)
+    res = p.map(compareHists, samekeys)
+for r in sorted(filter(lambda x: x != "", res)):
+    print(r)
 print("[3/3] DONE")
