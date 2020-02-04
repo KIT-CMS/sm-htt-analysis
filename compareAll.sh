@@ -270,6 +270,27 @@ function submitShapes(){
     logandrun condor_jobs/submit.sh
 }
 
+function submitBatchShapes(){
+    source utils/setup_cvmfs_sft.sh
+    source utils/setup_python.sh
+    ensureoutdirs
+    if [ -n "${X509_USER_PROXY+1}" ]; then
+        echo "Using $X509_USER_PROXY as proxy"
+    else
+        export X509_USER_PROXY=/home/${USER}/.globus/x509up
+        echo "Setting proxy path to $X509_USER_PROXY"
+    fi
+    python ./condor_jobs/construct_remote_submit.py --eras $erasarg --channels $channelsarg --tag $tagsarg --mode submit
+   condwait
+}
+
+function mergeBatchShapes(){
+    source utils/setup_cvmfs_sft.sh
+    source utils/setup_python.sh
+    python ./condor_jobs/construct_remote_submit.py --eras $erasarg --channels $channelsarg --tag $tagsarg --mode merge
+   condwait
+}
+
 function syncShapes() {
     for channel in ${channels[@]}; do
         for era in ${eras[@]}; do
