@@ -97,7 +97,7 @@ def write_gc(era, channel, nnclasses, processes, tag, workdir):
     configfile.write("CATEGORIES = {}\n".format((" ").join(nnclasses)))
     configfile.write("\n")
     configfile.write("[global]\n")
-    configfile.write("workdir = {}\n".format(os.path.abspath(workdir)))
+    configfile.write("workdir = {}/gc_workdir\n".format(os.path.abspath(workdir)))
     configfile.write("\n")
     configfile.write("[UserTask]\n")
     configfile.write("executable = {}\n".format(
@@ -128,7 +128,7 @@ def write_while(tasks, tag):
     out_file.write('do\n')
     for era in tasks.keys():
         for channel in tasks[era].keys():
-            out_file.write('    {}\n'.format(tasks[era][channel]["gc"]))
+            out_file.write('{}\n'.format(tasks[era][channel]["gc"]))
     out_file.write('echo "rm .lock"\n')
     out_file.write('sleep 2\n')
     out_file.write('done\n')
@@ -160,7 +160,7 @@ def main(args):
         print("Sit back, get a coffee and enjoy :)")
         print("After all tasks are finished, run the merging using")
         print(
-            " --> python condor_jobs/construct_remote_submit.py --workdir {workdir} --channels {channels} --eras {eras} --tag {tag} --mode merge"
+            " --> mergeBatchShapes"
             .format(workdir=args.workdir,
                     channels=",".join(args.channels),
                     eras=",".join(args.eras),
@@ -171,10 +171,9 @@ def main(args):
                 workdir = "{}/{}/{}/{}".format(args.workdir, tag, era, channel)
                 print("Merging {} {} ...".format(era, channel))
                 os.system(
-                    "hadd -f output/shapes/{era}-{tag}-{channel}-shapes.root {workdir}/output/*/*.root"
+                    "hadd -f output/shapes/{era}-{tag}-{channel}-shapes.root {workdir}/gc_workdir/output/*/*.root"
                     .format(era=era, tag=tag, channel=channel,
                             workdir=workdir))
-
 
 if __name__ == "__main__":
     args = parse_arguments()

@@ -14,6 +14,7 @@ from shape_producer.categories import Category
 from shape_producer.systematics import Systematics, Systematic
 from shape_producer.cutstring import Cut, Cuts, Weight
 import ROOT
+import os
 
 # disable ROOT internal argument parser
 ROOT.PyConfig.IgnoreCommandLineOptions = True
@@ -137,8 +138,18 @@ def main(args):
     logger.info("Set up shape variations.")
     # remote job in this case
     if len(args.categories) > 0 and len(args.processes) > 0:
+        path = "output/shapes/{TAG}".format(
+            TAG=args.tag)
+        if not os.path.exists(path):
+            os.makedirs(path)
         systematics = Systematics(
-            "shape.root",
+            "{PATH}/{ERA}-{TAG}-{CHANNEL}-{PROCESS}-{CATEGORIES}-shapes.root".format(
+                PATH=path,
+                ERA=args.era,
+                TAG=args.tag,
+                CHANNEL=",".join(args.channels),
+                PROCESS=",".join(args.processes),
+                CATEGORIES=",".join(args.categories)),
             num_threads=args.num_threads,
             skip_systematic_variations=args.skip_systematic_variations)
     else:
@@ -378,7 +389,6 @@ def main(args):
     # Read the NN output classes either from the training, or from the template
     binning = yaml.load(open(args.binning), Loader=yaml.Loader)
     def readclasses(channelname, selectedCategories):
-        import os
         if args.tag == "" or args.tag is None or not os.path.isfile(
                 "output/ml/{}_{}_{}/dataset_config.yaml".format(args.era, channelname, args.tag)):
             logger.warn("No tag given, using template.")

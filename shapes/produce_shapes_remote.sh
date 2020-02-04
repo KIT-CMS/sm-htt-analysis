@@ -27,6 +27,9 @@ logandrun python shapes/produce_shapes.py \
     --mt-friend-directory $ARTUS_FRIENDS_MT \
     --tt-friend-directory $ARTUS_FRIENDS_TT \
     --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR
-
+ 
 # Normalize fake-factor shapes to nominal
-logandrun python fake-factor-application/normalize_shifts.py shape.root
+logandrun python fake-factor-application/normalize_shifts.py output/shapes/${TAG}/${ERA}-${TAG}-${CHANNELS}-${PROCESSES}-${CATEGORIES}-shapes.root
+
+# this dirty fix is needed for grid-control to work
+mv output/shapes/${TAG}/${ERA}-${TAG}-${CHANNELS}-${PROCESSES}-${CATEGORIES}-shapes.root shape.root
