@@ -66,7 +66,7 @@ def buildprocesses(era, channelname):
 
     ww_nicks = {"ggHWW125", "qqHWW125"}
     # tmp fix, remove for eoy ntuples
-    if era not in ["2016","2017"]:  ww_nicks = set()
+    if era not in ["2016", "2017"]: ww_nicks = set()
 
     signal_nicks = {"WH125", "ZH125", "VH125", "ttH125"} | {
         ggH_htxs
@@ -97,7 +97,8 @@ def write_gc(era, channel, nnclasses, processes, tag, workdir):
     configfile.write("CATEGORIES = {}\n".format((" ").join(nnclasses)))
     configfile.write("\n")
     configfile.write("[global]\n")
-    configfile.write("workdir = {}/gc_workdir\n".format(os.path.abspath(workdir)))
+    configfile.write("workdir = {}/gc_workdir\n".format(
+        os.path.abspath(workdir)))
     configfile.write("\n")
     configfile.write("[UserTask]\n")
     configfile.write("executable = {}\n".format(
@@ -159,12 +160,7 @@ def main(args):
         print("Start shape production by running ./while_{}.sh".format(tag))
         print("Sit back, get a coffee and enjoy :)")
         print("After all tasks are finished, run the merging using")
-        print(
-            " --> mergeBatchShapes"
-            .format(workdir=args.workdir,
-                    channels=",".join(args.channels),
-                    eras=",".join(args.eras),
-                    tag=tag))
+        print(" --> mergeBatchShapes")
     if args.mode == "merge":
         for era in eras:
             for channel in channels:
@@ -174,6 +170,7 @@ def main(args):
                     "hadd -f output/shapes/{era}-{tag}-{channel}-shapes.root {workdir}/gc_workdir/output/*/*.root"
                     .format(era=era, tag=tag, channel=channel,
                             workdir=workdir))
+
 
 if __name__ == "__main__":
     args = parse_arguments()
