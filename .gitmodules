@@ -31,3 +31,6 @@
 [submodule "dump-fits-to-tex"]
 	path = dump-fits-to-tex
 	url = git@github.com:swozniewski/dump-fits-to-tex.git
+[submodule "condor_jobs/grid-control"]
+	path = condor_jobs/grid-control
+	url = https://github.com/KIT-CMS/grid-control.git

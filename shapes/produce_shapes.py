@@ -15,6 +15,7 @@ from shape_producer.systematics import Systematics, Systematic
 from shape_producer.cutstring import Cut, Cuts, Weight
 import ROOT
 import os
+
 # disable ROOT internal argument parser
 ROOT.PyConfig.IgnoreCommandLineOptions = True
 ROOT.gErrorIgnoreLevel = ROOT.kError
@@ -135,9 +136,10 @@ def parse_arguments():
 def main(args):
     # Container for all distributions to be drawn
     logger.info("Set up shape variations.")
+    # remote job in this case
     if len(args.categories) > 0 and len(args.processes) > 0:
-        path = "output/shapes/{TAG}/{ERA}/{CHANNEL}".format(
-            ERA=args.era, TAG=args.tag, CHANNEL=",".join(args.channels))
+        path = "output/shapes/{TAG}".format(
+            TAG=args.tag)
         if not os.path.exists(path):
             os.makedirs(path)
         systematics = Systematics(
@@ -223,7 +225,7 @@ def main(args):
 
     selectedChannels = set(args.channels) - {None}
     selectedCategories = set(args.categories)
-
+    
     selectedChannelsTuples = {
         c_: smChannelsDict[c_] for c_ in selectedChannels}.items()
     selectedChannelsTuplesNoEM = {
@@ -386,7 +388,6 @@ def main(args):
 
     # Read the NN output classes either from the training, or from the template
     binning = yaml.load(open(args.binning), Loader=yaml.Loader)
-
     def readclasses(channelname, selectedCategories):
         if args.tag == "" or args.tag is None or not os.path.isfile(
                 "output/ml/{}_{}_{}/dataset_config.yaml".format(args.era, channelname, args.tag)):
