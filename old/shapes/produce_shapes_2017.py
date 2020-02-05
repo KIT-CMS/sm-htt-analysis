@@ -716,7 +716,7 @@ def main(args):
                         "CMS_eff_t_{}-{}_Run2017".format(bindown, binup),
                         "taubyIsoIdWeight",
                         Weight(
-                            "(((pt_2 >= {bindown})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
+                            "(((pt_2 >= {bindown})*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))"
                             .format(bindown=bindown), "taubyIsoIdWeight"),
                         "Up"))
                 tau_id_variations.append(
@@ -724,7 +724,7 @@ def main(args):
                         "CMS_eff_t_{}-{}_Run2017".format(bindown, binup),
                         "taubyIsoIdWeight",
                         Weight(
-                            "(((pt_2 >= {bindown})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
+                            "(((pt_2 >= {bindown})*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))"
                             .format(bindown=bindown), "taubyIsoIdWeight"),
                         "Down"))
             else:
@@ -733,7 +733,7 @@ def main(args):
                         "CMS_eff_t_{}-{}_Run2017".format(bindown, binup),
                         "taubyIsoIdWeight",
                         Weight(
-                            "(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
+                            "(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))"
                             .format(bindown=bindown,
                                     binup=binup), "taubyIsoIdWeight"), "Up"))
                 tau_id_variations.append(
@@ -741,7 +741,7 @@ def main(args):
                         "CMS_eff_t_{}-{}_Run2017".format(bindown, binup),
                         "taubyIsoIdWeight",
                         Weight(
-                            "(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
+                            "(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))"
                             .format(bindown=bindown,
                                     binup=binup), "taubyIsoIdWeight"), "Down"))
 
@@ -772,10 +772,10 @@ def main(args):
     # version after fix of dm11:
     # tau_id_variations.append(
     #             ReplaceWeight("CMS_eff_t_dm{dm}_Run2017".format(dm=decaymode), "taubyIsoIdWeight",
-    #                 Weight("(((decayMode_1=={dm})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(dm=decaymode), "taubyIsoIdWeight"), "Up"))
+    #                 Weight("(((decayMode_1=={dm})*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))".format(dm=decaymode), "taubyIsoIdWeight"), "Up"))
     # tau_id_variations.append(
     #             ReplaceWeight("CMS_eff_t_dm{dm}_Run2017".format(dm=decaymode), "taubyIsoIdWeight",
-    # Weight("(((decayMode_1=={dm})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(dm=decaymode),
+    # Weight("(((decayMode_1=={dm})*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))".format(dm=decaymode),
     # "taubyIsoIdWeight"), "Down"))
     dm11_nom = 0.64049393
     dm11_up = 0.72552593
@@ -787,7 +787,7 @@ def main(args):
                 "CMS_eff_t_dm{dm}_Run2017".format(dm=decaymode),
                 "taubyIsoIdWeight",
                 Weight(
-                    "(((gen_match_1 == 5)*(((decayMode_1=={dm})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*(((decayMode_1==11)*{dm11_nom})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))))+(gen_match_1 != 5))*((gen_match_2 == 5)*(((decayMode_2=={dm})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*(((decayMode_2==11)*{dm11_nom})+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))))+(gen_match_2 != 5)))"
+                    "(((gen_match_1 == 5)*(((decayMode_1=={dm})*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*(((decayMode_1==11)*{dm11_nom})+((decayMode_1!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))))+(gen_match_1 != 5))*((gen_match_2 == 5)*(((decayMode_2=={dm})*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*(((decayMode_2==11)*{dm11_nom})+((decayMode_2!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))))+(gen_match_2 != 5)))"
                     .format(dm=decaymode,
                             dm11_nom=dm11_nom), "taubyIsoIdWeight"), "Up"))
         tau_id_variations.append(
@@ -795,7 +795,7 @@ def main(args):
                 "CMS_eff_t_dm{dm}_Run2017".format(dm=decaymode),
                 "taubyIsoIdWeight",
                 Weight(
-                    "(((gen_match_1 == 5)*(((decayMode_1=={dm})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*(((decayMode_1==11)*{dm11_nom})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))))+(gen_match_1 != 5))*((gen_match_2 == 5)*(((decayMode_2=={dm})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*(((decayMode_2==11)*{dm11_nom})+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))))+(gen_match_2 != 5)))"
+                    "(((gen_match_1 == 5)*(((decayMode_1=={dm})*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*(((decayMode_1==11)*{dm11_nom})+((decayMode_1!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))))+(gen_match_1 != 5))*((gen_match_2 == 5)*(((decayMode_2=={dm})*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*(((decayMode_2==11)*{dm11_nom})+((decayMode_2!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))))+(gen_match_2 != 5)))"
                     .format(dm=decaymode,
                             dm11_nom=dm11_nom), "taubyIsoIdWeight"), "Down"))
     # temorary fix for dm 11
@@ -803,14 +803,14 @@ def main(args):
         ReplaceWeight(
             "CMS_eff_t_dm11_Run2017".format(dm=decaymode), "taubyIsoIdWeight",
             Weight(
-                "((gen_match_1 == 5)*(((decayMode_1==11)*{dm11_up})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))+(gen_match_1 != 5))*((gen_match_1 == 5)*(((decayMode_2==11)*{dm11_up})+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))+(gen_match_2 != 5))"
+                "((gen_match_1 == 5)*(((decayMode_1==11)*{dm11_up})+((decayMode_1!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))+(gen_match_1 != 5))*((gen_match_1 == 5)*(((decayMode_2==11)*{dm11_up})+((decayMode_2!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))+(gen_match_2 != 5))"
                 .format(dm=decaymode, dm11_up=dm11_up), "taubyIsoIdWeight"),
             "Up"))
     tau_id_variations.append(
         ReplaceWeight(
             "CMS_eff_t_dm11_Run2017".format(dm=decaymode), "taubyIsoIdWeight",
             Weight(
-                "((gen_match_1 == 5)*(((decayMode_1==11)*{dm11_down})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))+(gen_match_1 != 5))*((gen_match_1 == 5)*(((decayMode_2==11)*{dm11_down})+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))+(gen_match_2 != 5))"
+                "((gen_match_1 == 5)*(((decayMode_1==11)*{dm11_down})+((decayMode_1!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))+(gen_match_1 != 5))*((gen_match_1 == 5)*(((decayMode_2==11)*{dm11_down})+((decayMode_2!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))+(gen_match_2 != 5))"
                 .format(dm=decaymode,
                         dm11_down=dm11_down), "taubyIsoIdWeight"), "Down"))
     for variation in tau_id_variations:
@@ -1391,7 +1391,7 @@ def main(args):
                         "CMS_eff_emb_t_{}-{}_Run2017".format(bindown, binup),
                         "taubyIsoIdWeight",
                         Weight(
-                            "(((pt_2 >= {bindown})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
+                            "(((pt_2 >= {bindown})*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))"
                             .format(bindown=bindown), "taubyIsoIdWeight"),
                         "Up"))
                 tau_id_variations.append(
@@ -1399,7 +1399,7 @@ def main(args):
                         "CMS_eff_emb_t_{}-{}_Run2017".format(bindown, binup),
                         "taubyIsoIdWeight",
                         Weight(
-                            "(((pt_2 >= {bindown})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
+                            "(((pt_2 >= {bindown})*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))"
                             .format(bindown=bindown), "taubyIsoIdWeight"),
                         "Down"))
             else:
@@ -1408,7 +1408,7 @@ def main(args):
                         "CMS_eff_emb_t_{}-{}_Run2017".format(bindown, binup),
                         "taubyIsoIdWeight",
                         Weight(
-                            "(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
+                            "(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))"
                             .format(bindown=bindown,
                                     binup=binup), "taubyIsoIdWeight"), "Up"))
                 tau_id_variations.append(
@@ -1416,7 +1416,7 @@ def main(args):
                         "CMS_eff_emb_t_{}-{}_Run2017".format(bindown, binup),
                         "taubyIsoIdWeight",
                         Weight(
-                            "(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
+                            "(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))"
                             .format(bindown=bindown,
                                     binup=binup), "taubyIsoIdWeight"), "Down"))
 
@@ -1440,10 +1440,10 @@ def main(args):
     # version after fix of dm11:
     # tau_id_variations.append(
     #             ReplaceWeight("CMS_eff_t_dm{dm}_Run2017".format(dm=decaymode), "taubyIsoIdWeight",
-    #                 Weight("(((decayMode_1=={dm})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(dm=decaymode), "taubyIsoIdWeight"), "Up"))
+    #                 Weight("(((decayMode_1=={dm})*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))".format(dm=decaymode), "taubyIsoIdWeight"), "Up"))
     # tau_id_variations.append(
     #             ReplaceWeight("CMS_eff_t_dm{dm}_Run2017".format(dm=decaymode), "taubyIsoIdWeight",
-    # Weight("(((decayMode_1=={dm})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))".format(dm=decaymode),
+    # Weight("(((decayMode_1=={dm})*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))".format(dm=decaymode),
     # "taubyIsoIdWeight"), "Down"))
     tau_id_variations = []
     for decaymode in [0, 1, 10]:
@@ -1452,7 +1452,7 @@ def main(args):
                 "CMS_eff_emb_t_dm{dm}_Run2017".format(dm=decaymode),
                 "taubyIsoIdWeight",
                 Weight(
-                    "(((gen_match_1 == 5)*(((decayMode_1=={dm})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*(((decayMode_1==11)*{dm11_nom})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))))+(gen_match_1 != 5))*((gen_match_2 == 5)*(((decayMode_2=={dm})*tauIDScaleFactorWeightUp_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*(((decayMode_2==11)*{dm11_nom})+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))))+(gen_match_2 != 5)))"
+                    "(((gen_match_1 == 5)*(((decayMode_1=={dm})*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*(((decayMode_1==11)*{dm11_nom})+((decayMode_1!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))))+(gen_match_1 != 5))*((gen_match_2 == 5)*(((decayMode_2=={dm})*tauIDScaleFactorWeightUp_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*(((decayMode_2==11)*{dm11_nom})+((decayMode_2!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))))+(gen_match_2 != 5)))"
                     .format(dm=decaymode,
                             dm11_nom=dm11_nom), "taubyIsoIdWeight"), "Up"))
         tau_id_variations.append(
@@ -1460,7 +1460,7 @@ def main(args):
                 "CMS_eff_emb_t_dm{dm}_Run2017".format(dm=decaymode),
                 "taubyIsoIdWeight",
                 Weight(
-                    "(((gen_match_1 == 5)*(((decayMode_1=={dm})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*(((decayMode_1==11)*{dm11_nom})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))))+(gen_match_1 != 5))*((gen_match_2 == 5)*(((decayMode_2=={dm})*tauIDScaleFactorWeightDown_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*(((decayMode_2==11)*{dm11_nom})+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))))+(gen_match_2 != 5)))"
+                    "(((gen_match_1 == 5)*(((decayMode_1=={dm})*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*(((decayMode_1==11)*{dm11_nom})+((decayMode_1!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))))+(gen_match_1 != 5))*((gen_match_2 == 5)*(((decayMode_2=={dm})*tauIDScaleFactorWeightDown_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*(((decayMode_2==11)*{dm11_nom})+((decayMode_2!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))))+(gen_match_2 != 5)))"
                     .format(dm=decaymode,
                             dm11_nom=dm11_nom), "taubyIsoIdWeight"), "Down"))
     # temorary fix for dm 11
@@ -1469,7 +1469,7 @@ def main(args):
             "CMS_eff_emb_t_dm11_Run2017".format(dm=decaymode),
             "taubyIsoIdWeight",
             Weight(
-                "((gen_match_1 == 5)*(((decayMode_1==11)*{dm11_up})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))+(gen_match_1 != 5))*((gen_match_1 == 5)*(((decayMode_2==11)*{dm11_up})+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))+(gen_match_2 != 5))"
+                "((gen_match_1 == 5)*(((decayMode_1==11)*{dm11_up})+((decayMode_1!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))+(gen_match_1 != 5))*((gen_match_1 == 5)*(((decayMode_2==11)*{dm11_up})+((decayMode_2!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))+(gen_match_2 != 5))"
                 .format(dm=decaymode,
                         dm11_up=dm11_up), "taubyIsoIdWeight"), "Up"))
     tau_id_variations.append(
@@ -1477,7 +1477,7 @@ def main(args):
             "CMS_eff_emb_t_dm11_Run2017".format(dm=decaymode),
             "taubyIsoIdWeight",
             Weight(
-                "((gen_match_1 == 5)*(((decayMode_1==11)*{dm11_down})+((decayMode_1!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))+(gen_match_1 != 5))*((gen_match_1 == 5)*(((decayMode_2==11)*{dm11_down})+((decayMode_2!=11)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))+(gen_match_2 != 5))"
+                "((gen_match_1 == 5)*(((decayMode_1==11)*{dm11_down})+((decayMode_1!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))+(gen_match_1 != 5))*((gen_match_1 == 5)*(((decayMode_2==11)*{dm11_down})+((decayMode_2!=11)*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))+(gen_match_2 != 5))"
                 .format(dm=decaymode,
                         dm11_down=dm11_down), "taubyIsoIdWeight"), "Down"))
     for variation in tau_id_variations:

@@ -525,9 +525,9 @@ def main(args):
                     bindown = ptbin
                     binup = pt[i + 1]
                     if binup == "inf":
-                        weightstr = "(((pt_2 >= {bindown})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
+                        weightstr = "(((pt_2 >= {bindown})*tauIDScaleFactorWeight{shift_direction}_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))"
                     else:
-                        weightstr = "(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
+                        weightstr = "(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeight{shift_direction}_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))"
                     tau_id_variations.append(
                         ReplaceWeight(
                             histname_.format(bindown, binup, args.era),
@@ -553,7 +553,7 @@ def main(args):
             tau_id_variations = []
             for shift_direction in ["Up", "Down"]:
                 for decaymode in [0, 1, 10, 11]:
-                    weightstr = "(((decayMode_1=={dm})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
+                    weightstr = "(((decayMode_1=={dm})*tauIDScaleFactorWeight{shift_direction}_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeight{shift_direction}_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))"
                     tau_id_variations.append(
                         ReplaceWeight(
                             histname_.format(
