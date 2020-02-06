@@ -54,9 +54,9 @@ else
     CONDITIONAL_TRAINING=0
 fi
 
-[[ "" == ${eras[1]} ]] && eras=("2016" "2017" "2018") erasarg="2016,2017,2018"
-[[ "" ==  ${channels[1]} ]] && channels=("em" "et" "tt" "mt") channelsarg="em,et,mt,tt"
-[[ "" == ${tags[1]} ]] && tags=("default") tagsarg="default"
+[[ " " =~ ${eras[*]} ]] && eras=("2016" "2017" "2018") erasarg="2016,2017,2018"
+[[ " " =~ ${channels[*]} ]] && channels=("em" "et" "tt" "mt") channelsarg="em,et,mt,tt"
+[[ " " =~ ${tags[*]} ]] && tags=("default") tagsarg="default"
 
 loginfo Eras: ${erasarg}  Channels: ${channelsarg} Tag: ${tagsarg}
 loginfo Following functions are provided: $( grep -E  '^function .*{' compareAll.sh | sed "s@function \(\w\+\).*@\1@" | tr "\n" " " )
