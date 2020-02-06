@@ -143,7 +143,6 @@ def build_chain(dict_, friend_directories):
     for d in friendchains:
         friendchains[d].AddFriend(chain)
         friendchains_skimmed[d] = friendchains[d].CopyTree(dict_["cut_string"])
-    print friendchains_skimmed
     if not chain_skimmed_numentries > 0:
         logger.fatal("Chain (after skimming) does not contain any events.")
         raise Exception
@@ -152,7 +151,6 @@ def build_chain(dict_, friend_directories):
     for d in friendchains_skimmed:
         chain_skimmed.AddFriend(friendchains_skimmed[d])
 
-    print chain_skimmed
     return chain_skimmed
 
 
@@ -255,7 +253,7 @@ def main(args):
         "mt" : args.mt_friend_directories,
         "tt" : args.tt_friend_directories,
     }
-    percentiles = [1.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 99.0]
+    percentiles = [0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0]
 
     config = {"gof": {}}
 
