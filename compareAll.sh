@@ -190,9 +190,9 @@ function provideCluster() (
     era=$2
     llwtnndir=$cmssw_src_local/HiggsAnalysis/friend-tree-producer/data/inputs_lwtnn
     #find $llwtnndir -type l -iname "fold*_lwtnn.json" -delete
-    llwtnndir_sel=$llwtnndir/$tag/${era}/${channel}
     # for era in ${eras[@]}; do
         for channel in ${channels[@]}; do
+            llwtnndir_sel=$llwtnndir/$tag/${era}/${channel}
             ### Supply the generated models in the hard-coded path in the friendProducer
             ### alogrsync $remote will dereference this symlink
             [[ ! -d $llwtnndir_sel ]] && mkdir -p $llwtnndir_sel
@@ -216,7 +216,7 @@ function applyOnCluster()(
             provideCluster $tag $era
             logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "submit" ${tag} $CONDITIONAL_TRAINING
             logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "rungc" ${tag} $CONDITIONAL_TRAINING
-            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg}  "collect" ${tag} $CONDITIONAL_TRAINING
+            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "collect" ${tag} $CONDITIONAL_TRAINING
             copyFromCluster
             logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "delete" ${tag} $CONDITIONAL_TRAINING || return 1
         done
@@ -270,7 +270,7 @@ function submitShapes(){
     logandrun condor_jobs/submit.sh
 }
 
-function submitBatchShapes(){
+function submitBatchShapes()(
     source utils/setup_cvmfs_sft.sh
     source utils/setup_python.sh
     ensureoutdirs
@@ -282,14 +282,14 @@ function submitBatchShapes(){
     fi
     python ./condor_jobs/construct_remote_submit.py --eras $erasarg --channels $channelsarg --tag $tagsarg --mode submit --gcmode optimal
    condwait
-}
+)
 
-function mergeBatchShapes(){
+function mergeBatchShapes()(
     source utils/setup_cvmfs_sft.sh
     source utils/setup_python.sh
     python ./condor_jobs/construct_remote_submit.py --eras $erasarg --channels $channelsarg --tag $tagsarg --mode merge --gcmode optimal
    condwait
-}
+)
 
 function syncShapes() {
     for channel in ${channels[@]}; do
