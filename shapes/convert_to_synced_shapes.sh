@@ -6,7 +6,7 @@ TAG=$3
 
 source utils/bashFunctionCollection.sh
 
-inputfile=output/shapes/${ERA}-${TAG}-${CHANNELS}-shapes.root
+inputfile=output/shapes/${TAG}/${ERA}-${TAG}-${CHANNELS}-shapes.root
 [[ -f $inputfile ]] || ( logerror $inputfile not fould && exit 2 )
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh

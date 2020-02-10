@@ -32,4 +32,4 @@ logandrun python shapes/produce_shapes.py \
     --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR
 
 # Normalize fake-factor shapes to nominal
-logandrun python fake-factor-application/normalize_shifts.py output/shapes/${ERA}-${TAG}-${CHANNELS}-shapes.root
+logandrun python fake-factor-application/normalize_shifts.py output/shapes/${TAG}/${ERA}-${TAG}-${CHANNELS}-shapes.root
