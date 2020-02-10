@@ -505,9 +505,9 @@ def main(args):
                 "CMS_prefiring", "prefireWeight", Weight(
                     "prefiringweightdown", "prefireWeight"), "Down"), ]
         for variation_ in prefiring_variaitons:
-            for process_nick in selectedProcesses & (
+            for chname_, _ in selectedChannelsTuples:
+                for process_nick in selectedProcesses & (
                     MCBkgDS[chname_] | signal_nicks):
-                for chname_, _ in selectedChannelsTuples:
                     variationsToAdd[chname_][process_nick].append(variation_)
 
     # MC tau energy scale
