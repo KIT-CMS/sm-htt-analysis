@@ -620,25 +620,25 @@ def main(args):
         "CMS_scale_j_Absolute", "jecUncAbsolute", DifferentPipeline
     )
     jet_es_variations += create_systematic_variations(
-        "CMS_scale_j_AbsoluteRun{era}".format(era=args.era), "jecUncAbsoluteYear", DifferentPipeline
+        "CMS_scale_j_Absolute_Run{era}".format(era=args.era), "jecUncAbsoluteYear", DifferentPipeline
     )
     jet_es_variations += create_systematic_variations(
         "CMS_scale_j_BBEC1", "jecUncBBEC1", DifferentPipeline
     )
     jet_es_variations += create_systematic_variations(
-        "CMS_scale_j_BBEC1Run{era}".format(era=args.era), "jecUncBBEC1Year", DifferentPipeline
+        "CMS_scale_j_BBEC1_Run{era}".format(era=args.era), "jecUncBBEC1Year", DifferentPipeline
     )
     jet_es_variations += create_systematic_variations(
         "CMS_scale_j_EC2", "jecUncEC2", DifferentPipeline
     )
     jet_es_variations += create_systematic_variations(
-        "CMS_scale_j_EC2Run{era}".format(era=args.era), "jecUncEC2Year", DifferentPipeline
+        "CMS_scale_j_EC2_Run{era}".format(era=args.era), "jecUncEC2Year", DifferentPipeline
     )
     jet_es_variations += create_systematic_variations(
         "CMS_scale_j_HF", "jecUncHF", DifferentPipeline
     )
     jet_es_variations += create_systematic_variations(
-        "CMS_scale_j_HFRun{era}".format(era=args.era), "jecUncHFYear", DifferentPipeline
+        "CMS_scale_j_HF_Run{era}".format(era=args.era), "jecUncHFYear", DifferentPipeline
     )
     jet_es_variations += create_systematic_variations(
         "CMS_scale_j_FlavorQCD", "jecUncFlavorQCD", DifferentPipeline
@@ -647,12 +647,12 @@ def main(args):
         "CMS_scale_j_RelativeBal", "jecUncRelativeBal", DifferentPipeline
     )
     jet_es_variations += create_systematic_variations(
-        "CMS_scale_j_RelativeSampleRun{era}".format(era=args.era),
+        "CMS_scale_j_RelativeSample_Run{era}".format(era=args.era),
         "jecUncRelativeSampleYear",
         DifferentPipeline,
     )
     jet_es_variations += create_systematic_variations(
-        "CMS_reso_j", "jerUnc", DifferentPipeline
+        "CMS_reso_j_Run{era}".format(era=args.era), "jerUnc", DifferentPipeline
     )
 
 
@@ -1075,6 +1075,28 @@ def main(args):
                 shift_direction.capitalize()))
         qcd_variations.append(
             ReplaceWeight(
+                "CMS_htt_qcd_2jet_rate_Run{era}".format(
+                    era=args.era),
+                "qcd_weight",
+                Weight(
+                    "em_qcd_osss_2jet_rate" +
+                    shift_direction +
+                    "_Weight",
+                    "qcd_weight"),
+                shift_direction.capitalize()))
+        qcd_variations.append(
+            ReplaceWeight(
+                "CMS_htt_qcd_2jet_shape_Run{era}".format(
+                    era=args.era),
+                "qcd_weight",
+                Weight(
+                    "em_qcd_osss_2jet_shape" +
+                    shift_direction +
+                    "_Weight",
+                    "qcd_weight"),
+                shift_direction.capitalize()))
+        qcd_variations.append(
+            ReplaceWeight(
                 "CMS_htt_qcd_iso_Run{era}".format(
                     era=args.era),
                 "qcd_weight",
@@ -1096,8 +1118,14 @@ def main(args):
     # Gluon-fusion WG1 uncertainty scheme
     ggh_variations = []
     for unc in [
-            "THU_ggH_Mig01", "THU_ggH_Mig12", "THU_ggH_Mu", "THU_ggH_PT120",
-            "THU_ggH_PT60", "THU_ggH_Res", "THU_ggH_VBF2j", "THU_ggH_VBF3j",
+            "THU_ggH_Mig01",
+            "THU_ggH_Mig12",
+            "THU_ggH_Mu",
+            "THU_ggH_PT120",
+            "THU_ggH_PT60",
+            "THU_ggH_Res",
+            "THU_ggH_VBF2j",
+            "THU_ggH_VBF3j",
             "THU_ggH_qmtop"
     ]:
         ggh_variations.append(
