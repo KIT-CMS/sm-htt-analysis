@@ -421,6 +421,7 @@ def main(args):
         for chname_, ch_ in selectedChannelsTuples:
             catsL_ = catsListD[chname_]
             classdict = readclasses(chname_, selectedCategories)
+            stage0_sig_idx = []
             for label in classdict.keys():
                 score = Variable(
                     "{}_max_score".format(chname_),
@@ -438,7 +439,7 @@ def main(args):
                         variable=score))
                 # if the net was trained on stage0 signals, add the stage1p1
                 # categories cutbased, otherwise use classes give
-                if label in ["ggh", "qqh"]:
+                '''if label in ["ggh", "qqh"]:
                     stxs = 100 if label == "ggh" else 200
                     for i_e, e in enumerate(binning["stxs_stage1p1"][label]):
                         score = Variable(
@@ -450,7 +451,23 @@ def main(args):
                                 ch_,
                                 Cuts(maxIdxCut,
                                      Cut(e, "stxs_stage1p1_cut")),
-                                variable=score))
+                                variable=score))'''
+                # find indices of stage 0 classes
+                if label in ["ggh", "qqh"]:
+                    stage0_sig_idx.append(classdict[label])
+            # if stage 0 signal classes exist, create 2D category
+            if len(stage0_sig_idx)==2:
+                score = Variable(
+                    "{}_max_score".format(chname_),
+                    VariableBinning(range(29)),
+                    binning["stxs_stage0_2Ddiscr_28"].format(channel=chname_))
+                catsL_.append(
+                    Category(
+                        "xxh",
+                        ch_,
+                        Cuts(
+                            Cut("("+"||".join(["{channel}_max_index=={index}".format(channel=chname_, index=idx) for idx in stage0_sig_idx])+")", "exclusive_score")),
+                        variable=score))
 
     # if gof test
     else:
@@ -474,7 +491,6 @@ def main(args):
                     ch_,
                     cuts,
                     variable=score))
-
     # Nominal histograms
     for chname_, ch_ in selectedChannelsTuples:
         catsL_ = catsListD[chname_]
