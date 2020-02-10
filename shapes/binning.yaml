@@ -238,7 +238,8 @@ stxs_stage0_2Ddiscr_28: "(0.5
                 +24.0*({channel}_qqh>=0.92&&{channel}_qqh<0.94)
                 +25.0*({channel}_qqh>=0.94&&{channel}_qqh<0.96)
                 +26.0*({channel}_qqh>=0.96&&{channel}_qqh<0.98)
-                +27.0*({channel}_qqh>=0.98)"
+                +27.0*({channel}_qqh>=0.98)
+                )"
     
 # Define STXS stage 1 cuts for unrolling
 stxs_stage1:
