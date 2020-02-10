@@ -1,14 +1,16 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys
 import uproot
 import re
-# %%
-
+import os
+if not os.path.isfile(sys.argv[1]):
+    print("No such file: "+sys.argv[1])
+    exit(1)
 shape = uproot.open(sys.argv[1])
 key=sys.argv[2]
 
 r=re.compile(sys.argv[2])
-matchingkeys=[key for key in shape.allkeys() if r.match(key) or r.match(key.encode())]
+matchingkeys=[key for key in shape.allkeys() if r.match(key.decode())]
 
 for key in matchingkeys:
     hist=shape[key]
