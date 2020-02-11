@@ -782,7 +782,7 @@ def main(args):
                 variationsToAdd["mt"][process_nick].append(variation_)
 
     # lepton trigger efficiency
-    if args.era == "2017":
+    if args.era in ["2017","2018"]:
         lteffCutD = {
             "mt": "25",
             "et": "28",
