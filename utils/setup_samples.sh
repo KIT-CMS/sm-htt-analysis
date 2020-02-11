@@ -43,6 +43,7 @@ then
     SVFit_Friends=$SVFit_Friends_2016
     MELA_Friends=$MELA_Friends_2016
     FF_Friends=$FF_Friends_2016
+    TauTriggers_Friends=$TauTriggers_Friends_2016
 elif [[ $ERA == *"2017"* ]]
 then
     ARTUS_OUTPUTS=$ARTUS_OUTPUTS_2017
@@ -50,6 +51,7 @@ then
     SVFit_Friends=$SVFit_Friends_2017
     MELA_Friends=$MELA_Friends_2017
     FF_Friends=$FF_Friends_2017
+    TauTriggers_Friends=$TauTriggers_Friends_2017
 elif [[ $ERA == *"2018"* ]]
 then
     ARTUS_OUTPUTS=$ARTUS_OUTPUTS_2018
@@ -57,6 +59,7 @@ then
     SVFit_Friends=$SVFit_Friends_2018
     MELA_Friends=$MELA_Friends_2018
     FF_Friends=$FF_Friends_2018
+    TauTriggers_Friends=$TauTriggers_Friends_2018
 fi
 
 ### check if there are valid local friend trees and, if yes overwrite the friend tree directory with the local ones
@@ -65,15 +68,16 @@ if [[ -d output/friend_trees ]]; then
     DIR=${WD}/output/friend_trees/$ERA/svfit_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && SVFit_Friends=$DIR
     DIR=${WD}/output/friend_trees/$ERA/mela_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && MELA_Friends=$DIR
     DIR=${WD}/output/friend_trees/$ERA/ff_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && FF_Friends=$DIR
+    DIR=${WD}/output/friend_trees/$ERA/tautrigger_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && TauTriggers_Friends=$DIR
 fi
 
 ### channels specific friend tree.
 # Used for example to process the event channel without including the fakefactor friends
 ARTUS_FRIENDS_EM="$NNScore_Friends $SVFit_Friends $MELA_Friends"
-ARTUS_FRIENDS_ET="$NNScore_Friends $SVFit_Friends $MELA_Friends"
-ARTUS_FRIENDS_MT="$NNScore_Friends $SVFit_Friends $MELA_Friends"
-ARTUS_FRIENDS_TT="$NNScore_Friends $SVFit_Friends $MELA_Friends"
-ARTUS_FRIENDS="$NNScore_Friends $SVFit_Friends $MELA_Friends"
+ARTUS_FRIENDS_ET="$NNScore_Friends $SVFit_Friends $MELA_Friends $TauTriggers_Friends"
+ARTUS_FRIENDS_MT="$NNScore_Friends $SVFit_Friends $MELA_Friends $TauTriggers_Friends"
+ARTUS_FRIENDS_TT="$NNScore_Friends $SVFit_Friends $MELA_Friends $TauTriggers_Friends"
+ARTUS_FRIENDS="$NNScore_Friends $SVFit_Friends $MELA_Friends  $TauTriggers_Friends"
 ARTUS_FRIENDS_FAKE_FACTOR=$FF_Friends
 
 ### for "backwards compability". Should be removed at some point. DO not use these variables
