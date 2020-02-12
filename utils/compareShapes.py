@@ -161,9 +161,9 @@ def compareHists(key):
         retstr += RED + "≠" + END + " {}\n".format(key)
         if not np.array_equal(bin1, bin2):
             retstr += "binning different:\n {} vs. {}\n".format(
-                key, bin1, bin2)
+                bin1, bin2)
         else:
-            retstr += "\tsum different: {}  vs. {}\n".format(
+            retstr += "sum different: {}  vs. {}\n".format(
                 arr1.sum(), arr2.sum())
     return (retstr)
 

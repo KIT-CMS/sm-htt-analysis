@@ -20,14 +20,13 @@ logandrun python shapes/produce_shapes.py \
     --categories ${CATEGORIES} \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
-    --num-threads $NCPUS \
     --directory $ARTUS_OUTPUTS \
     --et-friend-directory $ARTUS_FRIENDS_ET \
     --em-friend-directory $ARTUS_FRIENDS_EM \
     --mt-friend-directory $ARTUS_FRIENDS_MT \
     --tt-friend-directory $ARTUS_FRIENDS_TT \
     --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR
- 
+
 # Normalize fake-factor shapes to nominal
 logandrun python fake-factor-application/normalize_shifts.py output/shapes/${TAG}/${ERA}-${TAG}-${CHANNELS}-${PROCESSES}-${CATEGORIES}-shapes.root
 

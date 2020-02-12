@@ -199,6 +199,48 @@ analysis:
     qqh_PTHGT200:       *fine_binning_Xclasses
     ggh_2J:             *fine_binning_Xclasses
 
+# Define stage 0 2D discriminator
+stxs_stage0_2Ddiscr_28: "(0.5
+                +({channel}_qqh<0.35)*(
+                    0.0*({channel}_ggh<0.2)
+                    +1.0*({channel}_ggh>=0.2&&{channel}_ggh<0.3)
+                    +2.0*({channel}_ggh>=0.3&&{channel}_ggh<0.4)
+                    +3.0*({channel}_ggh>=0.4&&{channel}_ggh<0.5)
+                    +4.0*({channel}_ggh>=0.5&&{channel}_ggh<0.65)
+                    +5.0*({channel}_ggh>=0.65&&{channel}_ggh<0.8)
+                    +6.0*({channel}_ggh>=0.8)
+                )
+                +({channel}_qqh>=0.35&&{channel}_qqh<0.5)*(
+                    7.0*({channel}_ggh<0.2)
+                    +8.0*({channel}_ggh>=0.2&&{channel}_ggh<0.3)
+                    +9.0*({channel}_ggh>=0.3&&{channel}_ggh<0.4)
+                    +10.0*({channel}_ggh>=0.4&&{channel}_ggh<0.5)
+                    +11.0*({channel}_ggh>=0.5&&{channel}_ggh<0.65)
+                )
+                +({channel}_qqh>=0.5&&{channel}_qqh<0.6)*(
+                    12.0*({channel}_ggh<0.2)
+                    +13.0*({channel}_ggh>=0.2&&{channel}_ggh<0.3)
+                    +14.0*({channel}_ggh>=0.3&&{channel}_ggh<0.4)
+                    +15.0*({channel}_ggh>=0.4&&{channel}_ggh<0.5)
+                )
+                +({channel}_qqh>=0.6&&{channel}_qqh<0.7)*(
+                    16.0*({channel}_ggh<0.2)
+                    +17.0*({channel}_ggh>=0.2&&{channel}_ggh<0.3)
+                    +18.0*({channel}_ggh>=0.3&&{channel}_ggh<0.4)
+                )
+                +({channel}_qqh>=0.7&&{channel}_qqh<0.8)*(
+                    19.0*({channel}_ggh<0.2)
+                    +20.0*({channel}_ggh>=0.2&&{channel}_ggh<0.3)
+                )
+                +21.0*({channel}_qqh>=0.8&&{channel}_qqh<0.85)
+                +22.0*({channel}_qqh>=0.85&&{channel}_qqh<0.9)
+                +23.0*({channel}_qqh>=0.9&&{channel}_qqh<0.92)
+                +24.0*({channel}_qqh>=0.92&&{channel}_qqh<0.94)
+                +25.0*({channel}_qqh>=0.94&&{channel}_qqh<0.96)
+                +26.0*({channel}_qqh>=0.96&&{channel}_qqh<0.98)
+                +27.0*({channel}_qqh>=0.98)
+                )"
+    
 # Define STXS stage 1 cuts for unrolling
 stxs_stage1:
   lt:

@@ -86,12 +86,18 @@ function logerror {
 function logandrun() {
     # set bash to exit if as soon as a part of a pipe has a non-zero exit value
     set -o pipefail
+    # check if this is the top level logandrun script, so multiple notifications can be supressed
+    if [[ -z $LOGANDRUN_TOPLEVELSET ]]; then
+        export LOGANDRUN_TOPLEVELSET=1
+        LOGANDRUN_IS_TOP_LEVEL=1
+    fi
     # set the name of the logfile based on the command
     logfile=$( pwd )/output/log/logandrun/$( echo "$@" | cut -d' ' -f1-4 | sed 's@\./@@' | sed -E "s@[/ ]@\-@g" ).log
     # print the startmessage and log it
     echo -e "\e[43m[RUN]\e[0m" $( date +"%y-%m-%d %R" ): $@ | tee -a $( pwd )/output/log/logandrun/event.log | tee -a $logfile
     # evaluate the current date in seconds as the start date
     start=`date +%s`
+    #######
     # execute the command and log it
     $@ 2>&1 |  tee -a $logfile
     # capture the return code ( without  pipefail this would be the exit code of tee )
@@ -108,9 +114,13 @@ function logandrun() {
     fi
     # check if the script has been running for more than 2400s = 40 min AND
     # there is a script to notify the user
-    if [[ $((end-start)) -gt 2400 ]] && hash sendmsg.py 2>/dev/null ; then
+    if [[ $((end-start)) -gt 2400 && $LOGANDRUN_IS_TOP_LEVEL==1 ]] && hash sendmsg.py 2>/dev/null ; then
         #notify the user
         sendmsg.py "$(hostname) $( date +"%y-%m-%d %R" ) {$((end-start))s} $return_code: $@ " 2>/dev/null
+    fi
+    if [[ $LOGANDRUN_IS_TOP_LEVEL==1 ]]; then
+        unset LOGANDRUN_TOPLEVELSET
+        unset LOGANDRUN_IS_TOP_LEVEL
     fi
     return $return_code
 }
