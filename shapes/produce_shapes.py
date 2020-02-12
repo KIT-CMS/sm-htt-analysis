@@ -225,7 +225,7 @@ def main(args):
 
     selectedChannels = set(args.channels) - {None}
     selectedCategories = set(args.categories)
-    
+
     selectedChannelsTuples = {
         c_: smChannelsDict[c_] for c_ in selectedChannels}.items()
     selectedChannelsTuplesNoEM = {
@@ -250,8 +250,6 @@ def main(args):
 
     # defines the signal sets
     ww_nicks = {"ggHWW125", "qqHWW125"}
-    # tmp fix, remove for eoy ntuples
-    if args.era not in ["2016","2017"]:  ww_nicks = set()
 
     if args.gof_variable is None:
         signal_nicks = {
@@ -702,8 +700,6 @@ def main(args):
                 pS_ = signal_nicks | {"ZTT", "ZL", "ZJ", "W"}
             else:
                 pS_ = signal_nicks | {"ZTT", "ZL", "W"}
-            # tmp fix, remove for eoy ntuples
-            if args.era == "2016": pS_={p_ for p_ in pS_ if "ttH125" not in p_ }
             for process_nick in selectedProcesses & pS_:
                 variationsToAdd[chname_][process_nick].append(variation_)
 
