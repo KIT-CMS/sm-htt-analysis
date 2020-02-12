@@ -111,15 +111,25 @@ function compenv()(
 
 function genTrainingDS() {
     ensuremldirs
-    if [[ $CONDITIONAL_TRAINING == 1 ]]; then
-      for tag in ${tags[@]}; do
-          logandrun ./ml/create_training_dataset.sh all ${channelsarg} ${tag}
-      done
-    else
-      for tag in ${tags[@]}; do
-          logandrun ./ml/create_training_dataset.sh ${erasarg} ${channelsarg} ${tag}
-      done
-    fi
+    for tag in ${tags[@]}; do
+        for channel in ${channels[@]}; do
+            for era in ${eras[@]}; do
+                logandrun ./ml/create_training_dataset.sh ${era} ${channel} ${tag}
+            done
+            if [[ $ERA == *"all"* || ${#eras[@]} == 3 ]]; then
+                echo "Creating dataset config for conditional training"
+                outdir=output/ml/all_eras_${CHANNEL}_${TAG}
+                mkdir -p $outdir
+                (
+                source utils/setup_cvmfs_sft.sh
+                logandrun python ml/create_combined_config.py \
+                  --tag ${TAG} \
+                  --channel ${CHANNEL} \
+                  --output_dir ${outdir}
+                )
+            fi
+        done
+    done
 }
 
 function mltrain() {
