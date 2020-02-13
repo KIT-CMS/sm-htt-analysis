@@ -29,6 +29,8 @@ $CMSSW_BASE/bin/slc7_amd64_gcc700/MorphingSMRun2Legacy \
     --binomial_bbb=true \
     --jetfakes=$JETFAKES \
     --embedding=$EMBEDDING \
+    --ggh_wg1=false \
+    --qqh_wg1=false \
     --postfix="-ML" \
     --midfix="-${TAG}-" \
     --channel=$CHANNEL \

@@ -41,6 +41,5 @@ python shapes/produce_shapes.py \
     --tag $VARIABLE \
     --num-threads $NUM_THREADS
 
-cp output/shapes/${ERA}-${VARIABLE}-${CHANNEL}-shapes.root ${ERA}_shapes.root
 # Normalize fake-factor shapes to nominal
-python fake-factor-application/normalize_shifts.py ${ERA}_shapes.root
+python fake-factor-application/normalize_shifts.py output/shapes/${ERA}-${VARIABLE}-${CHANNEL}-shapes.root
