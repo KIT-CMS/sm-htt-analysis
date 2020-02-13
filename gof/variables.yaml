@@ -306,7 +306,7 @@ selected_variables:
             # bpt_1
             # bpt_2
             - njets
-            - nbtag
+            # nbtag
             - m_sv_puppi
             # mt_1
             # mt_2

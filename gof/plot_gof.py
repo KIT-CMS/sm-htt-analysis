@@ -47,7 +47,8 @@ labeldict = {
     'ME_q2v1': 'MELA $Q^{2}(^{}V_{1}$)',
     'ME_q2v2': 'MELA $Q^{2}(^{}V_{2}$)',
     'eta_1': '$\\eta(\\tau_1$)',
-    'mTdileptonMET_puppi': '$m_{T}(\\tau_1+\\tau_2, MET)$ (Puppi)'
+    'mTdileptonMET_puppi': '$m_{T}(\\tau_1+\\tau_2, MET)$ (Puppi)',
+    'DiTauDeltaR': '$\Delta$R $(\\tau_1, \\tau_2)$',
 }
 
 def parse_arguments():

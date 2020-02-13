@@ -25,7 +25,7 @@ then
 fi
 
 mkdir -p ${ERA}_plots
-for FILE in "${ERA}_datacard_shapes_prefit.root" # "${ERA}_datacard_shapes_postfit_sb.root"
+for FILE in "${ERA}_datacard_shapes_prefit.root" "${ERA}_datacard_shapes_postfit_b.root"
 do
     for OPTION in "" "--png"
     do
