@@ -31,6 +31,6 @@ do
     do
         ./plotting/plot_shapes.py -i $FILE -c $CHANNEL -e $ERA $OPTION \
             --categories $CATEGORIES $JETFAKES_ARG $EMBEDDING_ARG \
-            --gof-variable $VARIABLE
+            --gof-variable $VARIABLE -o ${ERA}_plots
     done
 done

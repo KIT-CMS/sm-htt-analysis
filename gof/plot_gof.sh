@@ -7,7 +7,7 @@ ERA=$1
 OUTPUTS=$2
 VARIABLES=gof/variables.yaml
 
-for CHANNEL in et mt tt
+for CHANNEL in et mt tt em
 do
     ./gof/plot_gof.py $VARIABLES $OUTPUTS $CHANNEL $ERA
 done
