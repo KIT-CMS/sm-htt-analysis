@@ -153,8 +153,6 @@ def main(args):
     else:
         filename="output/shapes/{TAG}/{ERA}-{TAG}-{CHANNELS}-shapes.root".format(
             ERA=args.era, TAG=args.tag, CHANNELS=",".join(args.channels))
-    if os.path.exists(filename):
-        logger.fatal("Target file {} exists. Aborting")
         raise Exception
     systematics = Systematics(
         filename,
