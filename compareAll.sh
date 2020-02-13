@@ -116,18 +116,26 @@ function genTrainingDS() {
             for era in ${eras[@]}; do
                 logandrun ./ml/create_training_dataset.sh ${era} ${channel} ${tag}
             done
-            if [[ $ERA == *"all"* || ${#eras[@]} == 3 ]]; then
-                echo "Creating dataset config for conditional training"
-                outdir=output/ml/all_eras_${CHANNEL}_${TAG}
-                mkdir -p $outdir
-                (
-                source utils/setup_cvmfs_sft.sh
-                logandrun python ml/create_combined_config.py \
-                  --tag ${TAG} \
-                  --channel ${CHANNEL} \
-                  --output_dir ${outdir}
-                )
-            fi
+        done
+    done
+    if [[ $ERA == *"all"* || ${#eras[@]} == 3 ]]; then
+        genCombinedDSConfig
+    fi
+}
+function genCombinedDSConfig() {
+    ensuremldirs
+    for tag in ${tags[@]}; do
+        for channel in ${channels[@]}; do
+            echo "Creating dataset config for conditional training"
+            outdir=output/ml/all_eras_${channel}_${tag}
+            [[ -d $outdir ]] || mkdir -p $outdir
+            (
+            source utils/setup_cvmfs_sft.sh
+            logandrun python ml/create_combined_config.py \
+                --tag ${tag} \
+                --channel ${channel} \
+                --output_dir ${outdir}
+            )
         done
     done
 }
