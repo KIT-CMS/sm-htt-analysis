@@ -153,7 +153,6 @@ def main(args):
     else:
         filename="output/shapes/{TAG}/{ERA}-{TAG}-{CHANNELS}-shapes.root".format(
             ERA=args.era, TAG=args.tag, CHANNELS=",".join(args.channels))
-        raise Exception
     systematics = Systematics(
         filename,
         num_threads=args.num_threads,
