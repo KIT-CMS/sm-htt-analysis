@@ -15,7 +15,7 @@ source utils/setup_python.sh
 source utils/setup_samples.sh $ERA
 
 # Produce shapes
-python cutbased_shapes/produce_shapes_$ERA.py \
+python cutbased_shapes/produce_shapes.py \
     --directory $ARTUS_OUTPUTS \
     --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR \
     --datasets $KAPPA_DATABASE \
