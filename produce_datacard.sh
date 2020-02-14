@@ -21,7 +21,7 @@ $CMSSW_BASE/bin/slc7_amd64_gcc700/MorphingSMRun2Legacy_tauES \
     --base_path=$PWD \
     --input_folder_mt="output/control_shapes" \
     --real_data=true \
-    --classic_bbb=false \
+    --classic_bbb=true \
     --postfix="-ML" \
     --midfix="-${TAG}-" \
     --auto_rebin=false \

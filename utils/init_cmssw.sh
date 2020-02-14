@@ -21,7 +21,7 @@ cd -
 git clone https://github.com/cms-analysis/CombineHarvester.git CombineHarvester
 
 # SM analysis specific code
-git clone https://github.com/KIT-CMS/SMRun2Legacy.git CombineHarvester/SMRun2Legacy
+git clone https://github.com/KIT-CMS/SMRun2Legacy.git CombineHarvester/SMRun2Legacy -b tauES
 
 # compile everything
 # Build

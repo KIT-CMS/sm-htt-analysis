@@ -295,12 +295,11 @@ def main(args):
          for qqH_htxs in qqHEstimation.htxs_dict})
 
     # Generate dict mapping processnames to proceses
-    # Generate dict mapping processnames to proceses
     processes = {}
     if args.era == "2016":
-        tauShifts = ["-2.4","-2.2","-2.0","-1.8","-1.6","-1.4","-1.2", "-1.0", "-1.0", "-0.8", "-0.7","-0.65","-0.6","-0.55","-0.5","-0.45" , "-0.4","-0.35","-0.3","-0.25", "-0.2", "0.0", "0.2","0.4", "0.6","0.8","1.0","1.2","1.4","1.6"]
+        tauShifts = ["-2.4","-2.2","-2.0","-1.8","-1.6","-1.50","-1.45","-1.4","-1.35","-1.30","-1.25","-1.2","-1.15","-1.10", "-1.05", "-1.0","-0.95", "-0.90","-0.85", "-0.8", "-0.75", "-0.7","-0.65","-0.6","-0.55","-0.5","-0.45" , "-0.4","-0.35","-0.3","-0.25", "-0.2","-0.15","-0.10", "-0.05","0.0", "0.2","0.4", "0.6","0.8","1.0","1.2","1.4","1.6"]
     else:
-        tauShifts = ["-2.4","-2.2","-2.0","-1.8","-1.6","-1.4","-1.2", "-1.0", "-1.0", "-0.8", "-0.6",  "-0.4", "-0.2", "0.0", "0.2","0.4", "0.6","0.8","1.0","1.2","1.4","1.6"]
+        tauShifts = ["-2.4","-2.2","-2.0","-1.8","-1.6","-1.4","-1.2", "-1.0", "-0.8", "-0.6",  "-0.4", "-0.2", "0.0", "0.2","0.4", "0.6","0.8","1.0","1.2","1.4","1.6"]
     embShifts = {}
     folderName = {}
     embShift_names = []
@@ -308,7 +307,7 @@ def main(args):
 	if "-" in shift:
         	folderName[shift] = "tauEs{}Down".format(shift.replace(".","p").replace("-",""))
 	else:
-                folderName[shift] = "tauEs{}Up".format(shift.replace(".","p").replace("-",""))
+            folderName[shift] = "tauEs{}Up".format(shift.replace(".","p"))
         embShifts[shift] = "EMB_{}".format(shift)
         embShift_names.append("EMB_{}".format(shift))
     folderName["0.0"]="nominal"
