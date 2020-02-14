@@ -153,9 +153,9 @@ def main(args):
     else:
         filename="output/shapes/{TAG}/{ERA}-{TAG}-{CHANNELS}-shapes.root".format(
             ERA=args.era, TAG=args.tag, CHANNELS=",".join(args.channels))
-    if os.path.exists(filename):
-        logger.fatal("Target file {} exists. Aborting")
-        raise Exception
+    # if os.path.exists(filename):
+    #     logger.fatal("Target file {} exists. Aborting")
+    #     raise Exception
     systematics = Systematics(
         filename,
         num_threads=args.num_threads,
@@ -255,7 +255,7 @@ def main(args):
             qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict} | ww_nicks
     else:
         signal_nicks = {"ggHWW125", "qqHWW125"} | ww_nicks
-
+    signal_nicks = set([])
     pnameToEstD = {
         "data_obs": DataEstimation,
         "EMB": ZTTEmbeddedEstimation,
@@ -295,7 +295,23 @@ def main(args):
          for qqH_htxs in qqHEstimation.htxs_dict})
 
     # Generate dict mapping processnames to proceses
+    # Generate dict mapping processnames to proceses
     processes = {}
+    if args.era == "2016":
+        tauShifts = ["-2.4","-2.2","-2.0","-1.8","-1.6","-1.4","-1.2", "-1.0", "-1.0", "-0.8", "-0.7","-0.65","-0.6","-0.55","-0.5","-0.45" , "-0.4","-0.35","-0.3","-0.25", "-0.2", "0.0", "0.2","0.4", "0.6","0.8","1.0","1.2","1.4","1.6"]
+    else:
+        tauShifts = ["-2.4","-2.2","-2.0","-1.8","-1.6","-1.4","-1.2", "-1.0", "-1.0", "-0.8", "-0.6",  "-0.4", "-0.2", "0.0", "0.2","0.4", "0.6","0.8","1.0","1.2","1.4","1.6"]
+    embShifts = {}
+    folderName = {}
+    embShift_names = []
+    for shift in tauShifts:
+	if "-" in shift:
+        	folderName[shift] = "tauEs{}Down".format(shift.replace(".","p").replace("-",""))
+	else:
+                folderName[shift] = "tauEs{}Up".format(shift.replace(".","p").replace("-",""))
+        embShifts[shift] = "EMB_{}".format(shift)
+        embShift_names.append("EMB_{}".format(shift))
+    folderName["0.0"]="nominal"
     for chname_, ch_ in selectedChannelsTuples:
         pS_ = {"data_obs"} | signal_nicks | MCBkgDS[chname_] | {"EMB"}
         processes[chname_] = {
@@ -307,6 +323,16 @@ def main(args):
                     ch_,
                     friend_directory=friend_directory[chname_])) for processname in
             pS_}
+        for shift in tauShifts:
+            processes[chname_][embShifts[shift]] = Process(
+                    embShifts[shift],
+                    pnameToEstD["EMB"](
+                        era,
+                        directory,
+                        ch_,
+                        friend_directory=friend_directory[chname_],
+                        folder=folderName[shift]))
+
 
     # Create the jetFakes process for all channels but em
     for chname_, ch_ in selectedChannelsTuplesNoEM:
@@ -529,8 +555,8 @@ def main(args):
     if len(selectedChannels & {"et", "mt"}) > 0:
         pt = [30, 35, 40, 500, 1000, "inf"]
         for histname_, pS_ in {
-            "CMS_eff_t_{}-{}_Run{}": signal_nicks | {"EMB", "VVL", "TTL"} |
-                trueTauBkgS, "CMS_eff_emb_t_{}-{}_Run{}": {"EMB"}}.items():
+            "CMS_eff_t_{}-{}_Run{}": signal_nicks | {"EMB", "VVL", "TTL"} | set(embShift_names) |
+                trueTauBkgS, "CMS_eff_emb_t_{}-{}_Run{}": {"EMB"} | set(embShift_names)}.items():
             tau_id_variations = []
             for shift_direction in ["Up", "Down"]:
                 for i, ptbin in enumerate(pt[:-1]):
@@ -560,8 +586,8 @@ def main(args):
     # for tautau, the id is split by decay mode, and each decay mode is assosicated one nuicance
     for chname_ in selectedChannels & {"tt"}:
         for histname_, pS_ in {
-            "CMS_eff_t_dm{dm}_Run{era}": signal_nicks | {"EMB", "VVL", "TTL"} |
-                trueTauBkgS, "CMS_eff_emb_t_dm{dm}_Run{era}": {"EMB"}}.items():
+            "CMS_eff_t_dm{dm}_Run{era}": signal_nicks | {"EMB", "VVL", "TTL"} | set(embShift_names) | 
+                trueTauBkgS, "CMS_eff_emb_t_dm{dm}_Run{era}": {"EMB"} | set(embShift_names)}.items():
             tau_id_variations = []
             for shift_direction in ["Up", "Down"]:
                 for decaymode in [0, 1, 10, 11]:
@@ -584,31 +610,31 @@ def main(args):
 
     # Tau energy scale
         # Tau energy scale
-    for name_, pS_ in {
-        "_emb_": {
-            "EMB", "FAKES"}, "_": signal_nicks | trueTauBkgS | {
-            "TTL", "VVL", "EMB", "FAKES"}}.items():
-        tau_es_3prong_variations = create_systematic_variations(
-            "CMS_scale{name}t_3prong_Run{era}".format(
-                name=name_, era=args.era),
-            "tauEsThreeProng", DifferentPipeline)
-        tau_es_3prong1pizero_variations = create_systematic_variations(
-            "CMS_scale{name}t_3prong1pizero_Run{era}".format(
-                name=name_, era=args.era),
-            "tauEsThreeProngOnePiZero", DifferentPipeline)
-        tau_es_1prong_variations = create_systematic_variations(
-            "CMS_scale{name}t_1prong_Run{era}".format(
-                name=name_, era=args.era),
-            "tauEsOneProng", DifferentPipeline)
-        tau_es_1prong1pizero_variations = create_systematic_variations(
-            "CMS_scale{name}t_1prong1pizero_Run{era}".format(
-                name=name_, era=args.era), "tauEsOneProngOnePiZero", DifferentPipeline)
-        for variation_ in tau_es_3prong_variations + tau_es_1prong_variations + \
-                tau_es_1prong1pizero_variations + tau_es_3prong1pizero_variations:
-            for process_nick in selectedProcesses & pS_:
-                for chname_ in selectedChannels - {"em"}:
-                    variationsToAdd[chname_][process_nick].append(
-                        variation_)
+    # for name_, pS_ in {
+    #     "_emb_": {
+    #         "EMB", "FAKES"}, "_": signal_nicks | trueTauBkgS | {
+    #         "TTL", "VVL", "EMB", "FAKES"}}.items():
+    #     tau_es_3prong_variations = create_systematic_variations(
+    #         "CMS_scale{name}t_3prong_Run{era}".format(
+    #             name=name_, era=args.era),
+    #         "tauEsThreeProng", DifferentPipeline)
+    #     tau_es_3prong1pizero_variations = create_systematic_variations(
+    #         "CMS_scale{name}t_3prong1pizero_Run{era}".format(
+    #             name=name_, era=args.era),
+    #         "tauEsThreeProngOnePiZero", DifferentPipeline)
+    #     tau_es_1prong_variations = create_systematic_variations(
+    #         "CMS_scale{name}t_1prong_Run{era}".format(
+    #             name=name_, era=args.era),
+    #         "tauEsOneProng", DifferentPipeline)
+    #     tau_es_1prong1pizero_variations = create_systematic_variations(
+    #         "CMS_scale{name}t_1prong1pizero_Run{era}".format(
+    #             name=name_, era=args.era), "tauEsOneProngOnePiZero", DifferentPipeline)
+    #     for variation_ in tau_es_3prong_variations + tau_es_1prong_variations + \
+    #             tau_es_1prong1pizero_variations + tau_es_3prong1pizero_variations:
+    #         for process_nick in selectedProcesses & pS_:
+    #             for chname_ in selectedChannels - {"em"}:
+    #                 variationsToAdd[chname_][process_nick].append(
+    #                     variation_)
 
     # MC ele energy scale & smear uncertainties
     ele_es_variations = create_systematic_variations("CMS_scale_mc_e",
@@ -802,7 +828,7 @@ def main(args):
         if chname_ == "et" and args.era not in ["2017", "2018"]:
             continue
         for flag, pS_ in {
-            "_emb_": {"EMB"},
+            "_emb_": {"EMB"} | set(embShift_names),
                 "_": signal_nicks | MCBkgDS[chname_]}.items():
             lep_trigger_eff_variations = []
             lep_trigger_eff_variations.append(
@@ -890,7 +916,7 @@ def main(args):
                 Weight("embeddedDecayModeWeight_effNom_pi0Down", "decayMode_SF"),
                 "Down"))
     for variation_ in mt_decayMode_variations:
-        for process_nick in selectedProcesses & {"EMB"}:
+        for process_nick in selectedProcesses & {"EMB"} | set(embShift_names):
             for chname_ in selectedChannels & {"mt"}:
                 variationsToAdd[chname_][process_nick].append(variation_)
     et_decayMode_variations = []
@@ -915,7 +941,7 @@ def main(args):
             Weight("embeddedDecayModeWeight_effNom_pi0Down", "decayMode_SF"),
             "Down"))
     for variation_ in et_decayMode_variations:
-        for process_nick in selectedProcesses & {"EMB"}:
+        for process_nick in selectedProcesses & {"EMB"} | set(embShift_names):
             if "et" in selectedChannels:
                 variationsToAdd["et"][process_nick].append(variation_)
     tt_decayMode_variations = []
@@ -940,7 +966,7 @@ def main(args):
             Weight("embeddedDecayModeWeight_effNom_pi0Down", "decayMode_SF"),
             "Down"))
     for variation_ in tt_decayMode_variations:
-        for process_nick in selectedProcesses & {"EMB"}:
+        for process_nick in selectedProcesses & {"EMB"} | set(embShift_names):
             if "tt" in selectedChannels:
                 variationsToAdd["tt"][process_nick].append(variation_)
     # 10% removed events in ttbar simulation (ttbar -> real tau tau events)

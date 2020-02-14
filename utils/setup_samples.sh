@@ -11,29 +11,28 @@ KAPPA_DATABASE=datasets/datasets.json
 #### ERA specific part. If a sample is not available comment it out here.
 # Samples Run2016
 basedir="/ceph/htautau/deeptau_eoy"
-ARTUS_OUTPUTS_2016="$basedir/2016/ntuples/"
-NNScore_Friends_2016="$basedir/2016/friends/NNScore/emb_ff_stage1_fix/"
-SVFit_Friends_2016="$basedir/2016/friends/SVFit/"
-MELA_Friends_2016="$basedir/2016/friends/MELA/"
-FF_Friends_2016="$basedir/2016/friends/FakeFactors_updated/"
-TauTriggers_Friends_2016="$basedir/2016/friends/TauTriggers/"
+ARTUS_OUTPUTS_2016="/portal/ekpbms1/home/jbechtel/postprocessing/eoy/tau_es/ntuples/2016/"
+NNScore_Friends_2016=""
+SVFit_Friends_2016=""
+MELA_Friends_2016=""
+FF_Friends_2016="/portal/ekpbms1/home/jbechtel/postprocessing/eoy/tau_es/friends/2016/FakeFactors/"
+TauTriggers_Friends_2016="/portal/ekpbms1/home/jbechtel/postprocessing/eoy/tau_es/friends/2016/TauTriggers/"
 
 # Samples Run2017
-ARTUS_OUTPUTS_2017="$basedir/2017/ntuples/"
-NNScore_Friends_2017="$basedir/2017/friends/NNScore/emb_ff_stage1_fix/"
-SVFit_Friends_2017="$basedir/2017/friends/SVFit/"
-MELA_Friends_2017="$basedir/2017/friends/MELA/"
-FF_Friends_2017="$basedir/2017/friends/FakeFactors_updated/"
-TauTriggers_Friends_2017="$basedir/2017/friends/TauTriggers/"
+ARTUS_OUTPUTS_2017="/portal/ekpbms1/home/jbechtel/postprocessing/eoy/tau_es/ntuples/2017/"
+NNScore_Friends_2017=""
+SVFit_Friends_2017=""
+MELA_Friends_2017=""
+FF_Friends_2017="/portal/ekpbms1/home/jbechtel/postprocessing/eoy/tau_es/friends/2017/FakeFactors/"
+TauTriggers_Friends_2017="/portal/ekpbms1/home/jbechtel/postprocessing/eoy/tau_es/friends/2017/TauTriggers/"
 
 # Samples Run2018
-ARTUS_OUTPUTS_2018="$basedir/2018/ntuples/"
-NNScore_Friends_2018="$basedir/2018/friends/NNScore/emb_ff_stage1_fix/"
-SVFit_Friends_2018="$basedir/2018/friends/SVFit/"
-MELA_Friends_2018="$basedir/2018/friends/MELA/"
-FF_Friends_2018="$basedir/2018/friends/FakeFactors_updated/"
-TauTriggers_Friends_2018="$basedir/2018/friends/TauTriggers/"
-
+ARTUS_OUTPUTS_2018="/portal/ekpbms1/home/jbechtel/postprocessing/eoy/tau_es/ntuples/2018/"
+NNScore_Friends_2018=""
+SVFit_Friends_2018=""
+MELA_Friends_2018=""
+FF_Friends_2018="/portal/ekpbms1/home/jbechtel/postprocessing/eoy/tau_es/friends/2018/FakeFactors/"
+TauTriggers_Friends_2018="/portal/ekpbms1/home/jbechtel/postprocessing/eoy/tau_es/friends/2018/TauTriggers/"
 
 # ERA handling
 if [[ $ERA == *"2016"* ]]

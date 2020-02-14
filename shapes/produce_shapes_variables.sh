@@ -20,7 +20,7 @@ source utils/setup_samples.sh $ERA
 python shapes/produce_shapes.py \
     --directory $ARTUS_OUTPUTS \
     --et-friend-directory $ARTUS_FRIENDS_ET \
-    --em-friend-directory $ARTUS_FRIENDS_EM \
+    --em-friend-directory blank \
     --mt-friend-directory $ARTUS_FRIENDS_MT \
     --tt-friend-directory $ARTUS_FRIENDS_TT \
     --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR \
@@ -30,4 +30,4 @@ python shapes/produce_shapes.py \
     --gof-variable $VARIABLE \
     --era $ERA \
     --tag ${ERA}_${CHANNELS}_${VARIABLE} \
-    --num-threads 38
+    --num-threads 42
