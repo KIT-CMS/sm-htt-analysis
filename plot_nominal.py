@@ -125,8 +125,8 @@ logvars = ["nbtag","njets","jpt_1","jpt_2"]
 
 def main(args):
 
-    signal_names=["ggh","qqh"]
-    signal=["ggH125","qqH125"]
+    signal_names=[]
+    signal=[]
 
     if args.emb and args.ff:
         bkg_processes_names = [
@@ -248,7 +248,7 @@ def main(args):
             config["ratio_denominator_nicks"] = [
                 " ".join(bkg_processes_names)
             ] * (2+len(signal_names))
-            config["ratio_numerator_nicks"] = [" ".join(bkg_processes_names)] + [" ".join(bkg_processes_names+[signal_names[0]])]+ [" ".join(bkg_processes_names+[signal_names[1]])] + ["data"]
+            config["ratio_numerator_nicks"] = [" ".join(bkg_processes_names)] + ["data"]
             config["ratio_result_nicks"] = ["bkg_ratio"] + [x+"_ratio" for x in signal_names] + ["data_ratio"]
             if args.comparison:
                 config["markers"] = ["HIST"] + ["LINE"] + ["HIST"] * (len(bkg_processes_names)-1) +  ["EX0"] + ["E2", "EX0"] + ["EX0"]
