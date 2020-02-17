@@ -13,7 +13,7 @@ combine \
            --setParameterRanges taues=-2.4,1.6:r=0.8,1.2 \
             --robustFit 1 \
             -m 0 -d ${ERA}_workspace.root \
-            --setParameters taues=-0.5,r=1.0 \
+            --setParameters taues=-0.15,r=1.0 \
                 --setRobustFitAlgo=Minuit2 \
                 --setRobustFitStrategy=0 \
                 --setRobustFitTolerance=0.2 \
@@ -28,10 +28,10 @@ combineTool.py -M MultiDimFit -d ${ERA}_workspace.root \
     --algo grid \
     --X-rtd MINIMIZER_analytic --cminDefaultMinimizerStrategy 0 \
     -P taues \
-    --setParameters taues=-0.5 \
+    --setParameters taues=-0.15 \
     --floatOtherPOIs 1 \
-    --points 800 \
-    --setParameterRanges taues=-2.4,1.6 \
+    --points 81 \
+    --setParameterRanges taues=-2.425,1.625 \
     --robustFit 1 \
     -n ${ERA}_taues
 

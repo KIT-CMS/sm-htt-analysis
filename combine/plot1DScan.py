@@ -181,12 +181,14 @@ def BuildScan(scan, param, files, color, yvals, chop,
     for i in xrange(graph.GetN()):
         fitsx.append(graph.GetX()[i])
         fitsy.append(graph.GetY()[i])
+    
     bestfit = fitsx[fitsy.index(min(fitsy))]
     if envelope:
         plot.RemoveGraphYAll(graph, 0.)
     graph.SetMarkerColor(color)
     spline = ROOT.TSpline3("spline3", graph)
     global NAMECOUNTER
+
     func = ROOT.TF1('splinefn' + str(NAMECOUNTER),
                     partial(Eval, spline),
                     graph.GetX()[0],
@@ -225,7 +227,40 @@ def BuildScan(scan, param, files, color, yvals, chop,
     else:
         val_2sig = (0., 0., 0.)
         cross_2sig = cross_1sig
+    print val[0]+val[2]-0.1,val[0]+val[1]+0.1
+    del func # func = ROOT.TF1("func","(x<{0})*[0]*(x-[1])**2+(x>{0})*[2]*(x-[3])**2".format(bestfit),-2.4,1.6)
+    # func = ROOT.TF1("func","[0]*x**4+[1]*x**3+[2]*x**2+[3]*x",val[0]+val[2]-0.1,val[0]+val[1]+0.1)
+    func = ROOT.TF1("func","[0]*(x-[1])**2",val[0]+val[2]-0.1,val[0]+val[1]+0.1)
+    fitresult = graph.Fit(func,"S","",val[0]+val[2]-0.1,val[0]+val[1]+0.1)
+    bestfit = func.GetMinimumX()
+ 
+    func = ROOT.TF1("func","(x<[{0}])*[0]*(x-[{0}])**2+(x>=[{0}])*[2]*(x-[{0}])**2".format(bestfit),val[0]+val[2]-0.1,val[0]+val[1]+0.1)
+
+    fitresult = graph.Fit(func,"S","",val[0]+val[2]-0.1,val[0]+val[1]+0.1)
+    bestfit = func.GetMinimumX()
+    minimum_y = func.GetMinimum()
+    print minimum_y
+    func.SetLineColor(color)
+    func.SetLineWidth(3)
+    import numpy as np
+    x_values = np.linspace(val[0]+val[2]-0.1,val[0]+val[1]+0.1,10000)
+    x_low = 0.0
+    x_high = 0.0
+    for x in x_values:
+        if func(x) < 1.0+minimum_y:
+            x_low = x
+            break
+    for x in x_values:
+        if x>bestfit:
+            if func(x) > 1.0+minimum_y:
+                x_high = x
+                break
+    
+    crossings[1.0] = [{'lo': x_low, 'hi': x_high, 'valid_hi': True, 'contains_bf': True, 'valid_lo': True}]
+    val = (bestfit, x_high - bestfit, x_low - bestfit)
+    print val
     return {
+        "y_low": minimum_y,
         "graph": graph,
         "spline": spline,
         "func": func,
@@ -275,7 +310,7 @@ parser.add_argument('--POI', help='use this parameter of interest')
 parser.add_argument('--POI-line', default=None)
 parser.add_argument('--translate', default=None,
                     help='json file with POI name translation')
-parser.add_argument('--main-label', default='Observed',
+parser.add_argument('--main-label', default='Best fit',
                     type=str, help='legend label for the main scan')
 parser.add_argument(
     '--main-color', default=1, type=int, help='line and marker color for main scan')
@@ -314,7 +349,7 @@ if args.translate is not None:
     if args.POI in name_translate:
         fixed_name = name_translate[args.POI]
 
-yvals = [1., 4.]
+yvals = [1.]
 if args.upper_cl is not None:
     yvals = [ROOT.Math.chisquared_quantile(args.upper_cl, 1)]
 
@@ -330,7 +365,7 @@ if args.premade:
     tmp_gr = tmp_file.Get('main').Clone()
 main_scan = BuildScan(args.output, args.POI, [args.main], args.main_color, yvals, args.chop,
                         args.remove_near_min, args.rezero, remove_delta=main_remove_delta, improve=main_improve, pregraph=tmp_gr, envelope=args.envelope)
-
+print main_scan
 n_brk = 0
 n_env = len(args.others) if args.others is not None else 0
 if args.envelope and args.breakdown:
@@ -447,6 +482,8 @@ axishist = plot.GetAxisHist(pads[0])
 # axishist.SetMinimum(1E-5)
 # pads[0].SetLogy(True)
 axishist.SetMaximum(args.y_max)
+axishist.SetMinimum(main_scan["y_low"])
+
 # axishist.GetYaxis().SetTitle("- 2 #Delta ln #Lambda(%s)" % fixed_name)
 axishist.GetYaxis().SetTitle("#minus2 ln #Lambda (r)")
 axishist.GetXaxis().SetTitle("%s" % fixed_name)
@@ -474,10 +511,10 @@ if len(other_scans) > 0:
 if args.x_range is not None:
     axishist.GetXaxis().SetLimits(float(args.x_range.split(',')[0]), float(args.x_range.split(',')[1]))
 
-if args.vertical_line is not None:
+if True: # args.vertical_line is not None:
     vline = ROOT.TLine()
     plot.Set(vline, LineColor=16, LineWidth=1, LineStyle=7)
-    plot.DrawVerticalLine(pads[0], vline, args.vertical_line)
+    plot.DrawVerticalLine(pads[0], vline, main_scan['val'][0])
 
 if args.breakdown and args.envelope:
     for other in new_others:
@@ -554,7 +591,7 @@ crossings = main_scan['crossings']
 val_nom = main_scan['val']
 val_2sig = main_scan['val_2sig']
 
-textfit = '%s = %.3f{}^{#plus %.3f}_{#minus %.3f}' % (
+textfit = '%s (in %%) = %.2f{}^{#plus %.2f}_{#minus %.2f}' % (
     fixed_name, val_nom[0], val_nom[1], abs(val_nom[2]))
 if args.upper_cl:
     textfit = '%s < %.2f (%i%% CL)' % (
