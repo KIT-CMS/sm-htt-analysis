@@ -1,12 +1,6 @@
 #!/bin/bash
 set -e
 
-if uname -a | grep ekpdeepthought
-then
-  echo "Not possible here, use another machine"
-  exit 1
-fi
-
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
 source utils/bashFunctionCollection.sh
