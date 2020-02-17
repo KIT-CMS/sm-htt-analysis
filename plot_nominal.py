@@ -296,8 +296,6 @@ def main(args):
                 config["ratio_result_nicks"] = ["ratio_Bkg", "ratio_Data_to_MC", "ratio_Data"]
             configs.append(config)
 
-    import pprint as pp
-    pp.pprint(configs)
     higgsplot.HiggsPlotter(
         list_of_config_dicts=configs,
         list_of_args_strings=[args.additional_arguments],
