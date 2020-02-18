@@ -230,11 +230,12 @@ def BuildScan(scan, param, files, color, yvals, chop,
     print val[0]+val[2]-0.1,val[0]+val[1]+0.1
     del func # func = ROOT.TF1("func","(x<{0})*[0]*(x-[1])**2+(x>{0})*[2]*(x-[3])**2".format(bestfit),-2.4,1.6)
     # func = ROOT.TF1("func","[0]*x**4+[1]*x**3+[2]*x**2+[3]*x",val[0]+val[2]-0.1,val[0]+val[1]+0.1)
-    func = ROOT.TF1("func","[0]*(x-[1])**2",val[0]+val[2]-0.1,val[0]+val[1]+0.1)
+    # func = ROOT.TF1("func","[0]*(x-[1])**2",val[0]+val[2]-0.1,val[0]+val[1]+0.1)
+    func = ROOT.TF1("func","[0]*x**2+[1]*x+[2]",val[0]+val[2]-0.1,val[0]+val[1]+0.1)
     fitresult = graph.Fit(func,"S","",val[0]+val[2]-0.1,val[0]+val[1]+0.1)
     bestfit = func.GetMinimumX()
  
-    func = ROOT.TF1("func","(x<[{0}])*[0]*(x-[{0}])**2+(x>=[{0}])*[2]*(x-[{0}])**2".format(bestfit),val[0]+val[2]-0.1,val[0]+val[1]+0.1)
+    func = ROOT.TF1("func","(x<[{0}])*[0]*(x-[{0}])**2+(x>=[{0}])*[1]*(x-[{0}])**2+[2]".format(bestfit),val[0]+val[2]-0.1,val[0]+val[1]+0.1)
 
     fitresult = graph.Fit(func,"S","",val[0]+val[2]-0.1,val[0]+val[1]+0.1)
     bestfit = func.GetMinimumX()
@@ -247,12 +248,12 @@ def BuildScan(scan, param, files, color, yvals, chop,
     x_low = 0.0
     x_high = 0.0
     for x in x_values:
-        if func(x) < 1.0+minimum_y:
+        if func(x) < 1.0:
             x_low = x
             break
     for x in x_values:
         if x>bestfit:
-            if func(x) > 1.0+minimum_y:
+            if func(x) > 1.0:
                 x_high = x
                 break
     
