@@ -234,8 +234,7 @@ def BuildScan(scan, param, files, color, yvals, chop,
     func = ROOT.TF1("func","[0]*(x-[1])**2",val[0]+val[2]-0.1,val[0]+val[1]+0.1)
     fitresult = graph.Fit(func,"S","",val[0]+val[2]-0.1,val[0]+val[1]+0.1)
     bestfit = func.GetMinimumX()
- 
-    func = ROOT.TF1("func","(x<[{0}])*[0]*(x-[{0}])**2+(x>=[{0}])*[1]*(x-[{0}])**2".format(bestfit),val[0]+val[2]-0.1,val[0]+val[1]+0.1)
+    func = ROOT.TF1("func","(x<{0})*[0]*(x-{0})**2+(x>={0})*[1]*(x-{0})**2".format(bestfit),val[0]+val[2]-0.1,val[0]+val[1]+0.1)
 
     fitresult = graph.Fit(func,"S","",val[0]+val[2]-0.1,val[0]+val[1]+0.1)
     bestfit = func.GetMinimumX()
