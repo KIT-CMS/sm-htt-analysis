@@ -231,11 +231,11 @@ def BuildScan(scan, param, files, color, yvals, chop,
     del func # func = ROOT.TF1("func","(x<{0})*[0]*(x-[1])**2+(x>{0})*[2]*(x-[3])**2".format(bestfit),-2.4,1.6)
     # func = ROOT.TF1("func","[0]*x**4+[1]*x**3+[2]*x**2+[3]*x",val[0]+val[2]-0.1,val[0]+val[1]+0.1)
     # func = ROOT.TF1("func","[0]*(x-[1])**2",val[0]+val[2]-0.1,val[0]+val[1]+0.1)
-    func = ROOT.TF1("func","[0]*x**2+[1]*x+[2]",val[0]+val[2]-0.1,val[0]+val[1]+0.1)
+    func = ROOT.TF1("func","[0]*(x-[1])**2",val[0]+val[2]-0.1,val[0]+val[1]+0.1)
     fitresult = graph.Fit(func,"S","",val[0]+val[2]-0.1,val[0]+val[1]+0.1)
     bestfit = func.GetMinimumX()
  
-    func = ROOT.TF1("func","(x<[{0}])*[0]*(x-[{0}])**2+(x>=[{0}])*[1]*(x-[{0}])**2+[2]".format(bestfit),val[0]+val[2]-0.1,val[0]+val[1]+0.1)
+    func = ROOT.TF1("func","(x<[{0}])*[0]*(x-[{0}])**2+(x>=[{0}])*[1]*(x-[{0}])**2".format(bestfit),val[0]+val[2]-0.1,val[0]+val[1]+0.1)
 
     fitresult = graph.Fit(func,"S","",val[0]+val[2]-0.1,val[0]+val[1]+0.1)
     bestfit = func.GetMinimumX()
@@ -483,7 +483,7 @@ axishist = plot.GetAxisHist(pads[0])
 # axishist.SetMinimum(1E-5)
 # pads[0].SetLogy(True)
 axishist.SetMaximum(args.y_max)
-axishist.SetMinimum(main_scan["y_low"])
+axishist.SetMinimum(0.0)
 
 # axishist.GetYaxis().SetTitle("- 2 #Delta ln #Lambda(%s)" % fixed_name)
 axishist.GetYaxis().SetTitle("#minus2 ln #Lambda (r)")
