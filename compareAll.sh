@@ -14,9 +14,6 @@ if [[ $sourced == 0 ]]; then
 fi
 set -o pipefail
 
-unset PYTHONPATH
-unset PYTHONUSERBASE
-
 source utils/bashFunctionCollection.sh
 
 ## make sure all the output directories are there
@@ -114,10 +111,12 @@ function genTrainingDS() {
     for tag in ${tags[@]}; do
         for channel in ${channels[@]}; do
             for era in ${eras[@]}; do
-                logandrun ./ml/create_training_dataset.sh ${era} ${channel} ${tag}
+                logandrun ./ml/create_training_dataset.sh ${era} ${channel} ${tag} &
             done
+            condwait
         done
     done
+    wait
     if [[ $ERA == *"all"* || ${#eras[@]} == 3 ]]; then
         genCombinedDSConfig
     fi
@@ -152,8 +151,32 @@ function mltrain() {
                 for channel in ${channels[@]}; do
                     logandrun ./ml/run_training.sh ${era} ${channel} ${tag}
                 done
+                wait
             done
         fi
+    done
+}
+
+function checkTrainings() {
+    ensuremldirs
+    for tag in ${tags[@]}; do
+        for channel in ${channels[@]}; do
+            for fold in 0 1 ; do
+                if [[ $CONDITIONAL_TRAINING == 1 ]]; then
+                    fn=output/log/logandrun/python-htt-ml-training-keras_training.py-output-ml-all_eras_${channel}_${tag}-dataset_config.yaml-${fold}.log
+                    if [[ ! -f $fn || ! $( tail -n1 $fn ) =~ 'COMPLETE'   ]]; then
+                        echo "$tag $channel $fold training not done"
+                    fi
+                else
+                    for era in ${eras[@]}; do
+                        fn=output/log/logandrun/python-htt-ml-training-keras_training.py-output-ml-${era}_${channel}_${tag}-dataset_config.yaml-${fold}.log
+                        if [[ ! -f $fn || ! $( tail -n1 $fn ) =~ 'COMPLETE'   ]]; then
+                            echo "$tag $era $channel $fold training not done"
+                        fi
+                    done
+                fi
+            done
+        done
     done
 }
 
@@ -207,19 +230,17 @@ function provideCluster() (
     tag=$1
     era=$2
     llwtnndir=$cmssw_src_local/HiggsAnalysis/friend-tree-producer/data/inputs_lwtnn
-    #find $llwtnndir -type l -iname "fold*_lwtnn.json" -delete
-    # for era in ${eras[@]}; do
-        for channel in ${channels[@]}; do
-            llwtnndir_sel=$llwtnndir/$tag/${era}/${channel}
-            ### Supply the generated models in the hard-coded path in the friendProducer
-            ### alogrsync $remote will dereference this symlink
-            [[ ! -d $llwtnndir_sel ]] && mkdir -p $llwtnndir_sel
-            for fold in 0 1;
-            do
-                updateSymlink $sm_htt_analysis_dir/output/ml/${era}_${channel}_${tag}/fold${fold}_lwtnn.json  $llwtnndir_sel/fold${fold}_lwtnn.json
-            done
+    find $llwtnndir -type l -iname "fold*_lwtnn.json" -delete
+    for channel in ${channels[@]}; do
+        llwtnndir_sel=$llwtnndir/$tag/${era}/${channel}
+        ### Supply the generated models in the hard-coded path in the friendProducer
+        ### alogrsync $remote will dereference this symlink
+        [[ ! -d $llwtnndir_sel ]] && mkdir -p $llwtnndir_sel
+        for fold in 0 1;
+        do
+            updateSymlink $sm_htt_analysis_dir/output/ml/${era}_${channel}_${tag}/fold${fold}_lwtnn.json  $llwtnndir_sel/fold${fold}_lwtnn.json
         done
-    # done
+    done
     updateSymlink $sm_htt_analysis_dir/datasets/datasets.json $cmssw_src_local/HiggsAnalysis/friend-tree-producer/data/input_params/datasets.json
     if [[ ! $cluster =~ "etp"  ]]; then
         logandrun alogrsync $remote -rLPthz ${cmssw_src_local}/HiggsAnalysis/friend-tree-producer/data/ $remote:${cmssw_src}/HiggsAnalysis/friend-tree-producer/data
@@ -231,15 +252,28 @@ function applyOnCluster()(
     for tag in ${tags[@]}; do
         export tag
         for era in ${eras[@]}; do
-            provideCluster $tag $era
-            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "submit" ${tag} $CONDITIONAL_TRAINING
-            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "rungc" ${tag} $CONDITIONAL_TRAINING
-            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "collect" ${tag} $CONDITIONAL_TRAINING
-            copyFromCluster
-            logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "delete" ${tag} $CONDITIONAL_TRAINING || return 1
+            if ! friendTreesExistLocal; then
+                provideCluster $tag $era
+                logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "submit" ${tag} $CONDITIONAL_TRAINING
+                logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "rungc" ${tag} $CONDITIONAL_TRAINING
+                logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "collect" ${tag} $CONDITIONAL_TRAINING
+                copyFromCluster
+                logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "delete" ${tag} $CONDITIONAL_TRAINING || return 1
+            else
+                loginfo "Skipping Application for $tag $era because friend tree exists"
+            fi
         done
     done
 )
+
+function friendTreesExistLocal() {
+    nnscorefolder=$batch_out_local/${era}/nnscore_friends/${tag}
+    if [[ -d $nnscorefolder && $( du -bs $nnscorefolder | cut -f1 ) -gt 11812544 ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
 
 function copyFromCluster()(
     set -e
@@ -248,9 +282,9 @@ function copyFromCluster()(
     if [[ $cluster == etp7 ]]; then
         logandrun rsync -rLPthz $batch_out/${era}_${tag}/NNScore_workdir/NNScore_collected/ $nnscorefolder
     else
-        logandrun alogrsync $remote -rLPthz $remote:$batch_out/${era}_${tag}/NNScore_workdir/NNScore_collected/ $nnscorefolder
+        logandrun alogrsync $remote -rLPthz --delete $remote:$batch_out/${era}_${tag}/NNScore_workdir/NNScore_collected/ $nnscorefolder
     fi
-    if [[ $( du -bs $nnscorefolder | cut -f1 ) -lt 11812544 ]]; then
+    if ! friendTreesExistLocal; then
         logerror Recieved NNScore Friend folder to small!
         return 1
     fi
