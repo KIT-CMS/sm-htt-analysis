@@ -251,7 +251,7 @@ def main(args):
             ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict} | {
             qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict} | ww_nicks
     else:
-        signal_nicks = {"ggHWW125", "qqHWW125"} | ww_nicks
+        signal_nicks = {"qqH125", "ggH125", "WH125", "ZH125", "VH125", "ttH125"} | ww_nicks
 
     pnameToEstD = {
         "data_obs": DataEstimation,
@@ -356,7 +356,14 @@ def main(args):
                     processes[chname_]["data_obs"],
                     friend_directory=friend_directory[chname_]))
         else:
-            qcd_weight = Weight("em_qcd_osss_binned_Weight", "qcd_weight")
+            # qcd_weight = Weight("em_qcd_osss_binned_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight")
+            if args.era == "2016":
+                closureweight = 1.2
+            elif args.era == "2017":
+                closureweight = 1.1
+            elif args.era == "2018":
+                closureweight = 1.2
+            qcd_weight = Weight("{closureweight}*em_qcd_osss_binned_Weight".format(closureweight=closureweight), "qcd_weight")
             processes[chname_]["QCD"] = Process(
                 "QCD",
                 est_(
