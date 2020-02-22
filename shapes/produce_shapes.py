@@ -984,7 +984,7 @@ def main(args):
             ReplaceWeight(
                 "CMS_htt_qcd_0jet_rate_{era}".format(era=args.era),
                 "qcd_weight",
-                Weight("em_qcd_osss_0jet_rate{}_Weight".format(shift_direction), "qcd_weight"),
+                Weight("em_qcd_osss_stat_0jet_rate{}_Weight".format(shift_direction), "qcd_weight"),
                 shift_direction.capitalize(),
             )
         )
@@ -992,39 +992,17 @@ def main(args):
             ReplaceWeight(
                 "CMS_htt_qcd_0jet_shape_{era}".format(era=args.era),
                 "qcd_weight",
-                Weight("em_qcd_osss_0jet_shape{}_Weight".format(shift_direction), "qcd_weight"),
+                Weight("em_qcd_osss_stat_0jet_shape{}_Weight".format(shift_direction), "qcd_weight"),
                 shift_direction.capitalize(),
             )
         )
-        qcd_variations.append(
-            ReplaceWeight(
-                "CMS_htt_qcd_0jet_rate_{era}".format(
-                    era=args.era),
-                "qcd_weight",
-                Weight(
-                    "em_qcd_osss_0jet_rate" +
-                    shift_direction +
-                    "_Weight",
-                    "qcd_weight"),
-                shift_direction.capitalize()))
-        qcd_variations.append(
-            ReplaceWeight(
-                "CMS_htt_qcd_0jet_shape_{era}".format(
-                    era=args.era),
-                "qcd_weight",
-                Weight(
-                    "em_qcd_osss_0jet_shape" +
-                    shift_direction +
-                    "_Weight",
-                    "qcd_weight"),
-                shift_direction.capitalize()))
         qcd_variations.append(
             ReplaceWeight(
                 "CMS_htt_qcd_1jet_rate_{era}".format(
                     era=args.era),
                 "qcd_weight",
                 Weight(
-                    "em_qcd_osss_1jet_rate" +
+                    "em_qcd_osss_stat_1jet_rate" +
                     shift_direction +
                     "_Weight",
                     "qcd_weight"),
@@ -1035,7 +1013,7 @@ def main(args):
                     era=args.era),
                 "qcd_weight",
                 Weight(
-                    "em_qcd_osss_1jet_shape" +
+                    "em_qcd_osss_stat_1jet_shape" +
                     shift_direction +
                     "_Weight",
                     "qcd_weight"),
@@ -1046,7 +1024,7 @@ def main(args):
                     era=args.era),
                 "qcd_weight",
                 Weight(
-                    "em_qcd_osss_2jet_rate" +
+                    "em_qcd_osss_stat_2jet_rate" +
                     shift_direction +
                     "_Weight",
                     "qcd_weight"),
@@ -1057,7 +1035,7 @@ def main(args):
                     era=args.era),
                 "qcd_weight",
                 Weight(
-                    "em_qcd_osss_2jet_shape" +
+                    "em_qcd_osss_stat_2jet_shape" +
                     shift_direction +
                     "_Weight",
                     "qcd_weight"),
