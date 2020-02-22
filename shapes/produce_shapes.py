@@ -984,7 +984,7 @@ def main(args):
             ReplaceWeight(
                 "CMS_htt_qcd_0jet_rate_{era}".format(era=args.era),
                 "qcd_weight",
-                Weight("em_qcd_osss_stat_0jet_rate{}_Weight".format(shift_direction), "qcd_weight"),
+                Weight("{closureweight}*em_qcd_osss_stat_0jet_rate{shift}_Weight".format(closureweight=closureweight,shift=shift_direction), "qcd_weight"),
                 shift_direction.capitalize(),
             )
         )
@@ -992,7 +992,7 @@ def main(args):
             ReplaceWeight(
                 "CMS_htt_qcd_0jet_shape_{era}".format(era=args.era),
                 "qcd_weight",
-                Weight("em_qcd_osss_stat_0jet_shape{}_Weight".format(shift_direction), "qcd_weight"),
+                Weight("{closureweight}*em_qcd_osss_stat_0jet_shape{shift}_Weight".format(closureweight=closureweight,shift=shift_direction), "qcd_weight"),
                 shift_direction.capitalize(),
             )
         )
@@ -1002,9 +1002,9 @@ def main(args):
                     era=args.era),
                 "qcd_weight",
                 Weight(
-                    "em_qcd_osss_stat_1jet_rate" +
+                    "{closureweight}*em_qcd_osss_stat_1jet_rate" +
                     shift_direction +
-                    "_Weight",
+                    "_Weight".format(closureweight=closureweight),
                     "qcd_weight"),
                 shift_direction.capitalize()))
         qcd_variations.append(
@@ -1013,9 +1013,9 @@ def main(args):
                     era=args.era),
                 "qcd_weight",
                 Weight(
-                    "em_qcd_osss_stat_1jet_shape" +
+                    "{closureweight}*em_qcd_osss_stat_1jet_shape" +
                     shift_direction +
-                    "_Weight",
+                    "_Weight".format(closureweight=closureweight),
                     "qcd_weight"),
                 shift_direction.capitalize()))
         qcd_variations.append(
@@ -1024,9 +1024,9 @@ def main(args):
                     era=args.era),
                 "qcd_weight",
                 Weight(
-                    "em_qcd_osss_stat_2jet_rate" +
+                    "{closureweight}*em_qcd_osss_stat_2jet_rate" +
                     shift_direction +
-                    "_Weight",
+                    "_Weight".format(closureweight=closureweight),
                     "qcd_weight"),
                 shift_direction.capitalize()))
         qcd_variations.append(
@@ -1035,9 +1035,9 @@ def main(args):
                     era=args.era),
                 "qcd_weight",
                 Weight(
-                    "em_qcd_osss_stat_2jet_shape" +
+                    "{closureweight}*em_qcd_osss_stat_2jet_shape" +
                     shift_direction +
-                    "_Weight",
+                    "_Weight".format(closureweight=closureweight),
                     "qcd_weight"),
                 shift_direction.capitalize()))
         qcd_variations.append(
@@ -1046,14 +1046,14 @@ def main(args):
                     era=args.era),
                 "qcd_weight",
                 Weight(
-                    "em_qcd_extrap_" +
+                    "{closureweight}*em_qcd_extrap_" +
                     shift_direction +
-                    "_Weight",
+                    "_Weight".format(closureweight=closureweight),
                     "qcd_weight"),
                 shift_direction.capitalize()))
         qcd_variations.append(  # why do we need both CMS_htt_qcd_iso_Run$ERA and CMS_htt_qcd_iso ?
             ReplaceWeight("CMS_htt_qcd_iso", "qcd_weight",
-                          Weight("em_qcd_extrap_" + shift_direction + "_Weight", "qcd_weight"), shift_direction.capitalize()))
+                          Weight("{closureweight}*em_qcd_extrap_" + shift_direction + "_Weight".format(closureweight=closureweight), "qcd_weight"), shift_direction.capitalize()))
 
     for variation_ in qcd_variations:
         for process_nick in selectedProcesses & {"QCD"}:
