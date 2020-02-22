@@ -1060,73 +1060,74 @@ def main(args):
             if "em" in selectedChannels:
                 variationsToAdd["em"][process_nick].append(variation_)
 
-    # Gluon-fusion WG1 uncertainty scheme
-    ggh_variations = []
-    for unc in [
-            "THU_ggH_Mig01",
-            "THU_ggH_Mig12",
-            "THU_ggH_Mu",
-            "THU_ggH_PT120",
-            "THU_ggH_PT60",
-            "THU_ggH_Res",
-            "THU_ggH_VBF2j",
-            "THU_ggH_VBF3j",
-            "THU_ggH_qmtop"
-    ]:
-        ggh_variations.append(
-            AddWeight(unc, "{}_weight".format(unc),
-                      Weight("({})".format(unc), "{}_weight".format(unc)),
-                      "Up"))
-        ggh_variations.append(
-            AddWeight(unc, "{}_weight".format(unc),
-                      Weight("(2.0-{})".format(unc), "{}_weight".format(unc)),
-                      "Down"))
-    for variation_ in ggh_variations:
-        for process_nick in selectedProcesses & {
-                nick for nick in signal_nicks
-                if "ggH" in nick and "HWW" not in nick
-        }:
-            for chname_ in selectedChannels:
-                variationsToAdd[chname_][process_nick].append(variation_)
+    if args.gof_variable is None:
+        # Gluon-fusion WG1 uncertainty scheme
+        ggh_variations = []
+        for unc in [
+                "THU_ggH_Mig01",
+                "THU_ggH_Mig12",
+                "THU_ggH_Mu",
+                "THU_ggH_PT120",
+                "THU_ggH_PT60",
+                "THU_ggH_Res",
+                "THU_ggH_VBF2j",
+                "THU_ggH_VBF3j",
+                "THU_ggH_qmtop"
+        ]:
+            ggh_variations.append(
+                AddWeight(unc, "{}_weight".format(unc),
+                          Weight("({})".format(unc), "{}_weight".format(unc)),
+                          "Up"))
+            ggh_variations.append(
+                AddWeight(unc, "{}_weight".format(unc),
+                          Weight("(2.0-{})".format(unc), "{}_weight".format(unc)),
+                          "Down"))
+        for variation_ in ggh_variations:
+            for process_nick in selectedProcesses & {
+                    nick for nick in signal_nicks
+                    if "ggH" in nick and "HWW" not in nick
+            }:
+                for chname_ in selectedChannels:
+                    variationsToAdd[chname_][process_nick].append(variation_)
 
-# VBF uncertainties
-    qqh_variations = []
-    for unc in [
-        "THU_qqH_25",
-        "THU_qqH_JET01",
-        "THU_qqH_Mjj1000",
-        "THU_qqH_Mjj120",
-        "THU_qqH_Mjj1500",
-        "THU_qqH_Mjj350",
-        "THU_qqH_Mjj60",
-        "THU_qqH_Mjj700",
-        "THU_qqH_PTH200",
-        "THU_qqH_TOT",
-    ]:
-        qqh_variations.append(
-            AddWeight(
-                unc,
-                "{}_weight".format(unc),
-                Weight("({})".format(unc), "{}_weight".format(unc)),
-                "Up",
+        # VBF uncertainties
+        qqh_variations = []
+        for unc in [
+            "THU_qqH_25",
+            "THU_qqH_JET01",
+            "THU_qqH_Mjj1000",
+            "THU_qqH_Mjj120",
+            "THU_qqH_Mjj1500",
+            "THU_qqH_Mjj350",
+            "THU_qqH_Mjj60",
+            "THU_qqH_Mjj700",
+            "THU_qqH_PTH200",
+            "THU_qqH_TOT",
+        ]:
+            qqh_variations.append(
+                AddWeight(
+                    unc,
+                    "{}_weight".format(unc),
+                    Weight("({})".format(unc), "{}_weight".format(unc)),
+                    "Up",
+                )
             )
-        )
-        qqh_variations.append(
-            AddWeight(
-                unc,
-                "{}_weight".format(unc),
-                Weight("(2.0-{})".format(unc), "{}_weight".format(unc)),
-                "Down",
+            qqh_variations.append(
+                AddWeight(
+                    unc,
+                    "{}_weight".format(unc),
+                    Weight("(2.0-{})".format(unc), "{}_weight".format(unc)),
+                    "Down",
+                )
             )
-        )
 
-    for variation_ in qqh_variations:
-        for process_nick in selectedProcesses & {
-                nick for nick in signal_nicks
-                if "qqH" in nick and "qqHWW" not in nick
-        }:
-            for chname_ in selectedChannels:
-                variationsToAdd[chname_][process_nick].append(variation_)
+        for variation_ in qqh_variations:
+            for process_nick in selectedProcesses & {
+                    nick for nick in signal_nicks
+                    if "qqH" in nick and "qqHWW" not in nick
+            }:
+                for chname_ in selectedChannels:
+                    variationsToAdd[chname_][process_nick].append(variation_)
 
 
 
