@@ -36,7 +36,7 @@ EMBEDDING=1
 ./gof/produce_workspace.sh $ERA | tee ${ERA}_produce_workspace_inclusive.log
 
 # Run goodness of fit test
-#./gof/gof.sh $ERA
+./gof/gof.sh $ERA
 
 # Run fit in order to extract postfit shapes
 ./gof/run_fit.sh $ERA
@@ -45,4 +45,4 @@ EMBEDDING=1
 ./gof/prefit_postfit_shapes.sh $ERA
 ./gof/plot_shapes.sh $ERA $CHANNEL $VARIABLE $JETFAKES $EMBEDDING
 
-cp output/shapes/${ERA}-${VARIABLE}-${CHANNEL}-shapes.root ${ERA}_shapes.root
+cp output/shapes/${VARIABLE}/${ERA}-${VARIABLE}-${CHANNEL}-shapes.root ${ERA}_shapes.root

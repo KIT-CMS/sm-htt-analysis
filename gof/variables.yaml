@@ -22,6 +22,7 @@ variables:
     - ME_q2v1
     - ME_q2v2
     - DiTauDeltaR
+    - mTdileptonMET_puppi
 
 selected_variables:
     2016:
