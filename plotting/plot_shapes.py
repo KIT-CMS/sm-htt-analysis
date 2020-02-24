@@ -235,11 +235,11 @@ def main(args):
     legend_bkg_processes.reverse()
 
     if "2016" in args.era:
-        era = "Run2016"
+        era = "2016"
     elif "2017" in args.era:
-        era = "Run2017"
+        era = "2017"
     elif "2018" in args.era:
-        era = "Run2018"
+        era = "2018"
     else:
         logger.critical("Era {} is not implemented.".format(args.era))
         raise Exception
