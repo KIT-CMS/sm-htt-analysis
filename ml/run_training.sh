@@ -9,7 +9,7 @@ else
 fi
 
 source utils/bashFunctionCollection.sh
-# source /cvmfs/sft.cern.ch/lcg/views/LCG_95apython3/x86_64-ubuntu1604-gcc54-opt/setup.sh
+renice -n 10 $$
 
 export KERAS_BACKEND=tensorflow
 export OMP_NUM_THREADS=12

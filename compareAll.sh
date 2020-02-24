@@ -268,10 +268,19 @@ function applyOnCluster()(
 
 function friendTreesExistLocal() {
     nnscorefolder=$batch_out_local/${era}/nnscore_friends/${tag}
-    if [[ -d $nnscorefolder && $( du -bs $nnscorefolder | cut -f1 ) -gt 11812544 ]]; then
+    if [[ ! -d $nnscorefolder ]]; then
+        return 1
+    fi
+    if [[ ! -f $nnscorefolder/friendTreeComplete.lock && $( du -bs $nnscorefolder | cut -f1 ) -gt 11812544 ]]; then
+        touch $nnscorefolder/friendTreeComplete.lock
+        loginfo "Marking $nnscorefolder as complete"
         return 0
     else
-        return 1
+        if [[ -f $nnscorefolder/friendTreeComplete.lock ]];then
+            return 0
+        else
+            return 1
+        fi
     fi
 }
 
