@@ -341,14 +341,13 @@ function submitBatchShapes()(
         export X509_USER_PROXY=/home/${USER}/.globus/x509up
         echo "Setting proxy path to $X509_USER_PROXY"
     fi
-    python ./condor_jobs/construct_remote_submit.py --eras $erasarg --channels $channelsarg --tag $tagsarg --mode submit --gcmode optimal
-   condwait
+    python ./condor_jobs/construct_remote_submit.py --eras $erasarg --channels $channelsarg --tags $tagsarg --mode submit --gcmode optimal --workdir output/condor_jobs_wd
 )
 
 function mergeBatchShapes()(
     source utils/setup_cvmfs_sft.sh
     source utils/setup_python.sh
-    python ./condor_jobs/construct_remote_submit.py --eras $erasarg --channels $channelsarg --tag $tagsarg --mode merge --gcmode optimal
+    python ./condor_jobs/construct_remote_submit.py --eras $erasarg --channels $channelsarg --tag $tagsarg --mode merge --gcmode optimal --workdir output/condor_jobs_wd
    condwait
 )
 
@@ -356,7 +355,7 @@ function syncShapes() {
     for channel in ${channels[@]}; do
         for era in ${eras[@]}; do
             for tag in ${tags[@]}; do
-		        fn=output/shapes/${era}-${tag}-${channel}-synced-ML.root
+                fn=output/shapes/${era}-${tag}-${channel}-synced-ML.root
                 #if [[ ! -f $fn  || $( stat -c%s $fn ) -le 2000 ]]; then
                     logandrun ./shapes/convert_to_synced_shapes.sh ${era} ${channel} ${tag} &
                 #else

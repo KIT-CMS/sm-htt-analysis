@@ -7,7 +7,7 @@ export LCG_RELEASE=95
 source utils/setup_cvmfs_sft.sh
 
 source utils/setup_python.sh
-source utils/setup_samples.sh $ERA $TAG
+source utils/setup_samples.sh $ERA $TAG $FRIEND_INPUT_MOUNT
 source utils/bashFunctionCollection.sh
 ensureoutdirs
 
@@ -18,6 +18,7 @@ logandrun python shapes/produce_shapes.py \
     --channels ${CHANNELS} \
     --processes ${PROCESSES} \
     --categories ${CATEGORIES} \
+    --num-threads ${NCPUS} \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
     --directory $ARTUS_OUTPUTS \

@@ -3,7 +3,12 @@ set -e
 
 ERA=$1
 TAG=$2
-[[ ! -z $3 ]] && WD=$3 || WD=$( pwd -P )
+
+if [[ ! -z $3 ]]; then
+    OUTPUTDIR=$3
+elif [[ -d output/friend_trees ]];then
+    OUTPUTDIR=$( cd output; pwd -P)
+fi
 
 # Kappa database
 KAPPA_DATABASE=datasets/datasets.json
@@ -63,12 +68,12 @@ then
 fi
 
 ### check if there are valid local friend trees and, if yes overwrite the friend tree directory with the local ones
-if [[ -d output/friend_trees ]]; then
-    DIR=${WD}/output/friend_trees/$ERA/nnscore_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && NNScore_Friends=$DIR
-    DIR=${WD}/output/friend_trees/$ERA/svfit_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && SVFit_Friends=$DIR
-    DIR=${WD}/output/friend_trees/$ERA/mela_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && MELA_Friends=$DIR
-    DIR=${WD}/output/friend_trees/$ERA/ff_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && FF_Friends=$DIR
-    DIR=${WD}/output/friend_trees/$ERA/tautrigger_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && TauTriggers_Friends=$DIR
+if [[ ! -z $OUTPUTDIR && -d $OUTPUTDIR ]]; then
+    DIR=${OUTPUTDIR}/friend_trees/$ERA/nnscore_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && NNScore_Friends=$DIR
+    DIR=${OUTPUTDIR}/friend_trees/$ERA/svfit_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && SVFit_Friends=$DIR
+    DIR=${OUTPUTDIR}/friend_trees/$ERA/mela_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && MELA_Friends=$DIR
+    DIR=${OUTPUTDIR}/friend_trees/$ERA/ff_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && FF_Friends=$DIR
+    DIR=${OUTPUTDIR}/friend_trees/$ERA/tautrigger_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && TauTriggers_Friends=$DIR
 fi
 
 ### channels specific friend tree.

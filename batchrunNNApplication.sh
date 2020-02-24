@@ -97,7 +97,7 @@ $jm --executable NNScore \\
                   --events_per_job $eventsPerJob \\
                   --friend_ntuples_directories $ARTUS_FRIENDS \\
                   --extra-parameters "--lwtnn_config \$CMSSW_BASE/src/HiggsAnalysis/friend-tree-producer/data/inputs_lwtnn/$tag" \\
-                  --cores 8 \\
+                  --cores 6 \\
                   --restrict_to_channels $channels \\
                   --conditional 1 \\
                   --custom_workdir_path $workdir && touch $submitlock
@@ -112,7 +112,7 @@ $jm --executable NNScore \\
                   --events_per_job $eventsPerJob \\
                   --friend_ntuples_directories $ARTUS_FRIENDS \\
                   --extra-parameters "--lwtnn_config \$CMSSW_BASE/src/HiggsAnalysis/friend-tree-producer/data/inputs_lwtnn/$tag" \\
-                  --cores 8 \\
+                  --cores 6 \\
                   --restrict_to_channels $channels \\
                   --custom_workdir_path $workdir && touch $submitlock
 fi
