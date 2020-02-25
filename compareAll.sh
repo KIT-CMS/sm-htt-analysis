@@ -24,19 +24,19 @@ source .userconfig
 
 ########### Argument handling and Tests ##################
 if [[ "bash" =~ $0 ]]; then
-shopt -s checkjobs # wait for all jobs before exiting
-#set -u # disallow using unused variables
-IFS=',' read -r -a eras <<< $1
-IFS=',' read -r -a channels <<< $2
-IFS=',' read -r -a tags <<< $3
+    shopt -s checkjobs # wait for all jobs before exiting
+    #set -u # disallow using unused variables
+    IFS=',' read -r -a eras <<< $1
+    IFS=',' read -r -a channels <<< $2
+    IFS=',' read -r -a tags <<< $3
 else #zsh
-setopt sh_word_split
-# IFS=',' eras=("${(@f)$1}")
-setopt monitor # wait for all jobs before exiting
-IFS=',' eras=($1)
-IFS=',' channels=($2)
-IFS=',' tags=($3)
-IFS=' '
+    setopt sh_word_split
+    # IFS=',' eras=("${(@f)$1}")
+    setopt monitor # wait for all jobs before exiting
+    IFS=',' eras=($1)
+    IFS=',' channels=($2)
+    IFS=',' tags=($3)
+    IFS=' '
 fi
 
 erasarg=$1
@@ -129,11 +129,11 @@ function genCombinedDSConfig() {
             outdir=output/ml/all_eras_${channel}_${tag}
             [[ -d $outdir ]] || mkdir -p $outdir
             (
-            source utils/setup_cvmfs_sft.sh
-            logandrun python ml/create_combined_config.py \
-                --tag ${tag} \
-                --channel ${channel} \
-                --output_dir ${outdir}
+                source utils/setup_cvmfs_sft.sh
+                logandrun python ml/create_combined_config.py \
+                    --tag ${tag} \
+                    --channel ${channel} \
+                    --output_dir ${outdir}
             )
         done
     done
@@ -205,8 +205,8 @@ function exportForApplication {
         if [[ $CONDITIONAL_TRAINING == 1 ]]; then
             for channel in ${channels[@]}; do
                 (
-                set -e
-                logandrun ./ml/translate_models.sh all ${channel} ${tag}
+                    set -e
+                    logandrun ./ml/translate_models.sh all ${channel} ${tag}
                 logandrun ./ml/export_lwtnn.sh all ${channel}  ${tag} ) &
                 condwait
             done
@@ -214,8 +214,8 @@ function exportForApplication {
             for era in ${eras[@]}; do
                 for channel in ${channels[@]}; do
                     (
-                    set -e
-                    logandrun ./ml/translate_models.sh ${era} ${channel} ${tag}
+                        set -e
+                        logandrun ./ml/translate_models.sh ${era} ${channel} ${tag}
                     logandrun ./ml/export_lwtnn.sh ${era} ${channel}  ${tag} ) &
                     condwait
                 done
@@ -348,7 +348,7 @@ function mergeBatchShapes()(
     source utils/setup_cvmfs_sft.sh
     source utils/setup_python.sh
     python ./condor_jobs/construct_remote_submit.py --eras $erasarg --channels $channelsarg --tag $tagsarg --mode merge --gcmode optimal --workdir output/condor_jobs_wd
-   condwait
+    condwait
 )
 
 function syncShapes() {
@@ -357,7 +357,7 @@ function syncShapes() {
             for tag in ${tags[@]}; do
                 fn=output/shapes/${era}-${tag}-${channel}-synced-ML.root
                 #if [[ ! -f $fn  || $( stat -c%s $fn ) -le 2000 ]]; then
-                    logandrun ./shapes/convert_to_synced_shapes.sh ${era} ${channel} ${tag} &
+                logandrun ./shapes/convert_to_synced_shapes.sh ${era} ${channel} ${tag} &
                 #else
                 #    loginfo Skipping shape syncing as $fn exists
                 #fi
@@ -544,7 +544,7 @@ function plotPreFitShapes() (
                         logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channel} -e $era $OPTION --png --categories $STXS_SIGNALS --fake-factor --embedding --normalize-by-bin-width -l --train-ff True --train-emb True
                     done
                 )
-                done
+            done
         done
     done
 )
@@ -592,7 +592,7 @@ function plotPostFitShapes(){
                         logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channel} -e $era $OPTION --categories $CATEGORIES --fake-factor --embedding --normalize-by-bin-width -l --train-ff True --train-emb True
                     done
                 )
-                done
+            done
         done
     done
 }
@@ -600,48 +600,48 @@ function plotPostFitShapes(){
 
 
 function plotMCprefitshapes(){
-        ensureoutdirs
-        JETFAKES=0 EMBEDDING=0 CATEGORIES="stxs_stage1p1"
-        for tag in ${tags[@]}; do
-            export tag
-            for era in ${eras[@]}; do
-                for STXS_SIGNALS in "stxs_stage0"; do
-                        DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}
-                        [ -d $DATACARDDIR ] || mkdir -p $DATACARDDIR
-                        logandrun ./datacards/produce_datacard.sh ${era} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${tag} ${channelsarg}
-                done
-                for STXS_FIT in "stxs_stage0"; do
-                    fn="output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/cmb/125/${era}-${STXS_FIT}-workspace.root"
-                    if [[ ! -f $fn ]]; then
-                        logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${tag}
-                        [[ $? == 0 ]] || return $?
-                    else
-                        loginfo "skipping workspace creation, as  $fn exists"
-                    fi
-                done
-        STXS_FIT="stxs_stage0"
-        DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_FIT}/cmb/125
-        FILE="${DATACARDDIR}/prefitshape-${era}-${tag}-${STXS_FIT}.root"
-        logandrun ./combine/prefit_postfit_shapes.sh ${era} ${STXS_FIT} ${DATACARDDIR} ${tag}
+    ensureoutdirs
+    JETFAKES=0 EMBEDDING=0 CATEGORIES="stxs_stage1p1"
+    for tag in ${tags[@]}; do
+        export tag
+        for era in ${eras[@]}; do
+            for STXS_SIGNALS in "stxs_stage0"; do
+                DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}
+                [ -d $DATACARDDIR ] || mkdir -p $DATACARDDIR
+                logandrun ./datacards/produce_datacard.sh ${era} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${tag} ${channelsarg}
+            done
+            for STXS_FIT in "stxs_stage0"; do
+                fn="output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/cmb/125/${era}-${STXS_FIT}-workspace.root"
+                if [[ ! -f $fn ]]; then
+                    logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${tag}
+                    [[ $? == 0 ]] || return $?
+                else
+                    loginfo "skipping workspace creation, as  $fn exists"
+                fi
+            done
+            STXS_FIT="stxs_stage0"
+            DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_FIT}/cmb/125
+            FILE="${DATACARDDIR}/prefitshape-${era}-${tag}-${STXS_FIT}.root"
+            logandrun ./combine/prefit_postfit_shapes.sh ${era} ${STXS_FIT} ${DATACARDDIR} ${tag}
 
-        OPTION="--png"
-        (
-            source utils/setup_cvmfs_sft.sh
-            source utils/setup_python.sh
-            if [[ $tag =~ "ff" ]]; then
-                TRAINFF=True
-            else
-                TRAINFF=False
-            fi
-            if [[ $tag =~ "emb" ]]; then
-                TRAINEMB=True
-            else
-                TRAINEMB=False
-            fi
-            PLOTDIR=output/plots/${era}-${tag}_prefit-plots
-            mkdir -p $PLOTDIR
-            logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channels[@]} -e $era $OPTION --categories $CATEGORIES --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB
-        )
+            OPTION="--png"
+            (
+                source utils/setup_cvmfs_sft.sh
+                source utils/setup_python.sh
+                if [[ $tag =~ "ff" ]]; then
+                    TRAINFF=True
+                else
+                    TRAINFF=False
+                fi
+                if [[ $tag =~ "emb" ]]; then
+                    TRAINEMB=True
+                else
+                    TRAINEMB=False
+                fi
+                PLOTDIR=output/plots/${era}-${tag}_prefit-plots
+                mkdir -p $PLOTDIR
+                logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channels[@]} -e $era $OPTION --categories $CATEGORIES --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB
+            )
         done
     done
 }
