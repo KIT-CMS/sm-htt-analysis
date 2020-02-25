@@ -871,86 +871,39 @@ def main(args):
             for process_nick in selectedProcesses & {"EMB"}:
                 variationsToAdd[chname_][process_nick].append(variation_)
 
+    # Emb DM variation
     mt_decayMode_variations = []
-    for shift_direction in ["Up", "Down"]:
-        mt_decayMode_variations.append(
-            ReplaceWeight(
-                "CMS_3ProngEff_Run{era}".format(era=args.era), "decayMode_SF",
-                Weight("embeddedDecayModeWeight_effUp_pi0Nom", "decayMode_SF"),
-                "Up"))
-        mt_decayMode_variations.append(
-            ReplaceWeight(
-                "CMS_3ProngEff_Run{era}".format(era=args.era), "decayMode_SF",
-                Weight("embeddedDecayModeWeight_effDown_pi0Nom", "decayMode_SF"),
-                "Down"))
-        mt_decayMode_variations.append(
-            ReplaceWeight(
-                "CMS_1ProngPi0Eff_Run{era}".format(
-                    era=args.era), "decayMode_SF", Weight(
-                    "embeddedDecayModeWeight_effNom_pi0Up", "decayMode_SF"), "Up"))
-        mt_decayMode_variations.append(
-            ReplaceWeight(
-                "CMS_1ProngPi0Eff_Run{era}".format(era=args.era), "decayMode_SF",
-                Weight("embeddedDecayModeWeight_effNom_pi0Down", "decayMode_SF"),
-                "Down"))
-    for variation_ in mt_decayMode_variations:
-        for process_nick in selectedProcesses & {"EMB"}:
-            for chname_ in selectedChannels & {"mt"}:
-                variationsToAdd[chname_][process_nick].append(variation_)
     et_decayMode_variations = []
-    et_decayMode_variations.append(
-        ReplaceWeight(
-            "CMS_3ProngEff_Run{era}".format(era=args.era), "decayMode_SF",
-            Weight("embeddedDecayModeWeight_effUp_pi0Nom", "decayMode_SF"),
-            "Up"))
-    et_decayMode_variations.append(
-        ReplaceWeight(
-            "CMS_3ProngEff_Run{era}".format(era=args.era), "decayMode_SF",
-            Weight("embeddedDecayModeWeight_effDown_pi0Nom", "decayMode_SF"),
-            "Down"))
-    et_decayMode_variations.append(
-        ReplaceWeight(
-            "CMS_1ProngPi0Eff_Run{era}".format(era=args.era), "decayMode_SF",
-            Weight("embeddedDecayModeWeight_effNom_pi0Up", "decayMode_SF"),
-            "Up"))
-    et_decayMode_variations.append(
-        ReplaceWeight(
-            "CMS_1ProngPi0Eff_Run{era}".format(era=args.era), "decayMode_SF",
-            Weight("embeddedDecayModeWeight_effNom_pi0Down", "decayMode_SF"),
-            "Down"))
-    for variation_ in et_decayMode_variations:
-        for process_nick in selectedProcesses & {"EMB"}:
-            if "et" in selectedChannels:
-                variationsToAdd["et"][process_nick].append(variation_)
     tt_decayMode_variations = []
-    tt_decayMode_variations.append(
-        ReplaceWeight(
-            "CMS_3ProngEff_Run{era}".format(era=args.era), "decayMode_SF",
-            Weight("embeddedDecayModeWeight_effUp_pi0Nom", "decayMode_SF"),
-            "Up"))
-    tt_decayMode_variations.append(
-        ReplaceWeight(
-            "CMS_3ProngEff_Run{era}".format(era=args.era), "decayMode_SF",
-            Weight("embeddedDecayModeWeight_effDown_pi0Nom", "decayMode_SF"),
-            "Down"))
-    tt_decayMode_variations.append(
-        ReplaceWeight(
-            "CMS_1ProngPi0Eff_Run{era}".format(era=args.era), "decayMode_SF",
-            Weight("embeddedDecayModeWeight_effNom_pi0Up", "decayMode_SF"),
-            "Up"))
-    tt_decayMode_variations.append(
-        ReplaceWeight(
-            "CMS_1ProngPi0Eff_Run{era}".format(era=args.era), "decayMode_SF",
-            Weight("embeddedDecayModeWeight_effNom_pi0Down", "decayMode_SF"),
-            "Down"))
-    for variation_ in tt_decayMode_variations:
-        for process_nick in selectedProcesses & {"EMB"}:
-            if "tt" in selectedChannels:
-                variationsToAdd["tt"][process_nick].append(variation_)
+    for shift_direction in ["Up", "Down"]:
+        for ch_var in [mt_decayMode_variations, et_decayMode_variations, tt_decayMode_variations]:
+            ch_var.append(
+                ReplaceWeight(
+                    "CMS_3ProngEff_Run{era}".format(era=args.era), "decayMode_SF",
+                    Weight("embeddedDecayModeWeight_eff%s_pi0Nom" % shift_direction, "decayMode_SF"),
+                    shift_direction))
+            ch_var.append(
+                ReplaceWeight(
+                    "CMS_1ProngPi0Eff_Run{era}".format(era=args.era),
+                    "decayMode_SF",
+                    Weight("embeddedDecayModeWeight_effNom_pi0%s" % shift_direction, "decayMode_SF"),
+                    shift_direction))
+
+    if "EMB" in selectedProcesses:
+        if "mt" in selectedChannels:
+            for variation_ in mt_decayMode_variations:
+                variationsToAdd["mt"]["EMB"].append(variation_)
+        if "et" in selectedChannels:
+            for variation_ in et_decayMode_variations:
+                variationsToAdd["et"]["EMB"].append(variation_)
+        if "tt" in selectedChannels:
+            for variation_ in tt_decayMode_variations:
+                variationsToAdd["tt"]["EMB"].append(variation_)
+
     # 10% removed events in ttbar simulation (ttbar -> real tau tau events)
     # will be added/subtracted to ZTT shape to use as systematic
 
-    if "EMB" in selectedProcesses:
+    if "EMB" in selectedProcesses and not args.skip_systematic_variations:
         for chname_, ch_ in selectedChannelsTuples:
             for shift_direction, shift_ in {"Down": -0.1, "Up": 0.1}.items():
                 p_ = Process(
