@@ -111,7 +111,7 @@ function genTrainingDS() {
     for tag in ${tags[@]}; do
         for channel in ${channels[@]}; do
             for era in ${eras[@]}; do
-                logandrun ./ml/create_training_dataset.sh ${era} ${channel} ${tag} &
+                logandrun ./ml/create_training_dataset.sh ${era} ${channel} ${tag}
             done
             condwait
         done
