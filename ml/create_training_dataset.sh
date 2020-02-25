@@ -4,18 +4,26 @@ set -e
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
 source utils/bashFunctionCollection.sh
+renice -n 10 $$
 
 ERA=$1
 CHANNEL=$2
 TAG=$3
 tauEstimation=emb
 jetEstimation=ff
+
 if [[ $TAG == *"mc_"* ]]; then
   tauEstimation=mc
 fi
 if [[ $TAG == *"_mc"* ]]; then
   jetEstimation=mc
 fi
+if [[ $TAG == *"stage0"* ]]; then
+  TRAIN_STAGE_ARG=""
+else
+  TRAIN_STAGE_ARG="--training_stxs1p1"
+fi
+
 source utils/setup_samples.sh $ERA $TAG
 outdir=output/ml/${ERA}_${CHANNEL}_${TAG}
 [[ -d $outdir ]] ||  mkdir -p $outdir
@@ -41,7 +49,7 @@ logandrun python ml/write_dataset_config.py \
   --training-z-estimation-method $tauEstimation \
   --training-jetfakes-estimation-method $jetEstimation \
   --output-config $outdir/dataset_config.yaml \
-  --training_stxs1p1
+  $TRAIN_STAGE_ARG
 
 # Create dataset files from config
 logandrun ./htt-ml/dataset/create_training_dataset.py $outdir/dataset_config.yaml
