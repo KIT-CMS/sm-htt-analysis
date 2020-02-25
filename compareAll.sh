@@ -316,21 +316,6 @@ function genShapes() {
     done
 }
 
-function submitShapes(){
-    ensureoutdirs
-    for tag in ${tags[@]}; do
-        for era in ${eras[@]}; do
-            for channel in ${channels[@]}; do
-                fn=output/shapes/${era}-${tag}-${channel}-shapes.root
-                if [[ ! -f $fn || $( stat -c%s $fn ) -le 5000 ]]; then
-                    echo "$era $channel $tag $(pwd -P)"
-                fi
-            done
-        done
-    done > condor_jobs/arguments.txt
-    logandrun condor_jobs/submit.sh
-}
-
 function submitBatchShapes()(
     source utils/setup_cvmfs_sft.sh
     source utils/setup_python.sh
