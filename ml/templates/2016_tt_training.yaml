@@ -35,3 +35,7 @@ variables:
 - jdeta
 - mjj
 - dijetpt
+- ME_q2v1
+- ME_q2v2
+- jpt_2
+- DiTauDeltaR

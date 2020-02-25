@@ -41,6 +41,11 @@ variables:
 - jdeta
 - mjj
 - dijetpt
+- ME_q2v1
+- ME_q2v2
+- jpt_2
+- pt_tt_puppi
+- DiTauDeltaR
 
 class_weights_2017:
   ggh: 264.8668203489273

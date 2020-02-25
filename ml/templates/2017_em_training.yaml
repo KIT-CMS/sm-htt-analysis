@@ -32,14 +32,12 @@ event_weights: training_weight
 variables:
 - pt_1
 - pt_2
-- eta_1
+- DiTauDeltaR
 - m_vis
 - ptvis
 - m_sv_puppi
 - ME_q2v1
 - ME_q2v2
-- bpt_1
-- nbtag
 - jpt_1
 - jpt_2
 - njets
