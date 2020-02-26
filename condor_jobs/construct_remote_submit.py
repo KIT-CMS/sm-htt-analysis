@@ -218,7 +218,7 @@ def main(args):
                 for channel in channels:
                     workdir = "{}/{}/{}/{}".format(args.workdir, tag, era, channel)
                     print("Merging {} {} ...".format(era, channel))
-                    if not os.path.isdir("mkdir output/shapes/"+tag):
+                    if not os.path.isdir("output/shapes/"+tag):
                         os.system("mkdir output/shapes/"+tag)
                     if gcmode == "normal":
                         os.system(
