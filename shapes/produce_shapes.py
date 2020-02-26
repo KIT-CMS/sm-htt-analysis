@@ -879,12 +879,12 @@ def main(args):
         for ch_var in [mt_decayMode_variations, et_decayMode_variations, tt_decayMode_variations]:
             ch_var.append(
                 ReplaceWeight(
-                    "CMS_3ProngEff_Run{era}".format(era=args.era), "decayMode_SF",
+                    "CMS_3ProngEff_{era}".format(era=args.era), "decayMode_SF",
                     Weight("embeddedDecayModeWeight_eff%s_pi0Nom" % shift_direction, "decayMode_SF"),
                     shift_direction))
             ch_var.append(
                 ReplaceWeight(
-                    "CMS_1ProngPi0Eff_Run{era}".format(era=args.era),
+                    "CMS_1ProngPi0Eff_{era}".format(era=args.era),
                     "decayMode_SF",
                     Weight("embeddedDecayModeWeight_effNom_pi0%s" % shift_direction, "decayMode_SF"),
                     shift_direction))
