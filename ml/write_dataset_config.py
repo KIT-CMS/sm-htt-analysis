@@ -352,9 +352,9 @@ qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200125", era, args.base_path, cha
         else:
             channel_qcd.cuts.remove("tau_2_iso")
             channel_qcd.cuts.add(
-                Cut("byTightIsolationMVArun2017v2DBoldDMwLT2017_2<0.5", "tau_2_iso"))
+                Cut("byTightDeepTau2017v2p1VSjet_2<0.5", "tau_2_iso"))
             channel_qcd.cuts.add(
-                Cut("byLooseIsolationMVArun2017v2DBoldDMwLT2017_2>0.5", "tau_2_iso_loose"))
+                Cut("byMediumDeepTau2017v2p1VSjet_2>0.5", "tau_2_iso_loose"))
 
         output_config["processes"][estimation.name] = {
             "files": [
@@ -371,15 +371,15 @@ qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200125", era, args.base_path, cha
         aiso = copy.deepcopy(channel)
         if args.channel in ["et", "mt"]:
             aisoCut = Cut(
-                "byTightIsolationMVArun2017v2DBoldDMwLT2017_2<0.5&&byVLooseIsolationMVArun2017v2DBoldDMwLT2017_2>0.5",
+                "byTightDeepTau2017v2p1VSjet_2<0.5&&byVLooseDeepTau2017v2p1VSjet_2>0.5",
                 "tau_aiso")
             fakeWeightstring = "ff2_nom"
             aiso.cuts.remove("tau_iso")
         elif args.channel == "tt":
             aisoCut = Cut(
-                "(byTightIsolationMVArun2017v2DBoldDMwLT2017_2>0.5&&byTightIsolationMVArun2017v2DBoldDMwLT2017_1<0.5&&byVLooseIsolationMVArun2017v2DBoldDMwLT2017_1>0.5)||(byTightIsolationMVArun2017v2DBoldDMwLT2017_1>0.5&&byTightIsolationMVArun2017v2DBoldDMwLT2017_2<0.5&&byVLooseIsolationMVArun2017v2DBoldDMwLT2017_2>0.5)",
+                "(byTightDeepTau2017v2p1VSjet_2>0.5&&byTightDeepTau2017v2p1VSjet_1<0.5&&byVLooseDeepTau2017v2p1VSjet_1>0.5)||(byTightDeepTau2017v2p1VSjet_1>0.5&&byTightDeepTau2017v2p1VSjet_2<0.5&&byVLooseDeepTau2017v2p1VSjet_2>0.5)",
                 "tau_aiso")
-            fakeWeightstring = "(0.5*ff1_nom*(byTightIsolationMVArun2017v2DBoldDMwLT2017_1<0.5)+0.5*ff2_nom*(byTightIsolationMVArun2017v2DBoldDMwLT2017_2<0.5))"
+            fakeWeightstring = "(0.5*ff1_nom*(byTightDeepTau2017v2p1VSjet_1<0.5)+0.5*ff2_nom*(byTightDeepTau2017v2p1VSjet_2<0.5))"
             aiso.cuts.remove("tau_1_iso")
             aiso.cuts.remove("tau_2_iso")
         # self._nofake_processes = [copy.deepcopy(p) for p in nofake_processes]
