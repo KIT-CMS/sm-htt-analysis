@@ -4,6 +4,7 @@ import os
 import shutil
 import stat
 from shape_producer.estimation_methods_2016 import ggHEstimation, qqHEstimation
+
 ###
 # this script is used to create split the submit of the shape
 # producting into smaller chunks that can be handled by one core jobs
@@ -12,51 +13,55 @@ from shape_producer.estimation_methods_2016 import ggHEstimation, qqHEstimation
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
-        description="Produce shapes for Standard Model analysis.")
-    parser.add_argument("--workdir",
-        type=str,
-        help="path to the workdir",
-        default="condor_jobs/workdir")
+        description="Produce shapes for Standard Model analysis."
+    )
+    parser.add_argument(
+        "--workdir", type=str, help="path to the workdir", default="condor_jobs/workdir"
+    )
     parser.add_argument(
         "--channels",
         default=[],
-        type=lambda channellist:
-        [channel for channel in channellist.split(',') if channel != ""],
-        help="Channels to be considered, seperated by a comma without space")
+        type=lambda channellist: [
+            channel for channel in channellist.split(",") if channel != ""
+        ],
+        help="Channels to be considered, seperated by a comma without space",
+    )
     parser.add_argument(
         "--eras",
         default=[],
-        type=lambda eralist: [era for era in eralist.split(',') if era != ""],
-        help="Eras to be considered, seperated by a comma without space")
+        type=lambda eralist: [era for era in eralist.split(",") if era != ""],
+        help="Eras to be considered, seperated by a comma without space",
+    )
     parser.add_argument(
         "--mode",
         type=str,
-        help=
-        "Processing mode, default is submit , options are: [submit, merge]",
-        default="submit")
+        help="Processing mode, default is submit , options are: [submit, merge]",
+        default="submit",
+    )
     parser.add_argument(
         "--gcmode",
         type=str,
-        help=
-        "Processing mode for grid-control, default is normal, options are: [normal, optimal]",
-        default="normal")
-    parser.add_argument("--tags",
+        help="Processing mode for grid-control, default is normal, options are: [normal, optimal]",
+        default="normal",
+    )
+    parser.add_argument(
+        "--tags",
         default=["default"],
-        type=lambda taglist:
-        [tag for tag in taglist.split(',') if tag != ""],
-        help="Tag of output files.")
+        type=lambda taglist: [tag for tag in taglist.split(",") if tag != ""],
+        help="Tag of output files.",
+    )
     return parser.parse_args()
 
 
 def readclasses(channelname, era, tag):
     if not os.path.isfile(
-            "output/ml/{}_{}_{}/dataset_config.yaml".format(
-                era, channelname, tag)):
-        confFileName = "ml/templates/shape-producer_{}.yaml".format(
-            channelname)
+        "output/ml/{}_{}_{}/dataset_config.yaml".format(era, channelname, tag)
+    ):
+        confFileName = "ml/templates/shape-producer_{}.yaml".format(channelname)
     else:
         confFileName = "output/ml/{}_{}_{}/dataset_config.yaml".format(
-            era, channelname, tag)
+            era, channelname, tag
+        )
     confdict = yaml.load(open(confFileName, "r"))
     return confdict["classes"]
 
@@ -74,14 +79,20 @@ def buildprocesses(era, channelname):
 
     ww_nicks = {"ggHWW125", "qqHWW125"}
 
-    signal_nicks = {"WH125", "ZH125", "VH125", "ttH125"} | {
-        ggH_htxs
-        for ggH_htxs in ggHEstimation.htxs_dict
-    } | {qqH_htxs
-         for qqH_htxs in qqHEstimation.htxs_dict} | ww_nicks
-    background_nicks = set(trueTauBkgS | leptonTauBkgS
-                           | jetFakeBkgD[channelname] | {"EMB"} | {"FAKES"}
-                           | {"QCD"}) | {"data_obs"}
+    signal_nicks = (
+        {"WH125", "ZH125", "VH125", "ttH125"}
+        | {ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict}
+        | {qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict}
+        | ww_nicks
+    )
+    background_nicks = set(
+        trueTauBkgS
+        | leptonTauBkgS
+        | jetFakeBkgD[channelname]
+        | {"EMB"}
+        | {"FAKES"}
+        | {"QCD"}
+    ) | {"data_obs"}
     processes = [[signal_nick] for signal_nick in signal_nicks]
     processes.append(list(background_nicks))
     # this way, background shapes are processed first
@@ -90,17 +101,19 @@ def buildprocesses(era, channelname):
 
 def write_gc(era, channel, nnclasses, processes, tag, workdir, mode):
     if mode == "normal":
-        configfilepath = '{WORKDIR}/shapes_{ERA}_{CHANNEL}_{TAG}.conf'.format(
-            WORKDIR=workdir, ERA=era, CHANNEL=channel,TAG=tag)
-        shutil.copy2('condor_jobs/grid_control_c7.conf', configfilepath)
+        configfilepath = "{WORKDIR}/shapes_{ERA}_{CHANNEL}_{TAG}.conf".format(
+            WORKDIR=workdir, ERA=era, CHANNEL=channel, TAG=tag
+        )
+        shutil.copy2("condor_jobs/grid_control_c7.conf", configfilepath)
         processstring = ""
         for process in processes:
             processstring += " {}".format(((",").join(process)))
 
     elif mode == "bkg":
-        configfilepath = '{WORKDIR}/shapes_{ERA}_{CHANNEL}_{TAG}_bkg.conf'.format(
-            WORKDIR=workdir, ERA=era, CHANNEL=channel,TAG=tag)
-        shutil.copy2('condor_jobs/grid_control_c7.conf', configfilepath)
+        configfilepath = "{WORKDIR}/shapes_{ERA}_{CHANNEL}_{TAG}_bkg.conf".format(
+            WORKDIR=workdir, ERA=era, CHANNEL=channel, TAG=tag
+        )
+        shutil.copy2("condor_jobs/grid_control_c7.conf", configfilepath)
         processstring = ",".join(processes)
     configfile = open(configfilepath, "a+")
     configfile.write("ERA = {}\n".format(era))
@@ -108,7 +121,7 @@ def write_gc(era, channel, nnclasses, processes, tag, workdir, mode):
     configfile.write("TAG = {}\n".format(tag))
     configfile.write("PROCESSES = {}\n".format(processstring))
     if os.path.isdir("output/friend_trees"):
-        friend_input_mount=os.popen("cd output; pwd -P").read().strip('\n')
+        friend_input_mount = os.popen("cd output; pwd -P").read().strip("\n")
         configfile.write("FRIEND_INPUT_MOUNT = {}\n".format(friend_input_mount))
     configfile.write("CATEGORIES = {}\n".format((" ").join(nnclasses)))
     if mode == "normal":
@@ -118,16 +131,19 @@ def write_gc(era, channel, nnclasses, processes, tag, workdir, mode):
     configfile.write("\n")
     configfile.write("[global]\n")
     if mode == "normal":
-        configfile.write("workdir = {}/gc_workdir\n".format(
-            os.path.abspath(workdir)))
+        configfile.write("workdir = {}/gc_workdir\n".format(os.path.abspath(workdir)))
     elif mode == "bkg":
-        configfile.write("workdir = {}/bkg_gc_workdir\n".format(
-            os.path.abspath(workdir)))
+        configfile.write(
+            "workdir = {}/bkg_gc_workdir\n".format(os.path.abspath(workdir))
+        )
     configfile.write("\n")
     configfile.write("[UserTask]\n")
-    configfile.write("executable = {}\n".format(
-        os.path.abspath("condor_jobs/run_remote_job.sh")))
-    configfile.write("input files = "+os.path.abspath(workdir+"/gc_tarball.tar.gz\n"))
+    configfile.write(
+        "executable = {}\n".format(os.path.abspath("condor_jobs/run_remote_job.sh"))
+    )
+    configfile.write(
+        "input files = " + os.path.abspath(workdir + "/gc_tarball.tar.gz\n")
+    )
     if mode == "normal":
         # configfile.write("constant = CPUS \n CPUS = 1\n")
         configfile.write("\n[jobs]\n")
@@ -137,37 +153,36 @@ def write_gc(era, channel, nnclasses, processes, tag, workdir, mode):
         configfile.write("\n[jobs]\n")
         configfile.write("cpus = 8\n")
     configfile.close()
-    return "$go {config} -G -m 0".format(
-        config=configfilepath)
+    return "$go {config} -G -m 0".format(config=configfilepath)
 
 
 def build_tarball(workdir):
     print("building tarball... {}/gc_tarball.tar.gz ".format(workdir))
-    cmd= "tar --dereference -czf {}/gc_tarball.tar.gz shape-producer/* shapes/* utils/* datasets/* ml/* fake-factor-application/* utils/* output/ml/*/dataset_config.yaml".format(workdir)
-    print(cmd)
-    os.system(
-       cmd
+    cmd = "tar --dereference -czf {}/gc_tarball.tar.gz shape-producer/* shapes/* utils/* datasets/* ml/* fake-factor-application/* utils/* output/ml/*/dataset_config.yaml".format(
+        workdir
     )
+    print(cmd)
+    os.system(cmd)
     print("finished tarball...")
 
 
-def write_while(tasks,path):
-    filename=os.path.join(path,'while_{}.sh'.format(",".join(tasks.keys()),path))
-    out_file = open(filename, 'w')
-    out_file.write('#!/bin/bash\n')
-    out_file.write('\n')
-    out_file.write('touch .lock\n')
+def write_while(tasks, path):
+    filename = os.path.join(path, "while_{}.sh".format(",".join(tasks.keys()), path))
+    out_file = open(filename, "w")
+    out_file.write("#!/bin/bash\n")
+    out_file.write("\n")
+    out_file.write("touch .lock\n")
     out_file.write("go={}\n".format(os.path.abspath("condor_jobs/grid-control/go.py")))
-    out_file.write('\n')
+    out_file.write("\n")
     out_file.write('while [ -f ".lock" ]\n')
-    out_file.write('do\n')
+    out_file.write("do\n")
     for tag in tasks.keys():
         for era in tasks[tag].keys():
             for channel in tasks[tag][era].keys():
-                out_file.write('{}\n'.format(tasks[tag][era][channel]["gc"]))
+                out_file.write("{}\n".format(tasks[tag][era][channel]["gc"]))
     out_file.write('echo "rm {}/.lock"\n'.format(path))
-    out_file.write('sleep 4\n')
-    out_file.write('done\n')
+    out_file.write("sleep 4\n")
+    out_file.write("done\n")
     out_file.close()
     os.chmod(filename, stat.S_IRWXU)
     return filename
@@ -192,24 +207,41 @@ def main(args):
                     print("Selected Workdir: {}".format(workdir))
                     if not os.path.exists(workdir):
                         os.makedirs(workdir)
-                    if gcmode == 'normal':
+                    if gcmode == "normal":
                         tasks[tag][era][channel]["gc"] = write_gc(
-                            era, channel, readclasses(channel, era, tag),
-                            buildprocesses(era, channel), tag, workdir, 'normal')
-                    if gcmode == 'optimal':
+                            era,
+                            channel,
+                            readclasses(channel, era, tag),
+                            buildprocesses(era, channel),
+                            tag,
+                            workdir,
+                            "normal",
+                        )
+                    if gcmode == "optimal":
                         # In this case, we submit backgorunds seperately using 8 cores instead of one
                         del tasks[tag][era][channel]
                         tasks[tag][era][channel + "_bkg"] = {}
                         tasks[tag][era][channel + "_signal"] = {}
                         tasks[tag][era][channel + "_bkg"]["gc"] = write_gc(
-                            era, channel, readclasses(channel, era, tag),
-                            buildprocesses(era, channel)[0], tag, workdir, 'bkg')
+                            era,
+                            channel,
+                            readclasses(channel, era, tag),
+                            buildprocesses(era, channel)[0],
+                            tag,
+                            workdir,
+                            "bkg",
+                        )
                         tasks[tag][era][channel + "_signal"]["gc"] = write_gc(
-                            era, channel, readclasses(channel, era, tag),
-                            buildprocesses(era, channel)[1:], tag, workdir,
-                        'normal')
-        filename=write_while(tasks,args.workdir)
-        print("Start shape production by running ./"+filename)
+                            era,
+                            channel,
+                            readclasses(channel, era, tag),
+                            buildprocesses(era, channel)[1:],
+                            tag,
+                            workdir,
+                            "normal",
+                        )
+        filename = write_while(tasks, args.workdir)
+        print("Start shape production by running ./" + filename)
         print("Sit back, get a coffee and enjoy :)")
         print("After all tasks are finished, run the merging using")
         print(" --> mergeBatchShapes")
@@ -219,22 +251,20 @@ def main(args):
                 for channel in channels:
                     workdir = "{}/{}/{}/{}".format(args.workdir, tag, era, channel)
                     print("Merging {} {} ...".format(era, channel))
-                    if not os.path.isdir("output/shapes/"+tag):
-                        os.system("mkdir output/shapes/"+tag)
+                    if not os.path.isdir("output/shapes/" + tag):
+                        os.system("mkdir output/shapes/" + tag)
                     if gcmode == "normal":
                         os.system(
-                            "hadd -f output/shapes/{tag}/{era}-{tag}-{channel}-shapes.root {workdir}/gc_workdir/output/*/*.root"
-                            .format(era=era,
-                                    tag=tag,
-                                    channel=channel,
-                                    workdir=workdir))
+                            "hadd -f output/shapes/{tag}/{era}-{tag}-{channel}-shapes.root {workdir}/gc_workdir/output/*/*.root".format(
+                                era=era, tag=tag, channel=channel, workdir=workdir
+                            )
+                        )
                     elif gcmode == "optimal":
                         os.system(
-                            "hadd -f output/shapes/{tag}/{era}-{tag}-{channel}-shapes.root {workdir}/gc_workdir/output/*/*.root {workdir}/bkg_gc_workdir/output/*/*.root"
-                            .format(era=era,
-                                    tag=tag,
-                                    channel=channel,
-                                    workdir=workdir))
+                            "hadd -f output/shapes/{tag}/{era}-{tag}-{channel}-shapes.root {workdir}/gc_workdir/output/*/*.root {workdir}/bkg_gc_workdir/output/*/*.root".format(
+                                era=era, tag=tag, channel=channel, workdir=workdir
+                            )
+                        )
 
 
 if __name__ == "__main__":
