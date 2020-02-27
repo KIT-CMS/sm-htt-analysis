@@ -22,10 +22,10 @@ def main(args):
     jobs = JDLCreator("docker")
 
     jobs.executable = "gof/job.sh"
-    jobs.wall_time = 1 * 60 * 60
-    jobs.memory = 2048
+    jobs.wall_time = 5 * 60 * 60
+    jobs.memory = 4096
     jobs.accounting_group = "cms.higgs"
-    jobs.image = "stwunsch/slc6-condocker:smhtt"
+    jobs.image = "mschnepf/slc7-condocker"
 
     # Build list of arguments
     arguments = []
@@ -34,7 +34,7 @@ def main(args):
 
     # 1D fits
     for channel in binning["gof"]:
-        for variable in variables["variables"]:
+        for variable in variables["selected_variables"][int(args.era)][channel]:
             arguments.append("{} {} {}".format(args.era, channel, variable))
 
     # 2D fits
@@ -50,7 +50,7 @@ def main(args):
     jobs.arguments = arguments
 
     # The job requires lots of CPU resources
-    jobs.requirements = '(Target.ProvidesCPU == True) && (Target.ProvidesEKPResources == True)'
+    jobs.requirements = '(Target.ProvidesCPU == True) && (Target.ProvidesIO == True ) && (Target.ProvidesEKPResources == True)'
     jobs.job_folder = args.output
     jobs.WriteJDL()
 

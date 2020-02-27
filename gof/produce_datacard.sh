@@ -5,8 +5,8 @@ CHANNEL=$2
 VARIABLE=$3
 JETFAKES=$4
 EMBEDDING=$5
+TAG=$6
 
-NUM_THREADS=1
 STXS_SIGNALS="stxs_stage0"
 CATEGORIES="gof"
 GOF_CATEGORY_NAME=${CHANNEL}_${VARIABLE}
@@ -18,18 +18,21 @@ source utils/setup_python.sh
 rm -rf output/${ERA}_smhtt
 
 # Create datacards
-$CMSSW_BASE/bin/slc6_amd64_gcc530/MorphingSM2017 \
+$CMSSW_BASE/bin/slc7_amd64_gcc700/MorphingSMRun2Legacy \
     --base_path=$PWD \
-    --input_folder_mt="/" \
-    --input_folder_et="/" \
-    --input_folder_tt="/" \
-    --input_folder_em="/" \
+    --input_folder_mt="output/shapes" \
+    --input_folder_et="output/shapes" \
+    --input_folder_tt="output/shapes" \
+    --input_folder_em="output/shapes" \
     --real_data=true \
     --classic_bbb=false \
     --binomial_bbb=true \
     --jetfakes=$JETFAKES \
     --embedding=$EMBEDDING \
+    --ggh_wg1=false \
+    --qqh_wg1=false \
     --postfix="-ML" \
+    --midfix="-${TAG}-" \
     --channel=$CHANNEL \
     --auto_rebin=false \
     --rebin_categories=false \
@@ -37,7 +40,7 @@ $CMSSW_BASE/bin/slc6_amd64_gcc530/MorphingSM2017 \
     --categories="gof" \
     --gof_category_name=$GOF_CATEGORY_NAME \
     --era=$ERA \
-    --output="${ERA}_smhtt"
+    --output="output/${ERA}_smhtt"
 
 # Use Barlow-Beeston-lite approach for bin-by-bin systematics
 THIS_PWD=${PWD}
