@@ -21,12 +21,12 @@ def parse_arguments():
         "--channels",
         default=[],
         type=lambda channellist:
-        [channel for channel in channellist.split(',')],
+        [channel for channel in channellist.split(',') if channel != ""],
         help="Channels to be considered, seperated by a comma without space")
     parser.add_argument(
         "--eras",
         default=[],
-        type=lambda eralist: [era for era in eralist.split(',')],
+        type=lambda eralist: [era for era in eralist.split(',') if era != ""],
         help="Eras to be considered, seperated by a comma without space")
     parser.add_argument(
         "--mode",
@@ -43,7 +43,7 @@ def parse_arguments():
     parser.add_argument("--tags",
         default=["default"],
         type=lambda taglist:
-        [channel for channel in taglist.split(',')],
+        [tag for tag in taglist.split(',') if tag != ""],
         help="Tag of output files.")
     return parser.parse_args()
 
@@ -127,8 +127,7 @@ def write_gc(era, channel, nnclasses, processes, tag, workdir, mode):
     configfile.write("[UserTask]\n")
     configfile.write("executable = {}\n".format(
         os.path.abspath("condor_jobs/run_remote_job.sh")))
-    configfile.write("input files = {}\n".format(
-        os.path.abspath("condor_jobs/gc_tarball.tar.gz")))
+    configfile.write("input files = "+os.path.abspath(workdir+"/gc_tarball.tar.gz\n"))
     if mode == "normal":
         # configfile.write("constant = CPUS \n CPUS = 1\n")
         configfile.write("\n[jobs]\n")
@@ -138,25 +137,27 @@ def write_gc(era, channel, nnclasses, processes, tag, workdir, mode):
         configfile.write("\n[jobs]\n")
         configfile.write("cpus = 8\n")
     configfile.close()
-    return "{go} {config} -G -m 0".format(
-        go=os.path.abspath("condor_jobs/grid-control/go.py"),
+    return "$go {config} -G -m 0".format(
         config=configfilepath)
 
 
-def build_tarball():
-    print("building tarball...")
+def build_tarball(workdir):
+    print("building tarball... {}/gc_tarball.tar.gz ".format(workdir))
+    cmd= "tar --dereference -czf {}/gc_tarball.tar.gz shape-producer/* shapes/* utils/* datasets/* ml/* fake-factor-application/* utils/* output/ml/*/dataset_config.yaml".format(workdir)
+    print(cmd)
     os.system(
-        "tar -czf condor_jobs/gc_tarball.tar.gz shape-producer shapes utils datasets ml fake-factor-application utils"
+       cmd
     )
     print("finished tarball...")
 
 
-def write_while(tasks):
-    filename='while_{}.sh'.format(",".join(tasks.keys()))
+def write_while(tasks,path):
+    filename=os.path.join(path,'while_{}.sh'.format(",".join(tasks.keys()),path))
     out_file = open(filename, 'w')
     out_file.write('#!/bin/bash\n')
     out_file.write('\n')
     out_file.write('touch .lock\n')
+    out_file.write("go={}\n".format(os.path.abspath("condor_jobs/grid-control/go.py")))
     out_file.write('\n')
     out_file.write('while [ -f ".lock" ]\n')
     out_file.write('do\n')
@@ -164,7 +165,7 @@ def write_while(tasks):
         for era in tasks[tag].keys():
             for channel in tasks[tag][era].keys():
                 out_file.write('{}\n'.format(tasks[tag][era][channel]["gc"]))
-    out_file.write('echo "rm .lock"\n')
+    out_file.write('echo "rm {}/.lock"\n'.format(path))
     out_file.write('sleep 4\n')
     out_file.write('done\n')
     out_file.close()
@@ -180,7 +181,7 @@ def main(args):
 
     if args.mode == "submit":
         tasks = {}
-        build_tarball()
+        build_tarball(args.workdir)
         for tag in tags:
             tasks[tag] = {}
             for era in eras:
@@ -207,7 +208,7 @@ def main(args):
                             era, channel, readclasses(channel, era, tag),
                             buildprocesses(era, channel)[1:], tag, workdir,
                         'normal')
-        filename=write_while(tasks)
+        filename=write_while(tasks,args.workdir)
         print("Start shape production by running ./"+filename)
         print("Sit back, get a coffee and enjoy :)")
         print("After all tasks are finished, run the merging using")
