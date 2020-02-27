@@ -53,7 +53,7 @@ function myCpuUsage() {
 
 function condwait(){
     sleep .1
-    if [[ $( myCpuUsage ) -gt 20 ]]; then
+    if [[ $( myCpuUsage ) -gt $( recommendCPUs ) ]]; then
         wait
     fi
 }
