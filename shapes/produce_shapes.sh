@@ -23,7 +23,7 @@ logandrun python shapes/produce_shapes.py \
     --channels ${CHANNELS} \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
-    --num-threads 8 \
+    --num-threads $( recommendCPUs ) \
     --directory $ARTUS_OUTPUTS \
     --et-friend-directory $ARTUS_FRIENDS_ET \
     --em-friend-directory $ARTUS_FRIENDS_EM \
