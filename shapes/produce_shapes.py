@@ -739,12 +739,12 @@ def main(args):
     # jet to tau fake efficiency
     jet_to_tau_fake_variations = []
     jet_to_tau_fake_variations.append(
-        AddWeight("CMS_htt_jetToTauFake_{era}".format(era=args.era),
+        AddWeight("CMS_htt_fake_j_{era}".format(era=args.era),
                   "jetToTauFake_weight",
                   Weight("max(1.0-pt_2*0.002, 0.6)",
                          "jetToTauFake_weight"), "Up"))
     jet_to_tau_fake_variations.append(
-        AddWeight("CMS_htt_jetToTauFake_{era}".format(era=args.era),
+        AddWeight("CMS_htt_fake_j_{era}".format(era=args.era),
                   "jetToTauFake_weight",
                   Weight("min(1.0+pt_2*0.002, 1.4)",
                          "jetToTauFake_weight"), "Down"))
