@@ -326,13 +326,13 @@ function submitBatchShapes()(
         export X509_USER_PROXY=/home/${USER}/.globus/x509up
         echo "Setting proxy path to $X509_USER_PROXY"
     fi
-    python ./condor_jobs/construct_remote_submit.py --eras $erasarg --channels $channelsarg --tags $tagsarg --mode submit --gcmode optimal --workdir output/condor_jobs_wd
+    logandrun python ./condor_jobs/construct_remote_submit.py --eras $erasarg --channels $channelsarg --tags $tagsarg --mode submit --gcmode optimal --workdir output/condor_jobs_wd
 )
 
 function mergeBatchShapes()(
     source utils/setup_cvmfs_sft.sh
     source utils/setup_python.sh
-    python ./condor_jobs/construct_remote_submit.py --eras $erasarg --channels $channelsarg --tag $tagsarg --mode merge --gcmode optimal --workdir output/condor_jobs_wd
+    logandrun python ./condor_jobs/construct_remote_submit.py --eras $erasarg --channels $channelsarg --tag $tagsarg --mode merge --gcmode optimal --workdir output/condor_jobs_wd
     condwait
 )
 
