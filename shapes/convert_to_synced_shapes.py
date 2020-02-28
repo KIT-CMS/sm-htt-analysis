@@ -109,11 +109,12 @@ def main(args):
                 if "201" in name_output:
                     if ("scale_t_" in name_output
                             or "prefiring" in name_output
-                            or "scale_mc_e_" in name_output
-                            or "reso_mc_e_" in name_output
-                            or "scale_mc_t_" in name_output
-                            or "scale_emb_t_" in name_output
-                            or "scale_j_" in name_output
+                            or "scale_e_" in name_output
+                            or "res_e_" in name_output
+                            or "scale_t_" in name_output
+                            or "scale_t_emb_" in name_output
+                            or "boson_res_met_" in name_output
+                            or "boson_scale_met_" in name_output
                             or "_1ProngPi0Eff_" in name_output
                             or "_3ProngEff_" in name_output
                             or ("_ff_" in name_output and "_syst_" in name_output)):
