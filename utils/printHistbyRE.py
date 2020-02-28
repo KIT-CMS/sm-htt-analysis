@@ -12,13 +12,19 @@ key=sys.argv[2]
 r=re.compile(sys.argv[2])
 matchingkeys=[key for key in shape.allkeys() if r.match(key.decode())]
 
-for key in matchingkeys:
-    hist=shape[key]
-    print(key)
-    print(hist.values)
-    ##new uproot
-    if len(hist.bins[0])==2:
-        print([hist.bins[0][0]]+[x[1] for x in hist.bins])
-    #old uproot
+def printE(e):
+    if str(type(e))=="<class 'uproot.rootio.TH1D'>":
+        print(e.values)
+        ##new uproot
+        if len(e.bins[0])==2:
+            print([e.bins[0][0]]+[x[1] for x in e.bins])
+        #old uproot
+        else:
+            print(e.bins)
     else:
-        print(hist.bins)
+        print(type(e))
+
+for key in matchingkeys:
+    val=shape[key]
+    print(key)
+    printE(val)

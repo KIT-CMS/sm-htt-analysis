@@ -426,6 +426,7 @@ function runana() {
             done
         done
     done
+    wait
 }
 
 ## methods for combining eras
