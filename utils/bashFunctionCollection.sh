@@ -75,19 +75,19 @@ function capargs() {
         if ispath $arg; then
             arg=$(shortenpath $arg )
         fi
-        if [[ ${#arg} -gt 60 ]]; then
-            outstr=$outstr-${arg:0:60}
+        if [[ ${#arg} -gt 30 ]]; then
+            outstr=$outstr+${arg:0:30}
         else
-            outstr=$outstr-$arg
+            outstr=$outstr+$arg
         fi
     done
-    echo $outstr | sed -E "s@^-@@g" | sed 's@\./@@' | sed -E "s@[/ ]@\-@g"
+    echo $outstr | sed 's@\./@@' | sed -E "s@/@:@g" | sed -E "s@^[-:+]+@@g"  #| sed -E "s@ +@+@" 
 }
 function ispath() {
-    if [[ -d $(dirname $@) ]]; then 
-        return 1
-    else
+    if [[ -d $@ || -f $@ ]]; then
         return 0
+    else
+        return 1
     fi
 }
 function shortenpath() (
@@ -103,11 +103,11 @@ function shortenpath() (
     for level in $( echo $1 | sed "s@/@ @g" ); do
         pathstr=${pathstr}${level:0:3}
         level=${level:3}
-        while [[ $(echo ${pathstr}* 2> /dev/null | wc -l) -gt 1 ]]; do 
+        while [[ $(echo ${pathstr}* 2> /dev/null | wc -l) -gt 1 ]]; do
             pathstr=${pathstr}${level:0:1}
             level=${level:1}
         done
-        [[ $level == "" ]] || pathstr=${pathstr}..
+        [[ $level == "" ]] || pathstr=${pathstr}
         pathstr=${pathstr}/
     done
     echo $pathstr
