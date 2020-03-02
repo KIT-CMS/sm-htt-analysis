@@ -63,6 +63,11 @@ def readclasses(channelname, era, tag):
             era, channelname, tag
         )
     confdict = yaml.load(open(confFileName, "r"))
+    # for stage0, combine ggh and qqh in one job for 2D binning
+    if "ggh" in confdict["classes"] and "qqh" in confdict["classes"]:
+        confdict["classes"].remove("ggh")
+        confdict["classes"].remove("qqh")
+        confdict["classes"].append("ggh,qqh")
     return confdict["classes"]
 
 
@@ -85,6 +90,7 @@ def buildprocesses(era, channelname):
         | {qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict}
         | ww_nicks
     )
+    
     background_nicks = set(
         trueTauBkgS
         | leptonTauBkgS
