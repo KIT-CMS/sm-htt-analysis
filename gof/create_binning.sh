@@ -23,3 +23,6 @@ do
         --channel $CHANNEL
     mv gof/${ERA}_binning.yaml gof/${ERA}_${CHANNEL}_binning.yaml
 done
+
+head -1 gof/${ERA}_em_binning.yaml > gof/${ERA}_binning.yaml
+tail -n +2 -q gof/${ERA}_{em,et,mt,tt}_binning.yaml >> gof/${ERA}_binning.yaml
