@@ -575,7 +575,7 @@ def main(args):
         if ch in ["et", "em"]:
             channel_mc_common_variations += ele_es_variations
         if ch in ["et", "mt", "tt"]:
-            channel_mc_common_variations += tau_es_variations[""] + tau_es_variations["_mc"] + tau_id_variations[ch][""]
+            channel_mc_common_variations += tau_es_variations[""] + tau_id_variations[ch][""]
         if ch in ["et", "mt"]:
             channel_mc_common_variations += lep_trigger_eff_variations[ch][""]
 
@@ -616,7 +616,7 @@ def main(args):
                     systematics.add_systematic_variation(variation=variation, process=processes[ch]["QCD"], channel=channel_dict[args.era][ch], era=era)
 
             if ch in ["mt", "et", "tt"]:
-                ff_variations = fake_factor_variations[ch] + tau_es_variations[""] + tau_es_variations["_mc"] + tau_es_variations["_emb"]
+                ff_variations = fake_factor_variations[ch] + tau_es_variations[""] + tau_es_variations["_emb"]
                 for variation in ff_variations:
                     systematics.add_systematic_variation(variation=variation, process=processes[ch]["FAKES"], channel=channel_dict[args.era][ch], era=era)
 
