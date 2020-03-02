@@ -490,6 +490,17 @@ def main(args):
         ggh_variations.append(AddWeight(unc, "{}_weight".format(unc), Weight("({})".format(unc), "{}_weight".format(unc)), "Up"))
         ggh_variations.append(AddWeight(unc, "{}_weight".format(unc), Weight("(2.0-{})".format(unc), "{}_weight".format(unc)), "Down"))
 
+    qqh_variations = []
+    for unc in ["THU_qqH_25", "THU_qqH_JET01", "THU_qqH_Mjj1000",
+                "THU_qqH_Mjj120", "THU_qqH_Mjj1500", "THU_qqH_Mjj350",
+                "THU_qqH_Mjj60", "THU_qqH_Mjj700", "THU_qqH_PTH200",
+                "THU_qqH_TOT",
+    ]:
+        qqh_variations.append(AddWeight(unc, "{}_weight".format(unc), Weight("({})".format(unc), "{}_weight".format(unc)), "Up"))
+        qqh_variations.append(AddWeight(unc, "{}_weight".format(unc), Weight("(2.0-{})".format(unc), "{}_weight".format(unc)), "Down"))
+
+
+
     # ZL fakes energy scale
     fakelep_dict = {"et" : "Ele", "mt" : "Mu"}
     lep_fake_es_variations = {}
