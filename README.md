@@ -19,3 +19,24 @@ ERA="2016"
 CHANNELS="et mt tt"
 ./run_analysis.sh $ERA $CHANNELS
 ```
+## Run GOF tests
+First the equi-populated binning used in the GOF tests needs to be calculated. 
+```bash
+ERA=2016
+bash gof/create_binning.sh $ERA
+```
+Afterwards the output directory and the submit scripts are created using the following command.
+```bash
+OUTPUTDIR=/some/output/directory
+bash gof/create_jdl.sh $ERA $OUTPUTDIR
+```
+Then the directory created in the previous step is linked into the output folder.
+```bash
+ln -s $OUTPUTDIR output
+```
+Finally the jobs can be submitted using HTCondor.
+```bash
+pushd $OUTPUTDIR
+condor_submit job.jdl
+popd
+```

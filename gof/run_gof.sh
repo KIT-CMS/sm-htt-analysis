@@ -1,5 +1,8 @@
 #!/bin/bash
 
+source utils/bashFunctionCollection.sh
+ensureoutdirs
+
 ERA=$1
 CHANNEL=$2
 VARIABLE=$3
@@ -15,11 +18,16 @@ do
 done
 
 # Clean-up workspace
-./utils/clean.sh
+# ./utils/clean.sh
+
+if [[ ! -d output/gof/${ERA}-${CHANNEL}-${VARIABLE} ]]
+then
+    mkdir output/gof/${ERA}-${CHANNEL}-${VARIABLE}
+fi
 
 # Produce shapes
 NUM_THREADS=1
-./gof/produce_shapes.sh $ERA $CHANNEL $VARIABLE $NUM_THREADS
+logandrun ./gof/produce_shapes.sh $ERA $CHANNEL $VARIABLE $NUM_THREADS
 
 # Apply blinding strategy
 ./shapes/apply_blinding.sh $ERA $CHANNEL $VARIABLE
@@ -33,16 +41,14 @@ EMBEDDING=1
 ./gof/produce_datacard.sh $ERA $CHANNEL $VARIABLE $JETFAKES $EMBEDDING $VARIABLE
 
 # Build workspace
-./gof/produce_workspace.sh $ERA | tee ${ERA}_produce_workspace_inclusive.log
+logandrun ./gof/produce_workspace.sh $ERA $CHANNEL $VARIABLE
 
 # Run goodness of fit test
-./gof/gof.sh $ERA
+logandrun ./gof/gof.sh $ERA $CHANNEL $VARIABLE
 
 # Run fit in order to extract postfit shapes
-./gof/run_fit.sh $ERA
+./gof/run_fit.sh $ERA $CHANNEL $VARIABLE
 
 # Plot prefit shapes
-./gof/prefit_postfit_shapes.sh $ERA
+./gof/prefit_postfit_shapes.sh $ERA $CHANNEL $VARIABLE
 ./gof/plot_shapes.sh $ERA $CHANNEL $VARIABLE $JETFAKES $EMBEDDING
-
-cp output/shapes/${VARIABLE}/${ERA}-${VARIABLE}-${CHANNEL}-shapes.root ${ERA}_shapes.root

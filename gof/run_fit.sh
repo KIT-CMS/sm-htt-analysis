@@ -4,9 +4,11 @@ source utils/bashFunctionCollection.sh
 source utils/setup_cmssw.sh
 
 ERA=$1
+CHANNEL=$2
+VARIABLE=$3
 
-WORKSPACE=${ERA}_workspace.root
-ID=$ERA
+WORKSPACE=${ERA}-${CHANNEL}-${VARIABLE}-workspace.root
+ID=${ERA}-${CHANNEL}-${VARIABLE}
 
 LOGFILE="output/log/$ID.log"
 OUTPUTFILE="output/signalStrength/$ID.txt"
@@ -32,4 +34,4 @@ logandrun root -l $FITFILE <<< "fit_b->Print(); fit_s->Print()" \
 
 python ${CMSSW_BASE}/src/HiggsAnalysis/CombinedLimit/test/diffNuisances.py \
     fitDiagnostics.${ID}.MultiDimFit.mH125.root -a  \
-    -f html > nuisances.html
+    -f html > output/gof/${ID}/nuisances.html

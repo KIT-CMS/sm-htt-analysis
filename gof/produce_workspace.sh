@@ -3,18 +3,20 @@ set -e
 source utils/setup_cmssw.sh
 source utils/setup_python.sh
 
-[[ ! -z $1 ]] || (echo Invalid number of arguments; exit 1  )
+[[ ! -z $1 && ! -z $2 && ! -z $3 ]] || (echo Invalid number of arguments; exit 1  )
 ERA=$1
+CHANNEL=$2
+VARIABLE=$3
 
 
-LOGFILE=output/log/workspace-${ERA}.log
+LOGFILE=output/log/workspace-${ERA}-${CHANNEL}-${VARIABLE}.log
 
 # Collect input directories for eras and define output path for workspace
-INPUT=output/${ERA}_smhtt/cmb/125
+INPUT="output/datacards/${ERA}-${CHANNEL}-${VARIABLE}-smhtt-gof/cmb/125"
 echo "[INFO] Add datacards to workspace from path "${INPUT}"."
 
 #OUTPUT=${ERA}_workspace.root
-OUTPUT=${PWD}/${ERA}_workspace.root
+OUTPUT=${PWD}/${ERA}-${CHANNEL}-${VARIABLE}-workspace.root
 echo "[INFO] Write workspace to "${OUTPUT}"."
 
 # Clean previous workspace
