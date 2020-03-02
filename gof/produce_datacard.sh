@@ -13,12 +13,15 @@ GOF_CATEGORY_NAME=${CHANNEL}_${VARIABLE}
 
 source utils/setup_cmssw.sh
 source utils/setup_python.sh
+source utils/bashFunctionCollection.sh
+
+OUTPUTDIR="output/datacards/${ERA}-${CHANNEL}-${VARIABLE}-smhtt-gof"
 
 # Remove output directory
-rm -rf output/${ERA}_smhtt
+[[ ! -d $OUTPUTDIR ]] || rm -r $OUTPUTDIR
 
 # Create datacards
-$CMSSW_BASE/bin/slc7_amd64_gcc700/MorphingSMRun2Legacy \
+logandrun ${CMSSW_BASE}/bin/slc7_amd64_gcc700/MorphingSMRun2Legacy \
     --base_path=$PWD \
     --input_folder_mt="output/shapes" \
     --input_folder_et="output/shapes" \
@@ -40,14 +43,12 @@ $CMSSW_BASE/bin/slc7_amd64_gcc700/MorphingSMRun2Legacy \
     --categories="gof" \
     --gof_category_name=$GOF_CATEGORY_NAME \
     --era=$ERA \
-    --output="output/${ERA}_smhtt"
+    --output=${OUTPUTDIR} | tee output/log/datacard-gof-${ERA}-${CHANNEL}-${VARIABLE}-${JETFAKES}-${EMBEDDING}.log
 
 # Use Barlow-Beeston-lite approach for bin-by-bin systematics
-THIS_PWD=${PWD}
-echo $THIS_PWD
-cd output/${ERA}_smhtt/cmb/125/
+pushd ${OUTPUTDIR}/cmb/125/
 for FILE in *.txt
 do
     sed -i '$s/$/\n * autoMCStats 0.0/' $FILE
 done
-cd $THIS_PWD
+popd

@@ -3,6 +3,7 @@
 from classes.JDLCreator import JDLCreator
 import yaml
 import argparse
+import os
 
 
 def parse_arguments():
@@ -35,7 +36,7 @@ def main(args):
     # 1D fits
     for channel in binning["gof"]:
         for variable in variables["selected_variables"][int(args.era)][channel]:
-            arguments.append("{} {} {}".format(args.era, channel, variable))
+            arguments.append("{} {} {} {}".format(args.era, channel, variable, os.getcwd()))
 
     # 2D fits
     for channel in binning["gof"]:
@@ -45,7 +46,7 @@ def main(args):
                 selected_2d_fits.append("{}_{}".format(var1, var2))
         for variable in selected_2d_fits:
             if variable in binning["gof"][channel]:
-                arguments.append("{} {} {}".format(args.era, channel, variable))
+                arguments.append("{} {} {} {}".format(args.era, channel, variable, os.getcwd()))
 
     jobs.arguments = arguments
 

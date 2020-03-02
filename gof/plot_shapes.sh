@@ -11,6 +11,7 @@ CATEGORIES="None"
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
+source utils/bashFunctionCollection.sh
 
 EMBEDDING_ARG=""
 if [ $EMBEDDING == 1 ]
@@ -24,13 +25,16 @@ then
     JETFAKES_ARG="--fake-factor"
 fi
 
-mkdir -p ${ERA}_plots
-for FILE in "${ERA}_datacard_shapes_prefit.root" "${ERA}_datacard_shapes_postfit_b.root"
+if [[ ! -d output/gof/${ERA}-${CHANNEL}-${VARIABLE}/${ERA}_plots ]]
+then
+    mkdir -p output/gof/${ERA}-${CHANNEL}-${VARIABLE}/${ERA}_plots
+fi
+for FILE in "${ERA}-${CHANNEL}-${VARIABLE}-datacard-shapes-prefit.root" "${ERA}-${CHANNEL}-${VARIABLE}-datacard-shapes-postfit-b.root"
 do
     for OPTION in "" "--png"
     do
-        ./plotting/plot_shapes_gof.py -i $FILE -c $CHANNEL -e $ERA $OPTION \
+        logandrun ./plotting/plot_shapes_gof.py -i $FILE -c $CHANNEL -e $ERA $OPTION \
             --categories $CATEGORIES $JETFAKES_ARG $EMBEDDING_ARG \
-            --gof-variable $VARIABLE -o ${ERA}_plots
+            --gof-variable $VARIABLE -o output/gof/${ERA}-${CHANNEL}-${VARIABLE}/${ERA}_plots
     done
 done

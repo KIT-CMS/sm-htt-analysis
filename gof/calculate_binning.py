@@ -34,46 +34,48 @@ def parse_arguments():
     parser = argparse.ArgumentParser(
         description="Calculate binning for goodness of fit tests.")
 
-    parser.add_argument(
-        "--directory",
-        required=True,
-        type=str,
-        help="Directory with Artus outputs.")
-    parser.add_argument(
-        "--em-friend-directories",
-        nargs='+',
-        default=[],
-        type=str,
-        help="Directories with Artus friend outputs for em channel.")
-    parser.add_argument(
-        "--et-friend-directories",
-        nargs='+',
-        default=[],
-        type=str,
-        help="Directories with Artus friend outputs for et channel.")
-    parser.add_argument(
-        "--mt-friend-directories",
-        nargs='+',
-        default=[],
-        type=str,
-        help="Directories with Artus friend outputs for mt channel.")
-    parser.add_argument(
-        "--tt-friend-directories",
-        nargs='+',
-        default=[],
-        type=str,
-        help="Directories with Artus friend outputs for tt channel.")
-    parser.add_argument(
-        "--era", required=True, type=str, help="Experiment era.")
-    parser.add_argument(
-        "--datasets", required=True, type=str, help="Kappa datsets database.")
-    parser.add_argument(
-        "--output",
-        required=True,
-        type=str,
-        help="Output path for binning config.")
-    parser.add_argument(
-        "--variables", required=True, help="Variables to be considered.")
+    parser.add_argument("--directory",
+                        required=True,
+                        type=str,
+                        help="Directory with Artus outputs.")
+    parser.add_argument("--em-friend-directories",
+                        nargs='+',
+                        default=[],
+                        type=str,
+                        help="Directories with Artus friend outputs for em channel.")
+    parser.add_argument("--et-friend-directories",
+                        nargs='+',
+                        default=[],
+                        type=str,
+                        help="Directories with Artus friend outputs for et channel.")
+    parser.add_argument("--mt-friend-directories",
+                        nargs='+',
+                        default=[],
+                        type=str,
+                        help="Directories with Artus friend outputs for mt channel.")
+    parser.add_argument("--tt-friend-directories",
+                        nargs='+',
+                        default=[],
+                        type=str,
+                        help="Directories with Artus friend outputs for tt channel.")
+    parser.add_argument("--era",
+                        required=True,
+                        type=str,
+                        help="Experiment era.")
+    parser.add_argument("--datasets",
+                        required=True,
+                        type=str,
+                        help="Kappa datsets database.")
+    parser.add_argument("--output",
+                        required=True,
+                        type=str,
+                        help="Output path for binning config.")
+    parser.add_argument("--variables",
+                        required=True,
+                        help="Variables to be considered.")
+    parser.add_argument("--channel",
+                        required=True,
+                        help="Channel to be considered.")
     return parser.parse_args()
 
 
@@ -87,8 +89,8 @@ def get_properties(dict_, era, channel, directory, additional_cuts):
         from shape_producer.estimation_methods_2018 import DataEstimation
     else:
         logger.fatal(
-            "Can not import data estimation because era {} is not implemented.".
-            format(era.name))
+            "Can not import data estimation because era {} is not implemented."
+            .format(era.name))
         raise Exception
     estimation = DataEstimation(era, directory, channel)
 
@@ -100,8 +102,8 @@ def get_properties(dict_, era, channel, directory, additional_cuts):
         raise Exception
 
     # Extract cut string
-    cut_string = (
-        estimation.get_cuts() + channel.cuts + additional_cuts).expand()
+    cut_string = (estimation.get_cuts() + channel.cuts
+                  + additional_cuts).expand()
     logger.debug("Data cut string: %s", cut_string)
     dict_["cut_string"] = str(cut_string)
 
@@ -149,7 +151,7 @@ def build_chain(dict_, friend_directories):
     logger.debug("Found %s events after skimming with cut string.",
                  chain_skimmed_numentries)
     for d in friendchains_skimmed:
-        chain_skimmed.AddFriend(friendchains_skimmed[d])
+        chain_skimmed.AddFriend(friendchains_skimmed[d], "fr_{}".format(os.path.basename(d.rstrip("/"))))
 
     return chain_skimmed
 
@@ -169,11 +171,16 @@ def get_1d_binning(channel, chain, variables, percentiles):
         binning[v] = {}
         if len(values[i]) > 0:
             borders = [float(x) for x in np.percentile(values[i], percentiles)]
-            borders = sorted(list(set(borders))) # remove duplicates in bins for integer binning
-            borders = [b - 0.01 for b in borders] # epsilon offset for integer variables to make it more stable
-            borders[-1] += 0.02 # stretch last one to include the last border in case it is an integer
+            # remove duplicates in bins for integer binning
+            borders = sorted(list(set(borders)))
+            # epsilon offset for integer variables to make it more stable
+            borders = [b - 0.0001 for b in borders ]
+            # stretch last one to include the last border in case it is an integer
+            borders[-1] += 0.0002
         else:
-            logger.fatal("No valid values found for variable {}. Please remove from list for channel {}.".format(v, channel))
+            logger.fatal(
+                "No valid values found for variable {}. Please remove from list for channel {}."
+                .format(v, channel))
             raise Exception
 
         binning[v]["bins"] = borders
@@ -248,17 +255,19 @@ def main(args):
         "em" : { "2016": EMSM2016(), "2017" : EMSM2017(), "2018" : EMSM2018()},
     }
     friend_directories_dict = {
-        "em" : args.em_friend_directories,
-        "et" : args.et_friend_directories,
-        "mt" : args.mt_friend_directories,
-        "tt" : args.tt_friend_directories,
+        "em": args.em_friend_directories,
+        "et": args.et_friend_directories,
+        "mt": args.mt_friend_directories,
+        "tt": args.tt_friend_directories,
     }
-    percentiles = [0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0]
+    percentiles = [
+            0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0
+    ]
 
     config = {"gof": {}}
 
-    for ch in channel_dict:
-        if ch != "em":
+    for ch in channel_dict.keys():
+        if ch != args.channel:
             continue
         # Get properties
         if "2016" in args.era:
@@ -268,15 +277,17 @@ def main(args):
         elif "2018" in args.era:
             eraname = "2018"
         channel = channel_dict[ch][eraname]
-        logger.info("Channel: %s"%ch)
+        logger.info("Channel: %s" % ch)
         dict_ = {}
         additional_cuts = Cuts()
-        logger.warning("Use additional cuts for %s: %s"%(ch,additional_cuts.expand()))
+        logger.warning("Use additional cuts for %s: %s" %
+                       (ch,additional_cuts.expand()))
         dict_ = get_properties(dict_, era, channel, args.directory,
                                additional_cuts)
 
         # Build chain
-        dict_["tree_path"] = "%s_nominal/ntuple"%ch
+        dict_["tree_path"] = "%s_nominal/ntuple" % ch
+
         chain = build_chain(dict_, friend_directories_dict[ch])
 
         # Get percentiles and calculate 1d binning

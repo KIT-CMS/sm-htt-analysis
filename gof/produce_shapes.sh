@@ -39,15 +39,16 @@ python shapes/produce_shapes.py \
     --channels $CHANNEL \
     --gof-variable $VARIABLE \
     --processes $PROCESSES \
+    --categories gof \
     --em-friend-directory $ARTUS_FRIENDS_EM \
     --et-friend-directory $ARTUS_FRIENDS_ET \
     --mt-friend-directory $ARTUS_FRIENDS_MT \
     --tt-friend-directory $ARTUS_FRIENDS_TT \
-    --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR_INCL \
+    --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR \
     --era $ERA \
     --tag $VARIABLE \
     --num-threads $NUM_THREADS
 
-mv output/shapes/${VARIABLE}/${ERA}-${VARIABLE}-${CHANNEL}-${PROCESSES}--shapes.root output/shapes/${VARIABLE}/${ERA}-${VARIABLE}-${CHANNEL}-shapes.root
+mv output/shapes/${VARIABLE}/${ERA}-${VARIABLE}-${CHANNEL}-${PROCESSES}-gof-shapes.root output/shapes/${VARIABLE}/${ERA}-${VARIABLE}-${CHANNEL}-shapes.root
 # Normalize fake-factor shapes to nominal
 python fake-factor-application/normalize_shifts.py output/shapes/${VARIABLE}/${ERA}-${VARIABLE}-${CHANNEL}-shapes.root

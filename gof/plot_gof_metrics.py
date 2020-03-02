@@ -14,21 +14,23 @@ def parse_args():
     parser.add_argument("-g", "--gof-type", required=True,
                         choices=["AD", "KS"],
                         help="Type of goodness of fit test.")
+    parser.add_argument("-o", "--output-path", required=True, type=str,
+                        help="Output path.")
+    parser.add_argument("-i", "--input", required=True, type=str,
+                        help="Input root file.")
     return parser.parse_args()
 
 
 def main(args):
-    filename = "higgsCombineTest.GoodnessOfFit.mH125.root"
-    infile = ROOT.TFile(filename)
+    infile = ROOT.TFile(args.input)
     directory = infile.Get("GoodnessOfFit")
     keys = [key.GetName() for key in directory.GetListOfKeys()]
     for key in keys:
-        print key
         canvas = ROOT.TCanvas()
         hist = directory.Get(key)
         hist.Draw("hist")
-        canvas.Print("{}_plots/{}_{}.png".format(args.era, args.gof_type, key))
-        canvas.Print("{}_plots/{}_{}.pdf".format(args.era, args.gof_type, key))
+        canvas.Print("{}/{}_{}_{}.png".format(args.output_path, args.era, args.gof_type, key))
+        canvas.Print("{}/{}_{}_{}.pdf".format(args.output_path, args.era, args.gof_type, key))
     infile.Close()
     return
 
