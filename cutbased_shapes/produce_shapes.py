@@ -358,16 +358,17 @@ def main(args):
 
     # Split JES shapes
     jet_es_variations = create_systematic_variations("CMS_scale_j_Absolute", "jecUncAbsolute", DifferentPipeline)
-    jet_es_variations += create_systematic_variations("CMS_scale_j_Absolute_Run{}".format(args.era), "jecUncAbsoluteYear", DifferentPipeline)
+    jet_es_variations += create_systematic_variations("CMS_scale_j_Absolute_{}".format(args.era), "jecUncAbsoluteYear", DifferentPipeline)
     jet_es_variations += create_systematic_variations("CMS_scale_j_BBEC1", "jecUncBBEC1", DifferentPipeline)
-    jet_es_variations += create_systematic_variations("CMS_scale_j_BBEC1_Run{}".format(args.era), "jecUncBBEC1Year", DifferentPipeline)
+    jet_es_variations += create_systematic_variations("CMS_scale_j_BBEC1_{}".format(args.era), "jecUncBBEC1Year", DifferentPipeline)
     jet_es_variations += create_systematic_variations("CMS_scale_j_EC2", "jecUncEC2", DifferentPipeline)
-    jet_es_variations += create_systematic_variations("CMS_scale_j_EC2_Run{}".format(args.era), "jecUncEC2Year", DifferentPipeline)
+    jet_es_variations += create_systematic_variations("CMS_scale_j_EC2_{}".format(args.era), "jecUncEC2Year", DifferentPipeline)
     jet_es_variations += create_systematic_variations("CMS_scale_j_FlavorQCD", "jecUncFlavorQCD", DifferentPipeline)
     jet_es_variations += create_systematic_variations("CMS_scale_j_HF", "jecUncHF", DifferentPipeline)
-    jet_es_variations += create_systematic_variations("CMS_scale_j_HF_Run{}".format(args.era), "jecUncHFYear", DifferentPipeline)
+    jet_es_variations += create_systematic_variations("CMS_scale_j_HF_{}".format(args.era), "jecUncHFYear", DifferentPipeline)
     jet_es_variations += create_systematic_variations("CMS_scale_j_RelativeBal", "jecUncRelativeBal", DifferentPipeline)
-    jet_es_variations += create_systematic_variations("CMS_scale_j_RelativeSample_Run{}".format(args.era), "jecUncRelativeSampleYear", DifferentPipeline)
+    jet_es_variations += create_systematic_variations("CMS_scale_j_RelativeSample_{}".format(args.era), "jecUncRelativeSampleYear", DifferentPipeline)
+    jet_es_variations += create_systematic_variations("CMS_res_j_{}".format(args.era), "jerUnc", DifferentPipeline)
 
     # B-tagging
     btag_eff_variations = create_systematic_variations("CMS_htt_eff_b_Run{}".format(args.era), "btagEff", DifferentPipeline)
