@@ -243,7 +243,7 @@ def main(args):
         for cn_ in selectedChannels}
 
     # defines the signal sets
-    ww_nicks = {"ggHWW125", "qqHWW125"}
+    ww_nicks = {"ggHWW125", "qqHWW125", "WHWW125", "ZHWW125"}
 
     if args.gof_variable is None:
         signal_nicks = {
@@ -272,6 +272,8 @@ def main(args):
         "ttH125": ttHEstimation,
         "ggHWW125": ggHWWEstimation,
         "qqHWW125": qqHWWEstimation,
+        "WHWW125": WHWWEstimation,
+        "ZHWW125": ZHWWEstimation,
     }
 
     # provide lambda functions, as the signal estimation methods need an
