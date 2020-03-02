@@ -82,7 +82,7 @@ def buildprocesses(era, channelname):
         "em": {"W"},
     }
 
-    ww_nicks = {"ggHWW125", "qqHWW125"}
+    ww_nicks = {"ggHWW125", "qqHWW125", "WHWW125", "ZHWW125"}
 
     signal_nicks = (
         {"WH125", "ZH125", "VH125", "ttH125"}
