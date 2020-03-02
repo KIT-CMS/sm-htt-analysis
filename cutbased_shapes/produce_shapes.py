@@ -240,6 +240,14 @@ def main(args):
         "em" : {},
     }
 
+    if args.era == "2016" or args.era == "2018":
+        em_closureweight = 1.2
+    elif args.era == "2017":
+        em_closureweight = 1.1
+    else:
+        logger.fatal("Given era {} is not implemented. Choose from 2016, 2017 or 2018.".format(args.era))
+        raise Exception
+
     for ch in args.channels:
 
         # common processes
@@ -283,7 +291,7 @@ def main(args):
                 processes[ch]["FAKES"] = Process("jetFakes", NewFakeEstimationTT(era, directory, channel_dict[args.era][ch], [processes[ch][process] for process in ["EMB", "ZL", "TTL", "VVL"]], processes[ch]["data"], friend_directory=friend_directories[ch]+[ff_friend_directory]))
             elif ch == "em":
                 processes[ch]["W"]   = Process("W",   WEstimation(era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
-                processes[ch]["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, channel_dict[args.era][ch], [processes[ch][process] for process in ["EMB", "ZL", "W", "VVL", "TTL"]], processes[ch]["data"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_extrap_up_Weight","qcd_weight")))
+                processes[ch]["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, channel_dict[args.era][ch], [processes[ch][process] for process in ["EMB", "ZL", "W", "VVL", "TTL"]], processes[ch]["data"], extrapolation_factor=1.0, qcd_weight = Weight("{closureweight}*em_qcd_osss_binned_Weight".format(closureweight=em_closureweight),"qcd_weight")))
 
     # Variables and categories
     if sys.version_info.major <= 2 and sys.version_info.minor <= 7 and sys.version_info.micro <= 15:
@@ -455,18 +463,22 @@ def main(args):
 
     # QCD for em
     qcd_variations = []
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_0jet_rate_Run{}".format(args.era), "qcd_weight", Weight("em_qcd_osss_0jet_rateup_Weight", "qcd_weight"), "Up"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_0jet_rate_Run{}".format(args.era), "qcd_weight", Weight("em_qcd_osss_0jet_ratedown_Weight", "qcd_weight"), "Down"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_0jet_shape_Run{}".format(args.era), "qcd_weight", Weight("em_qcd_osss_0jet_shapeup_Weight", "qcd_weight"), "Up"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_0jet_shape_Run{}".format(args.era), "qcd_weight", Weight("em_qcd_osss_0jet_shapedown_Weight", "qcd_weight"), "Down"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_1jet_rate_Run{}".format(args.era), "qcd_weight", Weight("em_qcd_osss_1jet_rateup_Weight", "qcd_weight"), "Up"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_1jet_rate_Run{}".format(args.era), "qcd_weight", Weight("em_qcd_osss_1jet_ratedown_Weight", "qcd_weight"), "Down"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_1jet_shape_Run{}".format(args.era), "qcd_weight", Weight("em_qcd_osss_1jet_shapeup_Weight", "qcd_weight"), "Up"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_1jet_shape_Run{}".format(args.era), "qcd_weight", Weight("em_qcd_osss_1jet_shapedown_Weight", "qcd_weight"), "Down"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_iso_Run{}".format(args.era), "qcd_weight", Weight("em_qcd_extrap_up_Weight", "qcd_weight"), "Up"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_iso_Run{}".format(args.era), "qcd_weight", Weight("em_qcd_extrap_down_Weight", "qcd_weight"), "Down"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_iso", "qcd_weight", Weight("em_qcd_extrap_up_Weight", "qcd_weight"), "Up"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_iso", "qcd_weight", Weight("em_qcd_extrap_down_Weight", "qcd_weight"), "Down"))
+    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_0jet_rate_{}".format(args.era), "qcd_weight", Weight("{closureweight}*em_qcd_osss_stat_0jet_rateup_Weight".format(closureweight=em_closureweight), "qcd_weight"), "Up"))
+    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_0jet_rate_{}".format(args.era), "qcd_weight", Weight("{closureweight}*em_qcd_osss_stat_0jet_ratedown_Weight".format(closureweight=em_closureweight), "qcd_weight"), "Down"))
+    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_0jet_shape_{}".format(args.era), "qcd_weight", Weight("{closureweight}*em_qcd_osss_stat_0jet_shapeup_Weight".format(closureweight=em_closureweight), "qcd_weight"), "Up"))
+    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_0jet_shape_{}".format(args.era), "qcd_weight", Weight("{closureweight}*em_qcd_osss_stat_0jet_shapedown_Weight".format(closureweight=em_closureweight), "qcd_weight"), "Down"))
+    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_1jet_rate_{}".format(args.era), "qcd_weight", Weight("{closureweight}*em_qcd_osss_stat_1jet_rateup_Weight".format(closureweight=em_closureweight), "qcd_weight"), "Up"))
+    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_1jet_rate_{}".format(args.era), "qcd_weight", Weight("{closureweight}*em_qcd_osss_stat_1jet_ratedown_Weight".format(closureweight=em_closureweight), "qcd_weight"), "Down"))
+    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_1jet_shape_{}".format(args.era), "qcd_weight", Weight("{closureweight}*em_qcd_osss_stat_1jet_shapeup_Weight".format(closureweight=em_closureweight), "qcd_weight"), "Up"))
+    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_1jet_shape_{}".format(args.era), "qcd_weight", Weight("{closureweight}*em_qcd_osss_stat_1jet_shapedown_Weight".format(closureweight=em_closureweight), "qcd_weight"), "Down"))
+    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_2jet_rate_{}".format(args.era), "qcd_weight", Weight("{closureweight}*em_qcd_osss_stat_2jet_rateup_Weight".format(closureweight=em_closureweight), "qcd_weight"), "Up"))
+    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_2jet_rate_{}".format(args.era), "qcd_weight", Weight("{closureweight}*em_qcd_osss_stat_2jet_ratedown_Weight".format(closureweight=em_closureweight), "qcd_weight"), "Down"))
+    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_2jet_shape_{}".format(args.era), "qcd_weight", Weight("{closureweight}*em_qcd_osss_stat_2jet_shapeup_Weight".format(closureweight=em_closureweight), "qcd_weight"), "Up"))
+    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_2jet_shape_{}".format(args.era), "qcd_weight", Weight("{closureweight}*em_qcd_osss_stat_2jet_shapedown_Weight".format(closureweight=em_closureweight), "qcd_weight"), "Down"))
+    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_iso_{}".format(args.era), "qcd_weight", Weight("{closureweight}*em_qcd_extrap_up_Weight".format(closureweight=em_closureweight), "qcd_weight"), "Up"))
+    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_iso_{}".format(args.era), "qcd_weight", Weight("{closureweight}*em_qcd_extrap_down_Weight".format(closureweight=em_closureweight), "qcd_weight"), "Down"))
+    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_iso", "qcd_weight", Weight("{closureweight}*em_qcd_extrap_up_Weight".format(closureweight=em_closureweight), "qcd_weight"), "Up"))
+    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_iso", "qcd_weight", Weight("{closureweight}*em_qcd_extrap_down_Weight".format(closureweight=em_closureweight), "qcd_weight"), "Down"))
 
     # Gluon-fusion WG1 uncertainty scheme
     ggh_variations = []
