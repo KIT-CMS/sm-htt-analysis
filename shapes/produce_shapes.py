@@ -415,11 +415,10 @@ def main(args):
             return classdict
 
     catsListD = {chname_: [] for chname_ in selectedChannels}
-    if 0 in [len(x) for x in selectedChannels, selectedCategories, selectedProcesses ]:
+    if 0 in [len(x) for x in selectedChannels, selectedProcesses ]:
         logger.fatal("Nothing to do!")
-        logger.fatal("selectedChannels: "+selectedChannels)
-        logger.fatal("selectedCategories: "+selectedCategories)
-        logger.fatal("selectedProcesses: "+selectedProcesses)
+        logger.fatal("selectedChannels: "+" ".join(selectedChannels))
+        logger.fatal("selectedProcesses: "+" ".join(selectedProcesses))
         raise Exception
 
     # if not a gof test:Analysis shapes
