@@ -941,18 +941,15 @@ def main(args):
                 "ff_qcd{ch}_syst{era}{shift}",
                 "ff_qcd_dm0_njet0{ch}_stat{era}{shift}",
                 "ff_qcd_dm0_njet1{ch}_stat{era}{shift}",
-                # "ff_qcd_dm1_njet0{ch}_stat{era}{shift}",
-                # "ff_qcd_dm1_njet1{ch}_stat{era}{shift}",
                 "ff_w_syst{era}{shift}",
                 "ff_w_dm0_njet0{ch}_stat{era}{shift}",
                 "ff_w_dm0_njet1{ch}_stat{era}{shift}",
-                # "ff_w_dm1_njet0{ch}_stat{era}{shift}",
-                # "ff_w_dm1_njet1{ch}_stat{era}{shift}",
                 "ff_tt_syst{era}{shift}",
                 "ff_tt_dm0_njet0_stat{era}{shift}",
                 "ff_tt_dm0_njet1_stat{era}{shift}",
-                # "ff_tt_dm1_njet0_stat{era}{shift}",
-                # "ff_tt_dm1_njet1_stat{era}{shift}"
+                "ff_w_lepPt_mc{era}{shift}",
+                "ff_qcd_mvis_mc{era}{shift}",
+                "ff_qcd_muiso_mc{era}{shift}",
             ]
             fake_factor_weight[chname_] = "ff2_{syst}"
         for chname_ in selectedChannels & {"tt"}:
@@ -960,12 +957,12 @@ def main(args):
                 "ff_qcd{ch}_syst{era}{shift}",
                 "ff_qcd_dm0_njet0{ch}_stat{era}{shift}",
                 "ff_qcd_dm0_njet1{ch}_stat{era}{shift}",
-                # "ff_qcd_dm1_njet0{ch}_stat{era}{shift}",
-                # "ff_qcd_dm1_njet1{ch}_stat{era}{shift}",
                 "ff_w{ch}_syst{era}{shift}",
                 "ff_tt{ch}_syst{era}{shift}",
                 "ff_w_frac{ch}_syst{era}{shift}",
-                "ff_tt_frac{ch}_syst{era}{shift}"
+                "ff_tt_frac{ch}_syst{era}{shift}",
+                "ff_qcd_mvis_mc{era}{shift}",
+                "ff_qcd_tau2_pt_mc{era}{shift}",
             ]
             fake_factor_weight[chname_] = "(0.5*ff1_{syst}*(byTightDeepTau2017v2p1VSjet_1<0.5)+0.5*ff2_{syst}*(byTightDeepTau2017v2p1VSjet_2<0.5))"
         for chname_, ch_ in selectedChannelsTuplesNoEM:
