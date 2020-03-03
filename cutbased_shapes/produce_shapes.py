@@ -279,9 +279,9 @@ def main(args):
         if args.shape_group == "sm_signals":
             # stage 0 and stage 1.1 ggh and qqh
             for ggH_htxs in ggHEstimation.htxs_dict:
-                processes[ch][ggH_htxs] = Process(ggH_htxs, ggHEstimation(ggH_htxs, era, directory, channel_dict[args.era][ch], friend_directory=[]))  # friend_directories[ch]))
+                processes[ch][ggH_htxs] = Process(ggH_htxs, ggHEstimation(ggH_htxs, era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
             for qqH_htxs in qqHEstimation.htxs_dict:
-                processes[ch][qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, channel_dict[args.era][ch], friend_directory=[]))  # friend_directories[ch]))
+                processes[ch][qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
 
         # channel-specific processes
         if args.shape_group == "backgrounds":
