@@ -54,8 +54,8 @@ elif [[ $cluster == "lxplus7" ]]; then
 elif [[ $cluster == "naf7" ]]; then
     eventsPerJob=2000000
     walltime=2000
-    ARTUS_OUTPUTS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau_eoy/$era/ntuples"
-    ARTUS_FRIENDS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau_eoy/$era/friends/FakeFactors /nfs/dust/cms/group/higgs-kit/ekp/deeptau_eoy/$era/friends/MELA /nfs/dust/cms/group/higgs-kit/ekp/deeptau_eoy/$era/friends/SVFit"
+    ARTUS_OUTPUTS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau_03-05/$era/ntuples"
+    ARTUS_FRIENDS="/nfs/dust/cms/group/higgs-kit/ekp/deeptau_03-05/$era/friends/MELA /nfs/dust/cms/group/higgs-kit/ekp/deeptau_03-05/$era/friends/SVFit"
 fi
 
 export workdir=$batch_out/$outdir
