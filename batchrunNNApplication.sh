@@ -27,7 +27,7 @@ fi
 
 if [[ $cluster = "etp7" ]]; then
     source utils/setup_samples.sh $era $tag
-    ARTUS_FRIENDS="${ARTUS_FRIENDS} ${ARTUS_FRIENDS_FAKE_FACTOR}"
+    ARTUS_FRIENDS="$SVFit_Friends $MELA_Friends $FF_Friends"
     eventsPerJob=2000000
     walltime=10000
 elif [[ $cluster == "lxplus7" ]]; then

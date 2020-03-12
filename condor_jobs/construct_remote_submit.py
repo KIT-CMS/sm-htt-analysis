@@ -99,7 +99,7 @@ def buildprocesses(era, channelname):
     return processes[::-1]
 
 
-def write_gc(era, channel, nnclasses, processes, tag, workdir, mode):
+def write_gc(era, channel, nnclasses, processes, tag, workdir,tarballpath, mode):
     if mode == "normal":
         configfilepath = "{WORKDIR}/shapes_{ERA}_{CHANNEL}_{TAG}.conf".format(
             WORKDIR=workdir, ERA=era, CHANNEL=channel, TAG=tag
@@ -142,7 +142,7 @@ def write_gc(era, channel, nnclasses, processes, tag, workdir, mode):
         "executable = {}\n".format(os.path.abspath("condor_jobs/run_remote_job.sh"))
     )
     configfile.write(
-        "input files = " + os.path.abspath(workdir + "/gc_tarball.tar.gz\n")
+        "input files = {}\n".format(os.path.abspath(tarballpath))
     )
     if mode == "normal":
         # configfile.write("constant = CPUS \n CPUS = 1\n")
@@ -157,13 +157,14 @@ def write_gc(era, channel, nnclasses, processes, tag, workdir, mode):
 
 
 def build_tarball(workdir):
-    print("building tarball... {}/gc_tarball.tar.gz ".format(workdir))
+    print("building tarball...")
     cmd = "tar --dereference -czf {}/gc_tarball.tar.gz shape-producer/* shapes/* utils/* datasets/* ml/* fake-factor-application/* utils/* output/ml/*/dataset_config.yaml".format(
         workdir
     )
     print(cmd)
     os.system(cmd)
     print("finished tarball...")
+    return("{}/gc_tarball.tar.gz ".format(workdir))
 
 
 def write_while(tasks, path):
@@ -196,7 +197,7 @@ def main(args):
 
     if args.mode == "submit":
         tasks = {}
-        build_tarball(args.workdir)
+        tarballpath=build_tarball(args.workdir)
         for tag in tags:
             tasks[tag] = {}
             for era in eras:
@@ -215,6 +216,7 @@ def main(args):
                             buildprocesses(era, channel),
                             tag,
                             workdir,
+                            tarballpath,
                             "normal",
                         )
                     if gcmode == "optimal":
@@ -229,6 +231,7 @@ def main(args):
                             buildprocesses(era, channel)[0],
                             tag,
                             workdir,
+                            tarballpath,
                             "bkg",
                         )
                         tasks[tag][era][channel + "_signal"]["gc"] = write_gc(
@@ -238,6 +241,7 @@ def main(args):
                             buildprocesses(era, channel)[1:],
                             tag,
                             workdir,
+                            tarballpath,
                             "normal",
                         )
         filename = write_while(tasks, args.workdir)

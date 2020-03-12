@@ -68,6 +68,51 @@ function recommendCPUs() {
     echo $ncpus | awk '{print int($1/4)}'
 }
 
+
+function capargs() {
+    outstr=""
+    for arg in $( echo $@ | cut -d' ' -f1-4 ); do
+        if ispath $arg; then
+            arg=$(shortenpath $arg )
+        fi
+        if [[ ${#arg} -gt 30 ]]; then
+            outstr=$outstr+${arg:0:30}
+        else
+            outstr=$outstr+$arg
+        fi
+    done
+    echo $outstr | sed 's@\./@@' | sed -E "s@/@:@g" | sed -E "s@^[-:+]+@@g"  #| sed -E "s@ +@+@" 
+}
+function ispath() {
+    if [[ -d $@ || -f $@ ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+function shortenpath() (
+    [[ -n $ZSH_VERSION ]] && setopt +o nomatch
+    pathstr=""
+    if [[ $1 = /* ]]; then
+        pathstr="/"
+        findbase="/"
+    else
+        pathstr=""
+        findbase="."
+    fi
+    for level in $( echo $1 | sed "s@/@ @g" ); do
+        pathstr=${pathstr}${level:0:3}
+        level=${level:3}
+        while [[ $(echo ${pathstr}* 2> /dev/null | wc -l) -gt 1 ]]; do
+            pathstr=${pathstr}${level:0:1}
+            level=${level:1}
+        done
+        [[ $level == "" ]] || pathstr=${pathstr}
+        pathstr=${pathstr}/
+    done
+    echo $pathstr
+)
+
 # colored output for viewing logs
 LESS=-R
 function loginfo {
@@ -83,23 +128,27 @@ function logerror {
     logerrormsg $@
     return 1
 }
-function logandrun() {
+function logandrun() (
     # set bash to exit if as soon as a part of a pipe has a non-zero exit value
     set -o pipefail
+    set +e
     # check if this is the top level logandrun script, so multiple notifications can be supressed
     if [[ -z $LOGANDRUN_TOPLEVELSET ]]; then
         export LOGANDRUN_TOPLEVELSET=1
         LOGANDRUN_IS_TOP_LEVEL=1
     fi
     # set the name of the logfile based on the command
-    logfile=$( pwd )/output/log/logandrun/$( echo "$@" | cut -d' ' -f1-4 | sed 's@\./@@' | sed -E "s@[/ ]@\-@g" ).log
+    logfile=$( pwd )/output/log/logandrun/$( capargs "$@" ).log
     # print the startmessage and log it
     echo -e "\e[43m[RUN]\e[0m" $( date +"%y-%m-%d %R" ): $@ | tee -a $( pwd )/output/log/logandrun/event.log | tee -a $logfile
     # evaluate the current date in seconds as the start date
     start=`date +%s`
     #######
     # execute the command and log it
+    (    
+    set -e
     $@ 2>&1 |  tee -a $logfile
+    )
     # capture the return code ( without  pipefail this would be the exit code of tee )
     return_code=$?
     end=`date +%s`
@@ -123,7 +172,7 @@ function logandrun() {
         unset LOGANDRUN_IS_TOP_LEVEL
     fi
     return $return_code
-}
+)
 function logclean () {
     find output/log -type f -iname "*.log" -delete
 }
