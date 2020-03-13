@@ -518,7 +518,6 @@ def main(args):
          for process_nick in processes[chname_]}
         for chname_, _ in selectedChannelsTuples
     }
-
     if args.era in ["2016", "2017"]:
         # Prefiring weights
         prefiring_variaitons = [
@@ -592,7 +591,6 @@ def main(args):
                 for process_nick in selectedProcesses & pS_:
                     variationsToAdd[chname_][process_nick].append(
                         variation_)
-
     # Tau energy scale
         # Tau energy scale
     for name_, pS_ in {
@@ -932,6 +930,7 @@ def main(args):
                                     era=args.era),
                                 shift_direction),
                             mass="125"))
+
     if "FAKES" in selectedProcesses:
         # jetfakes
         fake_factor_variations = {}
@@ -946,12 +945,17 @@ def main(args):
                 "ff_w_dm0_njet1{ch}_stat{era}{shift}",
                 "ff_tt_syst{era}{shift}",
                 "ff_tt_stat{era}{shift}",
+                "ff_tt_morphed{era}{shift}",
+		"ff_tt_sf{era}{shift}",
                 "ff_frac_w{era}{shift}",
-                # "ff_w_lepPt{era}{shift}",
+                "ff_qcd_dm0_njet0_morphed_stat{era}{shift}", "ff_qcd_dm0_njet1_morphed_stat{era}{shift}",
+                "ff_w_dm0_njet0_morphed_stat{era}{shift}", "ff_w_dm0_njet1_morphed_stat{era}{shift}",
+                "ff_tt_dm0_njet0_morphed_stat{era}{shift}", "ff_tt_dm0_njet1_morphed_stat{era}{shift}",
+                "ff_w_lepPt{era}{shift}",
                 "ff_w_mc{era}{shift}",
-                # "ff_w_mt{era}{shift}",
-                # "ff_qcd_mvis{era}{shift}",
-                # "ff_qcd_muiso{era}{shift}",
+                "ff_w_mt{era}{shift}",
+                "ff_qcd_mvis{era}{shift}",
+                "ff_qcd_muiso{era}{shift}",
                 "ff_qcd_mc{era}{shift}",                
             ]
             fake_factor_weight[chname_] = "ff2_{syst}"
@@ -964,8 +968,8 @@ def main(args):
                 "ff_tt{ch}_syst{era}{shift}",
                 "ff_w_frac{ch}_syst{era}{shift}",
                 "ff_tt_frac{ch}_syst{era}{shift}",
-                # "ff_qcd_mvis{era}{shift}",
-                # "ff_qcd_tau2_pt{era}{shift}",
+                "ff_qcd_mvis{era}{shift}",
+                "ff_qcd_tau2_pt{era}{shift}",
                 "ff_qcd_mc{era}{shift}",
             ]
             fake_factor_weight[chname_] = "(0.5*ff1_{syst}*(byTightDeepTau2017v2p1VSjet_1<0.5)+0.5*ff2_{syst}*(byTightDeepTau2017v2p1VSjet_2<0.5))"
@@ -984,7 +988,7 @@ def main(args):
                             fake_factor_weight[chname_].format(
                                 syst=systname_), "fake_factor"), shift_direction)
                     variationsToAdd[chname_]["FAKES"].append(variation_)
-
+    
     # QCD for em
     qcd_variations = []
     if len(selectedChannels & {"em"}) == 0:
@@ -1141,7 +1145,6 @@ def main(args):
 
 
 
-
     # add all variation from the systematics
     for chname_, ch_ in selectedChannelsTuples:
         for process_nick in processes[chname_]:
@@ -1151,6 +1154,7 @@ def main(args):
                     process=processes[chname_][process_nick],
                     channel=ch_,
                     era=era)
+
     # Produce histograms
     logger.info("Start producing shapes.")
     systematics.produce()
