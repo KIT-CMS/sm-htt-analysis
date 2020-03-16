@@ -359,13 +359,15 @@ def main(args):
                     friend_directory=friend_directory[chname_]))
         else:
             # qcd_weight = Weight("em_qcd_osss_binned_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight")
+            ROOT.v5.TFormula.SetMaxima(3000)
+
             if args.era == "2016":
-                closureweight = 1.2
+                qcd_weight_string = "((-0.1138*(njets==0)+(-0.07938)*(njets==1)+(-0.02602)*(njets>=2))*((DiTauDeltaR-3.0)**2.0-3.0)+(-0.2287*(njets==0)+(-0.3251)*(njets==1)+(-0.2802)*(njets>=2))*(DiTauDeltaR-3.0)+(1.956*(njets==0)+(1.890)*(njets==1)+(1.753)*(njets>=2)))*(1.0*(pt_1>=150.0||pt_2>=150.0)+1.132173*(pt_1>=0.0&&pt_1<24.0&&pt_2>=24.0&&pt_2<30.0)+1.118720*(pt_1>=0.0&&pt_1<24.0&&pt_2>=30.0&&pt_2<40.0)+1.135967*(pt_1>=0.0&&pt_1<24.0&&pt_2>=40.0&&pt_2<50.0)+1.127198*(pt_1>=0.0&&pt_1<24.0&&pt_2>=50.0&&pt_2<80.0)+1.437193*(pt_1>=0.0&&pt_1<24.0&&pt_2>=80.0&&pt_2<150.0)+1.004124*(pt_1>=24.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<24.0)+1.056143*(pt_1>=24.0&&pt_1<30.0&&pt_2>=24.0&&pt_2<30.0)+1.172165*(pt_1>=24.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<40.0)+1.382327*(pt_1>=24.0&&pt_1<30.0&&pt_2>=40.0&&pt_2<50.0)+1.395561*(pt_1>=24.0&&pt_1<30.0&&pt_2>=50.0&&pt_2<80.0)+0.535266*(pt_1>=24.0&&pt_1<30.0&&pt_2>=80.0&&pt_2<150.0)+0.922330*(pt_1>=30.0&&pt_1<40.0&&pt_2>=0.0&&pt_2<24.0)+1.079285*(pt_1>=30.0&&pt_1<40.0&&pt_2>=24.0&&pt_2<30.0)+1.096702*(pt_1>=30.0&&pt_1<40.0&&pt_2>=30.0&&pt_2<40.0)+1.193564*(pt_1>=30.0&&pt_1<40.0&&pt_2>=40.0&&pt_2<50.0)+1.200760*(pt_1>=30.0&&pt_1<40.0&&pt_2>=50.0&&pt_2<80.0)+2.317707*(pt_1>=30.0&&pt_1<40.0&&pt_2>=80.0&&pt_2<150.0)+0.885914*(pt_1>=40.0&&pt_1<50.0&&pt_2>=0.0&&pt_2<24.0)+0.820992*(pt_1>=40.0&&pt_1<50.0&&pt_2>=24.0&&pt_2<30.0)+1.006697*(pt_1>=40.0&&pt_1<50.0&&pt_2>=30.0&&pt_2<40.0)+0.847385*(pt_1>=40.0&&pt_1<50.0&&pt_2>=40.0&&pt_2<50.0)+0.926569*(pt_1>=40.0&&pt_1<50.0&&pt_2>=50.0&&pt_2<80.0)+0.719876*(pt_1>=40.0&&pt_1<50.0&&pt_2>=80.0&&pt_2<150.0)+0.800547*(pt_1>=50.0&&pt_1<80.0&&pt_2>=0.0&&pt_2<24.0)+0.851582*(pt_1>=50.0&&pt_1<80.0&&pt_2>=24.0&&pt_2<30.0)+0.805476*(pt_1>=50.0&&pt_1<80.0&&pt_2>=30.0&&pt_2<40.0)+0.843546*(pt_1>=50.0&&pt_1<80.0&&pt_2>=40.0&&pt_2<50.0)+1.249506*(pt_1>=50.0&&pt_1<80.0&&pt_2>=50.0&&pt_2<80.0)+0.993290*(pt_1>=50.0&&pt_1<80.0&&pt_2>=80.0&&pt_2<150.0)+0.808082*(pt_1>=80.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<24.0)+1.127875*(pt_1>=80.0&&pt_1<150.0&&pt_2>=24.0&&pt_2<30.0)+0.824488*(pt_1>=80.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<40.0)+0.669439*(pt_1>=80.0&&pt_1<150.0&&pt_2>=40.0&&pt_2<50.0)+0.886615*(pt_1>=80.0&&pt_1<150.0&&pt_2>=50.0&&pt_2<80.0)+0.941743*(pt_1>=80.0&&pt_1<150.0&&pt_2>=80.0&&pt_2<150.0))*(1.0*(pt_1>=150.0||pt_2>=150.0)+0.889611*(pt_1>=0.0&&pt_1<20.0&&pt_2>=20.0&&pt_2<25.0)+0.906323*(pt_1>=0.0&&pt_1<20.0&&pt_2>=25.0&&pt_2<30.0)+0.838287*(pt_1>=0.0&&pt_1<20.0&&pt_2>=30.0&&pt_2<150.0)+0.900872*(pt_1>=20.0&&pt_1<25.0&&pt_2>=0.0&&pt_2<20.0)+0.918876*(pt_1>=20.0&&pt_1<25.0&&pt_2>=20.0&&pt_2<25.0)+0.857904*(pt_1>=20.0&&pt_1<25.0&&pt_2>=25.0&&pt_2<30.0)+0.833439*(pt_1>=20.0&&pt_1<25.0&&pt_2>=30.0&&pt_2<150.0)+0.956127*(pt_1>=25.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<20.0)+0.863690*(pt_1>=25.0&&pt_1<30.0&&pt_2>=20.0&&pt_2<25.0)+1.060816*(pt_1>=25.0&&pt_1<30.0&&pt_2>=25.0&&pt_2<30.0)+0.938181*(pt_1>=25.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<150.0)+0.993274*(pt_1>=30.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<20.0)+0.936018*(pt_1>=30.0&&pt_1<150.0&&pt_2>=20.0&&pt_2<25.0)+0.864106*(pt_1>=30.0&&pt_1<150.0&&pt_2>=25.0&&pt_2<30.0)+0.954102*(pt_1>=30.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<150.0))"
             elif args.era == "2017":
-                closureweight = 1.1
+                qcd_weight_string = "((-0.1430*(njets==0)+(-0.05544)*(njets==1)+(-0.03128)*(njets>=2))*((DiTauDeltaR-3.0)**2.0-3.0)+(-0.1949*(njets==0)+(-0.3685)*(njets==1)+(-0.3531)*(njets>=2))*(DiTauDeltaR-3.0)+(1.928*(njets==0)+(2.020)*(njets==1)+(1.855)*(njets>=2)))*(1.0*(pt_1>=150.0||pt_2>=150.0)+1.154522*(pt_1>=0.0&&pt_1<24.0&&pt_2>=24.0&&pt_2<30.0)+1.135855*(pt_1>=0.0&&pt_1<24.0&&pt_2>=30.0&&pt_2<40.0)+1.161428*(pt_1>=0.0&&pt_1<24.0&&pt_2>=40.0&&pt_2<50.0)+1.191713*(pt_1>=0.0&&pt_1<24.0&&pt_2>=50.0&&pt_2<80.0)+0.939037*(pt_1>=0.0&&pt_1<24.0&&pt_2>=80.0&&pt_2<150.0)+0.988445*(pt_1>=24.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<24.0)+1.200024*(pt_1>=24.0&&pt_1<30.0&&pt_2>=24.0&&pt_2<30.0)+1.135701*(pt_1>=24.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<40.0)+1.033807*(pt_1>=24.0&&pt_1<30.0&&pt_2>=40.0&&pt_2<50.0)+1.043044*(pt_1>=24.0&&pt_1<30.0&&pt_2>=50.0&&pt_2<80.0)+1.968726*(pt_1>=24.0&&pt_1<30.0&&pt_2>=80.0&&pt_2<150.0)+0.918552*(pt_1>=30.0&&pt_1<40.0&&pt_2>=0.0&&pt_2<24.0)+1.043276*(pt_1>=30.0&&pt_1<40.0&&pt_2>=24.0&&pt_2<30.0)+0.974875*(pt_1>=30.0&&pt_1<40.0&&pt_2>=30.0&&pt_2<40.0)+1.158302*(pt_1>=30.0&&pt_1<40.0&&pt_2>=40.0&&pt_2<50.0)+1.082629*(pt_1>=30.0&&pt_1<40.0&&pt_2>=50.0&&pt_2<80.0)+1.618632*(pt_1>=30.0&&pt_1<40.0&&pt_2>=80.0&&pt_2<150.0)+0.878118*(pt_1>=40.0&&pt_1<50.0&&pt_2>=0.0&&pt_2<24.0)+0.901737*(pt_1>=40.0&&pt_1<50.0&&pt_2>=24.0&&pt_2<30.0)+1.024177*(pt_1>=40.0&&pt_1<50.0&&pt_2>=30.0&&pt_2<40.0)+0.971125*(pt_1>=40.0&&pt_1<50.0&&pt_2>=40.0&&pt_2<50.0)+1.509237*(pt_1>=40.0&&pt_1<50.0&&pt_2>=50.0&&pt_2<80.0)+1.668255*(pt_1>=40.0&&pt_1<50.0&&pt_2>=80.0&&pt_2<150.0)+0.830869*(pt_1>=50.0&&pt_1<80.0&&pt_2>=0.0&&pt_2<24.0)+0.792164*(pt_1>=50.0&&pt_1<80.0&&pt_2>=24.0&&pt_2<30.0)+0.811363*(pt_1>=50.0&&pt_1<80.0&&pt_2>=30.0&&pt_2<40.0)+1.228341*(pt_1>=50.0&&pt_1<80.0&&pt_2>=40.0&&pt_2<50.0)+0.891440*(pt_1>=50.0&&pt_1<80.0&&pt_2>=50.0&&pt_2<80.0)+0.931178*(pt_1>=50.0&&pt_1<80.0&&pt_2>=80.0&&pt_2<150.0)+0.677658*(pt_1>=80.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<24.0)+0.863660*(pt_1>=80.0&&pt_1<150.0&&pt_2>=24.0&&pt_2<30.0)+0.684323*(pt_1>=80.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<40.0)+1.102642*(pt_1>=80.0&&pt_1<150.0&&pt_2>=40.0&&pt_2<50.0)+0.745410*(pt_1>=80.0&&pt_1<150.0&&pt_2>=50.0&&pt_2<80.0)+0.995289*(pt_1>=80.0&&pt_1<150.0&&pt_2>=80.0&&pt_2<150.0))*(1.0*(pt_1>=150.0||pt_2>=150.0)+0.878304*(pt_1>=0.0&&pt_1<20.0&&pt_2>=20.0&&pt_2<25.0)+0.916277*(pt_1>=0.0&&pt_1<20.0&&pt_2>=25.0&&pt_2<30.0)+0.853211*(pt_1>=0.0&&pt_1<20.0&&pt_2>=30.0&&pt_2<150.0)+0.920458*(pt_1>=20.0&&pt_1<25.0&&pt_2>=0.0&&pt_2<20.0)+0.872271*(pt_1>=20.0&&pt_1<25.0&&pt_2>=20.0&&pt_2<25.0)+0.957983*(pt_1>=20.0&&pt_1<25.0&&pt_2>=25.0&&pt_2<30.0)+0.910988*(pt_1>=20.0&&pt_1<25.0&&pt_2>=30.0&&pt_2<150.0)+0.935900*(pt_1>=25.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<20.0)+0.903964*(pt_1>=25.0&&pt_1<30.0&&pt_2>=20.0&&pt_2<25.0)+0.888112*(pt_1>=25.0&&pt_1<30.0&&pt_2>=25.0&&pt_2<30.0)+0.872235*(pt_1>=25.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<150.0)+0.927075*(pt_1>=30.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<20.0)+0.983504*(pt_1>=30.0&&pt_1<150.0&&pt_2>=20.0&&pt_2<25.0)+0.921924*(pt_1>=30.0&&pt_1<150.0&&pt_2>=25.0&&pt_2<30.0)+0.881401*(pt_1>=30.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<150.0))"
             elif args.era == "2018":
-                closureweight = 1.2
-            qcd_weight = Weight("{closureweight}*em_qcd_osss_binned_Weight".format(closureweight=closureweight), "qcd_weight")
+                qcd_weight_string = "((-0.1249*(njets==0)+(-0.04374)*(njets==1)+(-0.00606)*(njets>=2))*((DiTauDeltaR-3.0)**2.0-3.0)+(-0.1644*(njets==0)+(-0.3172)*(njets==1)+(-0.3627)*(njets>=2))*(DiTauDeltaR-3.0)+(1.963*(njets==0)+(2.014)*(njets==1)+(1.757)*(njets>=2)))*(1.0*(pt_1>=150.0||pt_2>=150.0)+1.163671*(pt_1>=0.0&&pt_1<24.0&&pt_2>=24.0&&pt_2<30.0)+1.128643*(pt_1>=0.0&&pt_1<24.0&&pt_2>=30.0&&pt_2<40.0)+1.048276*(pt_1>=0.0&&pt_1<24.0&&pt_2>=40.0&&pt_2<50.0)+1.191298*(pt_1>=0.0&&pt_1<24.0&&pt_2>=50.0&&pt_2<80.0)+0.902538*(pt_1>=0.0&&pt_1<24.0&&pt_2>=80.0&&pt_2<150.0)+1.006806*(pt_1>=24.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<24.0)+1.078650*(pt_1>=24.0&&pt_1<30.0&&pt_2>=24.0&&pt_2<30.0)+1.080725*(pt_1>=24.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<40.0)+1.079326*(pt_1>=24.0&&pt_1<30.0&&pt_2>=40.0&&pt_2<50.0)+1.087762*(pt_1>=24.0&&pt_1<30.0&&pt_2>=50.0&&pt_2<80.0)+1.046803*(pt_1>=24.0&&pt_1<30.0&&pt_2>=80.0&&pt_2<150.0)+0.930830*(pt_1>=30.0&&pt_1<40.0&&pt_2>=0.0&&pt_2<24.0)+1.077466*(pt_1>=30.0&&pt_1<40.0&&pt_2>=24.0&&pt_2<30.0)+1.030341*(pt_1>=30.0&&pt_1<40.0&&pt_2>=30.0&&pt_2<40.0)+0.962502*(pt_1>=30.0&&pt_1<40.0&&pt_2>=40.0&&pt_2<50.0)+0.906176*(pt_1>=30.0&&pt_1<40.0&&pt_2>=50.0&&pt_2<80.0)+0.757984*(pt_1>=30.0&&pt_1<40.0&&pt_2>=80.0&&pt_2<150.0)+0.882972*(pt_1>=40.0&&pt_1<50.0&&pt_2>=0.0&&pt_2<24.0)+0.877667*(pt_1>=40.0&&pt_1<50.0&&pt_2>=24.0&&pt_2<30.0)+0.938395*(pt_1>=40.0&&pt_1<50.0&&pt_2>=30.0&&pt_2<40.0)+0.966964*(pt_1>=40.0&&pt_1<50.0&&pt_2>=40.0&&pt_2<50.0)+0.963540*(pt_1>=40.0&&pt_1<50.0&&pt_2>=50.0&&pt_2<80.0)+1.520666*(pt_1>=40.0&&pt_1<50.0&&pt_2>=80.0&&pt_2<150.0)+0.777846*(pt_1>=50.0&&pt_1<80.0&&pt_2>=0.0&&pt_2<24.0)+0.906756*(pt_1>=50.0&&pt_1<80.0&&pt_2>=24.0&&pt_2<30.0)+0.825188*(pt_1>=50.0&&pt_1<80.0&&pt_2>=30.0&&pt_2<40.0)+0.852294*(pt_1>=50.0&&pt_1<80.0&&pt_2>=40.0&&pt_2<50.0)+0.876118*(pt_1>=50.0&&pt_1<80.0&&pt_2>=50.0&&pt_2<80.0)+1.379418*(pt_1>=50.0&&pt_1<80.0&&pt_2>=80.0&&pt_2<150.0)+0.757687*(pt_1>=80.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<24.0)+0.755332*(pt_1>=80.0&&pt_1<150.0&&pt_2>=24.0&&pt_2<30.0)+0.743856*(pt_1>=80.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<40.0)+0.718288*(pt_1>=80.0&&pt_1<150.0&&pt_2>=40.0&&pt_2<50.0)+1.026966*(pt_1>=80.0&&pt_1<150.0&&pt_2>=50.0&&pt_2<80.0)+0.830127*(pt_1>=80.0&&pt_1<150.0&&pt_2>=80.0&&pt_2<150.0))*(1.0*(pt_1>=150.0||pt_2>=150.0)+0.847702*(pt_1>=0.0&&pt_1<20.0&&pt_2>=20.0&&pt_2<25.0)+0.878120*(pt_1>=0.0&&pt_1<20.0&&pt_2>=25.0&&pt_2<30.0)+0.887496*(pt_1>=0.0&&pt_1<20.0&&pt_2>=30.0&&pt_2<150.0)+0.874935*(pt_1>=20.0&&pt_1<25.0&&pt_2>=0.0&&pt_2<20.0)+0.829801*(pt_1>=20.0&&pt_1<25.0&&pt_2>=20.0&&pt_2<25.0)+0.922954*(pt_1>=20.0&&pt_1<25.0&&pt_2>=25.0&&pt_2<30.0)+0.954270*(pt_1>=20.0&&pt_1<25.0&&pt_2>=30.0&&pt_2<150.0)+0.935953*(pt_1>=25.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<20.0)+0.908383*(pt_1>=25.0&&pt_1<30.0&&pt_2>=20.0&&pt_2<25.0)+0.927804*(pt_1>=25.0&&pt_1<30.0&&pt_2>=25.0&&pt_2<30.0)+0.917511*(pt_1>=25.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<150.0)+0.983508*(pt_1>=30.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<20.0)+0.952974*(pt_1>=30.0&&pt_1<150.0&&pt_2>=20.0&&pt_2<25.0)+0.945860*(pt_1>=30.0&&pt_1<150.0&&pt_2>=25.0&&pt_2<30.0)+0.858417*(pt_1>=30.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<150.0))"
+            qcd_weight = Weight(qcd_weight_string, "qcd_weight")
             processes[chname_]["QCD"] = Process(
                 "QCD",
                 est_(
@@ -991,15 +993,50 @@ def main(args):
                     variationsToAdd[chname_]["FAKES"].append(variation_)
     
     # QCD for em
+    p0_ = { # constant parameter
+              "2016" : {
+                  "0j" : {"nom": "1.956", "up": "2.018", "down": "1.894"},
+                  "1j" : {"nom": "1.890", "up": "1.930", "down": "1.850"},
+                  "2j" : {"nom": "1.753", "up": "1.814", "down": "1.692"},
+              },
+              "2017" : {
+                  "0j" : {"nom": "1.928", "up": "1.993", "down": "1.863"},
+                  "1j" : {"nom": "2.020", "up": "2.060", "down": "1.980"},
+                  "2j" : {"nom": "1.855", "up": "1.914", "down": "1.796"},
+              },
+              "2018" : {
+                  "0j" : {"nom": "1.963", "up": "1.210", "down": "1.916"},
+                  "1j" : {"nom": "2.014", "up": "2.045", "down": "1.983"},
+                  "2j" : {"nom": "1.757", "up": "1.794", "down": "1.720"},
+              }
+    }
+    p1_ = { # linear parameter
+              "2016" : {
+                  "0j" : {"nom": "-0.2287", "up": "-0.1954", "down": "-0.262"},
+                  "1j" : {"nom": "-0.3251", "up": "-0.2972", "down": "-0.353"},
+                  "2j" : {"nom": "-0.2802", "up": "-0.2402", "down": "-0.3202"},
+              },
+              "2017" : {
+                  "0j" : {"nom": "-0.1949", "up": "-0.1617", "down": "-0.2281"},
+                  "1j" : {"nom": "-0.3685", "up": "-0.3445", "down": "-0.3925"},
+                  "2j" : {"nom": "-0.3531", "up": "-0.3154", "down": "-0.3908"},
+              },
+              "2018" : {
+                  "0j" : {"nom": "-0.1644", "up": "-0.1402", "down": "-0.1886"},
+                  "1j" : {"nom": "-0.3172", "up": "-0.2977", "down": "-0.3367"},
+                  "2j" : {"nom": "-0.3627", "up": "-0.3389", "down": "-0.3865"},
+              }
+    }
+
     qcd_variations = []
     if len(selectedChannels & {"em"}) == 0:
-        closureweight = 1.
+        qcd_weight_string = "1."
     for shift_direction in ["up", "down"]:
         qcd_variations.append(
             ReplaceWeight(
                 "CMS_htt_qcd_0jet_rate_{era}".format(era=args.era),
                 "qcd_weight",
-                Weight("{closureweight}*em_qcd_osss_stat_0jet_rate{shift}_Weight".format(closureweight=closureweight,shift=shift_direction), "qcd_weight"),
+                Weight(qcd_weight_string.replace(p0_[args.era]["0j"]["nom"], p0_[args.era]["0j"][shift_direction]), "qcd_weight"),
                 shift_direction.capitalize(),
             )
         )
@@ -1007,7 +1044,7 @@ def main(args):
             ReplaceWeight(
                 "CMS_htt_qcd_0jet_shape_{era}".format(era=args.era),
                 "qcd_weight",
-                Weight("{closureweight}*em_qcd_osss_stat_0jet_shape{shift}_Weight".format(closureweight=closureweight,shift=shift_direction), "qcd_weight"),
+                Weight(qcd_weight_string.replace(p1_[args.era]["0j"]["nom"], p1_[args.era]["0j"][shift_direction]), "qcd_weight"),
                 shift_direction.capitalize(),
             )
         )
@@ -1016,59 +1053,43 @@ def main(args):
                 "CMS_htt_qcd_1jet_rate_{era}".format(
                     era=args.era),
                 "qcd_weight",
-                Weight(
-                    "{closureweight}*em_qcd_osss_stat_1jet_rate".format(closureweight=closureweight) +
-                    shift_direction +
-                    "_Weight",
-                    "qcd_weight"),
+                Weight(qcd_weight_string.replace(p0_[args.era]["1j"]["nom"], p0_[args.era]["1j"][shift_direction]), "qcd_weight"),
                 shift_direction.capitalize()))
         qcd_variations.append(
             ReplaceWeight(
                 "CMS_htt_qcd_1jet_shape_{era}".format(
                     era=args.era),
                 "qcd_weight",
-                Weight(
-                    "{closureweight}*em_qcd_osss_stat_1jet_shape".format(closureweight=closureweight) +
-                    shift_direction +
-                    "_Weight",
-                    "qcd_weight"),
+                Weight(qcd_weight_string.replace(p1_[args.era]["1j"]["nom"], p1_[args.era]["1j"][shift_direction]), "qcd_weight"),
                 shift_direction.capitalize()))
         qcd_variations.append(
             ReplaceWeight(
                 "CMS_htt_qcd_2jet_rate_{era}".format(
                     era=args.era),
                 "qcd_weight",
-                Weight(
-                    "{closureweight}*em_qcd_osss_stat_2jet_rate".format(closureweight=closureweight) +
-                    shift_direction +
-                    "_Weight",
-                    "qcd_weight"),
+                Weight(qcd_weight_string.replace(p0_[args.era]["2j"]["nom"], p0_[args.era]["2j"][shift_direction]), "qcd_weight"),
                 shift_direction.capitalize()))
         qcd_variations.append(
             ReplaceWeight(
                 "CMS_htt_qcd_2jet_shape_{era}".format(
                     era=args.era),
                 "qcd_weight",
-                Weight(
-                    "{closureweight}*em_qcd_osss_stat_2jet_shape".format(closureweight=closureweight) +
-                    shift_direction +
-                    "_Weight",
-                    "qcd_weight"),
+                Weight(qcd_weight_string.replace(p1_[args.era]["2j"]["nom"], p1_[args.era]["2j"][shift_direction]), "qcd_weight"),
                 shift_direction.capitalize()))
-        qcd_variations.append(
-            ReplaceWeight(
-                "CMS_htt_qcd_iso_{era}".format(
-                    era=args.era),
-                "qcd_weight",
-                Weight(
-                    "{closureweight}*em_qcd_extrap_".format(closureweight=closureweight) +
-                    shift_direction +
-                    "_Weight",
-                    "qcd_weight"),
-                shift_direction.capitalize()))
-        qcd_variations.append(  # why do we need both CMS_htt_qcd_iso_Run$ERA and CMS_htt_qcd_iso ?
-            ReplaceWeight("CMS_htt_qcd_iso", "qcd_weight",
-                          Weight("{closureweight}*em_qcd_extrap_".format(closureweight=closureweight) + shift_direction + "_Weight", "qcd_weight"), shift_direction.capitalize()))
+        # qcd_variations.append(
+        #     ReplaceWeight(
+        #         "CMS_htt_qcd_iso_{era}".format(
+        #             era=args.era),
+        #         "qcd_weight",
+        #         Weight(
+        #             "{closureweight}*em_qcd_extrap_".format(closureweight=closureweight) +
+        #             shift_direction +
+        #             "_Weight",
+        #             "qcd_weight"),
+        #         shift_direction.capitalize()))
+        # qcd_variations.append(  # why do we need both CMS_htt_qcd_iso_Run$ERA and CMS_htt_qcd_iso ?
+        #     ReplaceWeight("CMS_htt_qcd_iso", "qcd_weight",
+        #                   Weight("{closureweight}*em_qcd_extrap_".format(closureweight=closureweight) + shift_direction + "_Weight", "qcd_weight"), shift_direction.capitalize()))
 
     for variation_ in qcd_variations:
         for process_nick in selectedProcesses & {"QCD"}:
