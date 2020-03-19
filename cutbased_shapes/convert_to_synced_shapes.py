@@ -51,16 +51,16 @@ def create_properties(histname):
     return {"inputname" : histname, "channel" : channel, "category" : category, "process" : process, "outputname" : outputname}
 
 def merge_to_synced_file(info):
-    filename_outputs = os.path.join(info["path"], "htt_{CHANNEL}_*.inputs-mssm-vs-sm-Run{ERA}-{VARIABLE}.root").format(
+    filename_outputs = os.path.join(info["path"], "htt_{CHANNEL}_*.inputs-nmssm-{ERA}-{VARIABLE}.root").format(
         CHANNEL=info["channel"], ERA=info["era"], VARIABLE=info["variable"])
-    merged_output = os.path.join(info["path"], "htt_{CHANNEL}.inputs-mssm-vs-sm-Run{ERA}-{VARIABLE}.root").format(
+    merged_output = os.path.join(info["path"], "htt_{CHANNEL}.inputs-nmssm-{ERA}-{VARIABLE}.root").format(
         CHANNEL=info["channel"], ERA=info["era"], VARIABLE=info["variable"])
     outputlist = glob.glob(filename_outputs)
     hadd_cmd = "hadd -f " + merged_output + " " + " ".join(outputlist)
     os.system(hadd_cmd)
 
 def create_synced_category_files(info):
-    filename_output = os.path.join(info["path"], "htt_{CHANNEL}_{CATEGORY}.inputs-mssm-vs-sm-Run{ERA}-{VARIABLE}.root").format(
+    filename_output = os.path.join(info["path"], "htt_{CHANNEL}_{CATEGORY}.inputs-nmssm-{ERA}-{VARIABLE}.root").format(
         CHANNEL=info["channel"], CATEGORY=info["category"], ERA=info["era"], VARIABLE=info["variable"])
     print "Creating: %s"%filename_output
     if not os.path.exists(info["path"]):
@@ -78,7 +78,7 @@ def create_synced_category_files(info):
         hist.SetTitle(name_output)
         hist.SetName(name_output)
         hist.Write()
-        if "Run201" in name_output:
+        if "201" in name_output:
             if ("scale_t_" in name_output
                 or "prefiring" in name_output
                 or "scale_mc_e_" in name_output
@@ -89,8 +89,8 @@ def create_synced_category_files(info):
                 or "_1ProngPi0Eff_" in name_output
                 or "_3ProngEff_" in name_output
                 or ("_ff_" in name_output and "_syst_" in name_output)):
-                hist.SetTitle(name_output.replace("_Run2016", "").replace("_Run2017", "").replace("_Run2018",""))
-                hist.SetName(name_output.replace("_Run2016", "").replace("_Run2017", "").replace("_Run2018",""))
+                hist.SetTitle(name_output.replace("_2016", "").replace("_2017", "").replace("_2018",""))
+                hist.SetName(name_output.replace("_2016", "").replace("_2017", "").replace("_2018",""))
                 hist.Write()
     file_output.Close()
     file_input.Close()

@@ -59,6 +59,25 @@ cutbased:
         nobtag_highmsv_lowdzeta:    "(nbtag == 0) && (pZetaPuppiMissVis >= -35) && (pZetaPuppiMissVis <  -10) && (m_sv_puppi >= 250)"
         btag_lowdzeta:              "(nbtag >  0) && (pZetaPuppiMissVis >= -35) && (pZetaPuppiMissVis <  -10)"
 
+# Define main nmssm categories
+cutbased:
+    mt:
+        inclusive: "(1 > 0) && (nbtag>-1)"
+        1btag: "    (1 > 0) && (nbtag==1)"
+        2btag: "    (1 > 0) && (nbtag>1)"
+    et:
+        inclusive: "(1 > 0) && (nbtag>-1)"
+        1btag: "    (1 > 0) && (nbtag==1)"
+        2btag: "    (1 > 0) && (nbtag>1)"
+    tt:
+        inclusive: "(1 > 0) && (nbtag>-1)"
+        1btag: "    (1 > 0) && (nbtag==1)"
+        2btag: "    (1 > 0) && (nbtag>1)"
+    em:
+        inclusive: "(1 > 0) && (nbtag>-1)"
+        1btag: "    (1 > 0) && (nbtag==1)"
+        2btag: "    (1 > 0) && (nbtag>1)"
+
 # Optimized cuts for SM sub-categories
 # See for reference: https://indico.cern.ch/event/842569/contributions/3536321/attachments/1895266/3126759/SoverB_CutScans.pdf
 # -> Variable for ggH: tt - DeltaR < 3.2
@@ -158,7 +177,7 @@ variables:
       bins: [[0.0, 300.0, 5.0], [300.0, 500.0, 10.0], [500.0, 1000.0, 50.0]]
       expression: "pt_sv_puppi"
     m_vis:
-      bins: [[0.0, 50.0, 50.0], [50.0, 250.0, 5.0], [250.0, 500.0, 10.0], [500.0, 1000.0, 25.0], [1000.0, 2000.0, 50.0], [2000.0, 5000.0, 100.0]]
+      bins: [[0.0, 250.0, 5.0]]
       expression: "m_vis"
     ME_vbf_vs_Z:
       bins: [[0.0, 0.95, 0.25], [0.95, 1.0, 0.001]]
@@ -190,6 +209,9 @@ variables:
     jdeta:
       bins: [[0.0, 6.0, 0.2], [6.0, 10.0, 0.5]]
       expression: "jdeta"
+    bdeta:
+      bins: [[0.0, 8.0, 0.2]]
+      expression: "abs(beta_1-beta_2)"
     njets:
       bins: [-0.5, 10.5, 1.0]
       expression: "njets"
@@ -220,9 +242,33 @@ variables:
     mjj:
       bins: [[0.0, 700.0, 5.0], [700.0, 1500.0, 20.0], [1500.0, 4000.0, 100.0]]
       expression: "mjj"
+    mbb:
+      bins: [[0.0, 1000.0, 20.0]]
+      expression: "mbb"
+    m_ttvisbb:
+      bins: [[0.0, 800.0, 20.0], [800.0, 1000.0, 50.0], [1000.0, 2000.0, 200.0], [2000.0,3000.0,500.0]]
+      expression: "m_ttvisbb"
+    m_ttbb:
+      bins: [[0.0, 1000.0, 20.0], [1000.0, 3000.0, 100.0]]
+      expression: "m_ttbb"
+    m_ttbb_puppi:
+      bins: [[0.0, 1000.0, 20.0], [1000.0, 3000.0, 100.0]]
+      expression: "m_ttbb_puppi"
     dijetpt:
       bins: [[0.0, 300.0, 5.0]]
       expression: "dijetpt"
+    pt_bb:
+      bins: [[0.0, 1000.0, 20.0]]
+      expression: "pt_bb"
+    jetUsedFordiBJetSystemIsTrueBJet:
+      bins: [[-0.5, 1.5, 1.0]]
+      expression: "jetUsedFordiBJetSystemIsTrueBJet"
+    bJetIsTrueBJet:
+      bins: [[-0.5, 1.5, 1.0]]
+      expression: "bJetIsTrueBJet"
+    bJet2IsTrueBJet:
+      bins: [[-0.5, 1.5, 1.0]]
+      expression: "bJet2IsTrueBJet"
     met:
       bins: [[0.0, 300.0, 5.0]]
       expression: "met"
