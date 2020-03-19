@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #ERA=$1
-STXS_FIT=stxs_stage1p1
-STXS_SIGNALS=stxs_stage1p1
+STXS_FIT=stxs_stage0
+STXS_SIGNALS=stxs_stage0
 era=$1
 channel=$2
 tag=$3
@@ -20,7 +20,7 @@ ulimit -s unlimited
 #exit
 
 #./combine/signal_strength.sh ${ERA} "robustHesse"
-#./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR $channel ${tag} "robustHesse"
+./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR $channel ${tag} "robustHesse"
 
 #python combine/plot_poi_correlation_final-stage-1p1.py ${ERA}_${STXS_FIT} fitDiagnostics${ERA}.root
-python combine/plot_poi_correlation_final-stage-1p1.py ${ERA}_${STXS_FIT} $FITFILE
+python combine/plot_poi_correlation_final-stage-0.py ${ERA}_${STXS_FIT} $FITFILE

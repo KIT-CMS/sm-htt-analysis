@@ -238,7 +238,7 @@ if __name__ == "__main__":
     tex.SetTextSize(25)
     tex.SetTextFont(43)
     tex.DrawLatex(0.30, 0.955, "CMS")
-    tex.DrawLatex(0.65, 0.955, "77.4 fb^{-1} (13 TeV)")
+    tex.DrawLatex(0.65, 0.955, "137.1 fb^{-1} (13 TeV)")
     tex.SetTextFont(53)
     tex.DrawLatex(0.40, 0.955, "Preliminary")
     for i in range(num_pois):
