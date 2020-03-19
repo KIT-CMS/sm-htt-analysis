@@ -948,17 +948,22 @@ def main(args):
                 # "ff_tt_syst{era}{shift}",
                 # "ff_tt_stat{era}{shift}",
                 "ff_tt_morphed{ch}{era}{shift}",
-		        "ff_tt_sf{ch}{era}{shift}",
+                "ff_tt_sf{ch}{era}{shift}",
+                "ff_corr_tt_syst{ch}{era}{shift}",
                 "ff_frac_w{ch}{era}{shift}",
                 "ff_qcd_dm0_njet0_morphed_stat{ch}{era}{shift}", "ff_qcd_dm0_njet1_morphed_stat{ch}{era}{shift}",
                 "ff_w_dm0_njet0_morphed_stat{ch}{era}{shift}", "ff_w_dm0_njet1_morphed_stat{ch}{era}{shift}",
                 "ff_tt_dm0_njet0_morphed_stat{ch}{era}{shift}", #"ff_tt_dm0_njet1{ch}_morphed_stat{ch}{era}{shift}",
                 "ff_w_lepPt{ch}{era}{shift}",
+                "ff_corr_w_lepPt{ch}{era}{shift}",
                 "ff_w_mc{ch}{era}{shift}",
+                "ff_corr_w_mt{ch}{era}{shift}",
                 "ff_w_mt{ch}{era}{shift}",
                 "ff_qcd_mvis{ch}{era}{shift}",
+                "ff_corr_qcd_mvis{ch}{era}{shift}",
                 "ff_qcd_muiso{ch}{era}{shift}",
-                "ff_qcd_mc{ch}{era}{shift}",                
+                "ff_corr_qcd_muiso{ch}{era}{shift}",
+                "ff_qcd_mc{ch}{era}{shift}",
             ]
             fake_factor_weight[chname_] = "ff2_{syst}"
         for chname_ in selectedChannels & {"tt"}:
@@ -972,7 +977,9 @@ def main(args):
                 # "ff_w_frac_syst{ch}{era}{shift}",
                 # "ff_tt_frac_syst{ch}{era}{shift}",
                 "ff_qcd_mvis{ch}{era}{shift}",
+                "ff_corr_qcd_mvis{ch}{era}{shift}",
                 "ff_qcd_tau2_pt{ch}{era}{shift}",
+                "ff_corr_qcd_tau2_pt{ch}{era}{shift}",
                 "ff_qcd_mc{ch}{era}{shift}",
             ]
             fake_factor_weight[chname_] = "(0.5*ff1_{syst}*(byTightDeepTau2017v2p1VSjet_1<0.5)+0.5*ff2_{syst}*(byTightDeepTau2017v2p1VSjet_2<0.5))"
