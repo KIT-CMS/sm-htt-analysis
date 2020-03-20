@@ -9,12 +9,12 @@ set -x
 
 TARGET=output/datacards/all-${TAG}-smhtt-ML/${STXS_SIGNALS}/$CHANNEL
 ## remove old files
-ls $TARGET/125/htt_*_Run*.txt &> /dev/null && rm $TARGET/125/htt_*_Run*.txt
-[[ -f $TARGET/common/htt_input_Run*.root ]] && rm $TARGET/common/htt_input_Run*.root
+ls $TARGET/125/htt_*_*.txt &> /dev/null && rm $TARGET/125/htt_*_*.txt
+[[ -f $TARGET/common/htt_input_*.root ]] && rm $TARGET/common/htt_input_*.root
 for ERA in ${ERAS[@]}; do
     DATACARDDIR=output/datacards/${ERA}-${TAG}-smhtt-ML/${STXS_SIGNALS}/$CHANNEL
     # Make new directory with needed folder structure
     mkdir -p $TARGET/{125,common}
-    cp ${DATACARDDIR}/125/htt_*_Run${ERA}.txt $TARGET/125
-    cp ${DATACARDDIR}/common/htt_input_Run${ERA}.root $TARGET/common
+    cp ${DATACARDDIR}/125/htt_*_${ERA}.txt $TARGET/125
+    cp ${DATACARDDIR}/common/htt_input_${ERA}.root $TARGET/common
 done
