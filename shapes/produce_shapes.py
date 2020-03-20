@@ -1058,6 +1058,7 @@ def main(args):
     qcd_variations = []
     if len(selectedChannels & {"em"}) == 0:
         qcd_weight_string = "1."
+        qcd_aisoiso_string = "(1.0)"
     for shift_direction in ["up", "down"]:
         qcd_variations.append(
             ReplaceWeight(
