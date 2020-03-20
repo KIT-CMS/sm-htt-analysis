@@ -4,6 +4,7 @@ import argparse
 import os
 import sys
 import yaml
+import copy
 
 def build_cat_names(channel):
     # Read in binning dictionary.
@@ -50,7 +51,7 @@ def main():
             for ch in processes:
                 for category in build_cat_names(ch):
                     variable = "m_sv_puppi" if "nobtag_lowmsv" in category else "mt_tot_puppi"
-                    process_list = processes[ch]
+                    process_list = copy.deepcopy(processes[ch])
                     for ggH_contr in ["ggh_t", "ggh_b", "ggh_i", "ggH_t", "ggH_b", "ggH_i", "ggA_t", "ggA_b", "ggA_i"]:
                         process_list += ["_".join([ggH_contr,str(m)]) for m in mass_dict[year]["ggH"]]
                     process_list += ["_".join(["bbH",str(m)]) for m in mass_dict[year]["bbH"]]
