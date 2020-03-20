@@ -20,7 +20,7 @@ ARTUS_OUTPUTS_2016="$basedir/2016/ntuples/"
 NNScore_Friends_2016=""
 SVFit_Friends_2016="$basedir/2016/friends/SVFit/"
 MELA_Friends_2016="$basedir/2016/friends/MELA/"
-FF_Friends_2016="$basedir/2016/friends/FakeFactors_includingCorrUncertainties"
+FF_Friends_2016="$basedir/2016/friends/FakeFactors_includingCorrUncertainties/"
 TauTriggers_Friends_2016="$basedir/2016/friends/TauTriggers/"
 
 # Samples Run2017
