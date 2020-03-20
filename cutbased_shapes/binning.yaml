@@ -11,6 +11,7 @@ stxs_stage1p1:
 # Define main cut-based categories
 cutbased:
     mt:
+        inclusive:     "(1 > 0) && (1 > 0)"
         wjets_control: "(1 > 0) && (mt_1_puppi >= 70)"
         signal_region: "(1 > 0) && (mt_1_puppi <  70)"
         nobtag:                   "(mt_1_puppi <  70)                      && (nbtag == 0)"
@@ -24,6 +25,7 @@ cutbased:
         nobtag_highmsv_loosemt:   "(mt_1_puppi >= 40) && (mt_1_puppi < 70) && (nbtag == 0) && (m_sv_puppi >= 250)"
         btag_loosemt:             "(mt_1_puppi >= 40) && (mt_1_puppi < 70) && (nbtag >  0)"
     et:
+        inclusive:     "(1 > 0) && (1 > 0)"
         wjets_control: "(1 > 0) && (mt_1_puppi >= 70)"
         signal_region: "(1 > 0) && (mt_1_puppi <  70)"
         nobtag:                   "(mt_1_puppi <  70)                      && (nbtag == 0)"
@@ -37,12 +39,14 @@ cutbased:
         nobtag_highmsv_loosemt:   "(mt_1_puppi >= 40) && (mt_1_puppi < 70) && (nbtag == 0) && (m_sv_puppi >= 250)"
         btag_loosemt:             "(mt_1_puppi >= 40) && (mt_1_puppi < 70) && (nbtag >  0)"
     tt:
+        inclusive:      "(1 > 0) && (1 > 0)"
         signal_region:  "(1 > 0) && (1 > 0)"
         nobtag:         "(1 > 0) && (nbtag == 0)"
         nobtag_lowmsv:             "(nbtag == 0) && (m_sv_puppi <  250)"
         nobtag_highmsv:            "(nbtag == 0) && (m_sv_puppi >= 250)"
         btag:           "(1 > 0) && (nbtag >  0)"
     em:
+        inclusive:                       "(1 > 0) && (1 > 0)"
         ttbar_control:                   "(1 > 0) && (pZetaPuppiMissVis <  -35)"
         signal_region:                   "(1 > 0) && (pZetaPuppiMissVis >= -35)"
         nobtag:                     "(nbtag == 0) && (pZetaPuppiMissVis >= -35)"
@@ -146,19 +150,19 @@ variables:
       bins: [[-200.0, 200.0, 5.0]]
       expression: "pZetaPuppiMissVis"
     m_sv:
-      bins: [[0.0, 50.0, 50.0], [50.0, 250.0, 5.0], [250.0, 500.0, 10.0], [500.0, 1000.0, 25.0], [1000.0, 2000.0, 50.0], [2000.0, 5000.0, 100.0]]
+      bins: [[0.0, 50.0, 50.0], [50.0, 250.0, 5.0]]
       expression: "m_sv"
     pt_sv:
       bins: [[0.0, 300.0, 5.0], [300.0, 500.0, 10.0], [500.0, 1000.0, 50.0]]
       expression: "pt_sv"
     m_sv_puppi:
-      bins: [[0.0, 50.0, 50.0], [50.0, 250.0, 5.0], [250.0, 500.0, 10.0], [500.0, 1000.0, 25.0], [1000.0, 2000.0, 50.0], [2000.0, 5000.0, 100.0]]
+      bins: [[0.0, 50.0, 50.0], [50.0, 250.0, 5.0]]
       expression: "m_sv_puppi"
     pt_sv_puppi:
       bins: [[0.0, 300.0, 5.0], [300.0, 500.0, 10.0], [500.0, 1000.0, 50.0]]
       expression: "pt_sv_puppi"
     m_vis:
-      bins: [[0.0, 50.0, 50.0], [50.0, 250.0, 5.0], [250.0, 500.0, 10.0], [500.0, 1000.0, 25.0], [1000.0, 2000.0, 50.0], [2000.0, 5000.0, 100.0]]
+      bins: [[0.0, 250.0, 5.0]]
       expression: "m_vis"
     ME_vbf_vs_Z:
       bins: [[0.0, 0.95, 0.25], [0.95, 1.0, 0.001]]
@@ -170,11 +174,17 @@ variables:
       bins: [[0.0, 50.0, 50.0], [50.0, 250.0, 5.0], [250.0, 500.0, 10.0], [500.0, 1000.0, 25.0], [1000.0, 2000.0, 50.0], [2000.0, 5000.0, 100.0]]
       expression: "mt_tot_puppi"
     pt_1:
-      bins: [[0.0, 300.0, 5.0]]
+      bins: [[0.0, 150.0, 5.0]]
       expression: "pt_1"
     pt_2:
-      bins: [[0.0, 300.0, 5.0]]
+      bins: [[0.0, 150.0, 5.0]]
       expression: "pt_2"
+    eta_1:
+      bins: [[-2.4, 2.4, 0.1]]
+      expression: "eta_1"
+    eta_2:
+      bins: [[-2.4, 2.4, 0.1]]
+      expression: "eta_2"
     jpt_1:
       bins: [[30.0, 300.0, 5.0]]
       expression: "jpt_1"
@@ -203,16 +213,16 @@ variables:
       bins: [[0.0, 300.0, 5.0]]
       expression: "mt_1_puppi"
     ptvis:
-      bins: [[0.0, 300.0, 5.0], [300.0, 500.0, 10.0], [500.0, 1000.0, 50.0]]
+      bins: [[0.0, 300.0, 5.0]]
       expression: "ptvis"
     pt_tt:
-      bins: [[0.0, 300.0, 5.0], [300.0, 500.0, 10.0], [500.0, 1000.0, 50.0]]
+      bins: [[0.0, 300.0, 5.0]]
       expression: "pt_tt"
     pt_ttjj:
       bins: [[0.0, 300.0, 5.0]]
       expression: "pt_ttjj"
     pt_tt_puppi:
-      bins: [[0.0, 300.0, 5.0], [300.0, 500.0, 10.0], [500.0, 1000.0, 50.0]]
+      bins: [[0.0, 300.0, 5.0]]
       expression: "pt_tt_puppi"
     pt_ttjj_puppi:
       bins: [[0.0, 300.0, 5.0]]

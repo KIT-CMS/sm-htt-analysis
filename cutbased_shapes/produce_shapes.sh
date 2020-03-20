@@ -3,7 +3,7 @@
 NUMCORES=$1
 ERA=$2
 VARIABLE=$3
-SHAPEGROUP=$4
+PROCESS=$4
 CATEGORY=$5
 CHANNEL=$6
 
@@ -23,16 +23,11 @@ python cutbased_shapes/produce_shapes.py \
     --channels $CHANNEL \
     --discriminator-variable $VARIABLE \
     --era $ERA \
-    --tag ${ERA}_${CHANNEL}_${SHAPEGROUP}_${CATEGORY} \
-    --shape-group $SHAPEGROUP \
+    --tag ${ERA}_${CHANNEL}_${PROCESS}_${CATEGORY} \
     --category $CATEGORY \
     --et-friend-directory $ARTUS_FRIENDS_ET \
     --em-friend-directory $ARTUS_FRIENDS_EM \
     --mt-friend-directory $ARTUS_FRIENDS_MT \
     --tt-friend-directory $ARTUS_FRIENDS_TT \
+    --process ${PROCESS} \
     --num-threads ${NUMCORES}
-
-echo "To normalize fake-factor shapes to nominal, execute the following, after the jobs are ready:"
-echo
-echo "hadd -f ${ERA}_cutbased_shapes_${VARIABLE}.root ${ERA}_??_*_cutbased_shapes_${VARIABLE}.root"
-echo "python fake-factor-application/normalize_shifts.py ${ERA}_cutbased_shapes_${VARIABLE}.root"

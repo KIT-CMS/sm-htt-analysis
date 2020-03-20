@@ -1,14 +1,13 @@
 universe = docker
-docker_image = mschnepf/docker_cc7
+docker_image = mschnepf/slc7-condocker
 executable = cutbased_shapes/batch_shapes.sh
 output = output/log/condorShapes/$(Process).out
 error = output/log/condorShapes/$(Process).err
 log = output/log/condorShapes/$(Process).log
 Requirements = ( (Target.ProvidesCPU == True) && (TARGET.ProvidesEKPResources == True ) )
-+RequestWalltime = 36000
++RequestWalltime = 600
 +ExperimentalJob = True
-RequestMemory = 20000
-request_disk = 204800
-RequestCpus = 8
+RequestMemory = 5000
+RequestCpus = 1
 accounting_group = cms.higgs
-queue arguments from cutbased_shapes/arguments.txt
+queue arguments from arguments.txt
