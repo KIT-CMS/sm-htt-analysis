@@ -174,11 +174,12 @@ def main(args):
         processes[ch]["TTL"]  = Process("TTL",      TTLEstimation          (era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
         processes[ch]["VVL"]  = Process("VVL",      VVLEstimation          (era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
 
-        processes[ch]["VH125"]   = Process("VH125",    VHEstimation        (era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
         processes[ch]["WH125"]   = Process("WH125",    WHEstimation        (era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
         processes[ch]["ZH125"]   = Process("ZH125",    ZHEstimation        (era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
         processes[ch]["ttH125"]  = Process("ttH125",   ttHEstimation       (era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
 
+        processes[ch]["WHWW125"] = Process("WHWW125",   WHWWEstimation     (era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
+        processes[ch]["ZHWW125"] = Process("ZHWW125",   ZHWWEstimation     (era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
         processes[ch]["ggHWW125"] = Process("ggHWW125", ggHWWEstimation    (era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
         processes[ch]["qqHWW125"] = Process("qqHWW125", qqHWWEstimation    (era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
 
@@ -232,8 +233,8 @@ def main(args):
 
 
     # Choice of activated signal processes
-    sm_htt_backgrounds_nicks = ["WH125", "ZH125", "VH125", "ttH125"]
-    sm_hww_nicks = ["ggHWW125", "qqHWW125"]
+    sm_htt_backgrounds_nicks = ["WH125", "ZH125", "ttH125"]
+    sm_hww_nicks = ["ggHWW125", "qqHWW125", "WHWW125", "ZH125"]
     sm_htt_signals_nicks = [ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict] + [qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict]
     susy_nicks = []
     for ggH_contribution in ["ggh_t", "ggh_b", "ggh_i", "ggH_t", "ggH_b", "ggH_i", "ggA_t", "ggA_b", "ggA_i"]:

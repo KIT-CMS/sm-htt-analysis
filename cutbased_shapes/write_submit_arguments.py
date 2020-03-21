@@ -40,12 +40,12 @@ def main():
         }
     }
     processes = {
-        "mt" : ["data_obs", "EMB", "jetFakes", "ZL", "TTL", "VVL", "WH125", "ZH125", "ttH125", "ggHWW125", "qqHWW125", "ggH125", "qqH125"],
-        "et" : ["data_obs", "EMB", "jetFakes", "ZL", "TTL", "VVL", "WH125", "ZH125", "ttH125", "ggHWW125", "qqHWW125", "ggH125", "qqH125"],
-        "tt" : ["data_obs", "EMB", "jetFakes", "ZL", "TTL", "VVL", "WH125", "ZH125", "ttH125", "ggHWW125", "qqHWW125", "ggH125", "qqH125"],
-        "em" : ["data_obs", "EMB", "W", "ZL", "TTL", "VVL", "QCD", "WH125", "ZH125", "ttH125", "ggHWW125", "qqHWW125", "ggH125", "qqH125"],
+        "mt" : ["data_obs", "EMB", "jetFakes", "ZL", "TTL", "VVL", "WH125", "ZH125", "ttH125", "ggHWW125", "qqHWW125", "ZHWW125", "WHWW125", "ggH125", "qqH125"],
+        "et" : ["data_obs", "EMB", "jetFakes", "ZL", "TTL", "VVL", "WH125", "ZH125", "ttH125", "ggHWW125", "qqHWW125", "ZHWW125", "WHWW125", "ggH125", "qqH125"],
+        "tt" : ["data_obs", "EMB", "jetFakes", "ZL", "TTL", "VVL", "WH125", "ZH125", "ttH125", "ggHWW125", "qqHWW125", "ZHWW125", "WHWW125", "ggH125", "qqH125"],
+        "em" : ["data_obs", "EMB", "W", "ZL", "TTL", "VVL", "QCD", "WH125", "ZH125", "ttH125", "ggHWW125", "qqHWW125", "ZHWW125", "WHWW125", "ggH125", "qqH125"],
     }
-    
+
     with open("arguments.txt", "w") as f:
         for year in ['2016', '2017', '2018']:
             for ch in processes:
