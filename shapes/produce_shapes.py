@@ -550,7 +550,7 @@ def main(args):
                     if binup == "inf":
                         weightstr = "(((pt_2 >= {bindown})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
                     else:
-                        weightstr = "(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
+                        weightstr = "(((pt_2 >= {bindown} && pt_2 < {binup})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 >= {binup})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
                     tau_id_variations.append(
                         ReplaceWeight(
                             histname_.format(bindown, binup, args.era),
@@ -576,15 +576,17 @@ def main(args):
             tau_id_variations = []
             for shift_direction in ["Up", "Down"]:
                 for decaymode in [0, 1, 10, 11]:
-                    weightstr = "(((decayMode_1=={dm})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))*(((decayMode_2=={dm})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
+                    if decaymode == 1:
+                        weightstr = "((decayMode_1==1 || decayMode_1==2)*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_1+(decayMode_1!=1 && decayMode_1!=2)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*((decayMode_2==1 || decayMode_2==2)*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_2+(decayMode_2!=1 && decayMode_2!=2)*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2)".format(shift_direction=shift_direction)
+                    else:
+                        weightstr = "((decayMode_1=={dm})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_1 + (decayMode_1!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1)*((decayMode_2=={dm})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_2 + (decayMode_2!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2)".format(dm=decaymode,shift_direction=shift_direction)
                     tau_id_variations.append(
                         ReplaceWeight(
                             histname_.format(
                                 dm=decaymode, era=args.era),
                             "taubyIsoIdWeight",
                             Weight(
-                                weightstr.format(
-                                    dm=decaymode,shift_direction=shift_direction),
+                                weightstr,
                                 "taubyIsoIdWeight"),
                             shift_direction))
             # run two times, one for regular, one for embedding
@@ -686,9 +688,9 @@ def main(args):
                 variationsToAdd[chname_][process_nick].append(variation_)
 
     # MET energy scale. Note: only those variations for non-resonant processes
-    # are used in the stat. inference
+    # are used in the stat. inference, uncorrelated across the years, see https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETRun2Corrections#Uncertainty_correlations_among_y
     met_unclustered_variations = create_systematic_variations(
-        "CMS_scale_met_unclustered", "metUnclusteredEn", DifferentPipeline)
+        "CMS_scale_met_unclustered_{era}".format(era=args.era), "metUnclusteredEn", DifferentPipeline)
     for variation_ in met_unclustered_variations:  # + met_clustered_variations:
         for chname_ in selectedChannels:
             for process_nick in selectedProcesses & (
@@ -807,7 +809,7 @@ def main(args):
     elif args.era == "2016":
         lteffCutD = {
             "mt": "23",
-            "et": "28",
+            "et": "26",
         }
     for chname_ in selectedChannels & {"mt", "et"}:
         if chname_ == "et" and args.era not in ["2017", "2018"]:
