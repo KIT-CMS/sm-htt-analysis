@@ -320,7 +320,7 @@ def main(args):
             if ch in ["et", "mt"]:
                 pt = [30, 35, 40, 500, 1000, "inf"]
                 for i, ptbin in enumerate(pt[:-1]):
-                    for shift_direction in ["Up","Down"]
+                    for shift_direction in ["Up","Down"]:
                         bindown = ptbin
                         binup = pt[i+1]
                         if binup == "inf":
@@ -418,8 +418,8 @@ def main(args):
 
     lep_fake_es_variations["et"] =  create_systematic_variations("CMS_ZLShape_et_1prong_barrel_%s"%args.era, "tauEleFakeEsOneProngBarrel", DifferentPipeline)
     lep_fake_es_variations["et"] += create_systematic_variations("CMS_ZLShape_et_1prong_endcap_%s"%args.era, "tauEleFakeEsOneProngEndcap", DifferentPipeline)
-    lep_fake_es_variations["et"] += create_systematic_variations("CMS_ZLShape_et_1prong1pizero_barrel_%s"args.era, "tauEleFakeEsOneProngPiZerosBarrel", DifferentPipeline)
-    lep_fake_es_variations["et"] += create_systematic_variations("CMS_ZLShape_et_1prong1pizero_endcap_%s"args.era, "tauEleFakeEsOneProngPiZerosEndcap", DifferentPipeline)
+    lep_fake_es_variations["et"] += create_systematic_variations("CMS_ZLShape_et_1prong1pizero_barrel_%s"%args.era, "tauEleFakeEsOneProngPiZerosBarrel", DifferentPipeline)
+    lep_fake_es_variations["et"] += create_systematic_variations("CMS_ZLShape_et_1prong1pizero_endcap_%s"%args.era, "tauEleFakeEsOneProngPiZerosEndcap", DifferentPipeline)
 
 
     # Lepton trigger efficiency; the same values for (MC & EMB) and (mt & et)
