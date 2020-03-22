@@ -91,17 +91,17 @@ def main(args):
 
     # Era selection
     if "2016" in args.era:
-        from shape_producer.estimation_methods_2016 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, TTLEstimation, VVLEstimation, WEstimation, ggHEstimation, qqHEstimation, WHEstimation, ZHEstimation, ttHEstimation, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYggHEstimation, SUSYbbHEstimation, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT
+        from shape_producer.estimation_methods_2016 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, TTLEstimation, TTTEstimation, VVLEstimation, WEstimation, ggHEstimation, qqHEstimation, WHEstimation, ZHEstimation, ttHEstimation, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYggHEstimation, SUSYbbHEstimation, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT
 
         from shape_producer.era import Run2016
         era = Run2016(args.datasets)
     elif "2017" in args.era:
-        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, TTLEstimation, VVLEstimation, WEstimation, ggHEstimation, qqHEstimation, WHEstimation, ZHEstimation, ttHEstimation, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYggHEstimation, SUSYbbHEstimation, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT
+        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, TTLEstimation, TTTEstimation, VVLEstimation, WEstimation, ggHEstimation, qqHEstimation, WHEstimation, ZHEstimation, ttHEstimation, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYggHEstimation, SUSYbbHEstimation, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT
 
         from shape_producer.era import Run2017
         era = Run2017(args.datasets)
     elif "2018" in args.era:
-        from shape_producer.estimation_methods_2018 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, TTLEstimation, VVLEstimation, WEstimation, ggHEstimation, qqHEstimation, WHEstimation, ZHEstimation, ttHEstimation, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYggHEstimation, SUSYbbHEstimation, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT
+        from shape_producer.estimation_methods_2018 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, TTLEstimation, TTTEstimation, VVLEstimation, WEstimation, ggHEstimation, qqHEstimation, WHEstimation, ZHEstimation, ttHEstimation, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYggHEstimation, SUSYbbHEstimation, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT
 
         from shape_producer.era import Run2018
         era = Run2018(args.datasets)
