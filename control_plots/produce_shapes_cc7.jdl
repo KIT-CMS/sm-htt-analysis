@@ -1,0 +1,18 @@
+universe = docker
+docker_image = mschnepf/slc7-condocker
+executable = control_plots/create_control_plots.sh
+
+Requirements = ( (Target.ProvidesCPU == True) && (Target.ProvidesIO == True) && (TARGET.ProvidesEKPResources == True ) )
++RequestWalltime = 72000
++ExperimentalJob = True
+RequestMemory = 4096
+request_disk = 204800
+RequestCpus = 1
+accounting_group = cms.higgs
+
+arguments = $(a1) $(a2) $(a3) $(a4)
+output = output/log/condorShapes/$(a1)-$(a3)-$(a2).$(cluster).$(Process).out
+error = output/log/condorShapes/$(a1)-$(a3)-$(a2).$(cluster).$(Process).err
+log = output/log/condorShapes/$(a1)-$(a3)-$(a2).$(cluster).$(Process).log
+
+queue a1,a2,a3,a4 from control_plots/arguments.txt
