@@ -201,13 +201,26 @@ def main(args):
             processes[ch][qqH_htxs] = Process(qqH_htxs, qqHEstimation(qqH_htxs, era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
 
         # channel-specific processes
+        qcd_weight_string = "1."
+        qcd_aisoiso_string = "(1.0)"
         if ch in ["mt", "et"]:
             processes[ch]["jetFakes"] = Process("jetFakes", NewFakeEstimationLT(era, directory, channel_dict[args.era][ch], [processes[ch][process] for process in ["EMB", "ZL", "TTL", "VVL"]], processes[ch]["data_obs"], friend_directory=friend_directories[ch]+[ff_friend_directory]))
         elif ch == "tt":
             processes[ch]["jetFakes"] = Process("jetFakes", NewFakeEstimationTT(era, directory, channel_dict[args.era][ch], [processes[ch][process] for process in ["EMB", "ZL", "TTL", "VVL"]], processes[ch]["data_obs"], friend_directory=friend_directories[ch]+[ff_friend_directory]))
         elif ch == "em":
             processes[ch]["W"]   = Process("W",   WEstimation(era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
-            processes[ch]["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, channel_dict[args.era][ch], [processes[ch][process] for process in ["EMB", "ZL", "W", "VVL", "TTL"]], processes[ch]["data_obs"], extrapolation_factor=1.0, qcd_weight = Weight("em_qcd_osss_binned_Weight","qcd_weight")))
+            ROOT.v5.TFormula.SetMaxima(3000)
+            if args.era == "2016":
+                qcd_aisoiso_string = "*(1.0*(pt_1>=150.0||pt_2>=150.0)+0.889611*(pt_1>=0.0&&pt_1<20.0&&pt_2>=20.0&&pt_2<25.0)+0.906323*(pt_1>=0.0&&pt_1<20.0&&pt_2>=25.0&&pt_2<30.0)+0.838287*(pt_1>=0.0&&pt_1<20.0&&pt_2>=30.0&&pt_2<150.0)+0.900872*(pt_1>=20.0&&pt_1<25.0&&pt_2>=0.0&&pt_2<20.0)+0.918876*(pt_1>=20.0&&pt_1<25.0&&pt_2>=20.0&&pt_2<25.0)+0.857904*(pt_1>=20.0&&pt_1<25.0&&pt_2>=25.0&&pt_2<30.0)+0.833439*(pt_1>=20.0&&pt_1<25.0&&pt_2>=30.0&&pt_2<150.0)+0.956127*(pt_1>=25.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<20.0)+0.863690*(pt_1>=25.0&&pt_1<30.0&&pt_2>=20.0&&pt_2<25.0)+1.060816*(pt_1>=25.0&&pt_1<30.0&&pt_2>=25.0&&pt_2<30.0)+0.938181*(pt_1>=25.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<150.0)+0.993274*(pt_1>=30.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<20.0)+0.936018*(pt_1>=30.0&&pt_1<150.0&&pt_2>=20.0&&pt_2<25.0)+0.864106*(pt_1>=30.0&&pt_1<150.0&&pt_2>=25.0&&pt_2<30.0)+0.954102*(pt_1>=30.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<150.0))"
+                qcd_weight_string = "((-0.1138*(njets==0)+(-0.07938)*(njets==1)+(-0.02602)*(njets>=2))*((DiTauDeltaR-3.0)**2.0-3.0)+(-0.2287*(njets==0)+(-0.3251)*(njets==1)+(-0.2802)*(njets>=2))*(DiTauDeltaR-3.0)+(1.956*(njets==0)+(1.890)*(njets==1)+(1.753)*(njets>=2)))*(1.0*(pt_1>=150.0||pt_2>=150.0)+1.132173*(pt_1>=0.0&&pt_1<24.0&&pt_2>=24.0&&pt_2<30.0)+1.118720*(pt_1>=0.0&&pt_1<24.0&&pt_2>=30.0&&pt_2<40.0)+1.135967*(pt_1>=0.0&&pt_1<24.0&&pt_2>=40.0&&pt_2<50.0)+1.127198*(pt_1>=0.0&&pt_1<24.0&&pt_2>=50.0&&pt_2<80.0)+1.437193*(pt_1>=0.0&&pt_1<24.0&&pt_2>=80.0&&pt_2<150.0)+1.004124*(pt_1>=24.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<24.0)+1.056143*(pt_1>=24.0&&pt_1<30.0&&pt_2>=24.0&&pt_2<30.0)+1.172165*(pt_1>=24.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<40.0)+1.382327*(pt_1>=24.0&&pt_1<30.0&&pt_2>=40.0&&pt_2<50.0)+1.395561*(pt_1>=24.0&&pt_1<30.0&&pt_2>=50.0&&pt_2<80.0)+0.535266*(pt_1>=24.0&&pt_1<30.0&&pt_2>=80.0&&pt_2<150.0)+0.922330*(pt_1>=30.0&&pt_1<40.0&&pt_2>=0.0&&pt_2<24.0)+1.079285*(pt_1>=30.0&&pt_1<40.0&&pt_2>=24.0&&pt_2<30.0)+1.096702*(pt_1>=30.0&&pt_1<40.0&&pt_2>=30.0&&pt_2<40.0)+1.193564*(pt_1>=30.0&&pt_1<40.0&&pt_2>=40.0&&pt_2<50.0)+1.200760*(pt_1>=30.0&&pt_1<40.0&&pt_2>=50.0&&pt_2<80.0)+2.317707*(pt_1>=30.0&&pt_1<40.0&&pt_2>=80.0&&pt_2<150.0)+0.885914*(pt_1>=40.0&&pt_1<50.0&&pt_2>=0.0&&pt_2<24.0)+0.820992*(pt_1>=40.0&&pt_1<50.0&&pt_2>=24.0&&pt_2<30.0)+1.006697*(pt_1>=40.0&&pt_1<50.0&&pt_2>=30.0&&pt_2<40.0)+0.847385*(pt_1>=40.0&&pt_1<50.0&&pt_2>=40.0&&pt_2<50.0)+0.926569*(pt_1>=40.0&&pt_1<50.0&&pt_2>=50.0&&pt_2<80.0)+0.719876*(pt_1>=40.0&&pt_1<50.0&&pt_2>=80.0&&pt_2<150.0)+0.800547*(pt_1>=50.0&&pt_1<80.0&&pt_2>=0.0&&pt_2<24.0)+0.851582*(pt_1>=50.0&&pt_1<80.0&&pt_2>=24.0&&pt_2<30.0)+0.805476*(pt_1>=50.0&&pt_1<80.0&&pt_2>=30.0&&pt_2<40.0)+0.843546*(pt_1>=50.0&&pt_1<80.0&&pt_2>=40.0&&pt_2<50.0)+1.249506*(pt_1>=50.0&&pt_1<80.0&&pt_2>=50.0&&pt_2<80.0)+0.993290*(pt_1>=50.0&&pt_1<80.0&&pt_2>=80.0&&pt_2<150.0)+0.808082*(pt_1>=80.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<24.0)+1.127875*(pt_1>=80.0&&pt_1<150.0&&pt_2>=24.0&&pt_2<30.0)+0.824488*(pt_1>=80.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<40.0)+0.669439*(pt_1>=80.0&&pt_1<150.0&&pt_2>=40.0&&pt_2<50.0)+0.886615*(pt_1>=80.0&&pt_1<150.0&&pt_2>=50.0&&pt_2<80.0)+0.941743*(pt_1>=80.0&&pt_1<150.0&&pt_2>=80.0&&pt_2<150.0))%s"%qcd_aisoiso_string
+            elif args.era == "2017":
+                qcd_aisoiso_string = "*(1.0*(pt_1>=150.0||pt_2>=150.0)+0.878304*(pt_1>=0.0&&pt_1<20.0&&pt_2>=20.0&&pt_2<25.0)+0.916277*(pt_1>=0.0&&pt_1<20.0&&pt_2>=25.0&&pt_2<30.0)+0.853211*(pt_1>=0.0&&pt_1<20.0&&pt_2>=30.0&&pt_2<150.0)+0.920458*(pt_1>=20.0&&pt_1<25.0&&pt_2>=0.0&&pt_2<20.0)+0.872271*(pt_1>=20.0&&pt_1<25.0&&pt_2>=20.0&&pt_2<25.0)+0.957983*(pt_1>=20.0&&pt_1<25.0&&pt_2>=25.0&&pt_2<30.0)+0.910988*(pt_1>=20.0&&pt_1<25.0&&pt_2>=30.0&&pt_2<150.0)+0.935900*(pt_1>=25.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<20.0)+0.903964*(pt_1>=25.0&&pt_1<30.0&&pt_2>=20.0&&pt_2<25.0)+0.888112*(pt_1>=25.0&&pt_1<30.0&&pt_2>=25.0&&pt_2<30.0)+0.872235*(pt_1>=25.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<150.0)+0.927075*(pt_1>=30.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<20.0)+0.983504*(pt_1>=30.0&&pt_1<150.0&&pt_2>=20.0&&pt_2<25.0)+0.921924*(pt_1>=30.0&&pt_1<150.0&&pt_2>=25.0&&pt_2<30.0)+0.881401*(pt_1>=30.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<150.0))"
+                qcd_weight_string = "((-0.1430*(njets==0)+(-0.05544)*(njets==1)+(0.03128)*(njets>=2))*((DiTauDeltaR-3.0)**2.0-3.0)+(-0.1949*(njets==0)+(-0.3685)*(njets==1)+(-0.3531)*(njets>=2))*(DiTauDeltaR-3.0)+(1.928*(njets==0)+(2.020)*(njets==1)+(1.855)*(njets>=2)))*(1.0*(pt_1>=150.0||pt_2>=150.0)+1.154522*(pt_1>=0.0&&pt_1<24.0&&pt_2>=24.0&&pt_2<30.0)+1.135855*(pt_1>=0.0&&pt_1<24.0&&pt_2>=30.0&&pt_2<40.0)+1.161428*(pt_1>=0.0&&pt_1<24.0&&pt_2>=40.0&&pt_2<50.0)+1.191713*(pt_1>=0.0&&pt_1<24.0&&pt_2>=50.0&&pt_2<80.0)+0.939037*(pt_1>=0.0&&pt_1<24.0&&pt_2>=80.0&&pt_2<150.0)+0.988445*(pt_1>=24.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<24.0)+1.200024*(pt_1>=24.0&&pt_1<30.0&&pt_2>=24.0&&pt_2<30.0)+1.135701*(pt_1>=24.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<40.0)+1.033807*(pt_1>=24.0&&pt_1<30.0&&pt_2>=40.0&&pt_2<50.0)+1.043044*(pt_1>=24.0&&pt_1<30.0&&pt_2>=50.0&&pt_2<80.0)+1.968726*(pt_1>=24.0&&pt_1<30.0&&pt_2>=80.0&&pt_2<150.0)+0.918552*(pt_1>=30.0&&pt_1<40.0&&pt_2>=0.0&&pt_2<24.0)+1.043276*(pt_1>=30.0&&pt_1<40.0&&pt_2>=24.0&&pt_2<30.0)+0.974875*(pt_1>=30.0&&pt_1<40.0&&pt_2>=30.0&&pt_2<40.0)+1.158302*(pt_1>=30.0&&pt_1<40.0&&pt_2>=40.0&&pt_2<50.0)+1.082629*(pt_1>=30.0&&pt_1<40.0&&pt_2>=50.0&&pt_2<80.0)+1.618632*(pt_1>=30.0&&pt_1<40.0&&pt_2>=80.0&&pt_2<150.0)+0.878118*(pt_1>=40.0&&pt_1<50.0&&pt_2>=0.0&&pt_2<24.0)+0.901737*(pt_1>=40.0&&pt_1<50.0&&pt_2>=24.0&&pt_2<30.0)+1.024177*(pt_1>=40.0&&pt_1<50.0&&pt_2>=30.0&&pt_2<40.0)+0.971125*(pt_1>=40.0&&pt_1<50.0&&pt_2>=40.0&&pt_2<50.0)+1.509237*(pt_1>=40.0&&pt_1<50.0&&pt_2>=50.0&&pt_2<80.0)+1.668255*(pt_1>=40.0&&pt_1<50.0&&pt_2>=80.0&&pt_2<150.0)+0.830869*(pt_1>=50.0&&pt_1<80.0&&pt_2>=0.0&&pt_2<24.0)+0.792164*(pt_1>=50.0&&pt_1<80.0&&pt_2>=24.0&&pt_2<30.0)+0.811363*(pt_1>=50.0&&pt_1<80.0&&pt_2>=30.0&&pt_2<40.0)+1.228341*(pt_1>=50.0&&pt_1<80.0&&pt_2>=40.0&&pt_2<50.0)+0.891440*(pt_1>=50.0&&pt_1<80.0&&pt_2>=50.0&&pt_2<80.0)+0.931178*(pt_1>=50.0&&pt_1<80.0&&pt_2>=80.0&&pt_2<150.0)+0.677658*(pt_1>=80.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<24.0)+0.863660*(pt_1>=80.0&&pt_1<150.0&&pt_2>=24.0&&pt_2<30.0)+0.684323*(pt_1>=80.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<40.0)+1.102642*(pt_1>=80.0&&pt_1<150.0&&pt_2>=40.0&&pt_2<50.0)+0.745410*(pt_1>=80.0&&pt_1<150.0&&pt_2>=50.0&&pt_2<80.0)+0.995289*(pt_1>=80.0&&pt_1<150.0&&pt_2>=80.0&&pt_2<150.0))%s"%qcd_aisoiso_string
+            elif args.era == "2018":
+                qcd_aisoiso_string = "*(1.0*(pt_1>=150.0||pt_2>=150.0)+0.847702*(pt_1>=0.0&&pt_1<20.0&&pt_2>=20.0&&pt_2<25.0)+0.878120*(pt_1>=0.0&&pt_1<20.0&&pt_2>=25.0&&pt_2<30.0)+0.887496*(pt_1>=0.0&&pt_1<20.0&&pt_2>=30.0&&pt_2<150.0)+0.874935*(pt_1>=20.0&&pt_1<25.0&&pt_2>=0.0&&pt_2<20.0)+0.829801*(pt_1>=20.0&&pt_1<25.0&&pt_2>=20.0&&pt_2<25.0)+0.922954*(pt_1>=20.0&&pt_1<25.0&&pt_2>=25.0&&pt_2<30.0)+0.954270*(pt_1>=20.0&&pt_1<25.0&&pt_2>=30.0&&pt_2<150.0)+0.935953*(pt_1>=25.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<20.0)+0.908383*(pt_1>=25.0&&pt_1<30.0&&pt_2>=20.0&&pt_2<25.0)+0.927804*(pt_1>=25.0&&pt_1<30.0&&pt_2>=25.0&&pt_2<30.0)+0.917511*(pt_1>=25.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<150.0)+0.983508*(pt_1>=30.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<20.0)+0.952974*(pt_1>=30.0&&pt_1<150.0&&pt_2>=20.0&&pt_2<25.0)+0.945860*(pt_1>=30.0&&pt_1<150.0&&pt_2>=25.0&&pt_2<30.0)+0.858417*(pt_1>=30.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<150.0))"
+                qcd_weight_string = "((-0.1249*(njets==0)+(-0.04374)*(njets==1)+(-0.00606)*(njets>=2))*((DiTauDeltaR-3.0)**2.0-3.0)+(-0.1644*(njets==0)+(-0.3172)*(njets==1)+(-0.3627)*(njets>=2))*(DiTauDeltaR-3.0)+(1.963*(njets==0)+(2.014)*(njets==1)+(1.757)*(njets>=2)))*(1.0*(pt_1>=150.0||pt_2>=150.0)+1.163671*(pt_1>=0.0&&pt_1<24.0&&pt_2>=24.0&&pt_2<30.0)+1.128643*(pt_1>=0.0&&pt_1<24.0&&pt_2>=30.0&&pt_2<40.0)+1.048276*(pt_1>=0.0&&pt_1<24.0&&pt_2>=40.0&&pt_2<50.0)+1.191298*(pt_1>=0.0&&pt_1<24.0&&pt_2>=50.0&&pt_2<80.0)+0.902538*(pt_1>=0.0&&pt_1<24.0&&pt_2>=80.0&&pt_2<150.0)+1.006806*(pt_1>=24.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<24.0)+1.078650*(pt_1>=24.0&&pt_1<30.0&&pt_2>=24.0&&pt_2<30.0)+1.080725*(pt_1>=24.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<40.0)+1.079326*(pt_1>=24.0&&pt_1<30.0&&pt_2>=40.0&&pt_2<50.0)+1.087762*(pt_1>=24.0&&pt_1<30.0&&pt_2>=50.0&&pt_2<80.0)+1.046803*(pt_1>=24.0&&pt_1<30.0&&pt_2>=80.0&&pt_2<150.0)+0.930830*(pt_1>=30.0&&pt_1<40.0&&pt_2>=0.0&&pt_2<24.0)+1.077466*(pt_1>=30.0&&pt_1<40.0&&pt_2>=24.0&&pt_2<30.0)+1.030341*(pt_1>=30.0&&pt_1<40.0&&pt_2>=30.0&&pt_2<40.0)+0.962502*(pt_1>=30.0&&pt_1<40.0&&pt_2>=40.0&&pt_2<50.0)+0.906176*(pt_1>=30.0&&pt_1<40.0&&pt_2>=50.0&&pt_2<80.0)+0.757984*(pt_1>=30.0&&pt_1<40.0&&pt_2>=80.0&&pt_2<150.0)+0.882972*(pt_1>=40.0&&pt_1<50.0&&pt_2>=0.0&&pt_2<24.0)+0.877667*(pt_1>=40.0&&pt_1<50.0&&pt_2>=24.0&&pt_2<30.0)+0.938395*(pt_1>=40.0&&pt_1<50.0&&pt_2>=30.0&&pt_2<40.0)+0.966964*(pt_1>=40.0&&pt_1<50.0&&pt_2>=40.0&&pt_2<50.0)+0.963540*(pt_1>=40.0&&pt_1<50.0&&pt_2>=50.0&&pt_2<80.0)+1.520666*(pt_1>=40.0&&pt_1<50.0&&pt_2>=80.0&&pt_2<150.0)+0.777846*(pt_1>=50.0&&pt_1<80.0&&pt_2>=0.0&&pt_2<24.0)+0.906756*(pt_1>=50.0&&pt_1<80.0&&pt_2>=24.0&&pt_2<30.0)+0.825188*(pt_1>=50.0&&pt_1<80.0&&pt_2>=30.0&&pt_2<40.0)+0.852294*(pt_1>=50.0&&pt_1<80.0&&pt_2>=40.0&&pt_2<50.0)+0.876118*(pt_1>=50.0&&pt_1<80.0&&pt_2>=50.0&&pt_2<80.0)+1.379418*(pt_1>=50.0&&pt_1<80.0&&pt_2>=80.0&&pt_2<150.0)+0.757687*(pt_1>=80.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<24.0)+0.755332*(pt_1>=80.0&&pt_1<150.0&&pt_2>=24.0&&pt_2<30.0)+0.743856*(pt_1>=80.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<40.0)+0.718288*(pt_1>=80.0&&pt_1<150.0&&pt_2>=40.0&&pt_2<50.0)+1.026966*(pt_1>=80.0&&pt_1<150.0&&pt_2>=50.0&&pt_2<80.0)+0.830127*(pt_1>=80.0&&pt_1<150.0&&pt_2>=80.0&&pt_2<150.0))%s"%qcd_aisoiso_string
+            qcd_weight = Weight(qcd_weight_string, "qcd_weight")
+            processes[ch]["QCD"] = Process("QCD", QCDEstimation_SStoOS_MTETEM(era, directory, channel_dict[args.era][ch], [processes[ch][process] for process in ["EMB", "ZL", "W", "VVL", "TTL"]], processes[ch]["data_obs"], extrapolation_factor=1.0, qcd_weight = qcd_weight))
 
     # Variables and categories
     if sys.version_info.major <= 2 and sys.version_info.minor <= 7 and sys.version_info.micro <= 15:
@@ -371,23 +384,68 @@ def main(args):
         decayMode_variations.append(ReplaceWeight("CMS_1ProngPi0Eff_{}".format(args.era), "decayMode_SF", Weight("embeddedDecayModeWeight_effNom_pi0{shift_direction}".format(shift_direction=shift_direction), "decayMode_SF"), shift_direction))
 
     # QCD for em
+    qcd_parameters = {
+        "p0" : { # constant parameter
+            "2016" : {
+                "0j" : {"Nom": "1.956", "Up": "2.018", "Down": "1.894"},
+                "1j" : {"Nom": "1.890", "Up": "1.930", "Down": "1.850"},
+                "2j" : {"Nom": "1.753", "Up": "1.814", "Down": "1.692"},
+            },
+            "2017" : {
+                "0j" : {"Nom": "1.928", "Up": "1.993", "Down": "1.863"},
+                "1j" : {"Nom": "2.020", "Up": "2.060", "Down": "1.980"},
+                "2j" : {"Nom": "1.855", "Up": "1.914", "Down": "1.796"},
+            },
+            "2018" : {
+                "0j" : {"Nom": "1.963", "Up": "1.210", "Down": "1.916"},
+                "1j" : {"Nom": "2.014", "Up": "2.045", "Down": "1.983"},
+                "2j" : {"Nom": "1.757", "Up": "1.794", "Down": "1.720"},
+            }
+        },
+        "p1" : { # linear parameter
+            "2016" : {
+                "0j" : {"Nom": "-0.2287", "Up": "-0.1954", "Down": "-0.262"},
+                "1j" : {"Nom": "-0.3251", "Up": "-0.2972", "Down": "-0.353"},
+                "2j" : {"Nom": "-0.2802", "Up": "-0.2402", "Down": "-0.3202"},
+            },
+            "2017" : {
+                "0j" : {"Nom": "-0.1949", "Up": "-0.1617", "Down": "-0.2281"},
+                "1j" : {"Nom": "-0.3685", "Up": "-0.3445", "Down": "-0.3925"},
+                "2j" : {"Nom": "-0.3531", "Up": "-0.3154", "Down": "-0.3908"},
+            },
+            "2018" : {
+                "0j" : {"Nom": "-0.1644", "Up": "-0.1402", "Down": "-0.1886"},
+                "1j" : {"Nom": "-0.3172", "Up": "-0.2977", "Down": "-0.3367"},
+                "2j" : {"Nom": "-0.3627", "Up": "-0.3389", "Down": "-0.3865"},
+            }
+        },
+        "p2" : { # quadratic parameter
+            "2016" : {
+                "0j" : {"Nom": "-0.1138", "Up": "-0.0922", "Down": "-0.1354"},
+                "1j" : {"Nom": "-0.07938","Up": "-0.06242","Down": "-0.09634"},
+                "2j" : {"Nom": "-0.02602","Up": "-0.00307","Down": "-0.04897"},
+            },
+            "2017" : {
+                "0j" : {"Nom": "-0.1430", "Up": "-0.12",   "Down": "-0.166"},
+                "1j" : {"Nom": "-0.05544","Up": "-0.03986","Down": "-0.07102"},
+                "2j" : {"Nom": "0.03128", "Up": "0.05409", "Down": "0.00847"},
+            },
+            "2018" : {
+                "0j" : {"Nom": "-0.1249", "Up": "-0.1083", "Down": "-0.1415"},
+                "1j" : {"Nom": "-0.04374","Up": "-0.03139","Down": "-0.05609"},
+                "2j" : {"Nom": "-0.00606","Up": "0.005143","Down": "-0.024355"},
+            }
+        }
+    }
     qcd_variations = []
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_0jet_rate_{}".format(args.era), "qcd_weight", Weight("em_qcd_osss_stat_0jet_rateup_Weight", "qcd_weight"), "Up"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_0jet_rate_{}".format(args.era), "qcd_weight", Weight("em_qcd_osss_stat_0jet_ratedown_Weight", "qcd_weight"), "Down"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_0jet_shape_{}".format(args.era), "qcd_weight", Weight("em_qcd_osss_stat_0jet_shapeup_Weight", "qcd_weight"), "Up"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_0jet_shape_{}".format(args.era), "qcd_weight", Weight("em_qcd_osss_stat_0jet_shapedown_Weight", "qcd_weight"), "Down"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_1jet_rate_{}".format(args.era), "qcd_weight", Weight("em_qcd_osss_stat_1jet_rateup_Weight", "qcd_weight"), "Up"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_1jet_rate_{}".format(args.era), "qcd_weight", Weight("em_qcd_osss_stat_1jet_ratedown_Weight", "qcd_weight"), "Down"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_1jet_shape_{}".format(args.era), "qcd_weight", Weight("em_qcd_osss_stat_1jet_shapeup_Weight", "qcd_weight"), "Up"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_1jet_shape_{}".format(args.era), "qcd_weight", Weight("em_qcd_osss_stat_1jet_shapedown_Weight", "qcd_weight"), "Down"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_2jet_rate_{}".format(args.era), "qcd_weight", Weight("em_qcd_osss_stat_2jet_rateup_Weight", "qcd_weight"), "Up"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_2jet_rate_{}".format(args.era), "qcd_weight", Weight("em_qcd_osss_stat_2jet_ratedown_Weight", "qcd_weight"), "Down"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_2jet_shape_{}".format(args.era), "qcd_weight", Weight("em_qcd_osss_stat_2jet_shapeup_Weight", "qcd_weight"), "Up"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_2jet_shape_{}".format(args.era), "qcd_weight", Weight("em_qcd_osss_stat_2jet_shapedown_Weight", "qcd_weight"), "Down"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_iso_{}".format(args.era), "qcd_weight", Weight("em_qcd_extrap_up_Weight", "qcd_weight"), "Up"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_iso_{}".format(args.era), "qcd_weight", Weight("em_qcd_extrap_down_Weight", "qcd_weight"), "Down"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_iso", "qcd_weight", Weight("em_qcd_extrap_up_Weight", "qcd_weight"), "Up"))
-    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_iso", "qcd_weight", Weight("em_qcd_extrap_down_Weight", "qcd_weight"), "Down"))
+    for shift_direction in ["Up", "Down"]:
+        for dof,parameter in zip(["rate", "shape", "shape2"],["p0", "p1", "p2"]):
+            for jetbin in ["0j", "1j", "2j"]:
+                qcd_variations.append(ReplaceWeight("CMS_htt_qcd_{}et_{}_{}".format(jetbin, dof, args.era), "qcd_weight",
+                    Weight(qcd_weight_string.replace(qcd_parameters[parameter][args.era][jetbin]["Nom"], qcd_parameters[parameter][args.era][jetbin][shift_direction]), "qcd_weight"), shift_direction))
+
+    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_iso_{}".format(args.era), "qcd_weight", Weight(qcd_weight_string.replace(qcd_aisoiso_string, qcd_aisoiso_string+"**2"), "qcd_weight"), "Up"))
+    qcd_variations.append(ReplaceWeight("CMS_htt_qcd_iso_{}".format(args.era), "qcd_weight", Weight(qcd_weight_string.replace(qcd_aisoiso_string, ""), "qcd_weight"), "Down"))
 
     # Gluon-fusion WG1 uncertainty scheme
     ggh_variations = []
