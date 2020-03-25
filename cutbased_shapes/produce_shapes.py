@@ -495,34 +495,99 @@ def main(args):
             lep_trigger_eff_variations[ch][unctype].append(AddWeight("CMS_eff_xtrigger%s_%s_%s"%(unctype, ch, args.era), "xtrg_%s_eff_weight"%ch, Weight("(0.946*(pt_1<={0})+1.0*(pt_1>{0}))".format(thresh_dict[args.era][ch]), "xtrg_%s_eff_weight"%ch), "Down"))
 
     # Fake factor uncertainties
-    fake_factor_variations = {}
+    fake_factor_names = {}
+    fake_factor_variations = {
+        "mt" : [],
+        "et" : [],
+        "tt" : [],
+    }
+    fake_factor_weight = {}
+    for ch in ["mt", "et"]:
+        fake_factor_names[ch] = [
+
+            # QCD FF's
+            ## mvis correction
+            "ff_corr_qcd_mvis{ch}{era}{shift}", # applying correction twice/not applying it
+            "ff_qcd_mvis{ch}{era}{shift}", # statistical uncertainty from smoothed band (morphed)
+            ## lepton (!!!) isolation correction
+            "ff_corr_qcd_muiso{ch}{era}{shift}", # applying correction twice/not applying it
+            "ff_qcd_muiso{ch}{era}{shift}", # statistical uncertainty from smoothed band (morphed)
+            ## combined quadratically, not morphed statistical uncertainty from smoothed band (needed for normalization uncertainty via lnN)
+            "ff_qcd_syst{ch}{era}{shift}",
+            ## uncertainty from the sampling method of the raw FF's
+            ### morphed
+            "ff_qcd_dm0_njet0_morphed_stat{ch}{era}{shift}",
+            "ff_qcd_dm0_njet1_morphed_stat{ch}{era}{shift}",
+            ### not morphed (needed for normalization uncertainty via lnN)
+            "ff_qcd_dm0_njet0_stat{ch}{era}{shift}",
+            "ff_qcd_dm0_njet1_stat{ch}{era}{shift}",
+            ## uncertainty for the mc subtraction
+            "ff_qcd_mc{ch}{era}{shift}",
+            # WJets FF's
+            ## lepton Pt correction
+            "ff_corr_w_lepPt{ch}{era}{shift}", # applying correction twice/not applying it
+            "ff_w_lepPt{ch}{era}{shift}", # statistical uncertainty from smoothed band (morphed)
+            ## mT correction
+            "ff_corr_w_mt{ch}{era}{shift}", # applying correction twice/not applying it
+            "ff_w_mt{ch}{era}{shift}", # statistical uncertainty from smoothed band (morphed)
+            ## combined quadratically, not morphed statistical uncertainty from smoothed band (needed for normalization uncertainty via lnN)
+            "ff_w_syst{ch}{era}{shift}",
+            ## uncertainty from the sampling method of the raw FF's
+            ### morphed
+            "ff_w_dm0_njet0_morphed_stat{ch}{era}{shift}",
+            "ff_w_dm0_njet1_morphed_stat{ch}{era}{shift}",
+            ### not morphed (needed for normalization uncertainty via lnN)
+            "ff_w_dm0_njet0_stat{ch}{era}{shift}",
+            "ff_w_dm0_njet1_stat{ch}{era}{shift}",
+            ## uncertainty for the mc subtraction
+            "ff_w_mc{ch}{era}{shift}",
+            # TT FF's
+            ## mvis correction
+            "ff_corr_tt_syst{ch}{era}{shift}", # applying correction twice/not applying it
+            "ff_tt_morphed{ch}{era}{shift}", # statistical uncertainty from smoothed band (morphed)
+            "ff_tt_syst{ch}{era}{shift}", # statistical uncertainty from smoothed band (not morphed, needed for normalization uncertainty via lnN)
+            ## uncertainty from the sampling method of the raw FF's
+            ### morphed
+            "ff_tt_dm0_njet0_morphed_stat{ch}{era}{shift}",
+            ### not morphed (needed for normalization uncertainty via lnN)
+            "ff_tt_stat{ch}{era}{shift}",
+            ## uncertainty on the correction from MC to data
+            "ff_tt_sf{ch}{era}{shift}",
+            # uncertainty on the fractions
+            "ff_frac_w",
+
+        ]
+        fake_factor_weight[ch] = "ff2_{syst}"
+    fake_factor_names["tt"] = [
+            # correciton in mvis
+            "ff_corr_qcd_mvis{ch}{era}{shift}", # applying correction twice/not applying it
+            "ff_qcd_mvis{ch}{era}{shift}", # statistical uncertainty from smoothed band (morphed)
+            # correction in isolated (trailing) tau pt
+            "ff_corr_qcd_tau2_pt{ch}{era}{shift}", # applying correction twice/not applying it
+            "ff_qcd_tau2_pt{ch}{era}{shift}", # statistical uncertainty from smoothed band (morphed)
+            # combined quadratically, not morphed statistical uncertainty from smoothed band (needed for normalization uncertainty via lnN)
+            "ff_qcd_syst{ch}{era}{shift}",
+            # uncertainty from the sampling method of the raw FF's
+            ## morphed
+            "ff_qcd_dm0_njet0_morphed_stat{ch}{era}{shift}",
+            "ff_qcd_dm0_njet1_morphed_stat{ch}{era}{shift}",
+            ## not morphed (needed for normalization uncertainty via lnN)
+            "ff_qcd_dm0_njet0_stat{ch}{era}{shift}",
+            "ff_qcd_dm0_njet1_stat{ch}{era}{shift}",
+            # uncertainty for the mc subtraction
+            "ff_qcd_mc{ch}{era}{shift}",
+            # 30% uncertainty for contamination of other processes, derived from fractions in tt
+            "ff_w_syst{ch}{era}{shift}", # WJets
+            "ff_tt_syst{ch}{era}{shift}", # TT
+    ]
+    fake_factor_weight["tt"] = "(0.5*ff1_{syst}*(byTightDeepTau2017v2p1VSjet_1<0.5)+0.5*ff2_{syst}*(byTightDeepTau2017v2p1VSjet_2<0.5))"
     for ch in ["mt", "et", "tt"]:
-        fake_factor_variations[ch] = []
-        if ch in ["mt", "et"]:
-            for systematic_shift in [
-                    "ff_qcd{ch}_syst_{era}{shift}",
-                    "ff_qcd_dm0_njet0{ch}_stat_{era}{shift}",
-                    "ff_qcd_dm0_njet1{ch}_stat_{era}{shift}",
-                    "ff_w_syst_{era}{shift}",
-                    "ff_w_dm0_njet0{ch}_stat_{era}{shift}",
-                    "ff_w_dm0_njet1{ch}_stat_{era}{shift}",
-                    "ff_tt_syst_{era}{shift}",
-                    "ff_tt_dm0_njet0_stat_{era}{shift}",
-                    "ff_tt_dm0_njet1_stat_{era}{shift}",
-            ]:
-                for shift_direction in ["Up", "Down"]:
-                    fake_factor_variations[ch].append(ReplaceWeight("CMS_%s"%(systematic_shift.format(ch="_"+ch, shift="", era=args.era).replace("_dm0", "")), "fake_factor", Weight("ff2_{syst}".format(syst=systematic_shift.format(ch="", shift="_%s" %shift_direction.lower(), era=args.era).replace("_{}".format(args.era), "")), "fake_factor"), shift_direction))
-        elif ch == "tt":
-            for systematic_shift in [
-                    "ff_qcd{ch}_syst_{era}{shift}",
-                    "ff_qcd_dm0_njet0{ch}_stat_{era}{shift}",
-                    "ff_qcd_dm0_njet1{ch}_stat_{era}{shift}",
-                    "ff_w{ch}_syst_{era}{shift}", "ff_tt{ch}_syst_{era}{shift}",
-                    "ff_w_frac{ch}_syst_{era}{shift}",
-                    "ff_tt_frac{ch}_syst_{era}{shift}"
-            ]:
-                for shift_direction in ["Up", "Down"]:
-                    fake_factor_variations[ch].append(ReplaceWeight("CMS_%s" % (systematic_shift.format(ch="_"+ch, shift="", era=args.era).replace("_dm0", "")), "fake_factor", Weight("(0.5*ff1_{syst}*(byTightDeepTau2017v2p1VSjet_1<0.5)+0.5*ff2_{syst}*(byTightDeepTau2017v2p1VSjet_2<0.5))".format(syst=systematic_shift.format(ch="", shift="_%s" % shift_direction.lower(), era=args.era).replace("_{}".format(args.era), "")), "fake_factor"), shift_direction))
+        for shift_direction in ["Up", "Down"]:
+            for systematic_shift in fake_factor_variations[ch]:
+                hname = "CMS_" + systematic_shift.format(ch="_" + ch, shift="", era="_" + args.era).replace("_dm0", "")
+                systname = systematic_shift.format(ch="",shift="_" + shift_direction.lower(),era="")
+                variation = ReplaceWeight(hname, "fake_factor", Weight(fake_factor_weight[ch].format(syst=systname), "fake_factor"), shift_direction)
+                fake_factor_variations[ch].append(variation)
 
     ## Group nicks
     mc_nicks = ["ZL", "TTL", "VVL"] + signal_nicks # to be extended with 'W' in em
