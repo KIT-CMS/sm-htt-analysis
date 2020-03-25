@@ -201,10 +201,10 @@ variables:
       bins: [[0.0, 6.0, 0.2], [6.0, 10.0, 0.5]]
       expression: "jdeta"
     njets:
-      bins: [-0.5, 10.5, 1.0]
+      bins: [[-0.5, 10.5, 1.0]]
       expression: "njets"
     nbtag:
-      bins: [-0.5, 6.5, 1.0]
+      bins: [[-0.5, 6.5, 1.0]]
       expression: "nbtag"
     mt_1:
       bins: [[0.0, 300.0, 5.0]]
