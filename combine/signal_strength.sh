@@ -18,6 +18,9 @@ fi
 WORKSPACE=$DATACARDDIR/${ERA}-${STXS_FIT}-workspace.root
 if [[ $HESSE == "robustHesse" ]];then
     ID=hesse-$ERA-$TAG-$CHANNEL-$STXS_FIT
+elif [[ $HESSE == "bkg_robustHesse" ]];then
+    ID=hesse-$ERA-$TAG-$CHANNEL-$STXS_FIT
+    WORKSPACE=$DATACARDDIR/${ERA}-inclusive-workspace.root
 else
     ID=signal-strength-$ERA-$TAG-$CHANNEL-$STXS_FIT
 fi
@@ -41,8 +44,25 @@ then
         | tee $LOGFILE
     FITFILE=$DATACARDDIR/fitDiagnostics.${ID}.MultiDimFit.mH125.root
     mv fitDiagnostics.${ID}.root $FITFILE
-    #python combine/check_mlfit.py fitDiagnostics${ERA}.root
-    logandrun root -l $FITFILE <<< "fit_b->Print(); fit_s->Print()" \
+    python combine/check_mlfit.py fitDiagnostics${ERA}.root
+    logandrun root -l -b $FITFILE <<< "fit_b->Print(); fit_s->Print()" \
+    | tee -a $LOGFILE | tee $OUTPUTFILE
+elif [[ $HESSE == "bkg_robustHesse" ]]
+then
+    logandrun combine \
+        -n .$ID \
+        -M FitDiagnostics \
+        -m 125 -d $WORKSPACE \
+        --robustFit 1 -v1 \
+        --robustHesse 1 \
+        --setParameters r=0 --freezeParameters r \
+        --X-rtd MINIMIZER_analytic \
+        --cminDefaultMinimizerStrategy 0 \
+        | tee $LOGFILE
+    FITFILE=$DATACARDDIR/fitDiagnostics.${ID}.MultiDimFit.mH125.root
+    mv fitDiagnostics.${ID}.root $FITFILE
+    python combine/check_mlfit.py fitDiagnostics.${ID}.root
+    logandrun root -l -b $FITFILE <<< "fit_b->Print(); fit_s->Print()" \
     | tee -a $LOGFILE | tee $OUTPUTFILE
 else
     FITFILE=$DATACARDDIR/higgsCombine.${ID}.MultiDimFit.mH125.root
