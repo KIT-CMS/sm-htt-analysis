@@ -247,7 +247,7 @@ def main(args):
 
     # Choice of activated signal processes
     sm_htt_backgrounds_nicks = ["WH125", "ZH125", "ttH125"]
-    sm_hww_nicks = ["ggHWW125", "qqHWW125", "WHWW125", "ZH125"]
+    sm_hww_nicks = ["ggHWW125", "qqHWW125", "WHWW125", "ZHWW125"]
     sm_htt_signals_nicks = [ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict] + [qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict]
     susy_nicks = []
     for ggH_contribution in ["ggh_t", "ggh_b", "ggh_i", "ggH_t", "ggH_b", "ggH_i", "ggA_t", "ggA_b", "ggA_i"]:
