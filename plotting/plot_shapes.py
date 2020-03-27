@@ -141,7 +141,7 @@ def main(args):
         if args.categories == "stxs_stage0":
             signalcats = ["1"]  # only 2D Category
         elif args.categories == "stxs_stage1p1":
-            signalcats = [str(100 + i) for i in range(4)
+            signalcats = [str(100 + i) for i in range(5)
                           ] + [str(200 + i) for i in range(4)]
         elif args.categories == "stxs_stage1p1cut":
             signalcats = [str(100 + i) for i in range(5)
@@ -150,6 +150,9 @@ def main(args):
             signalcats = []
         for channel in ["et", "mt", "tt", "em"]:
             channel_categories[channel] += signalcats
+    background_categories = [
+            "12", "15", "11", "13", "14", "16", "17", "19", "20", "21"
+        ]
     channel_dict = {
         "ee": "ee",
         "em": "e#mu",
@@ -182,6 +185,7 @@ def main(args):
                 "101": "ggh 1-jet p_{T}^{H} [0,120]",
                 "102": "ggh 1-jet p_{T}^{H} [120,200]",
                 "103": "ggh #geq 2-jet",
+                "104": "ggh p_{T}^{H} > 200",
                 "200": "qqh 2J low mjj",
                 "201": "qqh p_{T}^{H}>200",
                 "202": "qqh vbftopo mjj>700",
@@ -237,9 +241,13 @@ def main(args):
         logger.critical("Era {} is not implemented.".format(args.era))
         raise Exception
     print(channel_categories)
-    if args.blinded_shapes:
-        dummy = ROOT.TH1D("dummy", "dummy", 5, 0.0, 1.0)
     plots = []
+    if args.blinded_shapes:
+        if args.categories == "stxs_stage0":
+            # special for 2D category
+            dummy = ROOT.TH1F("dummy", "dummy", 28, 0.0, 28.0)
+        else:
+            dummy = ROOT.TH1F("dummy", "dummy", 5, 0.0, 1.0)
     for channel in args.channels:
         for category in channel_categories[channel]:
             print "Plot for category: ", category
@@ -329,7 +337,7 @@ def main(args):
                     plot.subplot(i).add_hist(HWWhist, "HWW")
                     plot.subplot(i).add_hist(HWWhist, "HWW_top")
                     # add dummy histogram for range
-                    if args.blinded_shapes:
+                    if args.blinded_shapes and category not in background_categories:
                         plot.subplot(i).add_hist(dummy, "dummy")
 
                 except BaseException:
@@ -337,8 +345,8 @@ def main(args):
 
             # get observed data and total background histograms
             # NOTE: With CMSSW_8_1_0 the TotalBkg definition has changed.
-            print('plot.add_hist(rootfile.get({}, {}, {}, "data_obs")'.format(
-                era, channel, category))
+            # print('plot.add_hist(rootfile.get({}, {}, {}, "data_obs")'.format(
+            #     era, channel, category))
             data_obs = rootfile.get(era, channel, category, "data_obs")
             if args.blind_data:
                 # in this case, all entries above 0.5 are set to zero
@@ -350,10 +358,7 @@ def main(args):
                         ] or data_obs.GetBinLowEdge(i) >= 10.0:
                             data_obs.SetBinContent(i, 0.0)
                             data_obs.SetBinError(i, 0.0)
-                elif category not in [
-                        "12", "15", "11", "13", "14", "16", "17", "19", "20",
-                        "21"
-                ]:
+                elif category not in background_categories:
                     for i in xrange(data_obs.GetNbinsX() + 1):
                         if data_obs.GetBinLowEdge(i) >= 0.5:
                             data_obs.SetBinContent(i, 0.0)
@@ -399,8 +404,10 @@ def main(args):
                                markersize=0,
                                fillcolor=styles.color_dict["unc"],
                                linecolor=0)
-            if args.blinded_shapes:
+            if args.blinded_shapes and category not in background_categories:
                 plot.subplot(0 if args.linear else 1).setGraphStyle(
+                    "dummy", "hist", linecolor=0, linewidth=0)
+                plot.subplot(2).setGraphStyle(
                     "dummy", "hist", linecolor=0, linewidth=0)
 
             # assemble ratio
@@ -478,7 +485,6 @@ def main(args):
             # plot.scaleXLabelOffset(2.0)
             plot.scaleYTitleOffset(1.1)
             #plot.subplot(2).setNYdivisions(3, 5)
-
             # if not channel == "tt" and category in ["11", "12", "13", "14", "15", "16"]:
             #    plot.subplot(2).changeXLabels(["0.2", "0.4", "0.6", "0.8", "1.0"])
 
@@ -496,7 +502,7 @@ def main(args):
                 "total_bkg", "bkg_ggH", "bkg_ggH_top", "bkg_qqH",
                 "bkg_qqH_top", "data_obs"
             ]
-            if args.blinded_shapes:
+            if args.blinded_shapes and category not in background_categories:
                 procs_to_draw_0 = ["dummy"] + procs_to_draw_0
                 procs_to_draw_1 = ["dummy"] + procs_to_draw_1
                 procs_to_draw_2 = ["dummy"] + procs_to_draw_2
