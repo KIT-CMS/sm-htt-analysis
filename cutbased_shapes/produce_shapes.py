@@ -583,7 +583,7 @@ def main(args):
     fake_factor_weight["tt"] = "(0.5*ff1_{syst}*(byTightDeepTau2017v2p1VSjet_1<0.5)+0.5*ff2_{syst}*(byTightDeepTau2017v2p1VSjet_2<0.5))"
     for ch in ["mt", "et", "tt"]:
         for shift_direction in ["Up", "Down"]:
-            for systematic_shift in fake_factor_variations[ch]:
+            for systematic_shift in fake_factor_names[ch]:
                 hname = "CMS_" + systematic_shift.format(ch="_" + ch, shift="", era="_" + args.era).replace("_dm0", "")
                 systname = systematic_shift.format(ch="",shift="_" + shift_direction.lower(),era="")
                 variation = ReplaceWeight(hname, "fake_factor", Weight(fake_factor_weight[ch].format(syst=systname), "fake_factor"), shift_direction)
