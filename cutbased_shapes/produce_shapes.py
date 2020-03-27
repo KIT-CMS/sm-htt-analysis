@@ -660,7 +660,7 @@ def main(args):
 
         emb_variations = []
         if ch in ["mt", "et", "tt"]:
-            emb_variations += tau_es_variations[""] + tau_es_variations["_emb"] + tau_id_variations[ch]["_emb"] + decayMode_variations
+            emb_variations += tau_es_variations[""] + tau_es_variations["_emb"]  + tau_id_variations[ch][""]+ tau_id_variations[ch]["_emb"] + decayMode_variations
         if ch in ["mt", "et"]:
             emb_variations += lep_trigger_eff_variations[ch]["_emb"]
         if ch in ["et", "em"]:
