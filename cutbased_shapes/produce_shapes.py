@@ -554,7 +554,7 @@ def main(args):
             ## uncertainty on the correction from MC to data
             "ff_tt_sf{ch}{era}{shift}",
             # uncertainty on the fractions
-            "ff_frac_w",
+            "ff_frac_w{ch}{era}{shift}",
 
         ]
         fake_factor_weight[ch] = "ff2_{syst}"
