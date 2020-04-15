@@ -558,8 +558,8 @@ function plotPreAndPostFit() (
                 PLOTDIR=output/plots/${era}-${tag}_onSimulation
                 mkdir -p $PLOTDIR
                 for channel in ${channels[@]}; do
-                    logandrun ./plotting/plot_shapes.py -i $PREFITFILE -o $PLOTDIR -c ${channel} -e $era --categories $CATEGORIES --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB & # --fake-factor --embedding
-                    logandrun ./plotting/plot_shapes.py -i $POSTFITFILE -o $PLOTDIR -c ${channel} -e $era --categories $CATEGORIES --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB & # --fake-factor --embedding 
+                    logandrun ./plotting/plot_shapes.py -i $PREFITFILE -o $PLOTDIR -c ${channel} -e $era --categories $CATEGORIES --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB --noratio & # --fake-factor --embedding
+                    logandrun ./plotting/plot_shapes.py -i $POSTFITFILE -o $PLOTDIR -c ${channel} -e $era --categories $CATEGORIES --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB  & # --fake-factor --embedding 
                 done
                 wait
             )
@@ -569,7 +569,57 @@ function plotPreAndPostFit() (
     wait
 )
 
+function myPlotShapes() (
+    set -e
+    ensureoutdirs
+    for tag in ${tags[@]}; do
+        TRAINFF=True TRAINEMB=True
+        if [[ $tag == *"_mc"* ]]; then
+            TRAINFF=False
+        fi
+        if [[ $tag == *"mc_"* ]]; then
+            TRAINEMB=False
+        fi
+        CATEGORIES="stxs_stage1p1"
+        STXS_FIT="stxs_stage0"
+        STXS_SIGNALS="stxs_stage0"
 
+        for evalOnData in "true" "false"; do
+            if [[ "$evalOnData" == "true" ]]; then 
+                JETFAKES=1 EMBEDDING=1
+                DATACARDDIR=output/datacards-emb-ff2
+                PLOTARGS=" --fake-factor --embedding"
+            else
+                JETFAKES=0 EMBEDDING=0
+                DATACARDDIR=output/datacards
+                PLOTARGS=""
+            fi
+            for era in ${eras[@]}; do
+                DATACARDDIR="$DATACARDDIR/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/cmb/125"
+
+                WORKSPACE="$DATACARDDIR/${era}-${STXS_FIT}-workspace.root"
+                [[ -f $WORKSPACE ]] || return 1
+                export PREFITFILE="${DATACARDDIR}/prefitshape-${era}-${tag}-${STXS_FIT}.root"
+                export FITFILE="$DATACARDDIR/fitDiagnostics.hesse-${era}-${tag}-cmb-${STXS_FIT}.MultiDimFit.mH125.root"
+                export POSTFITFILE="${DATACARDDIR}/postfitshape-${era}-${tag}-${STXS_FIT}.root"
+                (
+                    source utils/setup_cvmfs_sft.sh
+                    source utils/setup_python.sh
+
+                    PLOTDIR=output/plots/${era}-${tag}_onSimulation
+                    mkdir -p $PLOTDIR
+                    for channel in ${channels[@]}; do
+                        logandrun ./plotting/plot_shapes.py -i $PREFITFILE -o $PLOTDIR -c ${channel} -e $era --categories $CATEGORIES --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB --noratio $PLOTARGS &
+                        logandrun ./plotting/plot_shapes.py -i $PREFITFILE -o $PLOTDIR -c ${channel} -e $era --categories $CATEGORIES --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB $PLOTARGS &
+                        logandrun ./plotting/plot_shapes.py -i $POSTFITFILE -o $PLOTDIR -c ${channel} -e $era --categories $CATEGORIES --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB --noratio $PLOTARGS &
+                        logandrun ./plotting/plot_shapes.py -i $POSTFITFILE -o $PLOTDIR -c ${channel} -e $era --categories $CATEGORIES --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB $PLOTARGS &
+                    done
+                    wait
+                )
+            done
+        done
+    done
+)
 
 
 function plotShapes() (

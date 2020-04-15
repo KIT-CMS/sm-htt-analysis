@@ -71,6 +71,10 @@ def parse_arguments():
         action="store_true",
         help="Fake factor estimation method used")
     parser.add_argument(
+        "--noratio",
+        action="store_true",
+        help="disable ratioplot")
+    parser.add_argument(
         "--train-emb",
         type=lambda x: bool(distutils.util.strtobool(x)),
         default=True,
@@ -230,6 +234,12 @@ def main(args):
             "ZJ",
             "ZL",
             "ZTT"]
+    priolist= ["VVL","TTL",'ZL',"VVJ", "TTJ","ZJ",'QCD','W','jetFakes','VVT','TTT','ZTT','EMB']
+    for b in bkg_processes:
+        if b not in priolist:
+            print(b+" not in priolist.")
+            raise Exception
+    bkg_processes=[b for b in priolist if b in bkg_processes]
     all_bkg_processes = [b for b in bkg_processes]
     legend_bkg_processes = copy.deepcopy(bkg_processes)
     legend_bkg_processes.reverse()
@@ -451,7 +461,9 @@ def main(args):
                 plot.subplot(0).setYlims(0.1, 150000000)
                 if channel == "em":
                     plot.subplot(0).setYlims(1, 150000000)
-
+            if args.noratio:
+                plot.subplot(0).setXlabel(
+                        "NNScore")  # otherwise number labels are not drawn on axis
             if not args.linear:
                 plot.subplot(1).setYlims(0.1, split_dict[channel])
                 plot.subplot(1).setLogY()
@@ -494,12 +506,12 @@ def main(args):
                 "ggH_top",
                 "qqH",
                 "qqH_top",
-                "VH",
-                "VH_top",
-                "ttH",
-                "ttH_top",
-                "HWW",
-                "HWW_top",
+                # "VH",
+                # "VH_top",
+                # "ttH",
+                # "ttH_top",
+                # "HWW",
+                # "HWW_top",
                 "data_obs"] if args.linear else [
                 "stack",
                 "total_bkg",
@@ -510,10 +522,11 @@ def main(args):
                     ["stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top",
                      "VH", "VH_top", "ttH", "ttH_top", "HWW", "HWW_top",
                      "data_obs"])
-            plot.subplot(2).Draw([
-                "total_bkg", "bkg_ggH", "bkg_ggH_top", "bkg_qqH",
-                "bkg_qqH_top", "data_obs"
-            ])
+            if not args.noratio:
+                plot.subplot(2).Draw([
+                    "total_bkg", "bkg_ggH", "bkg_ggH_top", "bkg_qqH",
+                    "bkg_qqH_top", "data_obs"
+                ])
 
             # create legends
             suffix = ["", "_top"]
@@ -523,9 +536,7 @@ def main(args):
                 for process in legend_bkg_processes:
                     try:
                         plot.legend(i).add_entry(
-                            0, process, styles.legend_label_dict
-                            [process.replace("TTL", "TT").replace(
-                                "VVL", "VV")],
+                            0, process, styles.legend_label_dict[process],
                             'f')
                     except BaseException:
                         pass
@@ -536,23 +547,24 @@ def main(args):
                 plot.legend(i).add_entry(
                     0 if args.linear else 1, "qqH%s" %
                     suffix[i], "qq#rightarrowH", 'l')
-                plot.legend(i).add_entry(
-                    0 if args.linear else 1, "VH%s" %
-                    suffix[i], "qq#rightarrowVH", 'l')
-                try:
-                    plot.legend(i).add_entry(
-                        0 if args.linear else 1, "ttH%s" %
-                        suffix[i], "ttH", 'l')
-                    plot.legend(i).add_entry(
-                        0 if args.linear else 1, "HWW%s" %
-                        suffix[i], "H#rightarrowWW", 'l')
-                except BaseException:
-                    pass
+                # plot.legend(i).add_entry(
+                #     0 if args.linear else 1, "VH%s" %
+                #     suffix[i], "qq#rightarrowVH", 'l')
+                # try:
+                #     plot.legend(i).add_entry(
+                #         0 if args.linear else 1, "ttH%s" %
+                #         suffix[i], "ttH", 'l')
+                #     plot.legend(i).add_entry(
+                #         0 if args.linear else 1, "HWW%s" %
+                #         suffix[i], "H#rightarrowWW", 'l')
+                # except BaseException:
+                #     pass
                 plot.legend(i).add_entry(0, "data_obs", "Data", 'PE')
                 plot.legend(i).setNColumns(3)
             plot.legend(0).Draw()
-            plot.legend(1).setAlpha(0.0)
-            plot.legend(1).Draw()
+            if not args.noratio:
+                plot.legend(1).setAlpha(0.0)
+                plot.legend(1).Draw()
 
             if args.chi2test:
                 import ROOT as r
@@ -589,9 +601,9 @@ def main(args):
                     'l')
                 plot.legend(i + 2).add_entry(0, "total_bkg", "Bkg. unc.", 'f')
                 plot.legend(i + 2).setNColumns(4)
-            plot.legend(2).Draw()
-            plot.legend(3).setAlpha(0.0)
-            plot.legend(3).Draw()
+            # plot.legend(2).Draw()
+            # plot.legend(3).setAlpha(0.0)
+            # plot.legend(3).Draw()
 
             # draw additional labels
             plot.DrawCMS()
@@ -611,6 +623,8 @@ def main(args):
 
             # save plot
             postfix = "prefit" if "prefit" in args.input else "postfit" if "postfit" in args.input else "undefined"
+            if args.noratio:
+                postfix+="_noratio"
             plot.save(
                 "%s/%s_%s_%s_%s.%s" %
                 (args.outputfolder,
