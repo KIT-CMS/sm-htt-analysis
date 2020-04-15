@@ -855,8 +855,72 @@ def main(args):
                 for process_nick in selectedProcesses & pS_:
                     variationsToAdd[chname_][process_nick].append(variation_)
 
-    # Zll reweighting !!! replaced by log normal uncertainties:
-    # CMS_eFakeTau_Run2018 16%; CMS_mFakeTau_Run2018 26%
+    # Zll l to tau fake uncertainties:
+    efake_dict = {
+        "2016" : {
+            "BA" : "0.31*(abs(eta_1)<1.448)",
+            "EC" : "0.22*(abs(eta_1)>1.558)"
+        },
+     	"2017" : {
+            "BA" : "0.26*(abs(eta_1)<1.448)",
+            "EC" : "0.41*(abs(eta_1)>1.558)"
+        },
+     	"2018" : {
+            "BA" : "0.18*(abs(eta_1)<1.448)",
+            "EC" : "0.30*(abs(eta_1)>1.558)"
+        }
+    }
+    mfake_dict = {
+        "2016" : {
+            "WH1" : "0.09*((abs(eta_1)<0.4)",
+            "WH2" : "0.42*((abs(eta_1)>=0.4)*((abs(eta_1)<0.8)",
+            "WH3" : "0.20*((abs(eta_1)>=0.8)*((abs(eta_1)<1.2)",
+            "WH4" : "0.63*((abs(eta_1)>=1.2)*((abs(eta_1)<1.7)",
+       	    "WH5" : "0.17*((abs(eta_1)>=1.7)"
+        },
+        "2017" : {
+            "WH1" : "0.18*((abs(eta_1)<0.4)",
+            "WH2" : "0.32*((abs(eta_1)>=0.4)*((abs(eta_1)<0.8)",
+            "WH3" : "0.39*((abs(eta_1)>=0.8)*((abs(eta_1)<1.2)",
+            "WH4" : "0.42*((abs(eta_1)>=1.2)*((abs(eta_1)<1.7)",
+            "WH5" : "0.21*((abs(eta_1)>=1.7)"
+        },
+        "2018" : {
+            "WH1" : "0.19*((abs(eta_1)<0.4)",
+            "WH2" : "0.34*((abs(eta_1)>=0.4)*((abs(eta_1)<0.8)",
+            "WH3" : "0.24*((abs(eta_1)>=0.8)*((abs(eta_1)<1.2)",
+            "WH4" : "0.57*((abs(eta_1)>=1.2)*((abs(eta_1)<1.7)",
+            "WH5" : "0.20*((abs(eta_1)>=1.7)"
+        }
+    }
+    zll_et_weight_variations = []
+    for section, weight in efake_dict[args.era].items():
+        zll_et_weight_variations.append(
+            AddWeight("CMS_fake_e_%s_%s"%(section, args.era), "eFakeTau_reweight",
+                Weight("(1.0+%s)"%weight, "eFakeTau_reweight"),
+                "Up"))
+       	zll_et_weight_variations.append(
+            AddWeight("CMS_fake_e_%s_%s"%(section, args.era), "eFakeTau_reweight",
+       	       	Weight("(1.0-%s)"%weight, "eFakeTau_reweight"),
+       	       	"Down"))
+    for variation_ in zll_et_weight_variations:
+        for chname_ in selectedChannels & {"et"}:
+            for process_nick in selectedProcesses & {"ZL"}:
+                variationsToAdd[chname_][process_nick].append(variation_)
+    zll_mt_weight_variations = []
+    for section, weight in mfake_dict[args.era].items():
+       	zll_mt_weight_variations.append(
+            AddWeight("CMS_fake_m_%s_%s"%(section, args.era), "mFakeTau_reweight",
+       	       	Weight("(1.0+%s)"%weight, "mFakeTau_reweight"),
+       	       	"Up"))
+        zll_mt_weight_variations.append(
+            AddWeight("CMS_fake_m_%s_%s"%(section, args.era), "mFakeTau_reweight",
+                Weight("(1.0-%s)"%weight, "mFakeTau_reweight"),
+                "Down"))
+    for variation_ in zll_mt_weight_variations:
+        for chname_ in selectedChannels & {"mt"}:
+            for process_nick in selectedProcesses & {"ZL"}:
+                variationsToAdd[chname_][process_nick].append(variation_)
 
     # Embedded event specifics
     # b tagging
