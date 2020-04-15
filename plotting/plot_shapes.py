@@ -164,14 +164,14 @@ def main(args):
             "2": "qqh",
             "12": "ztt",
             "15": "zll",
-            "11": "wjets",
+            "11": "w",
             "13": "tt",
-            "14": "qcd",
+            "14": "ss",
             "16": "misc",
-            "17": "qcd",
+            "17": "noniso",
             "19": "diboson",
-            "20": "Genuine #tau",
-            "21": "Jet #rightarrow #tau_{h}"
+            "20": "emb",
+            "21": "ff"
         }
         if args.categories == "stxs_stage1p1":
             category_dict.update({
