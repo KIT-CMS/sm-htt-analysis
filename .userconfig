@@ -1,5 +1,5 @@
 ### batch system for NNScore application
-export cluster=naf7 #lxplus7 # etp7
+export cluster=etp7 #naf7 #lxplus7 # etp7
 export sm_htt_analysis_dir=$( pwd ) ### local sm-htt repo !
 
 ### local = etp paths for the friend tree producer
