@@ -142,7 +142,14 @@ def main(args):
     if not os.path.exists(path):
         os.makedirs(path)
     # remote job in this case
-    if len(args.categories) > 0 or len(args.processes) > 0:
+    if args.gof_variable is not None:
+        filename="output/shapes/variables/{ERA}-{TAG}-{CHANNEL}-{VARIABLE}.root".format(
+            ERA=args.era,
+            TAG=args.tag,
+            CHANNEL=",".join(args.channels),
+            VARIABLE=args.gof_variable
+            )
+    elif len(args.categories) > 0 or len(args.processes) > 0:
         filename="{PATH}/{ERA}-{TAG}-{CHANNEL}-{PROCESS}-{CATEGORIES}-shapes.root".format(
             PATH=path,
             ERA=args.era,
@@ -413,11 +420,10 @@ def main(args):
             return classdict
 
     catsListD = {chname_: [] for chname_ in selectedChannels}
-    if 0 in [len(x) for x in selectedChannels, selectedCategories, selectedProcesses ]:
+    if 0 in [len(x) for x in selectedChannels, selectedProcesses ]:
         logger.fatal("Nothing to do!")
-        logger.fatal("selectedChannels: "+selectedChannels)
-        logger.fatal("selectedCategories: "+selectedCategories)
-        logger.fatal("selectedProcesses: "+selectedProcesses)
+        logger.fatal("selectedChannels: "+" ".join(selectedChannels))
+        logger.fatal("selectedProcesses: "+" ".join(selectedProcesses))
         raise Exception
 
     # if not a gof test:Analysis shapes
