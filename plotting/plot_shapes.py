@@ -14,6 +14,43 @@ import logging
 logger = logging.getLogger("")
 
 
+channelPlotDict={
+    "em": {
+        "ztt":[1000*1000],
+        "db" :[80*1000],
+        "tt" :[80*1000],
+        "qcd":[400*1000]
+    },
+    "et": {
+        "ztt":[300*1000],
+        "qcd":[200*1000],
+        "misc":[130*1000],
+        "zll" :[60*1000],
+        "tt": [120*1000],
+    },
+    "mt": {
+        "ztt":[800*1000],
+        "qcd":[460*1000],
+        "misc":[250*1000],
+        "zll" :[90*1000],
+        "tt": [120*1000],
+    },
+    "tt": {
+        "ztt":[90*1000],
+        "qcd":[80*1000],
+        "misc":[40*1000],
+        "zll" :[90*1000],
+    }
+}
+
+for ch in channelPlotDict:
+    channelPlotDict[ch]["emb"]=channelPlotDict[ch]["ztt"]
+    channelPlotDict[ch]["ff"]=channelPlotDict[ch]["qcd"]
+    channelPlotDict[ch]["ss"]=channelPlotDict[ch]["qcd"]
+    channelPlotDict[ch]["noniso"]=channelPlotDict[ch]["qcd"]
+    channelPlotDict[ch]["w"]=channelPlotDict[ch]["qcd"]
+
+
 def parse_arguments():
     parser = argparse.ArgumentParser(
         description="Plot categories using Dumbledraw from shapes produced by shape-producer module."
@@ -240,6 +277,8 @@ def main(args):
             print(b+" not in priolist.")
             raise Exception
     bkg_processes=[b for b in priolist if b in bkg_processes]
+
+
     all_bkg_processes = [b for b in bkg_processes]
     legend_bkg_processes = copy.deepcopy(bkg_processes)
     legend_bkg_processes.reverse()
@@ -441,6 +480,9 @@ def main(args):
                 "bkg_qqH_top", "data_obs"
             ], "total_bkg")
 
+            ### if signal process -> logplot -> large contributions on top
+            # if category not in signalcats:
+            #     bkg_processes=bkg_processes[::-1]
             # stack background processes
             plot.create_stack(bkg_processes, "stack")
 
@@ -449,11 +491,18 @@ def main(args):
                 plot.subplot(0).normalizeByBinWidth()
                 plot.subplot(1).normalizeByBinWidth()
 
+
             # set axes limits and labels
-            plot.subplot(0).setYlims(
-                split_dict[channel],
-                max(2 * plot.subplot(0).get_hist("total_bkg").GetMaximum(),
-                    split_dict[channel] * 2))
+            if category_dict[category] in channelPlotDict[channel]:
+                ymax=channelPlotDict[channel][category_dict[category]][0]*1.05
+                plot.subplot(0).setYlims(
+                    0,ymax)
+            else:
+                print("Category is:"+category)
+                plot.subplot(0).setYlims(
+                    split_dict[channel],
+                    max(2 * plot.subplot(0).get_hist("total_bkg").GetMaximum(),
+                        split_dict[channel] * 2))
 
             plot.subplot(2).setYlims(0.45, 2.05)
             if category in signalcats:
@@ -463,7 +512,7 @@ def main(args):
                     plot.subplot(0).setYlims(1, 150000000)
             if args.noratio:
                 plot.subplot(0).setXlabel(
-                        "NNScore")  # otherwise number labels are not drawn on axis
+                        "NN output")  # otherwise number labels are not drawn on axis
             if not args.linear:
                 plot.subplot(1).setYlims(0.1, split_dict[channel])
                 plot.subplot(1).setLogY()
@@ -625,12 +674,26 @@ def main(args):
             postfix = "prefit" if "prefit" in args.input else "postfit" if "postfit" in args.input else "undefined"
             if args.noratio:
                 postfix+="_noratio"
+            if args.gof_variable != None:
+                plotname=args.gof_variable
+            else:
+                if category in category_dict:
+                    plotname=category_dict[category]
+                else: plotname=category
+            
             plot.save(
                 "%s/%s_%s_%s_%s.%s" %
                 (args.outputfolder,
                  args.era,
                  channel,
-                 args.gof_variable if args.gof_variable is not None else category,
+                 plotname,
+                 postfix,
+                 "png" if args.png else "pdf"))
+            print("Saved to  %s/%s_%s_%s_%s.%s" %
+                (args.outputfolder,
+                 args.era,
+                 channel,
+                 plotname,
                  postfix,
                  "png" if args.png else "pdf"))
             # work around to have clean up seg faults only at the end of the

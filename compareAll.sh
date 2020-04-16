@@ -589,10 +589,12 @@ function myPlotShapes() (
                 JETFAKES=1 EMBEDDING=1
                 DATACARDDIR=output/datacards-emb-ff2
                 PLOTARGS=" --fake-factor --embedding"
+                PLOTDIR=output/plots/${era}-${tag}_onDataDriven
             else
                 JETFAKES=0 EMBEDDING=0
                 DATACARDDIR=output/datacards
                 PLOTARGS=""
+                PLOTDIR=output/plots/${era}-${tag}_onSimulation
             fi
             for era in ${eras[@]}; do
                 DATACARDDIR="$DATACARDDIR/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/cmb/125"
@@ -605,8 +607,6 @@ function myPlotShapes() (
                 (
                     source utils/setup_cvmfs_sft.sh
                     source utils/setup_python.sh
-
-                    PLOTDIR=output/plots/${era}-${tag}_onSimulation
                     mkdir -p $PLOTDIR
                     for channel in ${channels[@]}; do
                         logandrun ./plotting/plot_shapes.py -i $PREFITFILE -o $PLOTDIR -c ${channel} -e $era --categories $CATEGORIES --normalize-by-bin-width -l --train-ff $TRAINFF --train-emb $TRAINEMB --noratio $PLOTARGS &
