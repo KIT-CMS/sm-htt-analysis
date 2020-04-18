@@ -25,7 +25,7 @@ channelPlotDict={
         "ztt":[300*1000],
         "qcd":[200*1000],
         "misc":[130*1000],
-        "zll" :[60*1000],
+        "zll" :[65*1000],
         "tt": [120*1000],
     },
     "mt": {
@@ -681,21 +681,14 @@ def main(args):
                     plotname=category_dict[category]
                 else: plotname=category
             
-            plot.save(
-                "%s/%s_%s_%s_%s.%s" %
-                (args.outputfolder,
+            filepath="{}/{}_{}_{}_{}.{}".format(args.outputfolder,
                  args.era,
                  channel,
                  plotname,
                  postfix,
-                 "png" if args.png else "pdf"))
-            print("Saved to  %s/%s_%s_%s_%s.%s" %
-                (args.outputfolder,
-                 args.era,
-                 channel,
-                 plotname,
-                 postfix,
-                 "png" if args.png else "pdf"))
+                 "png" if args.png else "pdf").replace(" ","-")
+            plot.save(filepath                )
+            print("Saved to "+filepath)
             # work around to have clean up seg faults only at the end of the
             # script
             plots.append(plot)
