@@ -13,7 +13,7 @@ r=re.compile(sys.argv[2])
 matchingkeys=[key for key in shape.allkeys() if r.match(key.decode())]
 
 def printE(e):
-    if str(type(e))=="<class 'uproot.rootio.TH1D'>":
+    if str(type(e)) in ["<class 'uproot.rootio.TH1D'>","<class 'uproot.rootio.TH1F'>"]:
         print(e.values)
         ##new uproot
         if len(e.bins[0])==2:
