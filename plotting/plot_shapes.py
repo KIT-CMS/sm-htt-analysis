@@ -210,7 +210,7 @@ def main(args):
             "14": "ss",
             "16": "misc",
             "17": "noniso",
-            "19": "diboson",
+            "19": "db",
             "20": "emb",
             "21": "ff"
         }
@@ -271,12 +271,17 @@ def main(args):
             "ZJ",
             "ZL",
             "ZTT"]
+
     priolist= ["VVL","TTL",'ZL',"VVJ", "TTJ","ZJ",'QCD','W','jetFakes','VVT','TTT','ZTT','EMB']
+    def sortbyprio(l):
+        tmpprio=priolist+[x for x in l if x not in priolist]
+        return([x for x in tmpprio if x in l])
+
     for b in bkg_processes:
         if b not in priolist:
             print(b+" not in priolist.")
             raise Exception
-    bkg_processes=[b for b in priolist if b in bkg_processes]
+    bkg_processes=sortbyprio(bkg_processes)
 
 
     all_bkg_processes = [b for b in bkg_processes]
@@ -301,9 +306,12 @@ def main(args):
             if channel == "em" and args.embedding:
                 bkg_processes = ["VVL", "W", "TTL", "ZL", "QCD", "EMB"]
             elif channel == "em" and not args.embedding:
-                bkg_processes = ["VVL", "W", "TTL", "ZL", "QCD", "ZTT"]
+                bkg_processes = ["VVT","VVL", "W","TTT", "TTL", "ZL", "QCD", "ZTT"]
             else:
                 bkg_processes = [b for b in all_bkg_processes]
+
+            bkg_processes=sortbyprio(bkg_processes)
+
             legend_bkg_processes = copy.deepcopy(bkg_processes)
             legend_bkg_processes.reverse()
             # create plot
@@ -329,6 +337,7 @@ def main(args):
                     plot.setGraphStyle(
                         process, "hist", fillcolor=styles.color_dict[process])
                 except BaseException:
+                    logger.fatal("Cannot add background histogram {} for channel {} in category {} ({})".format(process,channel,category,"?" if category not in category_dict else category_dict[category] ))
                     pass
 
             # get signal histograms
@@ -512,7 +521,7 @@ def main(args):
                     plot.subplot(0).setYlims(1, 150000000)
             if args.noratio:
                 plot.subplot(0).setXlabel(
-                        "NN output")  # otherwise number labels are not drawn on axis
+                        "NN output")  
             if not args.linear:
                 plot.subplot(1).setYlims(0.1, split_dict[channel])
                 plot.subplot(1).setLogY()
@@ -588,6 +597,7 @@ def main(args):
                             0, process, styles.legend_label_dict[process],
                             'f')
                     except BaseException:
+                        logger.fatal("Cannot add histogram {} for channel {} in category {} ({})".format(process,channel,category,"?" if category not in category_dict else category_dict[category] ))
                         pass
                 plot.legend(i).add_entry(0, "total_bkg", "Bkg. unc.", 'f')
                 plot.legend(i).add_entry(
@@ -608,7 +618,7 @@ def main(args):
                 #         suffix[i], "H#rightarrowWW", 'l')
                 # except BaseException:
                 #     pass
-                plot.legend(i).add_entry(0, "data_obs", "Data", 'PE')
+                plot.legend(i).add_entry(0, "data_obs", "Asimov Data", 'PE')
                 plot.legend(i).setNColumns(3)
             plot.legend(0).Draw()
             if not args.noratio:
@@ -631,7 +641,7 @@ def main(args):
             for i in range(2):
                 plot.add_legend(
                     reference_subplot=2, pos=1, width=0.5, height=0.03)
-                plot.legend(i + 2).add_entry(0, "data_obs", "Data", 'PE')
+                plot.legend(i + 2).add_entry(0, "data_obs", "Asimov Data", 'PE')
                 plot.legend(
                     i +
                     2).add_entry(
