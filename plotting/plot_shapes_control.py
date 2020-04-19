@@ -16,6 +16,20 @@ logger = logging.getLogger("")
 from multiprocessing import Pool
 from multiprocessing import Process
 
+varPlotDict={
+    "em": {
+        "m_sv_puppi":[100*1000,200],
+        "m_vis":[120*1000,200],
+        "pt_1":[205*1000,300]
+    },
+    "mt": {
+        "m_sv_puppi":[120*1000,300],
+        "m_vis":[125*1000,300],
+        "pt_1":[170*1000,300]
+    },
+}
+
+
 def parse_arguments():
     parser = argparse.ArgumentParser(
         description=
@@ -57,6 +71,10 @@ def parse_arguments():
         "--embedding",
         action="store_true",
         help="Fake factor estimation method used")
+    parser.add_argument(
+        "--noratio",
+        action="store_true",
+        help="disable ratioplot")
 
     return parser.parse_args()
 
@@ -86,13 +104,23 @@ def main(info):
         "mt": "#mu#tau_{#font[42]{h}}",
         "tt": "#tau_{#font[42]{h}}#tau_{#font[42]{h}}"
     }
+    split_dict ={
+        "em":300,
+        "et":300,
+        "mt":350,
+        "tt":300,
+    }
+
     if args.linear == True:
         split_value = 0.1
     else:
         if args.normalize_by_bin_width:
             split_value = 10001
         else:
-            split_value = 101
+            if channel in varPlotDict and variable in varPlotDict[channel]:
+                split_value=varPlotDict[channel][variable][1]
+            else:
+                split_value = split_dict[channel]
 
     split_dict = {c: split_value for c in ["et", "mt", "tt", "em", "mm"]}
 
@@ -111,9 +139,19 @@ def main(info):
         bkg_processes = [
             "QCD", "VVT", "VVL", "VVJ", "W", "TTT", "TTL", "TTJ", "ZJ", "ZL", "ZTT"
         ]
+    priolist= ["VVL","TTL",'ZL',"VVJ", "TTJ","ZJ",'QCD','W','jetFakes','VVT','TTT','ZTT','EMB']
+    for b in bkg_processes:
+        if b not in priolist:
+            print(b+" not in priolist.")
+            raise Exception
+    bkg_processes=[b for b in priolist if b in bkg_processes]
+    
     all_bkg_processes = [b for b in bkg_processes]
     legend_bkg_processes = copy.deepcopy(bkg_processes)
     legend_bkg_processes.reverse()
+
+    signalprocessL=["ggH", "ggH_top", "qqH", "qqH_top", "VH", "VH_top", "ttH", "ttH_top"]
+    signalprocessL=["ggH", "ggH_top", "qqH", "qqH_top"]
 
     if "2016" in args.era:
         era = "Run2016"
@@ -150,13 +188,14 @@ def main(info):
 
     # create plot
     width = 600
-    if args.linear == True:
-        plot = dd.Plot(
-            [0.3, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14, width=width)
-    else:
-        plot = dd.Plot(
-            [0.5, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14, width=width)
-
+    # if args.linear == True:
+    #     plot = dd.Plot(
+    #         [0.3, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14, width=width)
+    # else:
+    #     plot = dd.Plot(
+    #         [0.5, [0.3, 0.28]], "ModTDR", r=0.04, l=0.14, width=width)
+    plot = dd.Plot(
+        [0.5-.25*(args.linear+args.noratio), [0.3, 0.28]], "ModTDR", r=0.04, l=0.14, width=width)
     # get background histograms
     total_bkg = None
     for index,process in enumerate(bkg_processes):
@@ -199,11 +238,13 @@ def main(info):
             ttH = rootfile.get(channel, category, "ttH125").Clone()
             #HWW = rootfile.get(channel, category, "HWW").Clone()
             if ggH.Integral() > 0:
-                ggH_scale = 10
+                if args.linear: ggH_scale = 100
+                else: ggH_scale = 1
             else:
                 ggH_scale = 0.0
             if qqH.Integral() > 0:
-                qqH_scale = 10
+                if args.linear: qqH_scale = 100
+                else: qqH_scale = 1
             else:
                 qqH_scale = 0.0
             if VH.Integral() > 0:
@@ -224,10 +265,10 @@ def main(info):
             plot.subplot(i).add_hist(ggH, "ggH_top")
             plot.subplot(i).add_hist(qqH, "qqH")
             plot.subplot(i).add_hist(qqH, "qqH_top")
-            plot.subplot(i).add_hist(VH, "VH")
-            plot.subplot(i).add_hist(VH, "VH_top")
-            plot.subplot(i).add_hist(ttH, "ttH")
-            plot.subplot(i).add_hist(ttH, "ttH_top")
+            # plot.subplot(i).add_hist(VH, "VH")
+            # plot.subplot(i).add_hist(VH, "VH_top")
+            # plot.subplot(i).add_hist(ttH, "ttH")
+            # plot.subplot(i).add_hist(ttH, "ttH_top")
             # plot.subplot(i).add_hist(HWW, "HWW")
             # plot.subplot(i).add_hist(HWW, "HWW_top")
 
@@ -238,12 +279,12 @@ def main(info):
         plot.subplot(0 if args.linear else 1).setGraphStyle(
             "qqH", "hist", linecolor=styles.color_dict["qqH"], linewidth=3)
         plot.subplot(0 if args.linear else 1).setGraphStyle("qqH_top", "hist", linecolor=0)
-        plot.subplot(0 if args.linear else 1).setGraphStyle(
-            "VH", "hist", linecolor=styles.color_dict["VH"], linewidth=3)
-        plot.subplot(0 if args.linear else 1).setGraphStyle("VH_top", "hist", linecolor=0)
-        plot.subplot(0 if args.linear else 1).setGraphStyle(
-            "ttH", "hist", linecolor=styles.color_dict["ttH"], linewidth=3)
-        plot.subplot(0 if args.linear else 1).setGraphStyle("ttH_top", "hist", linecolor=0)
+        # plot.subplot(0 if args.linear else 1).setGraphStyle(
+        #     "VH", "hist", linecolor=styles.color_dict["VH"], linewidth=3)
+        # plot.subplot(0 if args.linear else 1).setGraphStyle("VH_top", "hist", linecolor=0)
+        # plot.subplot(0 if args.linear else 1).setGraphStyle(
+        #     "ttH", "hist", linecolor=styles.color_dict["ttH"], linewidth=3)
+        # plot.subplot(0 if args.linear else 1).setGraphStyle("ttH_top", "hist", linecolor=0)
         # plot.subplot(0 if args.linear else 1).setGraphStyle(
             # "HWW", "hist", linecolor=styles.color_dict["HWW"], linewidth=3)
         # plot.subplot(0 if args.linear else 1).setGraphStyle("HWW_top", "hist", linecolor=0)
@@ -288,10 +329,18 @@ def main(info):
         plot.subplot(1).normalizeByBinWidth()
 
     # set axes limits and labels
-    plot.subplot(0).setYlims(
-        split_dict[channel],
-        max(2 * plot.subplot(0).get_hist("data_obs").GetMaximum(),
-            split_dict[channel] * 2))
+    if channel in varPlotDict and variable in varPlotDict[channel]:
+        plot.subplot(0).setYlims(
+            split_dict[channel],
+            varPlotDict[channel][variable][0]/(1+.15*(args.noratio+args.linear))
+        )
+    else:
+        plot.subplot(0).setYlims(
+            split_dict[channel],
+            max(1.7 * plot.subplot(0).get_hist("data_obs").GetMaximum(),
+                1.7 * plot.subplot(0).get_hist("total_bkg").GetMaximum(),
+                split_dict[channel] * 2))
+    
 
     log_quantities = ["ME_ggh", "ME_vbf", "ME_z2j_1", "ME_z2j_2", "ME_q2v1", "ME_q2v2", "ME_vbf_vs_ggh", "ME_ggh_vs_Z"]
     if variable in log_quantities:
@@ -321,7 +370,14 @@ def main(info):
                 variable]
         else:
             x_label = variable
-        plot.subplot(2).setXlabel(x_label)
+        if args.noratio and args.linear:
+            plot.subplot(0).setXlabel(x_label)
+        elif args.noratio:
+            plot.subplot(1).setXlabel(x_label)
+        elif args.linear:
+            plot.subplot(2).setXlabel(x_label)
+        else:
+            plot.subplot(2).setXlabel(x_label)
     else:
         plot.subplot(2).setXlabel("NN output")
     if args.normalize_by_bin_width:
@@ -339,17 +395,18 @@ def main(info):
 
     # draw subplots. Argument contains names of objects to be drawn in corresponding order.
     if "mm" not in channel:
-        procs_to_draw = ["stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top", "VH", "VH_top", "ttH", "ttH_top", "data_obs"] if args.linear else ["stack", "total_bkg", "data_obs"]
+        procs_to_draw = ["stack", "total_bkg"] + signalprocessL + ["data_obs"] if args.linear else ["stack", "total_bkg", "data_obs"]
         plot.subplot(0).Draw(procs_to_draw)
+
         if args.linear != True:
-            plot.subplot(1).Draw([
-                "stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top",
-                "VH", "VH_top", "ttH", "ttH_top", "data_obs"
+            plot.subplot(1).Draw(
+                ["stack", "total_bkg"]  + signalprocessL + ["data_obs"]
+            )
+        if not args.noratio:
+            plot.subplot(2).Draw([
+                "total_bkg", "bkg_ggH", "bkg_ggH_top", "bkg_qqH",
+                "bkg_qqH_top", "data_obs"
             ])
-        plot.subplot(2).Draw([
-            "total_bkg", "bkg_ggH", "bkg_ggH_top", "bkg_qqH",
-            "bkg_qqH_top", "data_obs"
-        ])
     else:
         procs_to_draw = ["stack", "total_bkg", "data_obs"] if args.linear else ["stack", "total_bkg", "data_obs"]
         plot.subplot(0).Draw(procs_to_draw)
@@ -365,17 +422,22 @@ def main(info):
     # create legends
     suffix = ["", "_top"]
     for i in range(2):
-
         plot.add_legend(width=0.6, height=0.15)
         for process in legend_bkg_processes:
             plot.legend(i).add_entry(
-                0, process, styles.legend_label_dict[process.replace("TTL", "TT").replace("VVL", "VV").replace("NLO","")], 'f')
+                0, process, styles.legend_label_dict[process.replace("NLO","")], 'f')
         plot.legend(i).add_entry(0, "total_bkg", "Bkg. stat. unc.", 'f')
         if "mm" not in channel:
-            plot.legend(i).add_entry(0 if args.linear else 1, "ggH%s" % suffix[i], "%s #times gg#rightarrowH"%str(int(ggH_scale)), 'l')
-            plot.legend(i).add_entry(0 if args.linear else 1, "qqH%s" % suffix[i], "%s #times qq#rightarrowH"%str(int(qqH_scale)), 'l')
-            plot.legend(i).add_entry(0 if args.linear else 1, "VH%s" % suffix[i], "%s #times V(lep)H"%str(int(VH_scale)), 'l')
-            plot.legend(i).add_entry(0 if args.linear else 1, "ttH%s" % suffix[i], "%s #times ttH"%str(int(ttH_scale)), 'l')
+            if ggH_scale != 1:
+                plot.legend(i).add_entry(0 if args.linear else 1, "ggH%s" % suffix[i], "%s #times gg#rightarrowH"%str(int(ggH_scale)), 'l')
+            else:
+                plot.legend(i).add_entry(0 if args.linear else 1,"ggH%s" % suffix[i], "gg#rightarrowH", 'l')
+            if qqH_scale != 1:
+                plot.legend(i).add_entry(0 if args.linear else 1, "qqH%s" % suffix[i], "%s #times qq#rightarrowH"%str(int(qqH_scale)), 'l')
+            else:
+                plot.legend(i).add_entry(0 if args.linear else 1, "qqH%s" % suffix[i], "qq#rightarrowH", 'l')
+            # plot.legend(i).add_entry(0 if args.linear else 1, "VH%s" % suffix[i], "%s #times V(lep)H"%str(int(VH_scale)), 'l')
+            # plot.legend(i).add_entry(0 if args.linear else 1, "ttH%s" % suffix[i], "%s #times ttH"%str(int(ttH_scale)), 'l')
             # plot.legend(i).add_entry(0 if args.linear else 1, "HWW%s" % suffix[i], "%s #times H#rightarrowWW"%str(int(HWW_scale)), 'l')
         plot.legend(i).add_entry(0, "data_obs", "Observed", 'PE2L')
         plot.legend(i).setNColumns(3)
@@ -394,9 +456,10 @@ def main(info):
                                          "qqH+bkg.", 'l')
         plot.legend(i + 2).add_entry(0, "total_bkg", "Bkg. stat. unc.", 'f')
         plot.legend(i + 2).setNColumns(4)
-    plot.legend(2).Draw()
-    plot.legend(3).setAlpha(0.0)
-    plot.legend(3).Draw()
+    if not args.noratio:
+        plot.legend(2).Draw()
+        plot.legend(3).setAlpha(0.0)
+        plot.legend(3).Draw()
 
     # draw additional labels
     plot.DrawCMS()
@@ -416,22 +479,17 @@ def main(info):
         begin_left=posChannelCategoryLabelLeft)
 
     # save plot
-    if not args.embedding and not args.fake_factor:
-        postfix = "fully_classic"
-    if args.embedding and not args.fake_factor:
-        postfix = "emb_classic"
-    if not args.embedding and args.fake_factor:
-        postfix = "classic_ff"
-    if args.embedding and args.fake_factor:
-        postfix = "emb_ff"
+    postfix=""
+    if args.embedding: postfix+="emb_"
+    else: postfix+="mc_"
+    if args.fake_factor: postfix+="ff"
+    else: postfix+="mc"
+    if args.noratio: postfix+="-noratio"
 
-    if not os.path.exists("%s_plots_%s"%(args.era,postfix)):
-        os.mkdir("%s_plots_%s"%(args.era,postfix))
-    if not os.path.exists("%s_plots_%s/%s"%(args.era,postfix,channel)):
-        os.mkdir("%s_plots_%s/%s"%(args.era,postfix,channel))
-    plot.save("%s_plots_%s/%s/%s_%s_%s.%s" % (args.era, postfix, channel, args.era, channel, category, "pdf"))
-    plot.save("%s_plots_%s/%s/%s_%s_%s.%s" % (args.era, postfix, channel, args.era, channel, category, "png"))
-
+    path="output/plots/variables"
+    if not os.path.exists(path):
+        os.system("mkdir -p "+path)
+    plot.save(path+"/{}-{}-{}.pdf".format(args.era,category,postfix))
 
 if __name__ == "__main__":
     args = parse_arguments()
