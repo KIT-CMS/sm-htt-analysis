@@ -336,6 +336,20 @@ function mergeBatchShapes()(
     condwait
 )
 
+function blindShapes() {
+    for channel in ${channels[@]}; do
+        for era in ${eras[@]}; do
+            for tag in ${tags[@]}; do
+               logandrun ./shapes/apply_blinding.sh ${era} ${channel} ${tag} "global" &
+            done
+            condwait
+        done
+    done
+    wait
+}
+
+
+
 function syncShapes() {
     for channel in ${channels[@]}; do
         for era in ${eras[@]}; do
