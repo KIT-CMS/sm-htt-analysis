@@ -60,9 +60,10 @@ logandrun ${CMSSW_BASE}/bin/slc7_amd64_gcc700/MorphingSMRun2Legacy \
     --train_emb=${TRAIN_EMB} | tee output/log/datacard-${ERA}-${STXS_SIGNALS}-${CATEGORIES}-${JETFAKES}-${EMBEDDING}-${TAG}-${CHANNELS}.log
 
 # Use Barlow-Beeston-lite approach for bin-by-bin systematics
-pushd ${OUTPUTDIR}/cmb/125/
-for FILE in *.txt
-do
-    sed -i '$s/$/\n * autoMCStats 0.0/' ${FILE}
+for folder in "et" "mt" "tt" "em" "cmb"
+    do
+    for FILE in ${OUTPUTDIR}/${folder}/125/*.txt
+    do
+        sed -i '$s/$/\n * autoMCStats 0.0/' ${FILE}
+    done
 done
-popd ${THIS_PWD}
