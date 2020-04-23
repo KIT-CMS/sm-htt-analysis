@@ -8,4 +8,4 @@ source utils/setup_python.sh
 
 source utils/bashFunctionCollection.sh
 
-logandrun python gof/create_jdl.py $ERA $OUTPUT gof/${ERA}_binning.yaml gof/variables.yaml
+python gof/create_jdl.py $ERA $OUTPUT gof/${ERA}_binning.yaml gof/variables.yaml

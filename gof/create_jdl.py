@@ -23,7 +23,7 @@ def main(args):
     jobs = JDLCreator("docker")
 
     jobs.executable = "gof/job.sh"
-    jobs.wall_time = 5 * 60 * 60
+    jobs.wall_time = 12 * 60 * 60
     jobs.memory = 4096
     jobs.accounting_group = "cms.higgs"
     jobs.image = "mschnepf/slc7-condocker"

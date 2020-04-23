@@ -181,7 +181,7 @@ function logclean () {
 function ensureoutdirs() {
     [[ -d output ]] || mkdir output
     pushd output  >/dev/null
-    for folder in datacards log log/logandrun plots  shapes ml signalStrength; do
+    for folder in datacards log log/logandrun plots shapes ml signalStrength gof; do
         [[ ! -d $folder ]] && mkdir $folder
     done
     [[ -d log/condorShapes ]] || mkdir log/condorShapes

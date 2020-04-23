@@ -7,7 +7,7 @@ ERA=$1
 CHANNEL=$2
 VARIABLE=$3
 
-WORKSPACE=${ERA}-${CHANNEL}-${VARIABLE}-workspace.root
+WORKSPACE=output/datacards/${ERA}-${CHANNEL}-${VARIABLE}-workspace.root
 ID=${ERA}-${CHANNEL}-${VARIABLE}
 
 LOGFILE="output/log/$ID.log"

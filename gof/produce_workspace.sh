@@ -16,7 +16,7 @@ INPUT="output/datacards/${ERA}-${CHANNEL}-${VARIABLE}-smhtt-gof/cmb/125"
 echo "[INFO] Add datacards to workspace from path "${INPUT}"."
 
 #OUTPUT=${ERA}_workspace.root
-OUTPUT=${PWD}/${ERA}-${CHANNEL}-${VARIABLE}-workspace.root
+OUTPUT=${PWD}/output/datacards/${ERA}-${CHANNEL}-${VARIABLE}-workspace.root
 echo "[INFO] Write workspace to "${OUTPUT}"."
 
 # Clean previous workspace

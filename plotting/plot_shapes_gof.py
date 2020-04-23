@@ -96,6 +96,18 @@ def setup_logging(output_file, level=logging.DEBUG):
     logger.addHandler(file_handler)
 
 
+def check_for_zero_bins(hist):
+    for ibin in range(1, hist.GetNbinsX()+1):
+        if hist.GetBinContent(ibin) < 1.e-9:
+            logger.debug("Found bin with content %d in histogram %s. "
+                         "Setting bin content to zero.",
+                         hist.GetBinContent(ibin),
+                         hist.GetName())
+            hist.SetBinContent(ibin, 0)
+    return hist
+
+
+
 def main(args):
     #### plot signals
     if args.background_only:
@@ -254,14 +266,14 @@ def main(args):
             plot_idx_to_add_signal = [0,2] if args.linear else [1,2]
             for i in plot_idx_to_add_signal:
                 try:
-                    plot.subplot(i).add_hist(
-                        rootfile.get(era, channel, category, "ggH"), "ggH")
-                    plot.subplot(i).add_hist(
-                        rootfile.get(era, channel, category, "ggH"), "ggH_top")
-                    plot.subplot(i).add_hist(
-                        rootfile.get(era, channel, category, "qqH"), "qqH")
-                    plot.subplot(i).add_hist(
-                        rootfile.get(era, channel, category, "qqH"), "qqH_top")
+                    plot.subplot(i).add_hist(check_for_zero_bins(
+                        rootfile.get(era, channel, category, "ggH")), "ggH")
+                    plot.subplot(i).add_hist(check_for_zero_bins(
+                        rootfile.get(era, channel, category, "ggH")), "ggH_top")
+                    plot.subplot(i).add_hist(check_for_zero_bins(
+                        rootfile.get(era, channel, category, "qqH")), "qqH")
+                    plot.subplot(i).add_hist(check_for_zero_bins(
+                        rootfile.get(era, channel, category, "qqH")), "qqH_top")
                     if isinstance(rootfile.get(era, channel, category, "ZH125"), ROOT.TH1):
                         VHhist = rootfile.get(era, channel, category, "ZH125").Clone("VH")
                     WHhist = rootfile.get(era, channel, category, "WH125")
@@ -294,7 +306,7 @@ def main(args):
             print("plot.add_hist(rootfile.get("+era+", "+channel+", "+category+', "data_obs")')
             plot.add_hist(
                 rootfile.get(era, channel, category, "data_obs"), "data_obs")
-            total_bkg = rootfile.get(era, channel, category, "TotalBkg")
+            total_bkg = check_for_zero_bins(rootfile.get(era, channel, category, "TotalBkg"))
             #ggHHist = rootfile.get(era, channel, category, "ggH")
             #qqHHist = rootfile.get(era, channel, category, "qqH")
             #total_bkg.Add(ggHHist, -1)
@@ -383,7 +395,7 @@ def main(args):
                 plot.subplot(1).setYlabel(
                     "")  # otherwise number labels are not drawn on axis
             if args.gof_variable != None and not args.linear:
-                gof_linear_vars = ["njets", "nbtag", "DiTauDeltaR"]
+                gof_linear_vars = ["njets", "nbtag", "DiTauDeltaR", "jdeta"]
                 if args.gof_variable not in gof_linear_vars:
                     plot.subplot(0).setLogX()
                     plot.subplot(1).setLogX()

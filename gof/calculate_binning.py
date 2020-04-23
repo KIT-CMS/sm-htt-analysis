@@ -201,8 +201,14 @@ def add_2d_unrolled_binning(variables, binning):
             if i2 <= i1:
                 continue
 
-            bins1 = binning[v1]["bins"]
-            bins2 = binning[v2]["bins"]
+            if len(binning[v1]["bins"]) < 11:
+                bins1 = binning[v1]["bins"]
+            else:
+                bins1 = binning[v1]["bins"][::2]
+            if len(binning[v2]["bins"]) < 11:
+                bins2 = binning[v2]["bins"]
+            else:
+                bins2 = binning[v2]["bins"][::2]
             range_ = max(bins1) - min(bins1)
 
             bins = [bins1[0]]

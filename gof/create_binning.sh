@@ -2,6 +2,7 @@
 
 ERA=$1
 BINNING=gof/${ERA}_binning.yaml
+[[ ! -z $2 ]] && BINNING=$2
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
@@ -21,8 +22,8 @@ do
         --output $BINNING \
         --variables gof/variables.yaml \
         --channel $CHANNEL
-    mv gof/${ERA}_binning.yaml gof/${ERA}_${CHANNEL}_binning.yaml
+    mv $BINNING ${BINNING/.yaml/_${CHANNEL}.yaml}
 done
 
-head -1 gof/${ERA}_em_binning.yaml > gof/${ERA}_binning.yaml
-tail -n +2 -q gof/${ERA}_{em,et,mt,tt}_binning.yaml >> gof/${ERA}_binning.yaml
+head -1 ${BINNING/.yaml/_em.yaml} > $BINNING
+tail -n +2 -q ${BINNING/.yaml/_em.yaml} ${BINNING/.yaml/_et.yaml} ${BINNING/.yaml/_mt.yaml} ${BINNING/.yaml/_tt.yaml} >> $BINNING

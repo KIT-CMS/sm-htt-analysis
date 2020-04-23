@@ -29,7 +29,7 @@ if [[ ! -d output/gof/${ERA}-${CHANNEL}-${VARIABLE}/${ERA}_plots ]]
 then
     mkdir -p output/gof/${ERA}-${CHANNEL}-${VARIABLE}/${ERA}_plots
 fi
-for FILE in "${ERA}-${CHANNEL}-${VARIABLE}-datacard-shapes-prefit.root" "${ERA}-${CHANNEL}-${VARIABLE}-datacard-shapes-postfit-b.root"
+for FILE in "output/shapes/${ERA}-${CHANNEL}-${VARIABLE}-datacard-shapes-prefit.root" "output/shapes/${ERA}-${CHANNEL}-${VARIABLE}-datacard-shapes-postfit-b.root"
 do
     for OPTION in "" "--png"
     do

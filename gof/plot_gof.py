@@ -125,6 +125,10 @@ def plot_1d(variables, results, filename):
     plt.xlim((-0.5, len(x) - 0.5))
     plt.xticks(x, [labeldict[x] for x in variables], rotation='vertical')
     plt.axhline(y=0.05, linewidth=3, color='r')
+    for i, res in enumerate(y):
+        if res < 0.05:
+            plt.text(i, 0.9, "{:.3f}".format(res), rotation='vertical',
+                     horizontalalignment="center", verticalalignment="center")
     plt.ylabel('Saturated goodness of fit p-value', labelpad=20)
     ax = plt.gca()
     ax.xaxis.grid()
@@ -136,7 +140,7 @@ def search_results_1d(path, channel, era, variables):
     results = []
     missing = []
     for variable in variables:
-        filename = os.path.join(path, "{}_{}_{}".format(era, channel, variable),
+        filename = os.path.join(path, "{}-{}-{}".format(era, channel, variable),
                                 "gof.json")
         if not os.path.exists(filename):
             missing.append(variable)
@@ -159,7 +163,7 @@ def search_results_2d(path, channel, era, variables):
         for i2, v2 in enumerate(variables):
             if i2 <= i1:
                 continue
-            filename = os.path.join(path, "{}_{}_{}_{}".format(era, channel, v1, v2),
+            filename = os.path.join(path, "{}-{}-{}_{}".format(era, channel, v1, v2),
                                     "gof.json")
             if not os.path.exists(filename):
                 missing.append("{}_{}".format(v1, v2))
@@ -172,6 +176,18 @@ def search_results_2d(path, channel, era, variables):
             results[i1, i2] = p_value["125.0"]["p"]
 
     return missing, results
+
+
+def create_mock_results_2d(result, variables):
+    mock = np.ones((len(variables), len(variables))) * (-1.0)
+    for i1, v1 in enumerate(variables):
+        for i2, v2 in enumerate(variables):
+            if i2 <= i1:
+                continue
+            if result[i1] < 0 or result[i2] < 0:
+                continue
+            mock[i1, i2] = result[i1] * result[i2]
+    return mock
 
 
 def main(args):
@@ -190,7 +206,7 @@ def main(args):
     for variable in missing_1d:
         print("{} {} {}".format(args.era, args.channel, variable))
 
-    plot_1d(variables, results_1d, "{}_{}_gof_1d".format(args.era, args.channel))
+    plot_1d(variables, results_1d, "{}/{}_{}_gof_1d".format(args.path, args.era, args.channel))
 
     # Plot 2D gof results
     """
@@ -216,17 +232,22 @@ def main(args):
     ]
 
     plot_1d(variables_selected, results_1d_selected,
-            "{}_{}_gof_1d_selected".format(args.era, args.channel))
+            "{}/{}_{}_gof_1d_selected".format(args.path, args.era, args.channel))
 
     # Plot 2D gof results for reduced variable set
     missing_2d_selected, results_2d_selected = search_results_2d(
         args.path, args.channel, args.era, variables_selected)
     plot_2d(variables_selected, results_2d_selected,
-            "{}_{}_gof_2d_selected".format(args.era, args.channel))
+            "{}/{}_{}_gof_2d_selected".format(args.path, args.era, args.channel))
 
     logger.debug("Missing variables for 2D plot in channel %s:", args.channel)
     for variable in missing_2d_selected:
         print("{} {} {}".format(args.era, args.channel, variable))
+
+    # Plot mock 2D results for comparison with bad 1d GoFs
+    mock_2d_selected = create_mock_results_2d(results_1d_selected, variables_selected)
+    plot_2d(variables_selected, mock_2d_selected,
+            "{}/{}_{}_gof_2d_selected_mock".format(args.path, args.era, args.channel))
 
 if __name__ == "__main__":
     args = parse_arguments()
