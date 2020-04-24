@@ -801,61 +801,6 @@ def main(args):
             for variation_ in mu_fake_es_1prong_variations + mu_fake_es_1prong1pizero_variations:
                 variationsToAdd["mt"][process_nick].append(variation_)
 
-    # lepton trigger efficiency
-    lteffCutDEra = {
-            "2016": {
-                "mt": "23",
-                "et": "26"},
-            "2017": {
-                "mt": "25",
-                "et": "28"},
-            "2018": {
-                "mt": "25",
-                "et": "33"},
-    }
-    lteffCutD = lteffCutDEra[args.era]
-
-    for chname_ in selectedChannels & {"mt", "et"}:
-        for flag, pS_ in {
-            "_emb_": {"EMB"},
-                "_": signal_nicks | MCBkgDS[chname_]}.items():
-            lep_trigger_eff_variations = []
-            lep_trigger_eff_variations.append(
-                AddWeight(
-                    "CMS_eff_trigger{embflag}{ch}_{era}".format(
-                        embflag=flag, ch=chname_, era=args.era), "trg_{ch}_eff_weight".format(
-                        ch=chname_), Weight(
-                        "(1.0*(pt_1<={ptcut})+1.02*(pt_1>{ptcut}))".format(
-                            ptcut=lteffCutD[chname_]), "trg_{ch}_eff_weight".format(
-                            ch=chname_)), "Up"))
-            lep_trigger_eff_variations.append(
-                AddWeight(
-                    "CMS_eff_trigger{embflag}{ch}_{era}".format(
-                        embflag=flag, ch=chname_, era=args.era), "trg_{ch}_eff_weight".format(
-                        ch=chname_), Weight(
-                        "(1.0*(pt_1<={ptcut})+0.98*(pt_1>{ptcut}))".format(
-                            ptcut=lteffCutD[chname_]), "trg_{ch}_eff_weight".format(
-                            ch=chname_)), "Down"))
-            lep_trigger_eff_variations.append(
-                AddWeight(
-                    "CMS_eff_xtrigger_l_{ch}{embflag}{era}".format(
-                        embflag=flag, ch=chname_, era=args.era), "xtrg_{ch}_eff_weight".format(
-                        ch=chname_), Weight(
-                        "(1.02*(pt_1<={ptcut})+1.0*(pt_1>{ptcut}))".format(
-                            ptcut=lteffCutD[chname_]), "xtrg_{ch}_eff_weight".format(
-                            ch=chname_)), "Up"))
-            lep_trigger_eff_variations.append(
-                AddWeight(
-                    "CMS_eff_xtrigger_l_{ch}{embflag}{era}".format(
-                        embflag=flag, ch=chname_, era=args.era), "xtrg_{ch}_eff_weight".format(
-                        ch=chname_), Weight(
-                        "(0.98*(pt_1<={ptcut})+1.0*(pt_1>{ptcut}))".format(
-                            ptcut=lteffCutD[chname_]), "xtrg_{ch}_eff_weight".format(
-                            ch=chname_)), "Down"))
-            for variation_ in lep_trigger_eff_variations:
-                for process_nick in selectedProcesses & pS_:
-                    variationsToAdd[chname_][process_nick].append(variation_)
-
     # Zll l to tau fake uncertainties:
     efake_dict = {
         "2016" : {
@@ -922,6 +867,61 @@ def main(args):
         for chname_ in selectedChannels & {"mt"}:
             for process_nick in selectedProcesses & {"ZL"}:
                 variationsToAdd[chname_][process_nick].append(variation_)
+
+    # lepton trigger efficiency
+    lteffCutDEra = {
+            "2016": {
+                "mt": "23",
+                "et": "26"},
+            "2017": {
+                "mt": "25",
+                "et": "28"},
+            "2018": {
+                "mt": "25",
+                "et": "33"},
+    }
+    lteffCutD = lteffCutDEra[args.era]
+
+    for chname_ in selectedChannels & {"mt", "et"}:
+        for flag, pS_ in {
+            "_emb_": {"EMB"},
+                "_": signal_nicks | MCBkgDS[chname_]}.items():
+            lep_trigger_eff_variations = []
+            lep_trigger_eff_variations.append(
+                AddWeight(
+                    "CMS_eff_trigger{embflag}{ch}_{era}".format(
+                        embflag=flag, ch=chname_, era=args.era), "trg_{ch}_eff_weight".format(
+                        ch=chname_), Weight(
+                        "(1.0*(pt_1<={ptcut})+1.02*(pt_1>{ptcut}))".format(
+                            ptcut=lteffCutD[chname_]), "trg_{ch}_eff_weight".format(
+                            ch=chname_)), "Up"))
+            lep_trigger_eff_variations.append(
+                AddWeight(
+                    "CMS_eff_trigger{embflag}{ch}_{era}".format(
+                        embflag=flag, ch=chname_, era=args.era), "trg_{ch}_eff_weight".format(
+                        ch=chname_), Weight(
+                        "(1.0*(pt_1<={ptcut})+0.98*(pt_1>{ptcut}))".format(
+                            ptcut=lteffCutD[chname_]), "trg_{ch}_eff_weight".format(
+                            ch=chname_)), "Down"))
+            lep_trigger_eff_variations.append(
+                AddWeight(
+                    "CMS_eff_xtrigger_l{embflag}{ch}_{era}".format(
+                        embflag=flag, ch=chname_, era=args.era), "xtrg_{ch}_eff_weight".format(
+                        ch=chname_), Weight(
+                        "(1.02*(pt_1<={ptcut})+1.0*(pt_1>{ptcut}))".format(
+                            ptcut=lteffCutD[chname_]), "xtrg_{ch}_eff_weight".format(
+                            ch=chname_)), "Up"))
+            lep_trigger_eff_variations.append(
+                AddWeight(
+                    "CMS_eff_xtrigger_l{embflag}{ch}_{era}".format(
+                        embflag=flag, ch=chname_, era=args.era), "xtrg_{ch}_eff_weight".format(
+                        ch=chname_), Weight(
+                        "(0.98*(pt_1<={ptcut})+1.0*(pt_1>{ptcut}))".format(
+                            ptcut=lteffCutD[chname_]), "xtrg_{ch}_eff_weight".format(
+                            ch=chname_)), "Down"))
+            for variation_ in lep_trigger_eff_variations:
+                for process_nick in selectedProcesses & pS_:
+                    variationsToAdd[chname_][process_nick].append(variation_)
 
     # MC tau trigger systematics
     lteff_exp = {
@@ -1001,7 +1001,7 @@ def main(args):
     for chname_ in selectedChannels & {"mt", "et"}:
         for histname_, pS_ in {
             "CMS_eff_xtrigger_t_{ch}_dm{dm}_{era}": {"EMB"}
-                , "CMS_eff_xtrigger_t_{ch}_emb_dm{dm}_{era}": {"EMB"}}.items():
+                , "CMS_eff_xtrigger_t_emb_{ch}_dm{dm}_{era}": {"EMB"}}.items():
             tau_trigger_variations = []
             for shift_direction in ["Up", "Down"]:
                 for decaymode in [0, 1, 10, 11]:
@@ -1058,7 +1058,7 @@ def main(args):
     for chname_ in selectedChannels & {"tt"}:
         for histname_, pS_ in {
             "CMS_eff_trigger_tt_dm{dm}_{era}": {"EMB"}
-                , "CMS_eff_trigger_tt_emb_dm{dm}_{era}": {"EMB"}}.items():
+                , "CMS_eff_trigger_emb_tt_dm{dm}_{era}": {"EMB"}}.items():
             tau_trigger_variations = []
             for shift_direction in ["Up", "Down"]:
                 for decaymode in [0, 1, 10, 11]:
