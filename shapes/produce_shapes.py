@@ -838,7 +838,7 @@ def main(args):
                             ch=chname_)), "Down"))
             lep_trigger_eff_variations.append(
                 AddWeight(
-                    "CMS_eff_xtrigger_l{embflag}{ch}_{era}".format(
+                    "CMS_eff_xtrigger_l_{ch}{embflag}{era}".format(
                         embflag=flag, ch=chname_, era=args.era), "xtrg_{ch}_eff_weight".format(
                         ch=chname_), Weight(
                         "(1.02*(pt_1<={ptcut})+1.0*(pt_1>{ptcut}))".format(
@@ -846,7 +846,7 @@ def main(args):
                             ch=chname_)), "Up"))
             lep_trigger_eff_variations.append(
                 AddWeight(
-                    "CMS_eff_xtrigger_l{embflag}{ch}_{era}".format(
+                    "CMS_eff_xtrigger_l_{ch}{embflag}{era}".format(
                         embflag=flag, ch=chname_, era=args.era), "xtrg_{ch}_eff_weight".format(
                         ch=chname_), Weight(
                         "(0.98*(pt_1<={ptcut})+1.0*(pt_1>{ptcut}))".format(
