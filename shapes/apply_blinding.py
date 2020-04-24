@@ -174,7 +174,7 @@ def main(args):
                                 shapes[channel][category]["histograms"][i]),
                             1.0)
             # remove all bins in all signal categories above given threshold
-            if args.global_blinding is not None:
+            if args.global_blinding:
                 bins_contaminated = []
                 logger.debug("Checking {}".format(category[3::]))
                 if category[3::] not in args.signal_categories:
