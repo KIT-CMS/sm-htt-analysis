@@ -121,7 +121,9 @@ if [[ "$PLOT" == "1" ]]; then
             --fake-factor --embedding --normalize-by-bin-width \
             -l --train-ff True --train-emb True --blinded-shapes --single-category ${CATEGORY} >> $LOGFILE
     elif [[ $CATEGORY == *"999"* ]]; then
+        source gof/build_mask.sh
         PLOTDIR=output/gof/${ID}
+        backlist=$(buildCategories 2 $TAG $ERA $CHANNEL "backgrounds")
         for plotcat in "${backlist[@]}"; do
             ./plotting/plot_shapes.py -i output/gof/${ID}/datacard-shapes-prefit.root -o $PLOTDIR \
                 -c ${CHANNEL} -e $ERA --categories $CATEGORIES \

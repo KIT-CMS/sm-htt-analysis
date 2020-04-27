@@ -18,8 +18,7 @@ if [[ ! -d output/gof/${ID}/${ERA}_plots ]]
 then
     mkdir -p output/gof/${ID}/${ERA}_plots
 fi
-   
-echo "Using mask: $MASK"
+
 LOGFILE=output/gof${ID}/testlog_${ALGO}.log
 echo "Doing ${ALGO} GoF for ${ID}..."
 # Get test statistic value
