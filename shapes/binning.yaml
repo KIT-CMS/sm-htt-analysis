@@ -132,6 +132,16 @@ analysis:
     ggh_PTHGT200:       *fine_binning_Xclasses
     qqh_PTHGT200:       *fine_binning_Xclasses
     ggh_2J:             *fine_binning_Xclasses
+    ggh_0J_PTH_0_10:    *fine_binning_Xclasses
+    ggh_0J_PTH_GT10:    *fine_binning_Xclasses
+    ggh_1J_PTH0to60:    *fine_binning_Xclasses
+    ggh_1J_PTH60to120:  *fine_binning_Xclasses
+    ggh_2J_PTH0to60:    *fine_binning_Xclasses
+    ggh_2J_PTH120to200: *fine_binning_Xclasses
+    ggh_2J_PTH60to120:  *fine_binning_Xclasses
+    ggh_vbftopo:        *fine_binning_Xclasses
+    qqh_vbftopo_highmjj: *fine_binning_Xclasses
+    qqh_vbftopo_lowmjj: *fine_binning_Xclasses
   et:
     xxh:          *ultrafine_binning_Xclasses
     ggh:          *fine_binning_Xclasses
@@ -155,6 +165,16 @@ analysis:
     ggh_PTHGT200:       *fine_binning_Xclasses
     qqh_PTHGT200:       *fine_binning_Xclasses
     ggh_2J:             *fine_binning_Xclasses
+    ggh_0J_PTH_0_10:    *fine_binning_Xclasses
+    ggh_0J_PTH_GT10:    *fine_binning_Xclasses
+    ggh_1J_PTH0to60:    *fine_binning_Xclasses
+    ggh_1J_PTH60to120:  *fine_binning_Xclasses
+    ggh_2J_PTH0to60:    *fine_binning_Xclasses
+    ggh_2J_PTH120to200: *fine_binning_Xclasses
+    ggh_2J_PTH60to120:  *fine_binning_Xclasses
+    ggh_vbftopo:        *fine_binning_Xclasses
+    qqh_vbftopo_highmjj: *fine_binning_Xclasses
+    qqh_vbftopo_lowmjj: *fine_binning_Xclasses
   mt:
     xxh:          *ultrafine_binning_Xclasses
     ggh:          *fine_binning_Xclasses
@@ -178,6 +198,16 @@ analysis:
     ggh_PTHGT200:       *fine_binning_Xclasses
     qqh_PTHGT200:       *fine_binning_Xclasses
     ggh_2J:             *fine_binning_Xclasses
+    ggh_0J_PTH_0_10:    *fine_binning_Xclasses
+    ggh_0J_PTH_GT10:    *fine_binning_Xclasses
+    ggh_1J_PTH0to60:    *fine_binning_Xclasses
+    ggh_1J_PTH60to120:  *fine_binning_Xclasses
+    ggh_2J_PTH0to60:    *fine_binning_Xclasses
+    ggh_2J_PTH120to200: *fine_binning_Xclasses
+    ggh_2J_PTH60to120:  *fine_binning_Xclasses
+    ggh_vbftopo:        *fine_binning_Xclasses
+    qqh_vbftopo_highmjj: *fine_binning_Xclasses
+    qqh_vbftopo_lowmjj: *fine_binning_Xclasses
   tt:
     xxh:          *ultrafine_binning_Xclasses
     ggh:          *fine_binning_Xclasses
@@ -198,6 +228,16 @@ analysis:
     ggh_PTHGT200:       *fine_binning_Xclasses
     qqh_PTHGT200:       *fine_binning_Xclasses
     ggh_2J:             *fine_binning_Xclasses
+    ggh_0J_PTH_0_10:    *fine_binning_Xclasses
+    ggh_0J_PTH_GT10:    *fine_binning_Xclasses
+    ggh_1J_PTH0to60:    *fine_binning_Xclasses
+    ggh_1J_PTH60to120:  *fine_binning_Xclasses
+    ggh_2J_PTH0to60:    *fine_binning_Xclasses
+    ggh_2J_PTH120to200: *fine_binning_Xclasses
+    ggh_2J_PTH60to120:  *fine_binning_Xclasses
+    ggh_vbftopo:        *fine_binning_Xclasses
+    qqh_vbftopo_highmjj: *fine_binning_Xclasses
+    qqh_vbftopo_lowmjj: *fine_binning_Xclasses
 
 # Define stage 0 2D discriminator
 stxs_stage0_2Ddiscr_28: "(0.5
