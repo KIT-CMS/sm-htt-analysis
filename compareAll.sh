@@ -500,8 +500,94 @@ function runCmbAna() {
     done
     wait
 }
+function prepareBackgroundGofs() {
+    # generate the needed datacards and workspaces
+    ensureoutdirs
+    # first generate Datacards
+    genDatacards
+    genCmbDatacards
+    # generate workspaces, all with inclusive signal only
+    STXS_FIT="inclusive"
+    temperas=$eras
+    temperas+=("all")
+    for tag in ${tags[@]}; do
+        if [[ $tag == *"stage0"* ]]; then
+            STXS_SIGNALS=stxs_stage0
+        else
+            STXS_SIGNALS=stxs_stage1p1
+        fi
+        for era in ${temperas[@]}; do
+            fn="output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/cmb/125/${era}-${STXS_FIT}-workspace.root"
+            logandrun ./datacards/produce_workspace.sh ${era} $STXS_FIT ${tag} &
+            condwait
+        done
+    done
+    wait
+}
 
+function runBackgroundGofs() {
+    source gof/build_mask.sh
+    mode=$1
+    echo "Running GoFs with settings:"
+    echo "Tags:     ${tags}"
+    echo "Eras:     ${eras}"
+    echo "Channels: ${channels}"
+    if [[ $mode == "1" ]]; then
+        echo "Mode:     ${mode} - All categories seperately"
+        for tag in ${tags[@]}; do
+            for era in "2016"; do
+                for channel in "et"; do
+                    backlist=$(buildCategories $mode $tag $era $channel "backgrounds")
+                    for category in ${backlist[@]}; do
+                        mask=""
+                        mask=$(buildMask $mode $tag $era $channel $category)
+                        ./gof/gof_categories_saturated.sh $mode $tag $era $channel $category $mask 1
+                    done
+                done
+            done
+        done
+    elif [[ $mode == "2" ]]; then
+        echo "Mode:     ${mode} - Combine channels"
+        category="999"
+        for tag in ${tags[@]}; do
+            for era in "2016"; do
+                for channel in "et"; do
+                    mask=$(buildMask $mode $tag $era $channel $category)
+                    ./gof/gof_categories_saturated.sh $mode $tag $era $channel $category $mask 1
+                done
+                ./gof/gof_categories_KSAD.sh $mode $tag $era $channel $category "AD"
+                ./gof/gof_categories_KSAD.sh $mode $tag $era $channel $category "KS"
+            done
+        done
 
+    elif [[ $mode == "3" ]]; then
+        echo "Mode:     ${mode} - Combine eras"
+        category="999"
+        channel="cmb"
+        for tag in ${tags[@]}; do
+            for era in "2016"; do
+                mask=$(buildMask $mode $tag $era $channel $category)
+                ./gof/gof_categories_saturated.sh $mode $tag $era $channel $category $mask 0
+            done
+        done
+
+    elif [[ $mode == "4" ]]; then
+        echo "Mode:     ${mode} - Combine everything"
+        category="999"
+        channel="cmb"
+        era="all"
+        for tag in ${tags[@]}; do
+            mask=$(buildMask $mode $tag $era $channel $category)
+            ./gof/gof_categories_saturated.sh $mode $tag $era $channel $category $mask 0
+        done
+    else
+        echo "GoF mode unknown, possible modes are:"
+        echo "Mode 1: all background categories seperately"
+        echo "Mode 2: Combine channels"
+        echo "Mode 3: Combine eras"
+        echo "Mode 4: Combine everything"
+    fi
+}
 
 
 ### Subroutine called by runstages
