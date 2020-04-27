@@ -56,6 +56,10 @@ def parse_arguments():
                             'stxs_stage1p1cut', 'None'
                         ],
                         help="Select categorization.")
+    parser.add_argument("--single-category",
+                        type=str,
+                        default="",
+                        help="Plot single category")
     parser.add_argument("--normalize-by-bin-width",
                         action="store_true",
                         help="Normelize plots by bin width")
@@ -249,8 +253,12 @@ def main(args):
         else:
             dummy = ROOT.TH1F("dummy", "dummy", 5, 0.0, 1.0)
     for channel in args.channels:
-        for category in channel_categories[channel]:
-            print "Plot for category: ", category
+        if args.single_category is not "":
+            categories = set(channel_categories[channel]).intersection(set([args.single_category]))
+        else:
+            categories = channel_categories[channel]
+        print categories
+        for category in categories:
             rootfile = rootfile_parser.Rootfile_parser(args.input)
             if channel == "em" and args.embedding:
                 bkg_processes = ["VVL", "W", "TTL", "ZL", "QCD", "EMB"]
