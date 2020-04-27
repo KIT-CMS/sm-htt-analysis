@@ -535,8 +535,8 @@ function runBackgroundGofs() {
     if [[ $mode == "1" ]]; then
         echo "Mode:     ${mode} - All categories seperately"
         for tag in ${tags[@]}; do
-            for era in "2016"; do
-                for channel in "et"; do
+            for era in ${eras[@]}; do
+                for channel in ${channels[@]}; do
                     backlist=$(buildCategories $mode $tag $era $channel "backgrounds")
                     for category in ${backlist[@]}; do
                         mask=""
@@ -550,8 +550,8 @@ function runBackgroundGofs() {
         echo "Mode:     ${mode} - Combine channels"
         category="999"
         for tag in ${tags[@]}; do
-            for era in "2016"; do
-                for channel in "et"; do
+            for era in ${eras[@]}; do
+                for channel in ${channels[@]}; do
                     mask=$(buildMask $mode $tag $era $channel $category)
                     ./gof/gof_categories_saturated.sh $mode $tag $era $channel $category $mask 1
                 done
@@ -565,7 +565,7 @@ function runBackgroundGofs() {
         category="999"
         channel="cmb"
         for tag in ${tags[@]}; do
-            for era in "2016"; do
+            for era in ${eras[@]}; do
                 mask=$(buildMask $mode $tag $era $channel $category)
                 ./gof/gof_categories_saturated.sh $mode $tag $era $channel $category $mask 0
             done
