@@ -15,7 +15,7 @@ KAPPA_DATABASE=datasets/datasets.json
 
 #### ERA specific part. If a sample is not available comment it out here.
 # Samples Run2016
-basedir="/ceph/htautau/deeptau_02-20"
+basedir="/ceph/htautau/deeptau_04-27"
 ARTUS_OUTPUTS_2016="$basedir/2016/ntuples/"
 NNScore_Friends_2016=""
 SVFit_Friends_2016="$basedir/2016/friends/SVFit/"
