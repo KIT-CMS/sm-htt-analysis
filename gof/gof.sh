@@ -7,7 +7,7 @@ CHANNEL=$2
 VARIABLE=$3
 
 ID=${ERA}-${CHANNEL}-${VARIABLE}
-DATACARD=output/datacards/${ID}-workspace.root
+DATACARD=output/datacards/${ID}-smhtt-gof/${ID}-workspace.root
 MASS=125
 NUM_TOYS=50 # multiply x10
 
@@ -58,6 +58,7 @@ do
         higgsCombineTest.${ID}.GoodnessOfFit.mH$MASS.root higgsCombineTest.${ID}.GoodnessOfFit.mH$MASS.1239.root \
         --output output/gof/${ID}/gof_${ALGO}.json
 
+    mv higgsCombineTest.${ID}.GoodnessOfFit.mH$MASS.root higgsCombineTest.${ID}.GoodnessOfFit.mH$MASS.123?.root output/datacards/${ID}/
     if [[ "$ALGO" == "saturated" ]]
     then
         mv output/gof/${ID}/gof_${ALGO}.json output/gof/${ID}/gof.json
@@ -68,7 +69,7 @@ do
     then
         plotGof.py --statistic $ALGO --mass $MASS.0 --output gof_${ALGO} output/gof/${ID}/gof_${ALGO}.json
         mv htt_${CHANNEL}_300_${ERA}gof_${ALGO}.p{df,ng} output/gof/${ID}/
-        ./gof/plot_gof_metrics.py -e $ERA -g $ALGO -o output/gof/${ID}/${ERA}_plots -i higgsCombineTest.${ID}.GoodnessOfFit.mH$MASS.root
+        ./gof/plot_gof_metrics.py -e $ERA -g $ALGO -o output/gof/${ID}/${ERA}_plots -i output/datacards/${ID}/higgsCombineTest.${ID}.GoodnessOfFit.mH$MASS.root
     else
         plotGof.py --statistic $ALGO --mass $MASS.0 --output output/gof/${ID}/gof output/gof/${ID}/gof.json
     fi
