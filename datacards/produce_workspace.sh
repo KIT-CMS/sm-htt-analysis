@@ -35,6 +35,11 @@ ulimit -s unlimited
 # Define signals to be fitted and produce workspace
 if [ $STXS_FIT == "inclusive" ]; then
     combineTool.py -M T2W -o ${OUTPUT} -i ${INPUT} --parallel $NUM_THREADS | tee $LOGFILE
+    for channel in "et" "mt" "tt" "em"; do
+        INPUT=output/datacards/${ERA}-${TAG}-smhtt-ML/${STXS_SIGNALS}/${channel}/125
+        OUTPUT=${ERA}-${STXS_FIT}-${channel}-workspace.root
+        combineTool.py -M T2W -o ${OUTPUT} -i ${INPUT} --parallel $NUM_THREADS --channel-masks | tee $LOGFILE
+    done
 fi
 if [ $STXS_FIT == "stxs_stage0" ]; then
     combineTool.py -M T2W -o ${OUTPUT} -i ${INPUT} --parallel $NUM_THREADS \
