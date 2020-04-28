@@ -590,6 +590,31 @@ function runBackgroundGofs() {
 }
 
 
+function plotBackgroundGofSummary() {
+    mode=$1
+    echo $mode
+    possible_modes=("1" "2" "3")
+    if [[ ! " ${possible_modes[@]} " =~ " ${mode} " ]]; then
+        echo "GoF Plot mode unknown, possible modes are:"
+        echo "Mode 1: plot all results"
+        echo "Mode 2: plot combined channel results"
+        echo "Mode 3: plot all failing results"
+    else
+        if [[ ! -d output/gof_summary ]]
+        then
+            mkdir -p output/gof_summary
+        fi
+        tagstring=$( IFS=$','; echo "${tags[*]}" )
+        erastring=$( IFS=$','; echo "${eras[*]}" )
+        channelstring=$( IFS=$','; echo "${channels[*]}" )
+
+        ./gof/plot_background_gof_summary.py --path output/gof \
+                --tags ${tagstring} --eras ${erastring} --channels ${channelstring} \
+                --outputpath output/gof_summary --mode $mode
+    fi
+    
+}
+
 ### Subroutine called by runstages
 ### generate postfitshape
 function plotPreFitShapes() (
