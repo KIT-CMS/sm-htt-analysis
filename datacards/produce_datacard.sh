@@ -42,7 +42,7 @@ logandrun ${CMSSW_BASE}/bin/slc7_amd64_gcc700/MorphingSMRun2Legacy \
     --input_folder_et="output/shapes" \
     --input_folder_tt="output/shapes" \
     --input_folder_em="output/shapes" \
-    --real_data=true \
+    --real_data=false \
     --classic_bbb=false \
     --binomial_bbb=true \
     --jetfakes=$JETFAKES \
