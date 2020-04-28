@@ -2,9 +2,9 @@
 
 BINNING=cutbased_shapes/binning.yaml
 ERA=$1
-CHANNELS=$2
+CHANNEL=$2
 VARIABLE=$3
-CATEGORY=$4
+N_THREADS=$4
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
 source utils/setup_samples.sh $ERA
@@ -20,15 +20,15 @@ source utils/setup_samples.sh $ERA
 
 python cutbased_shapes/produce_nmssm_shapes.py \
     --directory $ARTUS_OUTPUTS \
-    --em-friend-directory "" \
-    --et-friend-directory "" \
-    --mt-friend-directory "" \
-    --tt-friend-directory "" \
+    --em-friend-directory $SVFit_Friends \
+    --et-friend-directory $SVFit_Friends $TauTriggers_Friends \
+    --mt-friend-directory $SVFit_Friends $TauTriggers_Friends \
+    --tt-friend-directory $SVFit_Friends $TauTriggers_Friends \
     --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
-    --channels $CHANNELS \
+    --channel $CHANNEL \
     --discriminator-variable $VARIABLE \
     --era $ERA \
-    --num-threads 20 \
-    --tag ${ERA}_${CHANNELS}_${VARIABLE}
+    --num-threads $N_THREADS \
+    --tag ${ERA}_${CHANNEL}_${VARIABLE}

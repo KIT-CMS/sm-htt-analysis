@@ -52,6 +52,11 @@ def parse_arguments():
         default=False,
         help="Use logarithmic y-axis")
     parser.add_argument(
+        "--x-log",
+        action="store_true",
+        default=False,
+        help="Use logarithmic x-axis")
+    parser.add_argument(
         "-c",
         "--channels", nargs="+", type=str, required=True, help="Channel")
     parser.add_argument(
@@ -129,6 +134,8 @@ def main(args,heavy_mass,light_mass):
 
     # signal_names=["ggh","qqh"]
     # signal=["ggH125","qqH125"]
+    if "em" in args.channels:
+        args.ff=False
     signal.append("NMSSM_{}_125_{}".format(heavy_mass,light_mass))
     signal_names.append("nmssm_{}_125_{}".format(heavy_mass,light_mass))
     if args.emb and args.ff:
@@ -162,6 +169,8 @@ def main(args,heavy_mass,light_mass):
         lumi=args.lumi
     output_dir = args.output_dir
     y_log = args.y_log
+    x_log = args.x_log
+
     mass = args.mass
     variables = args.variables
     categories = [c for c in args.categories] if args.categories is not None else None
@@ -211,6 +220,24 @@ def main(args,heavy_mass,light_mass):
             config["year"] = era.strip("Run")
             config["output_dir"] = output_dir+"/"+channel+"/"+category
             config["y_log"] = True if ((variable in logvars) or y_log) else False
+            config["x_log"] = True if x_log else False
+            if x_log:
+                if variable in ["mbb","pt_bb"]:
+                    xmax = 2000.
+                elif variable=="m_vis":
+                    xmax = 250.
+                elif variable=="m_sv_puppi":
+                    xmax = 500.
+                elif variable=="nmssm_discriminator":
+                    xmax = 5500.
+                else:
+                    xmax = 3000.
+                config["x_lims"] = [20.0,xmax]
+	    else:
+                if variable=="m_sv_puppi":
+                    config["x_lims"] = [0.0,500.]
+
+
             config["y_rel_lims"] = [5, 500] if (variable in logvars) else [0.9, 1.5]
             config["markers"] = ["HIST"] * len(bkg_processes_names) + ["LINE"]*len(signal_names) + ["P"] + ["E2"] + ["LINE"]*len(signal_names) + ["P"]
             config["legend_markers"] = ["F"] * (len(bkg_processes_names))  +  ["LX0"]*len(signal_names) +  ["ELP"] + ["E2"] + ["L"]*len(signal_names) + ["P"]
@@ -220,7 +247,6 @@ def main(args,heavy_mass,light_mass):
             config["colors"] = bkg_processes_names + ["#8B008B"]*len(signal_names) + ["data"
                                                       ] + ["#B7B7B7"] + ["#8B008B"]*len(signal_names) + ["#000000"]
             config["nicks"] = bkg_processes_names + signal_names + ["data"]
-            config["scale_factors"] = [1]*len(bkg_processes_names) + [1]*len(signal_names) + [1]*len(["data"])
                 
             config["x_expressions"] = [
                 "#" + "#".join([
@@ -247,6 +273,9 @@ def main(args,heavy_mass,light_mass):
                 config["x_label"] = args.x_label
             else:
                 config["x_label"] = "_".join([channel, variable])
+            if "1btag" in category:
+                if "bb" in variable:
+                    config["x_label"] = config["x_label"]+"_1btag"
             title_dict = {}
             title_dict["mt"] = "#mu#tau_{h}"
             title_dict["tt"] = "#tau_{h}#tau_{h}"
@@ -285,6 +314,7 @@ def main(args,heavy_mass,light_mass):
                 config["legend_fontsize"] = 0.044
                 bkg_processes_names_noplot = ["ztt_noplot","ttt_noplot","vvt_noplot"] + [x+"_noplot" for x in bkg_processes_names if not "emb" in x]
                 config["nicks"] = bkg_processes_names + bkg_processes_names_noplot + ["data"]
+                config["scale_factors"] = [1.0]*(len(bkg_processes_names)+len(bkg_processes_names_noplot))+[0.0]
                 config["analysis_modules"].append("AddHistograms")
                 config["add_nicks"] = [" ".join(bkg_processes_names_noplot)]
                 config["add_result_nicks"] = ["ztt"]
@@ -335,9 +365,11 @@ if __name__ == "__main__":
         "light_mass_coarse": [60, 70, 80, 90, 100, 120, 150, 170, 190, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800],
         "light_mass_fine": [60, 70, 75, 80, 85, 90, 95, 100, 110, 120, 130, 150, 170, 190, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850],
     }
-    for heavy_mass in mass_dict["heavy_mass"]:
+    for heavy_mass in [240,360,500,800,1000,3000]:# mass_dict["heavy_mass"]:
         light_masses = mass_dict["light_mass_coarse"] if heavy_mass > 1001 else mass_dict["light_mass_fine"]
         for light_mass in light_masses:
+	    if light_mass not in [60,90,100,120,250,450,650,800,2800]:
+		continue
             if light_mass+125>heavy_mass:
                 continue
             main(args,heavy_mass,light_mass)

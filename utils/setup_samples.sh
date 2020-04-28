@@ -16,28 +16,22 @@ KAPPA_DATABASE=datasets/datasets.json
 #### ERA specific part. If a sample is not available comment it out here.
 # Samples Run2016
 basedir="/ceph/htautau/deeptau_02-20"
-ARTUS_OUTPUTS_2016="$basedir/2016/ntuples/"
-NNScore_Friends_2016="$basedir/2016/friends/NNScore/emb_ff_stage1_fix/"
-SVFit_Friends_2016="$basedir/2016/friends/SVFit/"
-MELA_Friends_2016="$basedir/2016/friends/MELA/"
-FF_Friends_2016="$basedir/2016/friends/FakeFactors/"
-TauTriggers_Friends_2016="$basedir/2016/friends/TauTriggers/"
+ARTUS_OUTPUTS_2016="/portal/ekpbms1/home/jbechtel/postprocessing/nmssm/sm-htt-analysis/ntuples/2016/"
+SVFit_Friends_2016="/portal/ekpbms1/home/jbechtel/postprocessing/nmssm/sm-htt-analysis/friends/2016/SVFit/"
+FF_Friends_2016="$basedir/2016/friends/FakeFactors_final_v2/"
+TauTriggers_Friends_2016="/portal/ekpbms1/home/jbechtel/postprocessing/nmssm/sm-htt-analysis/friends/2016/TauTriggers/"
 
 # Samples Run2017
-ARTUS_OUTPUTS_2017="$basedir/2017/ntuples/"
-NNScore_Friends_2017="$basedir/2017/friends/NNScore/emb_ff_stage1_fix/"
+ARTUS_OUTPUTS_2017="/portal/ekpbms1/home/jbechtel/postprocessing/nmssm/sm-htt-analysis/ntuples/2017/"
 SVFit_Friends_2017="$basedir/2017/friends/SVFit/"
-MELA_Friends_2017="$basedir/2017/friends/MELA/"
-FF_Friends_2017="$basedir/2017/friends/FakeFactors/"
-TauTriggers_Friends_2017="$basedir/2017/friends/TauTriggers/"
+FF_Friends_2017="$basedir/2017/friends/FakeFactors_final_v2/"
+TauTriggers_Friends_2017="/portal/ekpbms1/home/jbechtel/postprocessing/nmssm/sm-htt-analysis/friends/2017/TauTriggers/" 
 
 # Samples Run2018
-ARTUS_OUTPUTS_2018="$basedir/2018/ntuples/"
-NNScore_Friends_2018="$basedir/2018/friends/NNScore/emb_ff_stage1_fix/"
-SVFit_Friends_2018="$basedir/2018/friends/SVFit/"
-MELA_Friends_2018="$basedir/2018/friends/MELA/"
-FF_Friends_2018="$basedir/2018/friends/FakeFactors/"
-TauTriggers_Friends_2018="$basedir/2018/friends/TauTriggers/"
+ARTUS_OUTPUTS_2018="/portal/ekpbms1/home/jbechtel/postprocessing/nmssm/sm-htt-analysis/ntuples/2018/"
+SVFit_Friends_2018=""
+FF_Friends_2018="$basedir/2018/friends/FakeFactors_final_v2/"
+TauTriggers_Friends_2018="/portal/ekpbms1/home/jbechtel/postprocessing/nmssm/sm-htt-analysis/friends/2018/TauTriggers/" 
 
 
 # ERA handling
@@ -67,37 +61,13 @@ then
     TauTriggers_Friends=$TauTriggers_Friends_2018
 fi
 
-### check if there are valid local friend trees and, if yes overwrite the friend tree directory with the local ones
-if [[ ! -z $OUTPUTDIR && -d $OUTPUTDIR ]]; then
-    DIR=${OUTPUTDIR}/friend_trees/$ERA/nnscore_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && NNScore_Friends=$DIR
-    DIR=${OUTPUTDIR}/friend_trees/$ERA/svfit_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && SVFit_Friends=$DIR
-    DIR=${OUTPUTDIR}/friend_trees/$ERA/mela_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && MELA_Friends=$DIR
-    DIR=${OUTPUTDIR}/friend_trees/$ERA/ff_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && FF_Friends=$DIR
-    DIR=${OUTPUTDIR}/friend_trees/$ERA/tautrigger_friends/${TAG}/ && [[ -d $DIR && $(ls -A $DIR | wc -l ) -gt 5 ]] && TauTriggers_Friends=$DIR
-fi
-
-### channels specific friend tree.
-# Used for example to process the event channel without including the fakefactor friends
-ARTUS_FRIENDS_EM="$NNScore_Friends $SVFit_Friends $MELA_Friends"
-ARTUS_FRIENDS_ET="$NNScore_Friends $SVFit_Friends $MELA_Friends $TauTriggers_Friends"
-ARTUS_FRIENDS_MT="$NNScore_Friends $SVFit_Friends $MELA_Friends $TauTriggers_Friends"
-ARTUS_FRIENDS_TT="$NNScore_Friends $SVFit_Friends $MELA_Friends $TauTriggers_Friends"
-ARTUS_FRIENDS="$NNScore_Friends $SVFit_Friends $MELA_Friends  $TauTriggers_Friends"
 ARTUS_FRIENDS_FAKE_FACTOR=$FF_Friends
-
-### for "backwards compability". Should be removed at some point. DO not use these variables
-
-ARTUS_FRIENDS_FAKE_FACTOR=$FF_Friends
-ARTUS_FRIENDS_FAKE_FACTOR_INCL=$FF_Friends
 ARTUS_FRIENDS_FAKE_FACTOR_2016=$FF_Friends_2016
-ARTUS_FRIENDS_FAKE_FACTOR_INCL_2016=$ARTUS_FRIENDS_FAKE_FACTOR_2016
 ARTUS_FRIENDS_FAKE_FACTOR_2017=$FF_Friends_2017
-ARTUS_FRIENDS_FAKE_FACTOR_INCL_2017=$FF_Friends_2017
 ARTUS_FRIENDS_FAKE_FACTOR_2018=$FF_Friends_2018
-ARTUS_FRIENDS_FAKE_FACTOR_INCL_2018=$FF_Friends_2018
 ARTUS_OUTPUTS_EM_2017=""
 
-ARTUS_FRIENDS_2016="$NNScore_Friends_2016 $SVFit_Friends_2016 $MELA_Friends_2016" # TODO update once friends are produced
+ARTUS_FRIENDS_2016="$SVFit_Friends_2016 $MELA_Friends_2016" 
 ARTUS_FRIENDS_ET_2016=$ARTUS_FRIENDS_2016
 ARTUS_FRIENDS_MT_2016=$ARTUS_FRIENDS_2016
 ARTUS_FRIENDS_TT_2016=$ARTUS_FRIENDS_2016

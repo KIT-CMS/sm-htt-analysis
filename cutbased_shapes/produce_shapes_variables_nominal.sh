@@ -17,19 +17,21 @@ source utils/setup_samples.sh $ERA
 
 # Produce shapes
 
+echo $SVFit_Friends $TauTriggers_Friends
 
 python cutbased_shapes/produce_nmssm_shapes.py \
     --directory $ARTUS_OUTPUTS \
-    --em-friend-directory "" \
-    --et-friend-directory "" \
-    --mt-friend-directory "" \
-    --tt-friend-directory "" \
+    --em-friend-directory $SVFit_Friends \
+    --et-friend-directory $SVFit_Friends $TauTriggers_Friends \
+    --mt-friend-directory $SVFit_Friends $TauTriggers_Friends \
+    --tt-friend-directory $SVFit_Friends $TauTriggers_Friends \
     --fake-factor-friend-directory $ARTUS_FRIENDS_FAKE_FACTOR \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
-    --channels $CHANNELS \
+    --channel $CHANNELS \
     --discriminator-variable $VARIABLE \
     --era $ERA \
-    --num-threads 2 \
+    --categories inclusive \
+    --num-threads 6 \
     --tag ${ERA}_${CHANNELS}_${VARIABLE} \
 	--skip-systematic-variations
