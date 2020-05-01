@@ -96,6 +96,28 @@ def main(args):
             file_output.cd(dir_name)
             for name in sorted(hist_map[channel][category]):
                 hist = file_input.Get(name)
+                pos = 0.0
+                neg = 0.0
+                for i in range(hist.GetNbinsX()):
+                    cont = hist.GetBinContent(i+1)
+                    if cont<0.0:
+                        neg += cont
+                        hist.SetBinContent(i+1, 0.0)
+                    else:
+                        pos += cont
+                if neg<0:
+                    if neg+pos>=0:
+                        hist.Scale((neg+pos)/pos)
+                    else:
+                        hist.Scale(0.0)
+                    if name.split("#")[-1]=="":
+                        logger.info("Found histogram with negative bin: " + name)
+                        logger.info("Negative yield: %f"%neg)
+                        logger.info("Total yield: %f"%(neg+pos))
+                    if neg<-1.0:
+                        logger.fatal("Found histogram with a yield of negative bins larger than 1.0!")
+                        raise Exception
+                    
                 if (not "ZTTpTTTauTau" in name) and ("CMS_htt_emb_ttbar" in name):
                     continue
                 name_output = hist_map[channel][category][name]
