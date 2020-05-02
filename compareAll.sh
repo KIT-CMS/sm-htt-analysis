@@ -528,6 +528,7 @@ function prepareBackgroundGofs() {
 function runBackgroundGofs() {
     source gof/build_mask.sh
     mode=$1
+    trainingstype="14node"
     echo "Running GoFs with settings:"
     echo "Tags:     ${tags}"
     echo "Eras:     ${eras}"
@@ -537,10 +538,10 @@ function runBackgroundGofs() {
         for tag in ${tags[@]}; do
             for era in ${eras[@]}; do
                 for channel in ${channels[@]}; do
-                    backlist=$(buildCategories $mode $tag $era $channel "backgrounds")
+                    backlist=$(buildCategories $trainingstype $tag $era $channel "backgrounds")
                     for category in ${backlist[@]}; do
                         mask=""
-                        mask=$(buildMask $mode $tag $era $channel $category)
+                        mask=$(buildMask "14node" $tag $era $channel $category)
                         ./gof/gof_categories_saturated.sh $mode $tag $era $channel $category $mask 1
                     done
                 done
@@ -552,7 +553,7 @@ function runBackgroundGofs() {
         for tag in ${tags[@]}; do
             for era in ${eras[@]}; do
                 for channel in ${channels[@]}; do
-                    mask=$(buildMask $mode $tag $era $channel $category)
+                    mask=$(buildMask $trainingstype $tag $era $channel $category)
                     ./gof/gof_categories_saturated.sh $mode $tag $era $channel $category $mask 1
                 done
                 ./gof/gof_categories_KSAD.sh $mode $tag $era $channel $category "AD"
@@ -566,7 +567,7 @@ function runBackgroundGofs() {
         channel="cmb"
         for tag in ${tags[@]}; do
             for era in ${eras[@]}; do
-                mask=$(buildMask $mode $tag $era $channel $category)
+                mask=$(buildMask $trainingstype $tag $era $channel $category)
                 ./gof/gof_categories_saturated.sh $mode $tag $era $channel $category $mask 0
             done
         done
@@ -577,7 +578,7 @@ function runBackgroundGofs() {
         channel="cmb"
         era="all"
         for tag in ${tags[@]}; do
-            mask=$(buildMask $mode $tag $era $channel $category)
+            mask=$(buildMask $trainingstype $tag $era $channel $category)
             ./gof/gof_categories_saturated.sh $mode $tag $era $channel $category $mask 0
         done
     else

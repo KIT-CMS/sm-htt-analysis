@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 function buildCategories () {
     MODE=$1
     TAG=$2
@@ -37,7 +38,24 @@ function buildCategories () {
         fi
         signallist=("1")
     fi
+    if [[ $MODE == *"14node"* ]]; then
+        if [[ "$CHANNEL" == "em" ]]; then
+            catlist=("100" "101" "102" "103" "104" "105" "106" "107" "108" "109" "200" "201" "202" "203" "13" "14" "16" "19" "20")
+        elif [[ "$CHANNEL" == "et" ]]; then
+            catlist=("100" "101" "102" "103" "104" "105" "106" "107" "108" "109" "200" "201" "202" "203" "13" "15" "16" "20" "21")
+        elif [[ "$CHANNEL" == "mt" ]]; then
+            catlist=("100" "101" "102" "103" "104" "105" "106" "107" "108" "109" "200" "201" "202" "203" "13" "15" "16" "20" "21")
+        elif [[ "$CHANNEL" == "tt" ]]; then
+            catlist=("100" "101" "102" "103" "104" "105" "106" "107" "108" "109" "200" "201" "202" "203" "16" "20" "21")
+        elif [[ "$CHANNEL" == "cmb" ]]; then
+            catlist=("100" "101" "102" "103" "104" "105" "106" "107" "108" "109" "200" "201" "202" "203" "13" "14" "15" "16" "19" "20" "21")
+        fi
+        signallist=("100" "101" "102" "103" "104" "105" "106" "107" "108" "109" "200" "201" "202" "203")
+    fi
     backlist=($(echo ${catlist[@]} ${signallist[@]} | tr ' ' '\n' | sort | uniq -u | tr '\n' ' ' ))
+    # echo "backlist:   ${backlist}"
+    # echo "signallist: ${signallist}"
+    # echo "catlist:    ${catlist}"
     if [[ $SIGNALS == "backgrounds" ]]; then
         echo $backlist
     elif [[ $SIGNALS == "signals" ]]; then
@@ -55,15 +73,19 @@ function buildMask () {
     CATEGORY=$5
     tempmask=""
     finalmask=""
+    backlist=($(buildCategories $MODE $TAG $ERA $CHANNEL "backgrounds"))
+    signallist=($(buildCategories $MODE $TAG $ERA $CHANNEL "signals"))
+    catlist=($(buildCategories $MODE $TAG $ERA $CHANNEL "categories"))
+
     # echo "Constructing tempmask with settings:"
     # echo "Mode:     ${MODE}"
     # echo "Tag:      ${TAG}"
     # echo "Era :     ${ERA}"
     # echo "Channel:  ${CHANNEL}"
-    # echo buildCategories $MODE $TAG $ERA $CHANNEL 0
-    backlist=($(buildCategories $MODE $TAG $ERA $CHANNEL "backgrounds"))
-    signallist=($(buildCategories $MODE $TAG $ERA $CHANNEL "signals"))
-    catlist=($(buildCategories $MODE $TAG $ERA $CHANNEL "categories"))
+    # echo "Category:  ${CATEGORY}"
+    # echo "backlist:   ${backlist}"
+    # echo "signallist: ${signallist}"
+    # echo "catlist:    ${catlist}"
     # special case; cat == 999, meaning all backgrounds combined gof test
     if [[ $CHANNEL == *"cmb"* ]]; then
         if [[ $ERA == *"all"* ]]; then

@@ -1,6 +1,8 @@
+#!/usr/bin/env bash
 source utils/setup_cmssw.sh
 source utils/bashFunctionCollection.sh
 source utils/setup_python.sh
+source gof/build_mask.sh
 
 MODE=$1
 TAG=$2
@@ -24,7 +26,16 @@ if [[ ! -d output/gof/${ID}/${ERA}_plots ]]
 then
     mkdir -p output/gof/${ID}/${ERA}_plots
 fi
-   
+# prepare plotting options for later
+bkpIFS="$IFS"
+IFS=","
+backlist=$(buildCategories "14node" $TAG $ERA $CHANNEL "backgrounds")
+IFS="$bkpIFS"
+backlist=($backlist)
+# IFS="," read -a plotlist < <(buildCategories 14node $TAG $ERA $CHANNEL backgrounds)
+PLOTDIR=output/gof/${ID}
+
+
 echo "Doing ${ALGO} GoF for ${ID}..."
 LOGFILE=output/gof/${ID}/testlog.log
 echo "Running Saturated GoF for ${ID} with settings:" > $LOGFILE
@@ -36,6 +47,7 @@ echo "Category: ${CATEGORY}" >> $LOGFILE
 echo "Mask:     ${MASK}" >> $LOGFILE
 echo "Plot:     ${PLOT}" >> $LOGFILE
 echo "Datacard: ${DATACARD}" >> $LOGFILE
+echo "Plotlist: ${backlist[@]}" >> $LOGFILE
 # # Get test statistic value
 combine -M GoodnessOfFit -n Test.${ID} --algo=$ALGO -m $MASS -d $DATACARD --fixedSignalStrength=0 --setParameters $MASK >> $LOGFILE
 
@@ -107,10 +119,8 @@ if [[ "$PLOT" == "1" ]]; then
     PostFitShapesFromWorkspace -m 125 -w $DATACARD \
         -d output/datacards/${ERA}-${TAG}-smhtt-ML/stxs_stage0/${CHANNEL}/125/combined.txt.cmb -o output/gof/${ID}/datacard-shapes-postfit-b.root \
         -f $FITFILE:fit_b --postfit --sampling --skip-prefit >> $LOGFILE
-    ## Plot the prefit and the postfit shape
-        
+    # Plot the prefit and the postfit shape
     if [[ $CATEGORY != *"999"* ]]; then    
-        PLOTDIR=output/gof/${ID}
         ./plotting/plot_shapes.py -i output/gof/${ID}/datacard-shapes-prefit.root -o $PLOTDIR \
             -c ${CHANNEL} -e $ERA --categories $CATEGORIES \
             --fake-factor --embedding --normalize-by-bin-width \
@@ -120,10 +130,8 @@ if [[ "$PLOT" == "1" ]]; then
             -c ${CHANNEL} -e $ERA --categories $CATEGORIES \
             --fake-factor --embedding --normalize-by-bin-width \
             -l --train-ff True --train-emb True --blinded-shapes --single-category ${CATEGORY} >> $LOGFILE
-    elif [[ $CATEGORY == *"999"* ]]; then
-        source gof/build_mask.sh
-        PLOTDIR=output/gof/${ID}
-        backlist=$(buildCategories 2 $TAG $ERA $CHANNEL "backgrounds")
+    elif [[ $CATEGORY == *"999"* ]]; then        
+        
         for plotcat in "${backlist[@]}"; do
             ./plotting/plot_shapes.py -i output/gof/${ID}/datacard-shapes-prefit.root -o $PLOTDIR \
                 -c ${CHANNEL} -e $ERA --categories $CATEGORIES \
