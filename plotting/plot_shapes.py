@@ -53,7 +53,7 @@ def parse_arguments():
                         required=True,
                         choices=[
                             'inclusive', 'stxs_stage0', "stxs_stage1p1",
-                            'stxs_stage1p1cut', 'None'
+                            'stxs_stage1p1cut', 'stxs_stage1p1_14node', 'None'
                         ],
                         help="Select categorization.")
     parser.add_argument("--single-category",
@@ -111,7 +111,7 @@ def setup_logging(output_file, level=logging.DEBUG):
 
 def main(args):
     # plot signals
-    print(args)
+    logger.debug("Arguments: {}".format(args))
     if args.gof_variable is not None:
         channel_categories = {
             "et": ["300"],
@@ -146,6 +146,9 @@ def main(args):
             signalcats = ["1"]  # only 2D Category
         elif args.categories == "stxs_stage1p1":
             signalcats = [str(100 + i) for i in range(5)
+                          ] + [str(200 + i) for i in range(4)]
+        elif args.categories == "stxs_stage1p1_14node":
+            signalcats = [str(100 + i) for i in range(10)
                           ] + [str(200 + i) for i in range(4)]
         elif args.categories == "stxs_stage1p1cut":
             signalcats = [str(100 + i) for i in range(5)
@@ -207,6 +210,23 @@ def main(args):
                 "202": "qqh vbftopo_highmjj",
                 "203": "qqh vbftopo lowmjj",
             })
+        elif args.categories == "stxs_stage1p1_14node":
+            category_dict.update({
+                "100": "ggh 0-jet, p_{T}^{H} [0,10]",
+                "101": "ggh 0-jet, p_{T}^{H} > 10",
+                "102": "ggh 1-jet, p_{T}^{H} [0,60]",
+                "103": "ggh 1-jet, p_{T}^{H} [60,120]",
+                "104": "ggh 1-jet, p_{T}^{H} [120,200]",
+                "105": "ggh 2-jet, mjj [0,350], p_{T}^{H} [0,60]",
+                "106": "ggh 2-jet, mjj [0,350], p_{T}^{H} [60,120]",
+                "107": "ggh 2-jet, mjj [0,350], p_{T}^{H} [120,200]",
+                "108": "ggh p_{T}^{H} > 200",
+                "109": "ggh 2-jet, mjj > 350, p_{T}^{H} [0,200]",
+                "200": "qqh 2-jet low mjj",
+                "201": "qqh p_{T}^{H} > 200",
+                "202": "qqh vbftopo mjj > 700",
+                "203": "qqh vbftopo mjj [350,700]",
+            })
         elif args.categories == "stxs_stage0":
             category_dict.update({"1": "2D ggh/qqh category"})
     if args.linear:
@@ -244,20 +264,18 @@ def main(args):
     else:
         logger.critical("Era {} is not implemented.".format(args.era))
         raise Exception
-    print(channel_categories)
+    logger.debug("Channel Categories: {}".format(channel_categories))
     plots = []
-    if args.blinded_shapes:
-        if args.categories == "stxs_stage0":
-            # special for 2D category
-            dummy = ROOT.TH1F("dummy", "dummy", 28, 0.0, 28.0)
-        else:
-            dummy = ROOT.TH1F("dummy", "dummy", 5, 0.0, 1.0)
+    if args.categories == "stxs_stage0":
+        # special for 2D category
+        dummy = ROOT.TH1F("dummy", "dummy", 28, 0.0, 28.0)
+    else:
+        dummy = ROOT.TH1F("dummy", "dummy", 5, 0.0, 1.0)
     for channel in args.channels:
         if args.single_category is not "":
             categories = set(channel_categories[channel]).intersection(set([args.single_category]))
         else:
             categories = channel_categories[channel]
-        print categories
         for category in categories:
             rootfile = rootfile_parser.Rootfile_parser(args.input)
             if channel == "em" and args.embedding:
@@ -345,8 +363,8 @@ def main(args):
                     plot.subplot(i).add_hist(HWWhist, "HWW")
                     plot.subplot(i).add_hist(HWWhist, "HWW_top")
                     # add dummy histogram for range
-                    if args.blinded_shapes and category not in background_categories:
-                        plot.subplot(i).add_hist(dummy, "dummy")
+                    #if args.blinded_shapes:
+                    plot.subplot(i).add_hist(dummy, "dummy")
 
                 except BaseException:
                     pass
@@ -412,10 +430,10 @@ def main(args):
                                markersize=0,
                                fillcolor=styles.color_dict["unc"],
                                linecolor=0)
-            if args.blinded_shapes and category not in background_categories:
-                plot.subplot(0 if args.linear else 1).setGraphStyle(
+            #if args.blinded_shapes:
+            plot.subplot(0 if args.linear else 1).setGraphStyle(
                     "dummy", "hist", linecolor=0, linewidth=0)
-                plot.subplot(2).setGraphStyle(
+            plot.subplot(2).setGraphStyle(
                     "dummy", "hist", linecolor=0, linewidth=0)
 
             # assemble ratio
@@ -457,11 +475,12 @@ def main(args):
                 split_dict[channel],
                 max(2 * plot.subplot(0).get_hist("data_obs").GetMaximum(),
                     split_dict[channel] * 2))
-
-            plot.subplot(2).setYlims(0.75, 1.45)
+            
+            #plot.subplot(2).setYlims(0.45, 1.65)
+            plot.subplot(2).setYlims(0.85, 1.25)
             if category in signalcats:
                 plot.subplot(0).setLogY()
-                plot.subplot(0).setYlims(0.1, 150000000)
+                plot.subplot(0).setYlims(1, 150000000)
                 if channel == "em":
                     plot.subplot(0).setYlims(1, 150000000)
 
@@ -477,6 +496,8 @@ def main(args):
                 else:
                     x_label = args.gof_variable
                 plot.subplot(2).setXlabel(x_label)
+            elif args.categories == "stxs_stage0" and category == "1":
+                plot.subplot(2).setXlabel("2D discriminator bin index")
             else:
                 plot.subplot(2).setXlabel("NN output")
             if args.normalize_by_bin_width:
@@ -487,42 +508,53 @@ def main(args):
             plot.subplot(2).setYlabel("")
 
             # plot.scaleXTitleSize(0.8)
+            if args.categories == "stxs_stage1p1_14node":
+                plot.subplot(2).setXlims(0.0, 1.0)
+                plot.subplot(0).setXlims(0.0, 1.0)
             # plot.scaleXLabelSize(0.8)
             # plot.scaleYTitleSize(0.8)
             plot.scaleYLabelSize(0.8)
             # plot.scaleXLabelOffset(2.0)
             plot.scaleYTitleOffset(1.1)
-            #plot.subplot(2).setNYdivisions(3, 5)
+            plot.subplot(2).setNYdivisions(3, 5)
+            plot.subplot(2).setNXdivisions(5, 3)
             # if not channel == "tt" and category in ["11", "12", "13", "14", "15", "16"]:
             #    plot.subplot(2).changeXLabels(["0.2", "0.4", "0.6", "0.8", "1.0"])
 
             # draw subplots. Argument contains names of objects to be drawn in
             # corresponding order.
+            
             procs_to_draw_0 = [
-                "stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top", "VH",
-                "VH_top", "ttH", "ttH_top", "HWW", "HWW_top", "data_obs"
+                "stack", "total_bkg", "data_obs"
             ] if args.linear else ["stack", "total_bkg", "data_obs"]
             procs_to_draw_1 = [
-                "stack", "total_bkg", "ggH", "ggH_top", "qqH", "qqH_top", "VH",
-                "VH_top", "ttH", "ttH_top", "HWW", "HWW_top", "data_obs"
+                "stack", "total_bkg", "data_obs"
             ]
             procs_to_draw_2 = [
                 "total_bkg", "bkg_ggH", "bkg_ggH_top", "bkg_qqH",
                 "bkg_qqH_top", "data_obs"
             ]
-            if args.blinded_shapes and category not in background_categories:
-                procs_to_draw_0 = ["dummy"] + procs_to_draw_0
-                procs_to_draw_1 = ["dummy"] + procs_to_draw_1
-                procs_to_draw_2 = ["dummy"] + procs_to_draw_2
+            if category not in background_categories:
+                signals = [ "ggH", "ggH_top", "qqH", "qqH_top", "VH", "VH_top", "ttH", "ttH_top", "HWW", "HWW_top"]
+                procs_to_draw_0 = procs_to_draw_0 + signals
+                procs_to_draw_1 = procs_to_draw_1 + signals
+            # if args.blinded_shapes and category not in background_categories:
+            #     procs_to_draw_0 = ["dummy"] + procs_to_draw_0
+            #     procs_to_draw_1 = ["dummy"] + procs_to_draw_1
+            #     procs_to_draw_2 = ["dummy"] + procs_to_draw_2
+            #if args.blinded_shapes:
+            procs_to_draw_0 = ["dummy"] + procs_to_draw_0
+            procs_to_draw_1 = ["dummy"] + procs_to_draw_1
+            procs_to_draw_2 = ["dummy"] + procs_to_draw_2
             plot.subplot(0).Draw(procs_to_draw_0)
             if not args.linear:
                 plot.subplot(1).Draw(procs_to_draw_1)
             plot.subplot(2).Draw(procs_to_draw_2)
-
+            plot.subplot(2).setXlims(0.0, 1.0)
+            plot.subplot(0).setXlims(0.0, 1.0)
             # create legends
             suffix = ["", "_top"]
             for i in range(2):
-
                 plot.add_legend(width=0.6, height=0.15)
                 for process in legend_bkg_processes:
                     try:
@@ -533,23 +565,24 @@ def main(args):
                     except BaseException:
                         pass
                 plot.legend(i).add_entry(0, "total_bkg", "Bkg. unc.", 'f')
-                plot.legend(i).add_entry(0 if args.linear else 1,
-                                         "ggH%s" % suffix[i], "gg#rightarrowH",
-                                         'l')
-                plot.legend(i).add_entry(0 if args.linear else 1,
-                                         "qqH%s" % suffix[i], "qq#rightarrowH",
-                                         'l')
-                plot.legend(i).add_entry(0 if args.linear else 1,
-                                         "VH%s" % suffix[i], "qq#rightarrowVH",
-                                         'l')
-                try:
+                if category not in background_categories:
                     plot.legend(i).add_entry(0 if args.linear else 1,
-                                             "ttH%s" % suffix[i], "ttH", 'l')
+                                            "ggH%s" % suffix[i], "gg#rightarrowH",
+                                            'l')
                     plot.legend(i).add_entry(0 if args.linear else 1,
-                                             "HWW%s" % suffix[i],
-                                             "H#rightarrowWW", 'l')
-                except BaseException:
-                    pass
+                                            "qqH%s" % suffix[i], "qq#rightarrowH",
+                                            'l')
+                    plot.legend(i).add_entry(0 if args.linear else 1,
+                                            "VH%s" % suffix[i], "qq#rightarrowVH",
+                                            'l')
+                    try:
+                        plot.legend(i).add_entry(0 if args.linear else 1,
+                                                "ttH%s" % suffix[i], "ttH", 'l')
+                        plot.legend(i).add_entry(0 if args.linear else 1,
+                                                "HWW%s" % suffix[i],
+                                                "H#rightarrowWW", 'l')
+                    except BaseException:
+                        pass
                 plot.legend(i).add_entry(0, "data_obs", "Data", 'PE')
                 plot.legend(i).setNColumns(3)
             plot.legend(0).Draw()
@@ -589,21 +622,21 @@ def main(args):
             # draw additional labels
             plot.DrawCMS()
             if "2016" in args.era:
-                plot.DrawLumi("35.9 fb^{-1} (2016, 13 TeV)")
+                plot.DrawLumi("35.9 fb^{-1} (2016, 13 TeV)", textsize=0.5)
             elif "2017" in args.era:
-                plot.DrawLumi("41.5 fb^{-1} (2017, 13 TeV)")
+                plot.DrawLumi("41.5 fb^{-1} (2017, 13 TeV)", textsize=0.5)
             elif "2018" in args.era:
-                plot.DrawLumi("59.7 fb^{-1} (2018, 13 TeV)")
+                plot.DrawLumi("59.7 fb^{-1} (2018, 13 TeV)", textsize=0.5)
             elif "all" in args.era:
                 plot.DrawLumi(
-                    "(35.9 + 41.5 + 59.7) fb^{-1} (2016+2017+2018, 13 TeV)")
+                    "(35.9 + 41.5 + 59.7) fb^{-1} (2016+2017+2018, 13 TeV)", textsize=0.5)
             else:
                 logger.critical("Era {} is not implemented.".format(args.era))
                 raise Exception
 
             plot.DrawChannelCategoryLabel(
                 "%s, %s" % (channel_dict[channel], category_dict[category]),
-                begin_left=None)
+                begin_left=None, textsize=0.032)    
 
             # save plot
             postfix = "prefit" if "prefit" in args.input else "postfit" if "postfit" in args.input else "undefined"
@@ -622,5 +655,5 @@ def main(args):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    setup_logging("{}_plot_shapes.log".format(args.era), logging.INFO)
+    setup_logging("{}_plot_shapes.log".format(args.era), logging.WARNING)
     main(args)
