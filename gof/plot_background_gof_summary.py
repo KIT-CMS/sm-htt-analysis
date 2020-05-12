@@ -6,6 +6,9 @@ import json
 import numpy as np
 
 import matplotlib as mpl
+from matplotlib import rc
+rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+rc('text', usetex=True)
 
 mpl.use("Agg")
 mpl.rcParams["font.size"] = 16
@@ -21,8 +24,21 @@ formatter = logging.Formatter("%(name)s - %(levelname)s - %(message)s")
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
-# TODO: Update label dict
 
+category_dict = {
+            "1": "ggh",
+            "2": "qqh",
+            "12": "ztt",
+            "15": "zll",
+            "11": "wjets",
+            "13": "tt",
+            "14": "qcd",
+            "16": "misc",
+            "17": "qcd",
+            "19": "diboson",
+            "20": r"Genuine $\tau$",
+            "21": r"Jet $\rightarrow$ $\tau_{h}$"
+        }
 
 def csv_list(string):
     return string.split(",")
@@ -82,6 +98,11 @@ def plot_1d(era, channel, labels, results, filename):
     ax = plt.gca()
     if args.mode == "2":
         ax.set_xticks([x_mod - 1.5 for x_mod in x if x_mod % 12 == 1], minor=True)
+    elif args.mode == "1":
+        if channel == "tt":
+            ax.set_xticks([x_mod - 1.5 for x_mod in x if x_mod % 3 == 1], minor=True)
+        else:
+            ax.set_xticks([x_mod - 1.5 for x_mod in x if x_mod % 5 == 1], minor=True)
     for i, v in enumerate(y):
         if v <= 0.05:
             ax.text(i - 0.25, 0.25, str(v), rotation="vertical")
@@ -132,7 +153,7 @@ def main(args):
                                 tag,
                             )
                         )
-                        labels.append("{}-{}-{}".format(channel,category, era))
+                        labels.append("{} {} {}".format(channel,category_dict[category], era))
                 logger.debug("Data for plot: {}".format(results))
                 logger.debug("Data for plot: {}".format(labels))
                 plot_1d(
@@ -158,7 +179,7 @@ def main(args):
                             args.path, channel, era, "NNOutput-{}".format(999), tag
                         )
                     )
-                    labels.append("{}-{}-{}".format(era, channel, tag.split("_")[1]))
+                    labels.append("{} {}".format(channel, era))
         
         plot_1d(era, channel, labels, results, "gof_1d_{}_{}".format("combined", filename))
     if args.mode == "3":
