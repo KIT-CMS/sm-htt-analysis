@@ -106,7 +106,7 @@ def main(args):
                     else:
                         pos += cont
                 if neg<0:
-                    if neg+pos>=0:
+                    if neg+pos>0.0:
                         hist.Scale((neg+pos)/pos)
                     else:
                         hist.Scale(0.0)
@@ -114,9 +114,10 @@ def main(args):
                         logger.info("Found histogram with negative bin: " + name)
                         logger.info("Negative yield: %f"%neg)
                         logger.info("Total yield: %f"%(neg+pos))
-                    if neg<-1.0:
-                        logger.fatal("Found histogram with a yield of negative bins larger than 1.0!")
-                        raise Exception
+                    if neg<-1.5:
+                        if (not "#QCD#" in name) or ("#em_" in name) or (neg<-10.0): # in case of QCD in et, mt, tt be a bit more generous since this is only for cross checks
+                            logger.fatal("Found histogram with a yield of negative bins larger than 1.0!")
+                            raise Exception
                     
                 if (not "ZTTpTTTauTau" in name) and ("CMS_htt_emb_ttbar" in name):
                     continue
