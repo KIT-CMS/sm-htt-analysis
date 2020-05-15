@@ -53,7 +53,7 @@ def parse_arguments():
                         required=True,
                         choices=[
                             'inclusive', 'stxs_stage0', "stxs_stage1p1",
-                            'stxs_stage1p1cut', 'stxs_stage1p1_14node', 'None'
+                            'stxs_stage1p1cut', 'stxs_stage1p1_15node', 'None'
                         ],
                         help="Select categorization.")
     parser.add_argument("--single-category",
@@ -147,8 +147,8 @@ def main(args):
         elif args.categories == "stxs_stage1p1":
             signalcats = [str(100 + i) for i in range(5)
                           ] + [str(200 + i) for i in range(4)]
-        elif args.categories == "stxs_stage1p1_14node":
-            signalcats = [str(100 + i) for i in range(10)
+        elif args.categories == "stxs_stage1p1_15node":
+            signalcats = [str(100 + i) for i in range(11)
                           ] + [str(200 + i) for i in range(4)]
         elif args.categories == "stxs_stage1p1cut":
             signalcats = [str(100 + i) for i in range(5)
@@ -210,7 +210,7 @@ def main(args):
                 "202": "qqh vbftopo_highmjj",
                 "203": "qqh vbftopo lowmjj",
             })
-        elif args.categories == "stxs_stage1p1_14node":
+        elif args.categories == "stxs_stage1p1_15node":
             category_dict.update({
                 "100": "ggh 0-jet, p_{T}^{H} [0,10]",
                 "101": "ggh 0-jet, p_{T}^{H} > 10",
@@ -220,8 +220,9 @@ def main(args):
                 "105": "ggh 2-jet, mjj [0,350], p_{T}^{H} [0,60]",
                 "106": "ggh 2-jet, mjj [0,350], p_{T}^{H} [60,120]",
                 "107": "ggh 2-jet, mjj [0,350], p_{T}^{H} [120,200]",
-                "108": "ggh p_{T}^{H} > 200",
-                "109": "ggh 2-jet, mjj > 350, p_{T}^{H} [0,200]",
+                "108": "ggh p_{T}^{H} [200,300]",
+                "109": "ggh p_{T}^{H} > 300",
+                "110": "ggh 2-jet, mjj > 350, p_{T}^{H} [0,200]",
                 "200": "qqh 2-jet low mjj",
                 "201": "qqh p_{T}^{H} > 200",
                 "202": "qqh vbftopo mjj > 700",
@@ -508,7 +509,7 @@ def main(args):
             plot.subplot(2).setYlabel("")
 
             # plot.scaleXTitleSize(0.8)
-            if args.categories == "stxs_stage1p1_14node":
+            if args.categories == "stxs_stage1p1_15node":
                 plot.subplot(2).setXlims(0.0, 1.0)
                 plot.subplot(0).setXlims(0.0, 1.0)
             # plot.scaleXLabelSize(0.8)

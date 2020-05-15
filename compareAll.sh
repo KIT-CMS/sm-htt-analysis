@@ -529,8 +529,8 @@ function runBackgroundGofs() {
     source gof/build_mask.sh
     mode=$1
     masksignals=false
-    if [[ $tag == *"cb_stage1p1"* ]]; then
-    	trainingstype="14node"
+    if [[ $tag == *"stage1p1"* ]]; then
+    	trainingstype="15node"
     else
     	trainingstype=$mode
     fi
@@ -643,8 +643,8 @@ function plotBlindedPreFitShapes() (
             STXS_SIGNALS="stxs_stage0"
             if [[ $tag == *"stage0"* ]]; then
                 CATEGORIES="stxs_stage0"
-            elif [[ $tag == *"cb_stage1"* ]]; then
-                CATEGORIES="stxs_stage1p1_14node"
+            elif [[ $tag == *"stage1p1"* ]]; then
+                CATEGORIES="stxs_stage1p1_15node"
             else
                 CATEGORIES="stxs_stage1p1"
             fi
@@ -688,8 +688,8 @@ function plotBlindedPostFitShapes(){
         channel="cmb"
         if [[ $tag == *"stage0"* ]]; then
             CATEGORIES="stxs_stage0"
-        elif [[ $tag == *"cb_stage1"* ]]; then
-            CATEGORIES="stxs_stage1p1_14node"
+        elif [[ $tag == *"stage1p1"* ]]; then
+            CATEGORIES="stxs_stage1p1_15node"
         else
             CATEGORIES="stxs_stage1p1"
         fi
