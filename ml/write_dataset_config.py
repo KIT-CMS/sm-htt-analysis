@@ -123,38 +123,50 @@ def main(args):
         if args.training_stxs1p1:
             classes_map = {
 # class1
-"ggH_GG2H_PTH_GT200125": "ggh_PTHGT200",
+"ggH_GG2H_PTH_200_300125": "ggh_PTH_200_300",
 # class2
-"ggH_GG2H_0J_PTH_0_10125": "ggh_0J",
-"ggH_GG2H_0J_PTH_GT10125": "ggh_0J",
+"ggH_GG2H_PTH_300_450125": "ggh_PTHGT300",
+"ggH_GG2H_PTH_450_650125": "ggh_PTHGT300",
+"ggH_GG2H_PTH_GT650125": "ggh_PTHGT300",
 # class3
-"ggH_GG2H_1J_PTH_0_60125": "ggh_1J_PTH0to120",
-"ggH_GG2H_1J_PTH_60_120125": "ggh_1J_PTH0to120",
+"ggH_GG2H_0J_PTH_0_10125": "ggh_0J_PTH_0_10",
 # class4
-"ggH_GG2H_1J_PTH_120_200125": "ggh_1J_PTH120to200",
+"ggH_GG2H_0J_PTH_GT10125": "ggh_0J_PTH_GT10",
 # class5
-"ggH_GG2H_GE2J_MJJ_0_350_PTH_0_60125": "ggh_2J",
-"ggH_GG2H_GE2J_MJJ_0_350_PTH_60_120125": "ggh_2J",
-"ggH_GG2H_GE2J_MJJ_0_350_PTH_120_200125": "ggh_2J",
+"ggH_GG2H_1J_PTH_0_60125": "ggh_1J_PTH0to60",
 # class6
-"ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25125": "vbftopo_lowmjj",
-"ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25125": "vbftopo_lowmjj",
-"qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25125": "vbftopo_lowmjj",
-"qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25125": "vbftopo_lowmjj",
+"ggH_GG2H_1J_PTH_60_120125": "ggh_1J_PTH60to120",
 # class7
-"ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25125": "vbftopo_highmjj",
-"ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25125": "vbftopo_highmjj",
-"qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25125": "vbftopo_highmjj",
-"qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25125": "vbftopo_highmjj",
+"ggH_GG2H_1J_PTH_120_200125": "ggh_1J_PTH120to200",
 # class8
+"ggH_GG2H_GE2J_MJJ_0_350_PTH_0_60125": "ggh_2J_PTH0to60",
+# class9
+"ggH_GG2H_GE2J_MJJ_0_350_PTH_60_120125": "ggh_2J_PTH60to120",
+# class10
+"ggH_GG2H_GE2J_MJJ_0_350_PTH_120_200125": "ggh_2J_PTH120to200",
+# class11
+"ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25125": "ggh_vbftopo",
+"ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25125": "ggh_vbftopo",
+"ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25125": "ggh_vbftopo",
+"ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25125": "ggh_vbftopo",
+# class12
+"qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25125": "qqh_vbftopo_lowmjj",
+"qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25125": "qqh_vbftopo_lowmjj",
+# class13
+"qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25125": "qqh_vbftopo_highmjj",
+"qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25125": "qqh_vbftopo_highmjj",
+# class14
 "qqH_QQ2HQQ_GE2J_MJJ_0_60125": "qqh_2J",
 "qqH_QQ2HQQ_GE2J_MJJ_60_120125": "qqh_2J",
 "qqH_QQ2HQQ_GE2J_MJJ_120_350125": "qqh_2J",
-# class9
+# class15
 "qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200125": "qqh_PTHGT200",
             }
             estimationMethodList = [
-ggHEstimation("ggH_GG2H_PTH_GT200125", era, args.base_path, channel),
+ggHEstimation("ggH_GG2H_PTH_200_300125", era, args.base_path, channel),
+ggHEstimation("ggH_GG2H_PTH_300_450125", era, args.base_path, channel),
+ggHEstimation("ggH_GG2H_PTH_450_650125", era, args.base_path, channel),
+ggHEstimation("ggH_GG2H_PTH_GT650125", era, args.base_path, channel),
 ggHEstimation("ggH_GG2H_0J_PTH_0_10125", era, args.base_path, channel),
 ggHEstimation("ggH_GG2H_0J_PTH_GT10125", era, args.base_path, channel),
 ggHEstimation("ggH_GG2H_1J_PTH_0_60125", era, args.base_path, channel),
