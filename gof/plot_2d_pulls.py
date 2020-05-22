@@ -159,7 +159,7 @@ def SetCorrMatrixPalette():
 def main(args):
     # Load additional needed input to set the binning and separate the variable string.
     variables_list = yaml.load(open("gof/variables.yaml"))["variables"]
-    binning = yaml.load(open("gof/{}_binning_new_v2.yaml".format(args.era)))["gof"][args.channel]
+    binning = yaml.load(open("gof/{}_binning.yaml".format(args.era)))["gof"][args.channel]
 
     hist = create_pull_histo(args.input, "test", args.era, args.channel)
 
@@ -178,10 +178,11 @@ def main(args):
     }
 
     c = root.TCanvas("c", "c", 600, 600)
-    hist.Draw("colz text")
+    hist.Draw("colz text MIN0")
     hist.GetZaxis().SetRangeUser(-2.5, 2.5)
     # root.gStyle.SetPalette(104)
     # root.TColor.InvertPalette()
+    root.gStyle.SetNumberContours(40)
     SetCorrMatrixPalette()
     # Extract variable names from 2D binning.
     xname, yname = split_variables(args.variable, variables_list)
