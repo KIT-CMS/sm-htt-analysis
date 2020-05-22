@@ -224,19 +224,19 @@ def add_2d_unrolled_binning(variables, binning):
                     expression += "+"
                 for c in range(len(bins1)-1):
                     bins.append(b * range_ + bins1[c+1])
-            jet_variables = ["mjj", "jdeta", "dijetpt", "ME_q2v1", "ME_q2v2"]
-            default_val = -10.
             # Add separate term shifting undefined values away from zero.
             # If this is not done the bin including zero is populated with all events
             # with default values.
             # This problem only occurs for variables taking integer values.
+            jet_variables = ["mjj", "jdeta", "dijetpt", "ME_q2v1", "ME_q2v2"]
+            default_val = -10.
             if v1 in ["njets", "nbtag"]:
                 if v2 in jet_variables:
-                    expression += "({DEF})*({VAR2<{MIN}+{VAR2}>{MAX})".format(
+                    expression += "({DEF})*(({VAR2}<{MIN})+({VAR2}>{MAX}))".format(
                             DEF=default_val,
                             VAR2=v2,
-                            LOW=bins2[0],
-                            HI=bins2[-1])
+                            MIN=bins2[0],
+                            MAX=bins2[-1])
 
             name = "{}_{}".format(v1, v2)
             binning[name] = {}
