@@ -27,4 +27,4 @@ rm -f $OUTPUT
 ulimit -s unlimited
 
 # Define signals to be fitted and produce workspace
-combineTool.py -M T2W -o ${OUTPUT} -i ${INPUT} | tee $LOGFILE
+combineTool.py -M T2W -o ${OUTPUT} -i ${INPUT} --channel-masks | tee $LOGFILE
