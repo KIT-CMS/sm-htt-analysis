@@ -6,6 +6,7 @@ variables:
     - njets
     - nbtag
     - m_sv_puppi
+    - ptvis
     - mjj
     - jdeta
     - m_vis
