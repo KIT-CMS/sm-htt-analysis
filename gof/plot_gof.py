@@ -60,6 +60,7 @@ def parse_arguments():
         "path", help="Path to directory with goodness of fit results")
     parser.add_argument("channel", type=str, help="Select channel to be plotted")
     parser.add_argument("era", type=str, help="Select era to be plotted")
+    parser.add_argument("-c", "--classification", type=str, default=None)
     return parser.parse_args()
 
 
@@ -79,9 +80,14 @@ def make_cmap(colors, position):
     return cmap
 
 
-def plot_2d(variables, results, filename):
+def plot_2d(variables, results, filename, t_coeff=None):
     plt.figure(figsize=(1.5 * len(variables), 1.0 * len(variables)))
     a = plt.gca()
+    if t_coeff is None:
+        pass
+    else:
+        max_coeff = max(map(float, t_coeff.values()))
+        marks_x, marks_y = [], []
     for i1 in range(len(variables)):
         for i2 in range(len(variables)):
             if results[i1, i2] == -1.0:
@@ -96,6 +102,19 @@ def plot_2d(variables, results, filename):
                 '{0:.2f}'.format(results[i1, i2]),
                 ha='center',
                 va='center')
+            if t_coeff is None:
+                pass
+            else:
+                if "{}, {}".format(variables[i1], variables[i2]) in t_coeff.keys():
+                    if float(t_coeff["{}, {}".format(variables[i1], variables[i2])]) > (0.1 * max_coeff):
+                        marks_x.append(i1 + 0.85)
+                        marks_y.append(i2 + 0.85)
+                elif "{}, {}".format(variables[i2], variables[i1]) in t_coeff.keys():
+                    if float(t_coeff["{}, {}".format(variables[i2], variables[i1])]) > (0.1 * max_coeff):
+                        marks_x.append(i1 + 0.85)
+                        marks_y.append(i2 + 0.85)
+                else:
+                    raise Exception("Variable combination {} {} not present in variables.".format(variables[i1], variables[i2]))
     cmap = make_cmap([(1, 0, 0), (1, 1, 0), (0, 1, 0)],
                      np.array([0.0, 0.05, 1.0]))
     cmap.set_bad(color='w')
@@ -112,6 +131,10 @@ def plot_2d(variables, results, filename):
         rotation='horizontal')
     plt.xlim(0, len(variables))
     plt.ylim(0, len(variables))
+    if t_coeff is None:
+        pass
+    else:
+        plt.plot(marks_x, marks_y, "b*", ms=12)
     plt.savefig(filename+".png", bbox_inches="tight")
     plt.savefig(filename+".pdf", bbox_inches="tight")
 
@@ -237,8 +260,16 @@ def main(args):
     # Plot 2D gof results for reduced variable set
     missing_2d_selected, results_2d_selected = search_results_2d(
         args.path, args.channel, args.era, variables_selected)
+    # Read in taylor coefficients.
+    if args.classification == "stage0":
+        taylor = yaml.load(open("all_eras_{}_final_stage0/combined_keras_taylor_ranking_signals_{}.yaml".format(args.channel, args.era), "r"))
+    elif args.classification == "stage1p1":
+        taylor = yaml.load(open("all_eras_{}_final_stage1p1/combined_keras_taylor_ranking_signals_{}.yaml".format(args.channel, args.era), "r"))
+    else:
+        taylor = None
     plot_2d(variables_selected, results_2d_selected,
-            "{}/{}_{}_gof_2d_selected".format(args.path, args.era, args.channel))
+            "{}/{}_{}_gof_2d_selected".format(args.path, args.era, args.channel),
+            taylor)
 
     logger.debug("Missing variables for 2D plot in channel %s:", args.channel)
     for variable in missing_2d_selected:
