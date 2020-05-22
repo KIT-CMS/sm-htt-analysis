@@ -21,7 +21,7 @@ do
     # Get test statistic value
     if [[ "$ALGO" == "saturated" ]]
     then
-        combine -M GoodnessOfFit -n Test.${ID} --algo=$ALGO -m $MASS -d $DATACARD --fixedSignalStrength=0
+        combine -M GoodnessOfFit -n Test.${ID} --algo=$ALGO -m $MASS -d $DATACARD --fixedSignalStrength=0 -v 3
     else
         combine -M GoodnessOfFit -n Test.${ID} --algo=$ALGO -m $MASS -d $DATACARD --plots --fixedSignalStrength=0
     fi
@@ -58,7 +58,7 @@ do
         higgsCombineTest.${ID}.GoodnessOfFit.mH$MASS.root higgsCombineTest.${ID}.GoodnessOfFit.mH$MASS.1239.root \
         --output output/gof/${ID}/gof_${ALGO}.json
 
-    mv higgsCombineTest.${ID}.GoodnessOfFit.mH$MASS.root higgsCombineTest.${ID}.GoodnessOfFit.mH$MASS.123?.root output/datacards/${ID}/
+    mv higgsCombineTest.${ID}.GoodnessOfFit.mH$MASS.root higgsCombineTest.${ID}.GoodnessOfFit.mH$MASS.123?.root output/datacards/${ID}-smhtt-gof/
     if [[ "$ALGO" == "saturated" ]]
     then
         mv output/gof/${ID}/gof_${ALGO}.json output/gof/${ID}/gof.json
@@ -69,7 +69,7 @@ do
     then
         plotGof.py --statistic $ALGO --mass $MASS.0 --output gof_${ALGO} output/gof/${ID}/gof_${ALGO}.json
         mv htt_${CHANNEL}_300_${ERA}gof_${ALGO}.p{df,ng} output/gof/${ID}/
-        ./gof/plot_gof_metrics.py -e $ERA -g $ALGO -o output/gof/${ID}/${ERA}_plots -i output/datacards/${ID}/higgsCombineTest.${ID}.GoodnessOfFit.mH$MASS.root
+        ./gof/plot_gof_metrics.py -e $ERA -g $ALGO -o output/gof/${ID}/${ERA}_plots -i output/datacards/${ID}-smhtt-gof/higgsCombineTest.${ID}.GoodnessOfFit.mH$MASS.root
     else
         plotGof.py --statistic $ALGO --mass $MASS.0 --output output/gof/${ID}/gof output/gof/${ID}/gof.json
     fi
