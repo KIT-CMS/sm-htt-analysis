@@ -97,6 +97,11 @@ def main(args):
                 "m_sv_puppi": "m_{#tau#tau (SV-Fit)}",
                 "m_ttvisbb":  "m_{#tau#tau(vis)bb}",
                 "nmssm_discriminator": "3D discriminator",
+                "mt_max_score": "NN Score",
+                "et_max_score": "NN Score",
+                "tt_max_score": "NN Score",
+                "em_max_score": "NN Score",
+
                 }
     c1 = ROOT.TCanvas()
     c1.cd()

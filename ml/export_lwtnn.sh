@@ -21,26 +21,21 @@ if [ ! -d "htt-ml/lwtnn" ]; then
     exit 1
 fi
 
-if [[ -z $3 ]]; then
-  tag="default"
-else
-  tag=$3
-fi
 
 if [[ $ERA == *"all"* ]]
 then
-  [[ -z $tag ]] && outdir=output/ml/all_eras_${CHANNEL} || outdir=output/ml/all_eras_${CHANNEL}_${tag}
+  outdir=output/ml/all_eras_${CHANNEL}
   for fold in 0 1;
   do
       python3 htt-ml/lwtnn/converters/keras2json.py ${outdir}/fold${fold}_keras_architecture.json  ${outdir}/fold${fold}_keras_variables.json ${outdir}/fold${fold}_keras_weights.h5 >  ${outdir}/fold${fold}_lwtnn.json
       for era in "2016" "2017" "2018"; do
-        [[ -z $tag ]] && era_out=output/ml/${era}_${CHANNEL} || era_out=output/ml/${era}_${CHANNEL}_${tag}
+        era_out=output/ml/${era}_${CHANNEL}
         cp ${outdir}/fold${fold}_lwtnn.json ${era_out}
         ls ${era_out}/fold${fold}_lwtnn.json -lrth
       done
   done
 else
-  [[ -z $tag ]] && outdir=output/ml/${ERA}_${CHANNEL} || outdir=output/ml/${ERA}_${CHANNEL}_${tag}
+  outdir=output/ml/${ERA}_${CHANNEL}
   for fold in 0 1;
   do
       python3 htt-ml/lwtnn/converters/keras2json.py ${outdir}/fold${fold}_keras_architecture.json  ${outdir}/fold${fold}_keras_variables.json ${outdir}/fold${fold}_keras_weights.h5 >  ${outdir}/fold${fold}_lwtnn.json

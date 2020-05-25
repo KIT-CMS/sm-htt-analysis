@@ -1,0 +1,295 @@
+
+fine_binning_Xclasses: &fine_binning_Xclasses
+    [[ 0.0, 0.3, 0.3], [0.3, 0.9, 0.1], [0.9, 1.0, 0.02]]
+
+ultrafine_binning_Xclasses: &ultrafine_binning_Xclasses
+    [[ 0.0, 0.1, 0.2, 0.3, 0.35, 0.4, 0.45, 
+    0.5, 0.51, 0.52, 0.53, 0.54, 0.55, 0.56, 0.57, 0.58, 0.59, 
+    0.6, 0.61, 0.62, 0.63, 0.64, 0.65, 0.66, 0.67, 0.68, 0.69, 
+    0.7, 0.71, 0.72, 0.73, 0.74, 0.75, 0.76, 0.77, 0.78, 0.79, 
+    0.8, 0.81, 0.82, 0.83, 0.84, 0.85, 0.86, 0.87, 0.88, 0.89, 
+    0.9, 0.91, 0.92, 0.93, 0.94, 0.95, 0.96, 0.97, 0.98, 0.99, 1.]]
+
+standard_binning_5classes: &standard_binning_5classes
+    [[0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0]]
+
+standard_binning_8classes: &standard_binning_8classes
+    [[0.125, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0]]
+
+# Define binning used in analysis
+analysis:
+  em:
+    ggh:          *fine_binning_Xclasses
+    qqh:          *fine_binning_Xclasses
+    ztt:          *fine_binning_Xclasses
+    tt:           *fine_binning_Xclasses
+    ss:           *fine_binning_Xclasses
+    ff:           *fine_binning_Xclasses
+    emb:           *fine_binning_Xclasses
+    misc:         *fine_binning_Xclasses
+    db:           *fine_binning_Xclasses
+    NMSSM_MH1001to1999_boosted: *fine_binning_Xclasses
+    NMSSM_MH1001to1999_unboosted: *fine_binning_Xclasses
+    NMSSM_MH2000toinfty_boosted: *fine_binning_Xclasses
+    NMSSM_MH2000toinfty_unboosted: *fine_binning_Xclasses
+    NMSSM_MH240to320_unboosted: *fine_binning_Xclasses
+    NMSSM_MH321to500_boosted: *fine_binning_Xclasses
+    NMSSM_MH321to500_unboosted: *fine_binning_Xclasses
+    NMSSM_MH501to700_boosted: *fine_binning_Xclasses
+    NMSSM_MH501to700_unboosted: *fine_binning_Xclasses
+    NMSSM_MH701to1000_boosted: *fine_binning_Xclasses
+    NMSSM_MH701to1000_unboosted: *fine_binning_Xclasses 
+  et:
+    ggh:          *fine_binning_Xclasses
+    qqh:          *fine_binning_Xclasses
+    ztt:          *fine_binning_Xclasses
+    zll:          *fine_binning_Xclasses
+    w:            *fine_binning_Xclasses
+    ff:           *fine_binning_Xclasses
+    emb:           *fine_binning_Xclasses
+    tt:           *fine_binning_Xclasses
+    ss:           *fine_binning_Xclasses
+    misc:         *fine_binning_Xclasses
+    NMSSM_MH1001to1999_boosted: *fine_binning_Xclasses
+    NMSSM_MH1001to1999_unboosted: *fine_binning_Xclasses
+    NMSSM_MH2000toinfty_boosted: *fine_binning_Xclasses
+    NMSSM_MH2000toinfty_unboosted: *fine_binning_Xclasses
+    NMSSM_MH240to320_unboosted: *fine_binning_Xclasses
+    NMSSM_MH321to500_boosted: *fine_binning_Xclasses
+    NMSSM_MH321to500_unboosted: *fine_binning_Xclasses
+    NMSSM_MH501to700_boosted: *fine_binning_Xclasses
+    NMSSM_MH501to700_unboosted: *fine_binning_Xclasses
+    NMSSM_MH701to1000_boosted: *fine_binning_Xclasses
+    NMSSM_MH701to1000_unboosted: *fine_binning_Xclasses 
+  mt:
+    ggh:          *fine_binning_Xclasses
+    qqh:          *fine_binning_Xclasses
+    ztt:          *fine_binning_Xclasses
+    zll:          *fine_binning_Xclasses
+    w:            *fine_binning_Xclasses
+    ff:           *fine_binning_Xclasses
+    emb:           *fine_binning_Xclasses
+    tt:           *fine_binning_Xclasses
+    ss:           *fine_binning_Xclasses
+    misc:         *fine_binning_Xclasses
+    NMSSM_MH1001to1999_boosted: *fine_binning_Xclasses
+    NMSSM_MH1001to1999_unboosted: *fine_binning_Xclasses
+    NMSSM_MH2000toinfty_boosted: *fine_binning_Xclasses
+    NMSSM_MH2000toinfty_unboosted: *fine_binning_Xclasses
+    NMSSM_MH240to320_unboosted: *fine_binning_Xclasses
+    NMSSM_MH321to500_boosted: *fine_binning_Xclasses
+    NMSSM_MH321to500_unboosted: *fine_binning_Xclasses
+    NMSSM_MH501to700_boosted: *fine_binning_Xclasses
+    NMSSM_MH501to700_unboosted: *fine_binning_Xclasses
+    NMSSM_MH701to1000_boosted: *fine_binning_Xclasses
+    NMSSM_MH701to1000_unboosted: *fine_binning_Xclasses 
+  tt:
+    ggh:          *fine_binning_Xclasses
+    qqh:          *fine_binning_Xclasses
+    ztt:          *fine_binning_Xclasses
+    ff:           *fine_binning_Xclasses
+    emb:           *fine_binning_Xclasses
+    noniso:       *fine_binning_Xclasses
+    misc:         *fine_binning_Xclasses
+    NMSSM_MH1001to1999_boosted: *ultrafine_binning_Xclasses
+    NMSSM_MH1001to1999_unboosted: *ultrafine_binning_Xclasses
+    NMSSM_MH2000toinfty_boosted: *ultrafine_binning_Xclasses
+    NMSSM_MH2000toinfty_unboosted: *ultrafine_binning_Xclasses
+    NMSSM_MH240to320_unboosted: *ultrafine_binning_Xclasses
+    NMSSM_MH321to500_boosted: *ultrafine_binning_Xclasses
+    NMSSM_MH321to500_unboosted: *ultrafine_binning_Xclasses
+    NMSSM_MH501to700_boosted: *ultrafine_binning_Xclasses
+    NMSSM_MH501to700_unboosted: *ultrafine_binning_Xclasses
+    NMSSM_MH701to1000_boosted: *ultrafine_binning_Xclasses
+    NMSSM_MH701to1000_unboosted: *ultrafine_binning_Xclasses 
+
+cutbased:
+    mt:
+        inclusive: "(1 > 0)              && (nbtag>-1)"
+        1btag: "(1 > 0)                  && (nbtag==1)"
+        1btag_background: "(1 > 0)       && (nbtag==1) && ((m_sv_puppi < 80) || (m_sv_puppi > 160)) && (pt_bb <= 150)"
+        1btag_signal_unboosted: "(1 > 0) && (nbtag==1) && ((m_sv_puppi >= 80) && (m_sv_puppi <= 160)) && (pt_bb <= 150)"
+        1btag_boosted: "(1 > 0)          && (nbtag==1) && (pt_bb > 150)"
+        2btag_background: "(1 > 0)       && (nbtag>1)  && ((m_sv_puppi < 80) || (m_sv_puppi > 160)) && (pt_bb <= 150)"
+        2btag_signal_unboosted: "(1 > 0) && (nbtag>1)  && ((m_sv_puppi >= 80) && (m_sv_puppi <= 160)) && (pt_bb <= 150)"
+        2btag_boosted: "(1 > 0)          && (nbtag>1)  && (pt_bb > 150)"
+        2btag: "    (1 > 0)              && (nbtag>1)"
+    et:
+        inclusive: "(1 > 0)              && (nbtag>-1)"       
+        1btag: "(1 > 0)                  && (nbtag==1)"
+        1btag_background: "(1 > 0)       && (nbtag==1) && ((m_sv_puppi < 80) || (m_sv_puppi > 160)) && (pt_bb <= 150)"
+        1btag_signal_unboosted: "(1 > 0) && (nbtag==1) && ((m_sv_puppi >= 80) && (m_sv_puppi <= 160)) && (pt_bb <= 150)"
+        1btag_boosted: "(1 > 0)          && (nbtag==1) && (pt_bb > 150)"
+        2btag_background: "(1 > 0)       && (nbtag>1)  && ((m_sv_puppi < 80) || (m_sv_puppi > 160)) && (pt_bb <= 150)"
+        2btag_signal_unboosted: "(1 > 0) && (nbtag>1)  && ((m_sv_puppi >= 80) && (m_sv_puppi <= 160)) && (pt_bb <= 150)"
+        2btag_boosted: "(1 > 0)          && (nbtag>1)  && (pt_bb > 150)"
+        2btag: "    (1 > 0)              && (nbtag>1)"
+    tt:
+        inclusive: "(1 > 0)              && (nbtag>-1)"
+        1btag: "(1 > 0)                  && (nbtag==1)"
+        1btag_background: "(1 > 0)       && (nbtag==1) && ((m_sv_puppi < 80) || (m_sv_puppi > 160)) && (pt_bb <= 150)"
+        1btag_signal_unboosted: "(1 > 0) && (nbtag==1) && ((m_sv_puppi >= 80) && (m_sv_puppi <= 160)) && (pt_bb <= 150)"
+        1btag_boosted: "(1 > 0)          && (nbtag==1) && (pt_bb > 150)"
+        2btag_background: "(1 > 0)       && (nbtag>1)  && ((m_sv_puppi < 80) || (m_sv_puppi > 160)) && (pt_bb <= 150)"
+        2btag_signal_unboosted: "(1 > 0) && (nbtag>1)  && ((m_sv_puppi >= 80) && (m_sv_puppi <= 160)) && (pt_bb <= 150)"
+        2btag_boosted: "(1 > 0)          && (nbtag>1)  && (pt_bb > 150)"
+        2btag: "    (1 > 0)              && (nbtag>1)"
+    em:
+        inclusive: "(1 > 0)              && (nbtag>-1)"
+        1btag_background: "(1 > 0)       && (nbtag==1) && ((m_sv_puppi < 80) || (m_sv_puppi > 160)) && (pt_bb <= 150)"
+        1btag_signal_unboosted: "(1 > 0) && (nbtag==1) && ((m_sv_puppi >= 80) && (m_sv_puppi <= 160)) && (pt_bb <= 150)"
+        1btag_boosted: "(1 > 0)          && (nbtag==1) && (pt_bb > 150)"
+        2btag_background: "(1 > 0)       && (nbtag>1)  && ((m_sv_puppi < 80) || (m_sv_puppi > 160)) && (pt_bb <= 150)"
+        2btag_signal_unboosted: "(1 > 0) && (nbtag>1)  && ((m_sv_puppi >= 80) && (m_sv_puppi <= 160)) && (pt_bb <= 150)"
+        2btag_boosted: "(1 > 0)          && (nbtag>1)  && (pt_bb > 150)"
+        2btag: "    (1 > 0)              && (nbtag>1)"
+
+# Binning for the quantities as final discriminators
+variables:
+    mt_max_score:
+      bins:     [[0.0, 0.3, 0.3], [0.3, 0.9, 0.1], [0.9, 1.0, 0.02]]
+      expression: "mt_max_score"
+    tt_max_score:
+      bins:     [[0.0, 0.3, 0.1], [0.3, 0.5, 0.02], [0.5, 1.0, 0.01]] 
+      expression: "tt_max_score"
+    et_max_score:
+      bins:     [[0.0, 0.3, 0.3], [0.3, 0.9, 0.1], [0.9, 1.0, 0.02]]
+      expression: "et_max_score"
+    em_max_score:
+      bins:     [[0.0, 0.3, 0.3], [0.3, 0.9, 0.1], [0.9, 1.0, 0.02]]
+      expression: "em_max_score"
+    DiTauDeltaR:
+      bins: [[0.0, 5.0, 0.1]]
+      expression: "DiTauDeltaR"
+    mTdileptonMET:
+      bins: [[0.0, 300.0, 4.0]]
+      expression: "mTdileptonMET"
+    mTdileptonMET_puppi:
+      bins: [[0.0, 300.0, 4.0]]
+      expression: "mTdileptonMET_puppi"
+    pZetaMissVis:
+      bins: [[-200.0, 200.0, 5.0]]
+      expression: "pZetaMissVis"
+    pZetaPuppiMissVis:
+      bins: [[-200.0, 200.0, 5.0]]
+      expression: "pZetaPuppiMissVis"
+    m_sv:
+      bins: [[0.0, 50.0, 50.0], [50.0, 250.0, 5.0], [250.0, 500.0, 10.0]]
+      expression: "m_sv"
+    pt_sv:
+      bins: [[0.0, 300.0, 5.0], [300.0, 500.0, 10.0], [500.0, 1000.0, 50.0]]
+      expression: "pt_sv"
+    m_sv_puppi:
+      bins: [[0.0, 250.0, 10.0], [250.0, 500.0, 25.0]]
+      expression: "m_sv_puppi"
+    pt_sv_puppi:
+      bins: [[0.0, 300.0, 5.0], [300.0, 500.0, 10.0], [500.0, 1000.0, 50.0]]
+      expression: "pt_sv_puppi"
+    m_vis:
+      bins: [[0.0, 250.0, 5.0]]
+      expression: "m_vis"
+    ME_vbf_vs_Z:
+      bins: [[0.0, 0.95, 0.25], [0.95, 1.0, 0.001]]
+      expression: "ME_vbf_vs_Z"
+    mt_tot:
+      bins: [[0.0, 50.0, 50.0], [50.0, 250.0, 5.0], [250.0, 500.0, 10.0], [500.0, 1000.0, 25.0], [1000.0, 2000.0, 50.0], [2000.0, 5000.0, 100.0]]
+      expression: "mt_tot"
+    mt_tot_puppi:
+      bins: [[0.0, 50.0, 50.0], [50.0, 250.0, 5.0], [250.0, 500.0, 10.0], [500.0, 1000.0, 25.0], [1000.0, 2000.0, 50.0], [2000.0, 5000.0, 100.0]]
+      expression: "mt_tot_puppi"
+    pt_1:
+      bins: [[0.0, 300.0, 5.0]]
+      expression: "pt_1"
+    pt_2:
+      bins: [[0.0, 300.0, 5.0]]
+      expression: "pt_2"
+    jpt_1:
+      bins: [[30.0, 300.0, 5.0]]
+      expression: "jpt_1"
+    jpt_2:
+      bins: [[30.0, 300.0, 5.0]]
+      expression: "jpt_2"
+    jeta_1:
+      bins: [[-4.8, 4.8, 0.2]]
+      expression: "jeta_1"
+    jeta_2:
+      bins: [[-4.8, 4.8, 0.2]]
+      expression: "jeta_2"
+    jdeta:
+      bins: [[0.0, 6.0, 0.2], [6.0, 10.0, 0.5]]
+      expression: "jdeta"
+    bdeta:
+      bins: [[0.0, 8.0, 0.2]]
+      expression: "abs(beta_1-beta_2)"
+    njets:
+      bins: [-0.5, 10.5, 1.0]
+      expression: "njets"
+    nbtag:
+      bins: [[-0.5, 6.5, 1.0]]
+      expression: "nbtag"
+    mt_1:
+      bins: [[0.0, 300.0, 5.0]]
+      expression: "mt_1"
+    mt_1_puppi:
+      bins: [[0.0, 300.0, 5.0]]
+      expression: "mt_1_puppi"
+    ptvis:
+      bins: [[0.0, 300.0, 5.0], [300.0, 500.0, 10.0], [500.0, 1000.0, 50.0]]
+      expression: "ptvis"
+    pt_tt:
+      bins: [[0.0, 300.0, 5.0], [300.0, 500.0, 10.0], [500.0, 1000.0, 50.0]]
+      expression: "pt_tt"
+    pt_ttjj:
+      bins: [[0.0, 300.0, 5.0]]
+      expression: "pt_ttjj"
+    pt_tt_puppi:
+      bins: [[0.0, 300.0, 5.0], [300.0, 500.0, 10.0], [500.0, 1000.0, 50.0]]
+      expression: "pt_tt_puppi"
+    pt_ttjj_puppi:
+      bins: [[0.0, 300.0, 5.0]]
+      expression: "pt_ttjj_puppi"
+    mjj:
+      bins: [[0.0, 700.0, 5.0], [700.0, 1500.0, 20.0], [1500.0, 4000.0, 100.0]]
+      expression: "mjj"
+    mbb:
+      bins: [[0.0, 300.0, 20.0], [300.0, 600.0, 25.0], [600.0, 1000.0, 100.0],  [1000.0, 2000.0, 500.0], [2000.0, 3000.0, 1000.0]]
+      expression: "mbb"
+    jm_1:
+      bins: [[0.0, 250.0, 10.0]]
+      expression: "jm_1"
+    m_ttvisbb:
+      bins: [[0.0, 100.0, 100.0], [100.0, 800.0, 25.0], [800.0, 1000.0, 100.0], [1000.0, 2000.0, 250.0], [2000.0,3000.0,500.0], [3000.0,4000.0,1000.0]]
+      expression: "m_ttvisbb"
+    m_ttbb:
+      bins: [[0.0, 800.0, 20.0], [800.0, 1000.0, 100.0], [1000.0, 2000.0, 250.0], [2000.0,3000.0,500.0], [3000.0,4000.0,1000.0]]
+      expression: "m_ttbb"
+    m_ttbb_puppi:
+      bins: [[0.0, 800.0, 20.0], [800.0, 1000.0, 100.0], [1000.0, 2000.0, 250.0], [2000.0,3000.0,500.0], [3000.0,4000.0,1000.0]]
+      expression: "m_ttbb_puppi"
+    dijetpt:
+      bins: [[0.0, 300.0, 5.0]]
+      expression: "dijetpt"
+    pt_bb:
+      bins: [[0.0, 800.0, 20.0], [800.0, 1000.0, 100.0], [1000.0, 2000.0, 500.0]]
+      expression: "pt_bb"
+    jetUsedFordiBJetSystemIsTrueBJet:
+      bins: [[-0.5, 1.5, 1.0]]
+      expression: "jetUsedFordiBJetSystemIsTrueBJet"
+    bJetIsTrueBJet:
+      bins: [[-0.5, 1.5, 1.0]]
+      expression: "bJetIsTrueBJet"
+    bJet2IsTrueBJet:
+      bins: [[-0.5, 1.5, 1.0]]
+      expression: "bJet2IsTrueBJet"
+    met:
+      bins: [[0.0, 300.0, 5.0]]
+      expression: "met"
+    puppimet:
+      bins: [[0.0, 300.0, 5.0]]
+      expression: "puppimet"
+    bpt_1:
+      bins: [[20.0, 300.0, 5.0]]
+      expression: "bpt_1"
+    bpt_2:
+      bins: [[20.0, 300.0, 5.0]]
+      expression: "bpt_2"

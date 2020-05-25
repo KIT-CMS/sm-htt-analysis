@@ -19,3 +19,5 @@ combineTool.py -M T2W -o "ws.root"  --PO '"map=^.*/NMSSM_'${MASS}'_125_'${MASS_H
 combineTool.py -m $MASS_H2 -M AsymptoticLimits --rAbsAcc 0 --rRelAcc 0.0005  --setParameters r_NMSSM_${MASS}_125_${MASS_H2}=0 --redefineSignalPOIs r_NMSSM_${MASS}_125_${MASS_H2} -d output_${CHANNEL}_nmssm_${VARIABLE}_${MASS}_${MASS_H2}/${ERA}/cmb/ws.root --there -n ".NMSSM_"${MASS}"_125_"  --task-name NMSSM_${MASS}_125_${MASS_H2} --parallel 2
 
 combineTool.py -M CollectLimits output_${CHANNEL}_nmssm_${VARIABLE}_${MASS}_${MASS_H2}/${ERA}/cmb/higgsCombine*.root --use-dirs -o nmssm_${CHANNEL}_${VARIABLE}_${MASS}_${MASS_H2}.json
+
+PostFitShapesFromWorkspace -d output_${CHANNEL}_nmssm_${VARIABLE}_${MASS}_${MASS_H2}/${ERA}/cmb/combined.txt.cmb -w output_${CHANNEL}_nmssm_${VARIABLE}_${MASS}_${MASS_H2}/${ERA}/cmb/ws.root -o output_${CHANNEL}_nmssm_${VARIABLE}_${MASS}_${MASS_H2}/${ERA}/cmb/prefitshape.root --freeze r_NMSSM_${MASS}_125_${MASS_H2}=0.1

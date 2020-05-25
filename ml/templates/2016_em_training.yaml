@@ -30,16 +30,20 @@ train_test_split: 0.75
 variables:
 - pt_1
 - pt_2
-- DiTauDeltaR
 - m_vis
 - ptvis
 - m_sv_puppi
-- ME_q2v1
-- ME_q2v2
+- nbtag
 - jpt_1
-- jpt_2
 - njets
 - jdeta
 - mjj
 - dijetpt
-- mTdileptonMET_puppi
+- bpt_1
+- bpt_2
+- jpt_2
+- diBJetMass
+- jetPlusBJetMass
+- diBJetPt
+- jetPlusBJetPt
+- m_ttvisbb

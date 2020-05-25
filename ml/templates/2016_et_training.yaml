@@ -41,7 +41,11 @@ variables:
 - jdeta
 - mjj
 - dijetpt
-- ME_q2v1
-- ME_q2v2
+- bpt_1
+- bpt_2
 - jpt_2
-- DiTauDeltaR
+- diBJetMass
+- jetPlusBJetMass
+- diBJetPt
+- jetPlusBJetPt
+- m_ttvisbb

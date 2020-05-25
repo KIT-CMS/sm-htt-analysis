@@ -51,6 +51,13 @@ def parse_arguments():
         help="Train on stage1p1 categories"
     )
     parser.add_argument(
+        "--nmssm",
+        required=False,
+        default=False,
+        action='store_true',
+        help="Train on NMSSM samples"
+    )
+    parser.add_argument(
         "--training_inclusive",
         required=False,
         default=False,
@@ -88,13 +95,13 @@ def main(args):
     output_config["event_branch"] = args.event_branch
     output_config["training_weight_branch"] = args.training_weight_branch
     logger.debug("Channel" + args.channel + " Era " + args.era)
-
+    
     # Define era
     if "2016" in args.era:
         from shape_producer.estimation_methods_2016 import DataEstimation, ggHEstimation, qqHEstimation, \
             ZTTEstimation, ZLEstimation, ZJEstimation, TTTEstimation, TTJEstimation, \
             ZTTEmbeddedEstimation, TTLEstimation, \
-            EWKZEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation
+            EWKZEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, NMSSMEstimation
 
         from shape_producer.era import Run2016
         era = Run2016(args.database)
@@ -102,7 +109,7 @@ def main(args):
     elif "2017" in args.era:
         from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZJEstimation, ZLEstimation, \
             TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, VVLEstimation, WEstimation, \
-            ggHEstimation, qqHEstimation, EWKZEstimation, ZTTEmbeddedEstimation
+            ggHEstimation, qqHEstimation, EWKZEstimation, ZTTEmbeddedEstimation, NMSSMEstimation
 
         from shape_producer.era import Run2017
         era = Run2017(args.database)
@@ -110,7 +117,7 @@ def main(args):
     elif "2018" in args.era:
         from shape_producer.estimation_methods_2018 import DataEstimation, ZTTEstimation, ZJEstimation, ZLEstimation, \
             TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, VVLEstimation, WEstimation, \
-            ggHEstimation, qqHEstimation, EWKZEstimation, ZTTEmbeddedEstimation
+            ggHEstimation, qqHEstimation, EWKZEstimation, ZTTEmbeddedEstimation, NMSSMEstimation
 
         from shape_producer.era import Run2018
         era = Run2018(args.database)
@@ -122,60 +129,109 @@ def main(args):
         ###### common processes
         if args.training_stxs1p1:
             classes_map = {
-# class1
-"ggH_GG2H_PTH_GT200125": "ggh_PTHGT200",
-# class2
-"ggH_GG2H_0J_PTH_0_10125": "ggh_0J",
-"ggH_GG2H_0J_PTH_GT10125": "ggh_0J",
-# class3
-"ggH_GG2H_1J_PTH_0_60125": "ggh_1J_PTH0to120",
-"ggH_GG2H_1J_PTH_60_120125": "ggh_1J_PTH0to120",
-# class4
-"ggH_GG2H_1J_PTH_120_200125": "ggh_1J_PTH120to200",
-# class5
-"ggH_GG2H_GE2J_MJJ_0_350_PTH_0_60125": "ggh_2J",
-"ggH_GG2H_GE2J_MJJ_0_350_PTH_60_120125": "ggh_2J",
-"ggH_GG2H_GE2J_MJJ_0_350_PTH_120_200125": "ggh_2J",
-# class6
-"ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25125": "vbftopo_lowmjj",
-"ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25125": "vbftopo_lowmjj",
-"qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25125": "vbftopo_lowmjj",
-"qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25125": "vbftopo_lowmjj",
-# class7
-"ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25125": "vbftopo_highmjj",
-"ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25125": "vbftopo_highmjj",
-"qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25125": "vbftopo_highmjj",
-"qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25125": "vbftopo_highmjj",
-# class8
-"qqH_QQ2HQQ_GE2J_MJJ_0_60125": "qqh_2J",
-"qqH_QQ2HQQ_GE2J_MJJ_60_120125": "qqh_2J",
-"qqH_QQ2HQQ_GE2J_MJJ_120_350125": "qqh_2J",
-# class9
-"qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200125": "qqh_PTHGT200",
+                # class1
+                "ggH_GG2H_PTH_GT200125": "ggh_PTHGT200",
+                # class2
+                "ggH_GG2H_0J_PTH_0_10125": "ggh_0J",
+                "ggH_GG2H_0J_PTH_GT10125": "ggh_0J",
+                # class3
+                "ggH_GG2H_1J_PTH_0_60125": "ggh_1J_PTH0to120",
+                "ggH_GG2H_1J_PTH_60_120125": "ggh_1J_PTH0to120",
+                # class4
+                "ggH_GG2H_1J_PTH_120_200125": "ggh_1J_PTH120to200",
+                # class5
+                "ggH_GG2H_GE2J_MJJ_0_350_PTH_0_60125": "ggh_2J",
+                "ggH_GG2H_GE2J_MJJ_0_350_PTH_60_120125": "ggh_2J",
+                "ggH_GG2H_GE2J_MJJ_0_350_PTH_120_200125": "ggh_2J",
+                # class6
+                "ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25125": "vbftopo_lowmjj",
+                "ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25125": "vbftopo_lowmjj",
+                "qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25125": "vbftopo_lowmjj",
+                "qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25125": "vbftopo_lowmjj",
+                # class7
+                "ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25125": "vbftopo_highmjj",
+                "ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25125": "vbftopo_highmjj",
+                "qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25125": "vbftopo_highmjj",
+                "qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25125": "vbftopo_highmjj",
+                # class8
+                "qqH_QQ2HQQ_GE2J_MJJ_0_60125": "qqh_2J",
+                "qqH_QQ2HQQ_GE2J_MJJ_60_120125": "qqh_2J",
+                "qqH_QQ2HQQ_GE2J_MJJ_120_350125": "qqh_2J",
+                # class9
+                "qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200125": "qqh_PTHGT200",
             }
+
+        
+
             estimationMethodList = [
-ggHEstimation("ggH_GG2H_PTH_GT200125", era, args.base_path, channel),
-ggHEstimation("ggH_GG2H_0J_PTH_0_10125", era, args.base_path, channel),
-ggHEstimation("ggH_GG2H_0J_PTH_GT10125", era, args.base_path, channel),
-ggHEstimation("ggH_GG2H_1J_PTH_0_60125", era, args.base_path, channel),
-ggHEstimation("ggH_GG2H_1J_PTH_60_120125", era, args.base_path, channel),
-ggHEstimation("ggH_GG2H_1J_PTH_120_200125", era, args.base_path, channel),
-ggHEstimation("ggH_GG2H_GE2J_MJJ_0_350_PTH_0_60125", era, args.base_path, channel),
-ggHEstimation("ggH_GG2H_GE2J_MJJ_0_350_PTH_60_120125", era, args.base_path, channel),
-ggHEstimation("ggH_GG2H_GE2J_MJJ_0_350_PTH_120_200125", era, args.base_path, channel),
-ggHEstimation("ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25125", era, args.base_path, channel),
-ggHEstimation("ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25125", era, args.base_path, channel),
-qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25125", era, args.base_path, channel),
-qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25125", era, args.base_path, channel),
-ggHEstimation("ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25125", era, args.base_path, channel),
-ggHEstimation("ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25125", era, args.base_path, channel),
-qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25125", era, args.base_path, channel),
-qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25125", era, args.base_path, channel),
-qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_0_60125", era, args.base_path, channel),
-qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_60_120125", era, args.base_path, channel),
-qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_120_350125", era, args.base_path, channel),
-qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200125", era, args.base_path, channel),
-            ]
+                ggHEstimation("ggH_GG2H_PTH_GT200125", era, args.base_path, channel),
+                ggHEstimation("ggH_GG2H_0J_PTH_0_10125", era, args.base_path, channel),
+                ggHEstimation("ggH_GG2H_0J_PTH_GT10125", era, args.base_path, channel),
+                ggHEstimation("ggH_GG2H_1J_PTH_0_60125", era, args.base_path, channel),
+                ggHEstimation("ggH_GG2H_1J_PTH_60_120125", era, args.base_path, channel),
+                ggHEstimation("ggH_GG2H_1J_PTH_120_200125", era, args.base_path, channel),
+                ggHEstimation("ggH_GG2H_GE2J_MJJ_0_350_PTH_0_60125", era, args.base_path, channel),
+                ggHEstimation("ggH_GG2H_GE2J_MJJ_0_350_PTH_60_120125", era, args.base_path, channel),
+                ggHEstimation("ggH_GG2H_GE2J_MJJ_0_350_PTH_120_200125", era, args.base_path, channel),
+                ggHEstimation("ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25125", era, args.base_path, channel),
+                ggHEstimation("ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25125", era, args.base_path, channel),
+                qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25125", era, args.base_path, channel),
+                qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25125", era, args.base_path, channel),
+                ggHEstimation("ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25125", era, args.base_path, channel),
+                ggHEstimation("ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25125", era, args.base_path, channel),
+                qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25125", era, args.base_path, channel),
+                qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25125", era, args.base_path, channel),
+                qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_0_60125", era, args.base_path, channel),
+                qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_60_120125", era, args.base_path, channel),
+                qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_120_350125", era, args.base_path, channel),
+                qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200125", era, args.base_path, channel),
+                ]
+
+        elif args.nmssm:
+            mass_dict = {
+                "heavy_mass": [240, 280, 320, 360, 400, 450, 500, 550, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2500, 3000],
+                "light_mass_coarse": [60, 70, 80, 90, 100, 120, 150, 170, 190, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800],
+                "light_mass_fine": [60, 70, 75, 80, 85, 90, 95, 100, 110, 120, 130, 150, 170, 190, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850],
+            }
+
+            nmssm_classes = [
+                    "NMSSM_MH240to320_unboosted",
+                    "NMSSM_MH321to500_unboosted",
+                    "NMSSM_MH321to500_boosted",
+                    "NMSSM_MH501to700_unboosted",
+                    "NMSSM_MH501to700_boosted",
+                    "NMSSM_MH701to1000_unboosted",
+                    "NMSSM_MH801to1000_boosted",
+                    "NMSSM_MH1001to1999_unboosted",
+                    "NMSSM_MH1001to1999_unboosted",
+                    "NMSSM_MH2000toinfty_boosted",
+                ]
+
+            upper_edge = {}
+            for nmssm_class in nmssm_classes:
+                upper_edge[nmssm_class] = int(nmssm_class.split("to")[1].split("_")[0]) if nmssm_class.split("to")[1].split("_")[0]!="infty" else 10000
+
+            classes_map = {}
+            estimationMethodList = []
+            for heavy_mass in mass_dict["heavy_mass"]:
+                light_masses = mass_dict["light_mass_coarse"] if heavy_mass > 1001 else mass_dict["light_mass_fine"]
+                for light_mass in light_masses:
+                    if light_mass+125>heavy_mass:
+                        continue
+                    thisclass = ""
+                    for nmssm_class in nmssm_classes:
+                        if heavy_mass<=upper_edge[nmssm_class]:
+                            thisclass = nmssm_class.replace("_boosted","").replace("_unboosted","")
+                            break
+                    if heavy_mass-light_mass-125>=150:
+                        thisclass += "_boosted"
+                    else:
+                        thisclass += "_unboosted"
+                    classes_map["NMSSM_{}_125_{}".format(heavy_mass,light_mass)] = thisclass
+                    estimationMethodList.append(NMSSMEstimation(era,args.base_path,channel,heavy_mass=heavy_mass,light_mass=light_mass))
+
+
+
         elif args.training_inclusive:
             classes_map = {
                 "ggH125": "xxh",
@@ -225,6 +281,12 @@ qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200125", era, args.base_path, cha
                 "ZL": "zll",
                 "VVL": "misc"
             })
+        if args.nmssm:
+            classes_map.update({
+                "TTL": "tt",
+                "ZL": "misc",
+                "VVL": "misc"
+            })            
         ######## Check for emb vs MC
         if args.training_z_estimation_method == "emb":
             classes_map["EMB"] = "emb"
@@ -315,7 +377,10 @@ qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200125", era, args.base_path, cha
 
     # Additional cuts
     additional_cuts = Cuts()
-    logger.warning("Use additional cuts for mt: %s", additional_cuts.expand())
+    if args.nmssm:
+        additional_cuts = Cuts(Cut("nbtag>0", "nbtag"))
+
+    logger.warning("Use additional cuts: %s", additional_cuts.expand())
 
     classes_map, estimationMethodList = estimationMethodAndClassMapGenerator()
 
@@ -392,7 +457,7 @@ qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200125", era, args.base_path, cha
                 str(f).replace(args.base_path.rstrip("/") + "/", "")
                 for f in estimation.get_files()
             ],
-            "cut_string": (estimation.get_cuts() + aiso.cuts).expand(),
+            "cut_string": (estimation.get_cuts() + aiso.cuts + additional_cuts).expand(),
             "weight_string": (estimation.get_weights() + additionalWeights).extract(),
             "class": classes_map[estimation.name]
         }

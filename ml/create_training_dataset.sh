@@ -4,36 +4,27 @@ set -e
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
 source utils/bashFunctionCollection.sh
-renice -n 10 $$
 
 ERA=$1
 CHANNEL=$2
-TAG=$3
 tauEstimation=emb
 jetEstimation=ff
 
-if [[ $TAG == *"mc_"* ]]; then
-  tauEstimation=mc
-fi
-if [[ $TAG == *"_mc"* ]]; then
-  jetEstimation=mc
-fi
-if [[ $TAG == *"stage0"* ]]; then
-  TRAIN_STAGE_ARG=""
-else
-  TRAIN_STAGE_ARG="--training_stxs1p1"
-fi
 
-source utils/setup_samples.sh $ERA $TAG
-outdir=output/ml/${ERA}_${CHANNEL}_${TAG}
+TRAIN_STAGE_ARG="--nmssm"
+
+source utils/setup_samples.sh $ERA 
+outdir=output/ml/${ERA}_${CHANNEL}
 [[ -d $outdir ]] ||  mkdir -p $outdir
 
 if [ ${CHANNEL} != 'em' ]
 then
-  FRIENDS="${SVFit_Friends} ${MELA_Friends} ${TauTriggers_Friends} ${FF_Friends}"
+  FRIENDS="${SVFit_Friends} ${TauTriggers_Friends} ${FF_Friends}"
 else
-  FRIENDS="${SVFit_Friends} ${MELA_Friends}"
+  FRIENDS="${SVFit_Friends}"
 fi
+
+
 # Write dataset config
 logandrun python ml/write_dataset_config.py \
   --era ${ERA} \

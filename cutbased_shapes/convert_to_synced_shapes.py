@@ -105,7 +105,7 @@ def main(args):
     # Loop over shapes of input ROOT file and create map of input/output names
     hist_map = {}
     histnames = sorted([k.GetName() for k in file_input.GetListOfKeys() if k.GetName() != "output_tree" and not
-        (k.GetName().strip("#").split("#")[1].endswith("_ss") or
+        ((k.GetName().strip("#").split("#")[1] != "em_ss" and k.GetName().strip("#").split("#")[1].endswith("_ss")) or
         k.GetName().strip("#").split("#")[1].endswith("_B") or
         k.GetName().strip("#").split("#")[1].endswith("_FF"))])
     properties_list = sorted(pool.map(create_properties, histnames))

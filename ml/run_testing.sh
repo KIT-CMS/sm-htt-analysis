@@ -11,7 +11,7 @@ else
   tag=$3
 fi
 
-[[ -z $tag ]] && outdir=output/ml/${era}_${channel} ||  outdir=output/ml/${era}_${channel}_${tag}
+[[ -z $tag ]] && outdir=output/ml/${era}_${channel} ||  outdir=output/ml/${era}_${channel}
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
