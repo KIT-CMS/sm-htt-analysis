@@ -22,6 +22,7 @@ SVFit_Friends_2016="$basedir/2016/friends/SVFit/"
 MELA_Friends_2016="$basedir/2016/friends/MELA/"
 FF_Friends_2016="$basedir/2016/friends/FakeFactors_final_v3/"
 TauTriggers_Friends_2016="$basedir/2016/friends/TauTriggers/"
+ElectronSF_Friends_2016="$basedir/2016/friends/ElectronSF/"
 
 # Samples Run2017
 ARTUS_OUTPUTS_2017="$basedir/2017/ntuples/"
@@ -30,6 +31,8 @@ SVFit_Friends_2017="$basedir/2017/friends/SVFit/"
 MELA_Friends_2017="$basedir/2017/friends/MELA/"
 FF_Friends_2017="$basedir/2017/friends/FakeFactors_final_v3/"
 TauTriggers_Friends_2017="$basedir/2017/friends/TauTriggers/"
+ElectronSF_Friends_2017="$basedir/2017/friends/ElectronSF/"
+
 
 # Samples Run2018
 ARTUS_OUTPUTS_2018="$basedir/2018/ntuples/"
@@ -38,7 +41,7 @@ SVFit_Friends_2018="$basedir/2018/friends/SVFit/"
 MELA_Friends_2018="$basedir/2018/friends/MELA/"
 FF_Friends_2018="$basedir/2018/friends/FakeFactors_final_v3/"
 TauTriggers_Friends_2018="$basedir/2018/friends/TauTriggers/"
-
+ElectronSF_Friends_2018="$basedir/2018/friends/ElectronSF/"
 
 # ERA handling
 if [[ $ERA == *"2016"* ]]
@@ -49,6 +52,7 @@ then
     MELA_Friends=$MELA_Friends_2016
     FF_Friends=$FF_Friends_2016
     TauTriggers_Friends=$TauTriggers_Friends_2016
+    ElectronSF_Friends=$ElectronSF_Friends_2016
 elif [[ $ERA == *"2017"* ]]
 then
     ARTUS_OUTPUTS=$ARTUS_OUTPUTS_2017
@@ -57,6 +61,7 @@ then
     MELA_Friends=$MELA_Friends_2017
     FF_Friends=$FF_Friends_2017
     TauTriggers_Friends=$TauTriggers_Friends_2017
+    ElectronSF_Friends=$ElectronSF_Friends_2017
 elif [[ $ERA == *"2018"* ]]
 then
     ARTUS_OUTPUTS=$ARTUS_OUTPUTS_2018
@@ -65,6 +70,7 @@ then
     MELA_Friends=$MELA_Friends_2018
     FF_Friends=$FF_Friends_2018
     TauTriggers_Friends=$TauTriggers_Friends_2018
+    ElectronSF_Friends=$ElectronSF_Friends_2018
 fi
 
 ### check if there are valid local friend trees and, if yes overwrite the friend tree directory with the local ones
@@ -78,8 +84,8 @@ fi
 
 ### channels specific friend tree.
 # Used for example to process the event channel without including the fakefactor friends
-ARTUS_FRIENDS_EM="$NNScore_Friends $SVFit_Friends $MELA_Friends"
-ARTUS_FRIENDS_ET="$NNScore_Friends $SVFit_Friends $MELA_Friends $TauTriggers_Friends"
+ARTUS_FRIENDS_EM="$NNScore_Friends $SVFit_Friends $MELA_Friends $ElectronSF_Friends"
+ARTUS_FRIENDS_ET="$NNScore_Friends $SVFit_Friends $MELA_Friends $TauTriggers_Friends $ElectronSF_Friends"
 ARTUS_FRIENDS_MT="$NNScore_Friends $SVFit_Friends $MELA_Friends $TauTriggers_Friends"
 ARTUS_FRIENDS_TT="$NNScore_Friends $SVFit_Friends $MELA_Friends $TauTriggers_Friends"
 ARTUS_FRIENDS="$NNScore_Friends $SVFit_Friends $MELA_Friends  $TauTriggers_Friends"
