@@ -137,6 +137,12 @@ def parse_arguments():
         default="{CHANNEL}_max_score",
         type=str,
         help="Variable chosen as final discriminator.")
+    parser.add_argument(
+        "--shape-group",
+        default="all",
+        choices=["backgrounds", "nmssm_low", "nmssm_high", "sm_signals", "all"],
+        type=str,
+        help="Process groups to be considered within the shape production")
     return parser.parse_args()
 
 def construct_variable(binning_configuration, variablename):
@@ -258,7 +264,6 @@ def main(args):
         cn_: trueTauBkgS | leptonTauBkgS | jetFakeBkgD[cn_]
         for cn_ in selectedChannels}
 
-
     mass_dict = {
         "heavy_mass": [240, 280, 320, 360, 400, 450, 500, 550, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2500, 3000],
         "light_mass_coarse": [60, 70, 80, 90, 100, 120, 150, 170, 190, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800],
@@ -273,159 +278,134 @@ def main(args):
     #             continue
     #         nmssm_nicks.append("NMSSM_{}_125_{}".format(heavy_mass,light_mass))
 
-    # defines the signal sets
     ww_nicks = {"ggHWW125", "qqHWW125", "WHWW125", "ZHWW125"}
 
     if args.gof_variable is None:
         signal_nicks = {
-            "WH125", "ZH125", "VH125", "ttH125"} | {
+            "ttH125"} | {
             ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict} | {
-            qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict} | ww_nicks
+            qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict}
     else:
-        signal_nicks = {"ggH125", "qqH125", "WH125", "ZH125", "ttH125"} | ww_nicks | set(nmssm_nicks)
+        if args.shape_group in ["all", "sm_signals"]:
+            signal_nicks = {"ggH125", "qqH125", "ttH125"}
 
 
-
-    pnameToEstD = {
-        "data_obs": DataEstimation,
-        "EMB": ZTTEmbeddedEstimation,
-        "TTT": TTTEstimation,
-        "VVT": VVTEstimation,
-        "ZTT": ZTTEstimation,
-        "TTL": TTLEstimation,
-        "VVL": VVLEstimation,
-        "ZL": ZLEstimation,
-        "W": WEstimation,
-        "VVJ": VVJEstimation,
-        "TTJ": TTJEstimation,
-        "ZJ": ZJEstimation,
-        "VH125": VHEstimation,
-        "WH125": WHEstimation,
-        "ZH125": ZHEstimation,
-        "ttH125": ttHEstimation,
-        "ggHWW125": ggHWWEstimation,
-        "qqHWW125": qqHWWEstimation,
-        "WHWW125": WHWWEstimation,
-        "ZHWW125": ZHWWEstimation,
-    }
+    if args.shape_group in ["all", "backgrounds"]:  
+        pnameToEstD = {
+            "data_obs": DataEstimation,
+            "EMB": ZTTEmbeddedEstimation,
+            "TTT": TTTEstimation,
+            "VVT": VVTEstimation,
+            "ZTT": ZTTEstimation,
+            "TTL": TTLEstimation,
+            "VVL": VVLEstimation,
+            "ZL": ZLEstimation,
+            "W": WEstimation,
+            "VVJ": VVJEstimation,
+            "TTJ": TTJEstimation,
+            "ZJ": ZJEstimation,
+        }
+    else:
+        pnameToEstD = {}
 
 
     # provide lambda functions, as the signal estimation methods need an
     # additional argument to determine the stxs class
-    pnameToEstD.update(
-        {ggH_htxs: lambda era, directory, channel,
-         friend_directory, ggH_htxs=ggH_htxs:
-         ggHEstimation(
-             ggH_htxs, era, directory, channel,
-             friend_directory=friend_directory)
-         for ggH_htxs in ggHEstimation.htxs_dict})
-    pnameToEstD.update(
-        {qqH_htxs: lambda era, directory, channel,
-         friend_directory, qqH_htxs=qqH_htxs:
-         qqHEstimation(
-             qqH_htxs, era, directory, channel,
-             friend_directory=friend_directory)
-         for qqH_htxs in qqHEstimation.htxs_dict})
+    if args.shape_group in ["all", "sm_signals"]:
+        pnameToEstD.update(
+            {ggH_htxs: lambda era, directory, channel,
+            friend_directory, ggH_htxs=ggH_htxs:
+            ggHEstimation(
+                ggH_htxs, era, directory, channel,
+                friend_directory=friend_directory)
+            for ggH_htxs in ggHEstimation.htxs_dict})
+        pnameToEstD.update(
+            {qqH_htxs: lambda era, directory, channel,
+            friend_directory, qqH_htxs=qqH_htxs:
+            qqHEstimation(
+                qqH_htxs, era, directory, channel,
+                friend_directory=friend_directory)
+            for qqH_htxs in qqHEstimation.htxs_dict})
+        pnameToEstD.update({"ttH125": ttHEstimation})
 
-
-
-    # Generate dict mapping processnames to proceses
+    # Generate dict mapping processnames to processes
     processes = {}
     for chname_, ch_ in selectedChannelsTuples:
-
-        pS_ = {"data_obs"} | signal_nicks | MCBkgDS[chname_] | {"EMB"}
-        processes[chname_] = {
-            processname: Process(
-                processname,
-                pnameToEstD[processname](
-                    era,
-                    directory,
-                    ch_,
-                    friend_directory=friend_directory[chname_])) for processname in
-            pS_}
-
-        nmssm_nicks = []
-        for heavy_mass in mass_dict["heavy_mass"]:
-            light_masses = mass_dict["light_mass_coarse"] if heavy_mass > 1001 else mass_dict["light_mass_fine"]
-            for light_mass in light_masses:
-                if light_mass+125>heavy_mass:
-                    continue
-                processes[chname_]["NMSSM_{}_125_{}".format(heavy_mass,light_mass)] = Process("NMSSM_{}_125_{}".format(heavy_mass,light_mass), NMSSMEstimation(era,directory,ch_,friend_directory=friend_directory[chname_],heavy_mass=heavy_mass,light_mass=light_mass))
-                nmssm_nicks.append("NMSSM_{}_125_{}".format(heavy_mass,light_mass))
-                # pnameToEstD["NMSSM_{}_125_{}".format(heavy_mass,light_mass)] = NMSSMEstimation(era,directory,channel_dict[args.era][ch],friend_directory=friend_directories[ch],heavy_mass=heavy_mass,light_mass=light_mass)
-    signal_nicks = signal_nicks | set(nmssm_nicks)
-
-    # Create the jetFakes process for all channels but em
-    for chname_, ch_ in selectedChannelsTuplesNoEM:
-        if chname_ != "tt":
-            est_ = NewFakeEstimationLT
-        else:
-            est_ = NewFakeEstimationTT
-        processes[chname_]["FAKES"] = Process(
-            "jetFakes",
-            est_(
-                era, directory, ch_,
-                [processes[chname_][process]
-                    for process in {"EMB"} | leptonTauBkgS],
-                processes[chname_]["data_obs"],
-                friend_directory=friend_directory[chname_] +
-                [args.fake_factor_friend_directory]))
-
-    # QCD process setup
+        processes[chname_] = {}
+    
     for chname_, ch_ in selectedChannelsTuples:
-        if chname_ != "tt":
-            est_ = QCDEstimation_SStoOS_MTETEM
-        else:
-            if args.era != "2016":
-                est_ = QCDEstimation_ABCD_TT_ISO2
+        if args.shape_group in [ "backgrounds"]:  
+            pS_ = {"data_obs"} | MCBkgDS[chname_] | {"EMB"}
+        elif args.shape_group in [ "sm_signals"]: 
+            pS_ = set(signal_nicks)
+        elif args.shape_group in [ "all"]:  
+            pS_ = {"data_obs"} | signal_nicks | MCBkgDS[chname_] | {"EMB"}
+        if args.shape_group in ["backgrounds", "sm_signals", "all"]:
+            processes[chname_] = {
+                processname: Process(
+                    processname,
+                    pnameToEstD[processname](
+                        era,
+                        directory,
+                        ch_,
+                        friend_directory=friend_directory[chname_])) for processname in
+                pS_}
+        if args.shape_group in [ "nmssm_low", "nmssm_high", "all"]:
+            nmssm_nicks = []
+            for heavy_mass in mass_dict["heavy_mass"]:
+                if args.shape_group in ["nmssm_low"] and heavy_mass>1001:
+                    continue
+                if args.shape_group in ["nmssm_high"] and heavy_mass<1001:
+                    continue
+                light_masses = mass_dict["light_mass_coarse"] if heavy_mass > 1001 else mass_dict["light_mass_fine"]
+                for light_mass in light_masses:
+                    if light_mass+125>heavy_mass:
+                        continue
+                    processes[chname_]["NMSSM_{}_125_{}".format(heavy_mass,light_mass)] = Process("NMSSM_{}_125_{}".format(heavy_mass,light_mass), NMSSMEstimation(era,directory,ch_,friend_directory=friend_directory[chname_],heavy_mass=heavy_mass,light_mass=light_mass))
+                    nmssm_nicks.append("NMSSM_{}_125_{}".format(heavy_mass,light_mass))
+                    # pnameToEstD["NMSSM_{}_125_{}".format(heavy_mass,light_mass)] = NMSSMEstimation(era,directory,channel_dict[args.era][ch],friend_directory=friend_directories[ch],heavy_mass=heavy_mass,light_mass=light_mass)
+    signal_nicks = signal_nicks | set(nmssm_nicks)
+    
+    if args.shape_group in ["all", "backgrounds"]: 
+        # Create the jetFakes process for all channels but em
+        for chname_, ch_ in selectedChannelsTuplesNoEM:
+            if chname_ != "tt":
+                est_ = NewFakeEstimationLT
             else:
-                est_ = QCDEstimationTT
-
-        qcdpS = {"EMB"} | leptonTauBkgS | jetFakeBkgD[chname_]
-
-        if chname_ in ["mt", "et"]:
-            if args.era == "2016":
-                extrapolation_factor = 1.17
-            else:
-                extrapolation_factor = 1.
-            # QCD extrapolation_factor 1.17 for mt et 2016
-            processes[chname_]["QCD"] = Process(
-                "QCD",
+                est_ = NewFakeEstimationTT
+            processes[chname_]["FAKES"] = Process(
+                "jetFakes",
                 est_(
                     era, directory, ch_,
-                    [processes[chname_][process] for process in qcdpS],
+                    [processes[chname_][process]
+                        for process in {"EMB"} | leptonTauBkgS],
                     processes[chname_]["data_obs"],
-                    friend_directory=friend_directory[chname_],
-                    extrapolation_factor=extrapolation_factor))
-        elif chname_ == "tt":
-            processes[chname_]["QCD"] = Process(
-                "QCD",
-                est_(
-                    era, directory, ch_,
-                    [processes[chname_][process] for process in qcdpS],
-                    processes[chname_]["data_obs"],
-                    friend_directory=friend_directory[chname_]))
-        else:
-            # qcd_weight = Weight("em_qcd_osss_binned_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight")
+                    friend_directory=friend_directory[chname_] +
+                    [args.fake_factor_friend_directory]))
 
-            if args.era == "2016":
-                qcd_aisoiso_string = "*(1.0*(pt_1>=150.0||pt_2>=150.0)+0.889611*(pt_1>=0.0&&pt_1<20.0&&pt_2>=20.0&&pt_2<25.0)+0.906323*(pt_1>=0.0&&pt_1<20.0&&pt_2>=25.0&&pt_2<30.0)+0.838287*(pt_1>=0.0&&pt_1<20.0&&pt_2>=30.0&&pt_2<150.0)+0.900872*(pt_1>=20.0&&pt_1<25.0&&pt_2>=0.0&&pt_2<20.0)+0.918876*(pt_1>=20.0&&pt_1<25.0&&pt_2>=20.0&&pt_2<25.0)+0.857904*(pt_1>=20.0&&pt_1<25.0&&pt_2>=25.0&&pt_2<30.0)+0.833439*(pt_1>=20.0&&pt_1<25.0&&pt_2>=30.0&&pt_2<150.0)+0.956127*(pt_1>=25.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<20.0)+0.863690*(pt_1>=25.0&&pt_1<30.0&&pt_2>=20.0&&pt_2<25.0)+1.060816*(pt_1>=25.0&&pt_1<30.0&&pt_2>=25.0&&pt_2<30.0)+0.938181*(pt_1>=25.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<150.0)+0.993274*(pt_1>=30.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<20.0)+0.936018*(pt_1>=30.0&&pt_1<150.0&&pt_2>=20.0&&pt_2<25.0)+0.864106*(pt_1>=30.0&&pt_1<150.0&&pt_2>=25.0&&pt_2<30.0)+0.954102*(pt_1>=30.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<150.0))"
-                qcd_weight_string = "((-0.1138*(njets==0)+(-0.07938)*(njets==1)+(-0.02602)*(njets>=2))*((DiTauDeltaR-3.0)**2.0-3.0)+(-0.2287*(njets==0)+(-0.3251)*(njets==1)+(-0.2802)*(njets>=2))*(DiTauDeltaR-3.0)+(1.956*(njets==0)+(1.890)*(njets==1)+(1.753)*(njets>=2)))*(1.0*(pt_1>=150.0||pt_2>=150.0)+1.132149*(pt_1>=0.0&&pt_1<24.0&&pt_2>=24.0&&pt_2<30.0)+1.118163*(pt_1>=0.0&&pt_1<24.0&&pt_2>=30.0&&pt_2<40.0)+1.136445*(pt_1>=0.0&&pt_1<24.0&&pt_2>=40.0&&pt_2<50.0)+1.155444*(pt_1>=0.0&&pt_1<24.0&&pt_2>=50.0&&pt_2<150.0)+1.004560*(pt_1>=24.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<24.0)+1.055802*(pt_1>=24.0&&pt_1<30.0&&pt_2>=24.0&&pt_2<30.0)+1.171731*(pt_1>=24.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<40.0)+1.383141*(pt_1>=24.0&&pt_1<30.0&&pt_2>=40.0&&pt_2<50.0)+1.291567*(pt_1>=24.0&&pt_1<30.0&&pt_2>=50.0&&pt_2<150.0)+0.921943*(pt_1>=30.0&&pt_1<40.0&&pt_2>=0.0&&pt_2<24.0)+1.078412*(pt_1>=30.0&&pt_1<40.0&&pt_2>=24.0&&pt_2<30.0)+1.096989*(pt_1>=30.0&&pt_1<40.0&&pt_2>=30.0&&pt_2<40.0)+1.196003*(pt_1>=30.0&&pt_1<40.0&&pt_2>=40.0&&pt_2<50.0)+1.275846*(pt_1>=30.0&&pt_1<40.0&&pt_2>=50.0&&pt_2<150.0)+0.885169*(pt_1>=40.0&&pt_1<50.0&&pt_2>=0.0&&pt_2<24.0)+0.820467*(pt_1>=40.0&&pt_1<50.0&&pt_2>=24.0&&pt_2<30.0)+1.006021*(pt_1>=40.0&&pt_1<50.0&&pt_2>=30.0&&pt_2<40.0)+0.846260*(pt_1>=40.0&&pt_1<50.0&&pt_2>=40.0&&pt_2<50.0)+0.890728*(pt_1>=40.0&&pt_1<50.0&&pt_2>=50.0&&pt_2<150.0)+0.801205*(pt_1>=50.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<24.0)+0.891447*(pt_1>=50.0&&pt_1<150.0&&pt_2>=24.0&&pt_2<30.0)+0.808511*(pt_1>=50.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<40.0)+0.799928*(pt_1>=50.0&&pt_1<150.0&&pt_2>=40.0&&pt_2<50.0)+1.080628*(pt_1>=50.0&&pt_1<150.0&&pt_2>=50.0&&pt_2<150.0))%s"%qcd_aisoiso_string
-            elif args.era == "2017":
-                qcd_aisoiso_string = "*(1.0*(pt_1>=150.0||pt_2>=150.0)+0.878304*(pt_1>=0.0&&pt_1<20.0&&pt_2>=20.0&&pt_2<25.0)+0.916277*(pt_1>=0.0&&pt_1<20.0&&pt_2>=25.0&&pt_2<30.0)+0.853211*(pt_1>=0.0&&pt_1<20.0&&pt_2>=30.0&&pt_2<150.0)+0.920458*(pt_1>=20.0&&pt_1<25.0&&pt_2>=0.0&&pt_2<20.0)+0.872271*(pt_1>=20.0&&pt_1<25.0&&pt_2>=20.0&&pt_2<25.0)+0.957983*(pt_1>=20.0&&pt_1<25.0&&pt_2>=25.0&&pt_2<30.0)+0.910988*(pt_1>=20.0&&pt_1<25.0&&pt_2>=30.0&&pt_2<150.0)+0.935900*(pt_1>=25.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<20.0)+0.903964*(pt_1>=25.0&&pt_1<30.0&&pt_2>=20.0&&pt_2<25.0)+0.888112*(pt_1>=25.0&&pt_1<30.0&&pt_2>=25.0&&pt_2<30.0)+0.872235*(pt_1>=25.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<150.0)+0.927075*(pt_1>=30.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<20.0)+0.983504*(pt_1>=30.0&&pt_1<150.0&&pt_2>=20.0&&pt_2<25.0)+0.921924*(pt_1>=30.0&&pt_1<150.0&&pt_2>=25.0&&pt_2<30.0)+0.881401*(pt_1>=30.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<150.0))"
-                qcd_weight_string = "((-0.1430*(njets==0)+(-0.05544)*(njets==1)+(0.03128)*(njets>=2))*((DiTauDeltaR-3.0)**2.0-3.0)+(-0.1949*(njets==0)+(-0.3685)*(njets==1)+(-0.3531)*(njets>=2))*(DiTauDeltaR-3.0)+(1.928*(njets==0)+(2.020)*(njets==1)+(1.855)*(njets>=2)))*(1.0*(pt_1>=150.0||pt_2>=150.0)+1.155767*(pt_1>=0.0&&pt_1<24.0&&pt_2>=24.0&&pt_2<30.0)+1.136188*(pt_1>=0.0&&pt_1<24.0&&pt_2>=30.0&&pt_2<40.0)+1.162606*(pt_1>=0.0&&pt_1<24.0&&pt_2>=40.0&&pt_2<50.0)+1.166626*(pt_1>=0.0&&pt_1<24.0&&pt_2>=50.0&&pt_2<150.0)+0.988366*(pt_1>=24.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<24.0)+1.198820*(pt_1>=24.0&&pt_1<30.0&&pt_2>=24.0&&pt_2<30.0)+1.134818*(pt_1>=24.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<40.0)+1.032797*(pt_1>=24.0&&pt_1<30.0&&pt_2>=40.0&&pt_2<50.0)+1.089074*(pt_1>=24.0&&pt_1<30.0&&pt_2>=50.0&&pt_2<150.0)+0.917948*(pt_1>=30.0&&pt_1<40.0&&pt_2>=0.0&&pt_2<24.0)+1.042672*(pt_1>=30.0&&pt_1<40.0&&pt_2>=24.0&&pt_2<30.0)+0.973973*(pt_1>=30.0&&pt_1<40.0&&pt_2>=30.0&&pt_2<40.0)+1.159536*(pt_1>=30.0&&pt_1<40.0&&pt_2>=40.0&&pt_2<50.0)+1.109988*(pt_1>=30.0&&pt_1<40.0&&pt_2>=50.0&&pt_2<150.0)+0.877440*(pt_1>=40.0&&pt_1<50.0&&pt_2>=0.0&&pt_2<24.0)+0.900561*(pt_1>=40.0&&pt_1<50.0&&pt_2>=24.0&&pt_2<30.0)+1.025510*(pt_1>=40.0&&pt_1<50.0&&pt_2>=30.0&&pt_2<40.0)+0.969752*(pt_1>=40.0&&pt_1<50.0&&pt_2>=40.0&&pt_2<50.0)+1.526057*(pt_1>=40.0&&pt_1<50.0&&pt_2>=50.0&&pt_2<150.0)+0.803902*(pt_1>=50.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<24.0)+0.802070*(pt_1>=50.0&&pt_1<150.0&&pt_2>=24.0&&pt_2<30.0)+0.787607*(pt_1>=50.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<40.0)+1.210405*(pt_1>=50.0&&pt_1<150.0&&pt_2>=40.0&&pt_2<50.0)+0.861337*(pt_1>=50.0&&pt_1<150.0&&pt_2>=50.0&&pt_2<150.0))%s"%qcd_aisoiso_string
-            elif args.era == "2018":
-                qcd_aisoiso_string = "*(1.0*(pt_1>=150.0||pt_2>=150.0)+0.847702*(pt_1>=0.0&&pt_1<20.0&&pt_2>=20.0&&pt_2<25.0)+0.878120*(pt_1>=0.0&&pt_1<20.0&&pt_2>=25.0&&pt_2<30.0)+0.887496*(pt_1>=0.0&&pt_1<20.0&&pt_2>=30.0&&pt_2<150.0)+0.874935*(pt_1>=20.0&&pt_1<25.0&&pt_2>=0.0&&pt_2<20.0)+0.829801*(pt_1>=20.0&&pt_1<25.0&&pt_2>=20.0&&pt_2<25.0)+0.922954*(pt_1>=20.0&&pt_1<25.0&&pt_2>=25.0&&pt_2<30.0)+0.954270*(pt_1>=20.0&&pt_1<25.0&&pt_2>=30.0&&pt_2<150.0)+0.935953*(pt_1>=25.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<20.0)+0.908383*(pt_1>=25.0&&pt_1<30.0&&pt_2>=20.0&&pt_2<25.0)+0.927804*(pt_1>=25.0&&pt_1<30.0&&pt_2>=25.0&&pt_2<30.0)+0.917511*(pt_1>=25.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<150.0)+0.983508*(pt_1>=30.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<20.0)+0.952974*(pt_1>=30.0&&pt_1<150.0&&pt_2>=20.0&&pt_2<25.0)+0.945860*(pt_1>=30.0&&pt_1<150.0&&pt_2>=25.0&&pt_2<30.0)+0.858417*(pt_1>=30.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<150.0))"
-                qcd_weight_string = "((-0.1249*(njets==0)+(-0.04374)*(njets==1)+(-0.00606)*(njets>=2))*((DiTauDeltaR-3.0)**2.0-3.0)+(-0.1644*(njets==0)+(-0.3172)*(njets==1)+(-0.3627)*(njets>=2))*(DiTauDeltaR-3.0)+(1.963*(njets==0)+(2.014)*(njets==1)+(1.757)*(njets>=2)))*(1.0*(pt_1>=150.0||pt_2>=150.0)+1.163939*(pt_1>=0.0&&pt_1<24.0&&pt_2>=24.0&&pt_2<30.0)+1.128795*(pt_1>=0.0&&pt_1<24.0&&pt_2>=30.0&&pt_2<40.0)+1.048506*(pt_1>=0.0&&pt_1<24.0&&pt_2>=40.0&&pt_2<50.0)+1.160265*(pt_1>=0.0&&pt_1<24.0&&pt_2>=50.0&&pt_2<150.0)+1.006878*(pt_1>=24.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<24.0)+1.078046*(pt_1>=24.0&&pt_1<30.0&&pt_2>=24.0&&pt_2<30.0)+1.080539*(pt_1>=24.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<40.0)+1.079124*(pt_1>=24.0&&pt_1<30.0&&pt_2>=40.0&&pt_2<50.0)+1.082814*(pt_1>=24.0&&pt_1<30.0&&pt_2>=50.0&&pt_2<150.0)+0.930821*(pt_1>=30.0&&pt_1<40.0&&pt_2>=0.0&&pt_2<24.0)+1.077226*(pt_1>=30.0&&pt_1<40.0&&pt_2>=24.0&&pt_2<30.0)+1.030334*(pt_1>=30.0&&pt_1<40.0&&pt_2>=30.0&&pt_2<40.0)+0.962814*(pt_1>=30.0&&pt_1<40.0&&pt_2>=40.0&&pt_2<50.0)+0.892101*(pt_1>=30.0&&pt_1<40.0&&pt_2>=50.0&&pt_2<150.0)+0.882728*(pt_1>=40.0&&pt_1<50.0&&pt_2>=0.0&&pt_2<24.0)+0.876885*(pt_1>=40.0&&pt_1<50.0&&pt_2>=24.0&&pt_2<30.0)+0.938413*(pt_1>=40.0&&pt_1<50.0&&pt_2>=30.0&&pt_2<40.0)+0.966243*(pt_1>=40.0&&pt_1<50.0&&pt_2>=40.0&&pt_2<50.0)+1.007048*(pt_1>=40.0&&pt_1<50.0&&pt_2>=50.0&&pt_2<150.0)+0.773635*(pt_1>=50.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<24.0)+0.881284*(pt_1>=50.0&&pt_1<150.0&&pt_2>=24.0&&pt_2<30.0)+0.812427*(pt_1>=50.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<40.0)+0.820854*(pt_1>=50.0&&pt_1<150.0&&pt_2>=40.0&&pt_2<50.0)+0.937087*(pt_1>=50.0&&pt_1<150.0&&pt_2>=50.0&&pt_2<150.0))%s"%qcd_aisoiso_string
-            qcd_weight = Weight(qcd_weight_string, "qcd_weight")
-            processes[chname_]["QCD"] = Process(
-                "QCD",
-                est_(
-                    era, directory, ch_,
-                    [processes[chname_][process] for process in qcdpS],
-                    processes[chname_]["data_obs"],
-                    friend_directory=friend_directory[chname_],
-                    qcd_weight=qcd_weight))
+        # QCD process setup
+        for chname_, ch_ in selectedChannelsTuples:  
+            if chname_ == "em":
+		# qcd_weight = Weight("em_qcd_osss_binned_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight")
+
+                if args.era == "2016":
+                    qcd_aisoiso_string = "*(1.0*(pt_1>=150.0||pt_2>=150.0)+0.889611*(pt_1>=0.0&&pt_1<20.0&&pt_2>=20.0&&pt_2<25.0)+0.906323*(pt_1>=0.0&&pt_1<20.0&&pt_2>=25.0&&pt_2<30.0)+0.838287*(pt_1>=0.0&&pt_1<20.0&&pt_2>=30.0&&pt_2<150.0)+0.900872*(pt_1>=20.0&&pt_1<25.0&&pt_2>=0.0&&pt_2<20.0)+0.918876*(pt_1>=20.0&&pt_1<25.0&&pt_2>=20.0&&pt_2<25.0)+0.857904*(pt_1>=20.0&&pt_1<25.0&&pt_2>=25.0&&pt_2<30.0)+0.833439*(pt_1>=20.0&&pt_1<25.0&&pt_2>=30.0&&pt_2<150.0)+0.956127*(pt_1>=25.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<20.0)+0.863690*(pt_1>=25.0&&pt_1<30.0&&pt_2>=20.0&&pt_2<25.0)+1.060816*(pt_1>=25.0&&pt_1<30.0&&pt_2>=25.0&&pt_2<30.0)+0.938181*(pt_1>=25.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<150.0)+0.993274*(pt_1>=30.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<20.0)+0.936018*(pt_1>=30.0&&pt_1<150.0&&pt_2>=20.0&&pt_2<25.0)+0.864106*(pt_1>=30.0&&pt_1<150.0&&pt_2>=25.0&&pt_2<30.0)+0.954102*(pt_1>=30.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<150.0))"
+                    qcd_weight_string = "((-0.1138*(njets==0)+(-0.07938)*(njets==1)+(-0.02602)*(njets>=2))*((DiTauDeltaR-3.0)**2.0-3.0)+(-0.2287*(njets==0)+(-0.3251)*(njets==1)+(-0.2802)*(njets>=2))*(DiTauDeltaR-3.0)+(1.956*(njets==0)+(1.890)*(njets==1)+(1.753)*(njets>=2)))*(1.0*(pt_1>=150.0||pt_2>=150.0)+1.132149*(pt_1>=0.0&&pt_1<24.0&&pt_2>=24.0&&pt_2<30.0)+1.118163*(pt_1>=0.0&&pt_1<24.0&&pt_2>=30.0&&pt_2<40.0)+1.136445*(pt_1>=0.0&&pt_1<24.0&&pt_2>=40.0&&pt_2<50.0)+1.155444*(pt_1>=0.0&&pt_1<24.0&&pt_2>=50.0&&pt_2<150.0)+1.004560*(pt_1>=24.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<24.0)+1.055802*(pt_1>=24.0&&pt_1<30.0&&pt_2>=24.0&&pt_2<30.0)+1.171731*(pt_1>=24.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<40.0)+1.383141*(pt_1>=24.0&&pt_1<30.0&&pt_2>=40.0&&pt_2<50.0)+1.291567*(pt_1>=24.0&&pt_1<30.0&&pt_2>=50.0&&pt_2<150.0)+0.921943*(pt_1>=30.0&&pt_1<40.0&&pt_2>=0.0&&pt_2<24.0)+1.078412*(pt_1>=30.0&&pt_1<40.0&&pt_2>=24.0&&pt_2<30.0)+1.096989*(pt_1>=30.0&&pt_1<40.0&&pt_2>=30.0&&pt_2<40.0)+1.196003*(pt_1>=30.0&&pt_1<40.0&&pt_2>=40.0&&pt_2<50.0)+1.275846*(pt_1>=30.0&&pt_1<40.0&&pt_2>=50.0&&pt_2<150.0)+0.885169*(pt_1>=40.0&&pt_1<50.0&&pt_2>=0.0&&pt_2<24.0)+0.820467*(pt_1>=40.0&&pt_1<50.0&&pt_2>=24.0&&pt_2<30.0)+1.006021*(pt_1>=40.0&&pt_1<50.0&&pt_2>=30.0&&pt_2<40.0)+0.846260*(pt_1>=40.0&&pt_1<50.0&&pt_2>=40.0&&pt_2<50.0)+0.890728*(pt_1>=40.0&&pt_1<50.0&&pt_2>=50.0&&pt_2<150.0)+0.801205*(pt_1>=50.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<24.0)+0.891447*(pt_1>=50.0&&pt_1<150.0&&pt_2>=24.0&&pt_2<30.0)+0.808511*(pt_1>=50.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<40.0)+0.799928*(pt_1>=50.0&&pt_1<150.0&&pt_2>=40.0&&pt_2<50.0)+1.080628*(pt_1>=50.0&&pt_1<150.0&&pt_2>=50.0&&pt_2<150.0))%s"%qcd_aisoiso_string
+                elif args.era == "2017":
+                    qcd_aisoiso_string = "*(1.0*(pt_1>=150.0||pt_2>=150.0)+0.878304*(pt_1>=0.0&&pt_1<20.0&&pt_2>=20.0&&pt_2<25.0)+0.916277*(pt_1>=0.0&&pt_1<20.0&&pt_2>=25.0&&pt_2<30.0)+0.853211*(pt_1>=0.0&&pt_1<20.0&&pt_2>=30.0&&pt_2<150.0)+0.920458*(pt_1>=20.0&&pt_1<25.0&&pt_2>=0.0&&pt_2<20.0)+0.872271*(pt_1>=20.0&&pt_1<25.0&&pt_2>=20.0&&pt_2<25.0)+0.957983*(pt_1>=20.0&&pt_1<25.0&&pt_2>=25.0&&pt_2<30.0)+0.910988*(pt_1>=20.0&&pt_1<25.0&&pt_2>=30.0&&pt_2<150.0)+0.935900*(pt_1>=25.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<20.0)+0.903964*(pt_1>=25.0&&pt_1<30.0&&pt_2>=20.0&&pt_2<25.0)+0.888112*(pt_1>=25.0&&pt_1<30.0&&pt_2>=25.0&&pt_2<30.0)+0.872235*(pt_1>=25.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<150.0)+0.927075*(pt_1>=30.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<20.0)+0.983504*(pt_1>=30.0&&pt_1<150.0&&pt_2>=20.0&&pt_2<25.0)+0.921924*(pt_1>=30.0&&pt_1<150.0&&pt_2>=25.0&&pt_2<30.0)+0.881401*(pt_1>=30.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<150.0))"
+                    qcd_weight_string = "((-0.1430*(njets==0)+(-0.05544)*(njets==1)+(0.03128)*(njets>=2))*((DiTauDeltaR-3.0)**2.0-3.0)+(-0.1949*(njets==0)+(-0.3685)*(njets==1)+(-0.3531)*(njets>=2))*(DiTauDeltaR-3.0)+(1.928*(njets==0)+(2.020)*(njets==1)+(1.855)*(njets>=2)))*(1.0*(pt_1>=150.0||pt_2>=150.0)+1.155767*(pt_1>=0.0&&pt_1<24.0&&pt_2>=24.0&&pt_2<30.0)+1.136188*(pt_1>=0.0&&pt_1<24.0&&pt_2>=30.0&&pt_2<40.0)+1.162606*(pt_1>=0.0&&pt_1<24.0&&pt_2>=40.0&&pt_2<50.0)+1.166626*(pt_1>=0.0&&pt_1<24.0&&pt_2>=50.0&&pt_2<150.0)+0.988366*(pt_1>=24.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<24.0)+1.198820*(pt_1>=24.0&&pt_1<30.0&&pt_2>=24.0&&pt_2<30.0)+1.134818*(pt_1>=24.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<40.0)+1.032797*(pt_1>=24.0&&pt_1<30.0&&pt_2>=40.0&&pt_2<50.0)+1.089074*(pt_1>=24.0&&pt_1<30.0&&pt_2>=50.0&&pt_2<150.0)+0.917948*(pt_1>=30.0&&pt_1<40.0&&pt_2>=0.0&&pt_2<24.0)+1.042672*(pt_1>=30.0&&pt_1<40.0&&pt_2>=24.0&&pt_2<30.0)+0.973973*(pt_1>=30.0&&pt_1<40.0&&pt_2>=30.0&&pt_2<40.0)+1.159536*(pt_1>=30.0&&pt_1<40.0&&pt_2>=40.0&&pt_2<50.0)+1.109988*(pt_1>=30.0&&pt_1<40.0&&pt_2>=50.0&&pt_2<150.0)+0.877440*(pt_1>=40.0&&pt_1<50.0&&pt_2>=0.0&&pt_2<24.0)+0.900561*(pt_1>=40.0&&pt_1<50.0&&pt_2>=24.0&&pt_2<30.0)+1.025510*(pt_1>=40.0&&pt_1<50.0&&pt_2>=30.0&&pt_2<40.0)+0.969752*(pt_1>=40.0&&pt_1<50.0&&pt_2>=40.0&&pt_2<50.0)+1.526057*(pt_1>=40.0&&pt_1<50.0&&pt_2>=50.0&&pt_2<150.0)+0.803902*(pt_1>=50.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<24.0)+0.802070*(pt_1>=50.0&&pt_1<150.0&&pt_2>=24.0&&pt_2<30.0)+0.787607*(pt_1>=50.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<40.0)+1.210405*(pt_1>=50.0&&pt_1<150.0&&pt_2>=40.0&&pt_2<50.0)+0.861337*(pt_1>=50.0&&pt_1<150.0&&pt_2>=50.0&&pt_2<150.0))%s"%qcd_aisoiso_string
+                elif args.era == "2018":
+                    qcd_aisoiso_string = "*(1.0*(pt_1>=150.0||pt_2>=150.0)+0.847702*(pt_1>=0.0&&pt_1<20.0&&pt_2>=20.0&&pt_2<25.0)+0.878120*(pt_1>=0.0&&pt_1<20.0&&pt_2>=25.0&&pt_2<30.0)+0.887496*(pt_1>=0.0&&pt_1<20.0&&pt_2>=30.0&&pt_2<150.0)+0.874935*(pt_1>=20.0&&pt_1<25.0&&pt_2>=0.0&&pt_2<20.0)+0.829801*(pt_1>=20.0&&pt_1<25.0&&pt_2>=20.0&&pt_2<25.0)+0.922954*(pt_1>=20.0&&pt_1<25.0&&pt_2>=25.0&&pt_2<30.0)+0.954270*(pt_1>=20.0&&pt_1<25.0&&pt_2>=30.0&&pt_2<150.0)+0.935953*(pt_1>=25.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<20.0)+0.908383*(pt_1>=25.0&&pt_1<30.0&&pt_2>=20.0&&pt_2<25.0)+0.927804*(pt_1>=25.0&&pt_1<30.0&&pt_2>=25.0&&pt_2<30.0)+0.917511*(pt_1>=25.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<150.0)+0.983508*(pt_1>=30.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<20.0)+0.952974*(pt_1>=30.0&&pt_1<150.0&&pt_2>=20.0&&pt_2<25.0)+0.945860*(pt_1>=30.0&&pt_1<150.0&&pt_2>=25.0&&pt_2<30.0)+0.858417*(pt_1>=30.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<150.0))"
+                    qcd_weight_string = "((-0.1249*(njets==0)+(-0.04374)*(njets==1)+(-0.00606)*(njets>=2))*((DiTauDeltaR-3.0)**2.0-3.0)+(-0.1644*(njets==0)+(-0.3172)*(njets==1)+(-0.3627)*(njets>=2))*(DiTauDeltaR-3.0)+(1.963*(njets==0)+(2.014)*(njets==1)+(1.757)*(njets>=2)))*(1.0*(pt_1>=150.0||pt_2>=150.0)+1.163939*(pt_1>=0.0&&pt_1<24.0&&pt_2>=24.0&&pt_2<30.0)+1.128795*(pt_1>=0.0&&pt_1<24.0&&pt_2>=30.0&&pt_2<40.0)+1.048506*(pt_1>=0.0&&pt_1<24.0&&pt_2>=40.0&&pt_2<50.0)+1.160265*(pt_1>=0.0&&pt_1<24.0&&pt_2>=50.0&&pt_2<150.0)+1.006878*(pt_1>=24.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<24.0)+1.078046*(pt_1>=24.0&&pt_1<30.0&&pt_2>=24.0&&pt_2<30.0)+1.080539*(pt_1>=24.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<40.0)+1.079124*(pt_1>=24.0&&pt_1<30.0&&pt_2>=40.0&&pt_2<50.0)+1.082814*(pt_1>=24.0&&pt_1<30.0&&pt_2>=50.0&&pt_2<150.0)+0.930821*(pt_1>=30.0&&pt_1<40.0&&pt_2>=0.0&&pt_2<24.0)+1.077226*(pt_1>=30.0&&pt_1<40.0&&pt_2>=24.0&&pt_2<30.0)+1.030334*(pt_1>=30.0&&pt_1<40.0&&pt_2>=30.0&&pt_2<40.0)+0.962814*(pt_1>=30.0&&pt_1<40.0&&pt_2>=40.0&&pt_2<50.0)+0.892101*(pt_1>=30.0&&pt_1<40.0&&pt_2>=50.0&&pt_2<150.0)+0.882728*(pt_1>=40.0&&pt_1<50.0&&pt_2>=0.0&&pt_2<24.0)+0.876885*(pt_1>=40.0&&pt_1<50.0&&pt_2>=24.0&&pt_2<30.0)+0.938413*(pt_1>=40.0&&pt_1<50.0&&pt_2>=30.0&&pt_2<40.0)+0.966243*(pt_1>=40.0&&pt_1<50.0&&pt_2>=40.0&&pt_2<50.0)+1.007048*(pt_1>=40.0&&pt_1<50.0&&pt_2>=50.0&&pt_2<150.0)+0.773635*(pt_1>=50.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<24.0)+0.881284*(pt_1>=50.0&&pt_1<150.0&&pt_2>=24.0&&pt_2<30.0)+0.812427*(pt_1>=50.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<40.0)+0.820854*(pt_1>=50.0&&pt_1<150.0&&pt_2>=40.0&&pt_2<50.0)+0.937087*(pt_1>=50.0&&pt_1<150.0&&pt_2>=50.0&&pt_2<150.0))%s"%qcd_aisoiso_string
+                qcd_weight = Weight(qcd_weight_string, "qcd_weight")
+                processes[chname_]["QCD"] = Process(
+                    "QCD",
+                    est_(
+                        era, directory, ch_,
+                        [processes[chname_][process] for process in qcdpS],
+                        processes[chname_]["data_obs"],
+                        friend_directory=friend_directory[chname_],
+                        qcd_weight=qcd_weight))
 
 
     # If no processes are passed as an argument, generate all
@@ -526,15 +506,10 @@ def main(args):
         # Goodness of fit shapes
         for chname_, ch_ in selectedChannelsTuples:
             catsL_ = catsListD[chname_]
-            score = Variable(args.gof_variable,
-                             VariableBinning(
-                                 binning["gof"][chname_]
-                                 [args.gof_variable]["bins"]),
-                             expression=binning["gof"][chname_]
-                             [args.gof_variable]["expression"])
-            if "cut" in binning["gof"][chname_][args.gof_variable].keys():
+            score = construct_variable(binning, args.gof_variable)
+            if "cut" in binning["variables"][args.gof_variable].keys():
                 cuts = Cuts(
-                    Cut(binning["gof"][chname_][args.gof_variable]["cut"], "binning"))
+                    Cut(binning["variables"][args.gof_variable]["cut"], "binning"))
             else:
                 cuts = Cuts()
             catsL_.append(
@@ -1191,6 +1166,41 @@ def main(args):
             if "em" in selectedChannels:
                 variationsToAdd["em"][process_nick].append(variation_)
     if args.gof_variable is None:
+
+        nmssm_variations = []
+        nmssm_variations.append(
+            AddWeight("MG_scale_choice", "muR1p0_muF1p0_scale_ht_weight",
+                          Weight("(muR1p0_muF1p0_scale_ht_weight)", "muR1p0_muF1p0_scale_ht_weight"),
+                          "Up"))
+        nmssm_variations.append(
+            AddWeight("MG_scale_choice", "muR1p0_muF1p0_scale_ht_weight",
+                          Weight("(1.0/muR1p0_muF1p0_scale_ht_weight)", "muR1p0_muF1p0_scale_ht_weight"),
+                          "Down"))
+        nmssm_variations.append(
+            AddWeight("MG_scale_norm", "muR1p0_muF2p0_weight",
+                          Weight("(muR1p0_muF2p0_weight)", "muR1p0_muF2p0_weight"),
+                          "Up"))
+        nmssm_variations.append(
+            AddWeight("MG_scale_norm", "muR1p0_muF0p5_weight",
+                          Weight("(muR1p0_muF0p5_weight)", "muR1p0_muF0p5_weight"),
+                          "Down"))
+        nmssm_variations.append(
+            AddWeight("PDF_scale", "NNPDF23_lo_as_0130_qed_weight",
+                          Weight("(NNPDF23_lo_as_0130_qed_weight)", "NNPDF23_lo_as_0130_qed_weight"),
+                          "Up"))
+        nmssm_variations.append(
+            AddWeight("PDF_scale", "NNPDF23_lo_as_0130_qed_weight",
+                          Weight("(1.0/NNPDF23_lo_as_0130_qed_weight)", "NNPDF23_lo_as_0130_qed_weight"),
+                          "Down"))
+
+        for variation_ in nmssm_variations:
+            for process_nick in selectedProcesses & {
+                    nick for nick in signal_nicks
+                    if "NMSSM" in nick
+            }:
+                for chname_ in selectedChannels:
+                    variationsToAdd[chname_][process_nick].append(variation_)
+
         # Gluon-fusion WG1 uncertainty scheme
         ggh_variations = []
         for unc in [

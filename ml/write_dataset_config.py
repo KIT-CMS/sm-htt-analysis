@@ -101,7 +101,7 @@ def main(args):
         from shape_producer.estimation_methods_2016 import DataEstimation, ggHEstimation, qqHEstimation, \
             ZTTEstimation, ZLEstimation, ZJEstimation, TTTEstimation, TTJEstimation, \
             ZTTEmbeddedEstimation, TTLEstimation, \
-            EWKZEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, NMSSMEstimation
+            EWKZEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, NMSSMEstimation, ttHEstimation
 
         from shape_producer.era import Run2016
         era = Run2016(args.database)
@@ -109,7 +109,7 @@ def main(args):
     elif "2017" in args.era:
         from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZJEstimation, ZLEstimation, \
             TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, VVLEstimation, WEstimation, \
-            ggHEstimation, qqHEstimation, EWKZEstimation, ZTTEmbeddedEstimation, NMSSMEstimation
+            ggHEstimation, qqHEstimation, EWKZEstimation, ZTTEmbeddedEstimation, NMSSMEstimation, ttHEstimation
 
         from shape_producer.era import Run2017
         era = Run2017(args.database)
@@ -117,7 +117,7 @@ def main(args):
     elif "2018" in args.era:
         from shape_producer.estimation_methods_2018 import DataEstimation, ZTTEstimation, ZJEstimation, ZLEstimation, \
             TTLEstimation, TTJEstimation, TTTEstimation, VVTEstimation, VVJEstimation, VVLEstimation, WEstimation, \
-            ggHEstimation, qqHEstimation, EWKZEstimation, ZTTEmbeddedEstimation, NMSSMEstimation
+            ggHEstimation, qqHEstimation, EWKZEstimation, ZTTEmbeddedEstimation, NMSSMEstimation, ttHEstimation
 
         from shape_producer.era import Run2018
         era = Run2018(args.database)
@@ -282,10 +282,16 @@ def main(args):
                 "VVL": "misc"
             })
         if args.nmssm:
+            estimationMethodList.extend([
+                ggHEstimation("ggH125", era, args.base_path, channel),
+                qqHEstimation("qqH125", era, args.base_path, channel)])
             classes_map.update({
                 "TTL": "tt",
                 "ZL": "misc",
-                "VVL": "misc"
+                "VVL": "misc",
+                "ggH125": "misc",
+                "qqH125": "misc",
+                "ttH125": "misc"
             })            
         ######## Check for emb vs MC
         if args.training_z_estimation_method == "emb":

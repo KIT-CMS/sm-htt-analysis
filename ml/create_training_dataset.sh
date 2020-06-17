@@ -16,12 +16,12 @@ TRAIN_STAGE_ARG="--nmssm"
 source utils/setup_samples.sh $ERA 
 outdir=output/ml/${ERA}_${CHANNEL}
 [[ -d $outdir ]] ||  mkdir -p $outdir
-
+echo $FF_Friends
 if [ ${CHANNEL} != 'em' ]
 then
-  FRIENDS="${SVFit_Friends} ${TauTriggers_Friends} ${FF_Friends}"
+  FRIENDS="${SVFit_Friends} ${HHKinFit_Friends} ${FF_Friends}"
 else
-  FRIENDS="${SVFit_Friends}"
+  FRIENDS="${SVFit_Friends} ${HHKinFit_Friends}"
 fi
 
 

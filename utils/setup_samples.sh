@@ -16,10 +16,11 @@ KAPPA_DATABASE=datasets/datasets.json
 #### ERA specific part. If a sample is not available comment it out here.
 # Samples Run2016
 basedir="/ceph/htautau/deeptau_02-20"
-ARTUS_OUTPUTS_2016="/portal/ekpbms1/home/jbechtel/postprocessing/nmssm/sm-htt-analysis/ntuples/2016/"
-SVFit_Friends_2016="/portal/ekpbms1/home/jbechtel/postprocessing/nmssm/sm-htt-analysis/friends/2016/SVFit/"
-FF_Friends_2016="$basedir/2016/friends/FakeFactors_final_v2/"
-TauTriggers_Friends_2016="/portal/ekpbms1/home/jbechtel/postprocessing/nmssm/sm-htt-analysis/friends/2016/TauTriggers/"
+ARTUS_OUTPUTS_2016="/ceph/jbechtel/nmssm/ntuples/2016/tt/"
+SVFit_Friends_2016="/ceph/jbechtel/nmssm/friends/2016/tt/SVFit/"
+FF_Friends_2016="/ceph/jbechtel/nmssm/friends/2016/tt/FakeFactors/"
+HHKinFit_Friends_2016="/ceph/jbechtel/nmssm/friends/2016/tt/HHKinFit/"
+NNScore_Friends_2016="/ceph/jbechtel/friend-tree-workdirs/nmssm/NNScore_workdir/NNScore_collected/"
 
 # Samples Run2017
 ARTUS_OUTPUTS_2017="/portal/ekpbms1/home/jbechtel/postprocessing/nmssm/sm-htt-analysis/ntuples/2017/"
@@ -42,7 +43,7 @@ then
     SVFit_Friends=$SVFit_Friends_2016
     MELA_Friends=$MELA_Friends_2016
     FF_Friends=$FF_Friends_2016
-    TauTriggers_Friends=$TauTriggers_Friends_2016
+    HHKinFit_Friends=$HHKinFit_Friends_2016
 elif [[ $ERA == *"2017"* ]]
 then
     ARTUS_OUTPUTS=$ARTUS_OUTPUTS_2017
@@ -50,7 +51,7 @@ then
     SVFit_Friends=$SVFit_Friends_2017
     MELA_Friends=$MELA_Friends_2017
     FF_Friends=$FF_Friends_2017
-    TauTriggers_Friends=$TauTriggers_Friends_2017
+    HHKinFit_Friends=$HHKinFit_Friends_2017
 elif [[ $ERA == *"2018"* ]]
 then
     ARTUS_OUTPUTS=$ARTUS_OUTPUTS_2018
@@ -58,7 +59,7 @@ then
     SVFit_Friends=$SVFit_Friends_2018
     MELA_Friends=$MELA_Friends_2018
     FF_Friends=$FF_Friends_2018
-    TauTriggers_Friends=$TauTriggers_Friends_2018
+    HHKinFit_Friends=$HHKinFit_Friends_2018
 fi
 
 ARTUS_FRIENDS_FAKE_FACTOR=$FF_Friends
