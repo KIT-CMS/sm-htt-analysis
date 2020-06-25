@@ -1176,9 +1176,10 @@ def main(args):
                 "ff_tt_sf{ch}{era}{shift}",
                 "ff_corr_tt_syst{ch}{era}{shift}",
                 "ff_frac_w{ch}{era}{shift}",
-                "ff_qcd_dm0_njet0_morphed_stat{ch}{era}{shift}", "ff_qcd_dm0_njet1_morphed_stat{ch}{era}{shift}", "ff_qcd_dm0_njet2_morphed_stat{ch}{era}{shift}", 
-                "ff_w_dm0_njet0_morphed_stat{ch}{era}{shift}", "ff_w_dm0_njet1_morphed_stat{ch}{era}{shift}", "ff_w_dm0_njet2_morphed_stat{ch}{era}{shift}",
-                "ff_tt_dm0_njet0_morphed_stat{ch}{era}{shift}", "ff_tt_dm0_njet1_morphed_stat{ch}{era}{shift}",
+                "ff_qcd_dr0_njet0_morphed_stat{ch}{era}{shift}", "ff_qcd_dr0_njet1_morphed_stat{ch}{era}{shift}", "ff_qcd_dr0_njet2_morphed_stat{ch}{era}{shift}", 
+                "ff_w_dr0_njet0_morphed_stat{ch}{era}{shift}", "ff_w_dr0_njet1_morphed_stat{ch}{era}{shift}", "ff_w_dr0_njet2_morphed_stat{ch}{era}{shift}",
+                "ff_w_dr1_njet0_morphed_stat{ch}{era}{shift}", "ff_w_dr1_njet1_morphed_stat{ch}{era}{shift}", "ff_w_dr1_njet2_morphed_stat{ch}{era}{shift}",
+                "ff_tt_dr0_njet0_morphed_stat{ch}{era}{shift}", "ff_tt_dr0_njet1_morphed_stat{ch}{era}{shift}",
                 "ff_w_lepPt{ch}{era}{shift}",
                 "ff_corr_w_lepPt{ch}{era}{shift}",
                 "ff_w_mc{ch}{era}{shift}",
@@ -1198,7 +1199,7 @@ def main(args):
                 # "ff_qcd_syst{ch}{era}{shift}",
                 # "ff_qcd_dm0_njet0{ch}_stat{era}{shift}",
                 # "ff_qcd_dm0_njet1{ch}_stat{era}{shift}",
-                "ff_qcd_dm0_njet0_morphed_stat{ch}{era}{shift}", "ff_qcd_dm0_njet1_morphed_stat{ch}{era}{shift}", "ff_qcd_dm0_njet2_morphed_stat{ch}{era}{shift}",
+                "ff_qcd_dm0_njet0_morphed_stat{ch}{era}{shift}", "ff_qcd_dm0_njet1_morphed_stat{ch}{era}{shift}", "ff_qcd_dm0_njet2_morphed_stat{ch}{era}{shift}", #change dm0 to dr0 if fake factor friends are produced with new inputs also for tt (no difference for tt)
                 "ff_w_syst{ch}{era}{shift}",
                 "ff_tt_syst{ch}{era}{shift}",
                 # "ff_w_frac_syst{ch}{era}{shift}",
@@ -1216,7 +1217,7 @@ def main(args):
             for shift_direction in ["Up", "Down"]:
                 for systematic_shift in fake_factor_variations[chname_]:
                     hname_ = "CMS_" + systematic_shift.format(
-                        ch="_" + chname_, shift="", era="_" + args.era).replace("_dm0", "")
+                        ch="_" + chname_, shift="", era="_" + args.era).replace("w_dr0", "w_lowdR").replace("w_dr1", "w_highdR").replace("_dr0", "").replace("_dm0", "")
                     systname_ = systematic_shift.format(
                         ch="",
                         shift="_" + shift_direction.lower(),
