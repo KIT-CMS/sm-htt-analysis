@@ -44,37 +44,40 @@ fi
 if [ $STXS_FIT == "stxs_stage0" ]; then
     combineTool.py -M T2W -o ${OUTPUT} -i ${INPUT} --parallel $NUM_THREADS \
         -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel \
-        --PO '"map=^.*/ggH.?$:r_ggH[1,-5,5]"' \
-        --PO '"map=^.*/qqH.?$:r_qqH[1,-5,5]"' | tee $LOGFILE
+        --PO '"map=^.*/ggH_htt.?$:r_ggH[1,-5,5]"' \
+        --PO '"map=^.*/qqH_htt.?$:r_qqH[1,-5,5]"' | tee $LOGFILE
 fi
 
 # Stage 1.1 as unified for the MC production, see https://indico.cern.ch/event/820874/contributions/3431583/attachments/1843868/3024330/Legacy_SM_H_-_Status.pdf, Slide 4
 if [ $STXS_FIT == "stxs_stage1p1" ]; then
     combineTool.py -M T2W -o ${OUTPUT} -i ${INPUT} --parallel $NUM_THREADS \
         -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel \
-        --PO '"map=^.*/ggH_GG2H_FWDH:r_ggH_GG2H_0J[1,-70,70]"' \
-        --PO '"map=^.*/ggH_GG2H_PTH_GT200:r_ggH_GG2H_PTH_GT200[1,-70,70]"' \
-        --PO '"map=^.*/ggH_GG2H_0J_PTH_0_10:r_ggH_GG2H_0J[1,-70,70]"' \
-        --PO '"map=^.*/ggH_GG2H_0J_PTH_GT10:r_ggH_GG2H_0J[1,-70,70]"' \
-        --PO '"map=^.*/ggH_GG2H_1J_PTH_0_60:r_ggH_GG2H_1J_PTH_0_120[1,-70,70]"' \
-        --PO '"map=^.*/ggH_GG2H_1J_PTH_60_120:r_ggH_GG2H_1J_PTH_0_120[1,-70,70]"' \
-        --PO '"map=^.*/ggH_GG2H_1J_PTH_120_200:r_ggH_GG2H_1J_PTH_120_200[1,-70,70]"' \
-        --PO '"map=^.*/ggH_GG2H_GE2J_MJJ_0_350_PTH_0_60:r_ggH_GG2H_GE2J_MJJ_0_350[1,-70,70]"' \
-        --PO '"map=^.*/ggH_GG2H_GE2J_MJJ_0_350_PTH_60_120:r_ggH_GG2H_GE2J_MJJ_0_350[1,-70,70]"' \
-        --PO '"map=^.*/ggH_GG2H_GE2J_MJJ_0_350_PTH_120_200:r_ggH_GG2H_GE2J_MJJ_0_350[1,-70,70]"' \
-        --PO '"map=^.*/ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25:r_xxH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200[1,-70,70]"' \
-        --PO '"map=^.*/ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25:r_xxH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200[1,-70,70]"' \
-        --PO '"map=^.*/ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25:r_xxH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200[1,-70,70]"' \
-        --PO '"map=^.*/ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25:r_xxH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200[1,-70,70]"' \
-        --PO '"map=^.*/qqH_QQ2HQQ_FWDH:r_qqH_QQ2HQQ_LE1J[1,-70,70]"' \
-        --PO '"map=^.*/qqH_QQ2HQQ_0J:r_qqH_QQ2HQQ_LE1J[1,-70,70]"' \
-        --PO '"map=^.*/qqH_QQ2HQQ_1J:r_qqH_QQ2HQQ_LE1J[1,-70,70]"' \
-        --PO '"map=^.*/qqH_QQ2HQQ_GE2J_MJJ_0_60:r_qqH_QQ2HQQ_GE2J_MJJ_0_350[1,-70,70]"' \
-        --PO '"map=^.*/qqH_QQ2HQQ_GE2J_MJJ_60_120:r_qqH_QQ2HQQ_GE2J_MJJ_0_350[1,-70,70]"' \
-        --PO '"map=^.*/qqH_QQ2HQQ_GE2J_MJJ_120_350:r_qqH_QQ2HQQ_GE2J_MJJ_0_350[1,-70,70]"' \
-        --PO '"map=^.*/qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200:r_qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200[1,-70,70]"' \
-        --PO '"map=^.*/qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25:r_xxH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200[1,-70,70]"' \
-        --PO '"map=^.*/qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25:r_xxH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200[1,-70,70]"' \
-        --PO '"map=^.*/qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25:r_xxH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200[1,-70,70]"' \
-        --PO '"map=^.*/qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25:r_xxH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200[1,-70,70]"' | tee $LOGFILE
+        --PO '"map=^.*/ggH_FWDH_htt:r_ggH_GG2H_0J_PTH_0_10[1,-70,70]"' \
+        --PO '"map=^.*/ggH_PTH_200_300_htt:r_ggH_GG2H_PTH_200_300[1,-70,70]"' \
+        --PO '"map=^.*/ggH_PTH_300_450_htt:r_ggH_GG2H_PTH_GT300[1,-70,70]"' \
+        --PO '"map=^.*/ggH_PTH_450_650_htt:r_ggH_GG2H_PTH_GT300[1,-70,70]"' \
+        --PO '"map=^.*/ggH_PTH_GT650_htt:r_ggH_GG2H_PTH_GT300[1,-70,70]"' \
+        --PO '"map=^.*/ggH_0J_PTH_0_10_htt:r_ggH_GG2H_0J_PTH_0_10[1,-70,70]"' \
+        --PO '"map=^.*/ggH_0J_PTH_GT10_htt:r_ggH_GG2H_0J_PTH_GT10[1,-70,70]"' \
+        --PO '"map=^.*/ggH_1J_PTH_0_60_htt:r_ggH_GG2H_1J_PTH_0_60[1,-70,70]"' \
+        --PO '"map=^.*/ggH_1J_PTH_60_120_htt:r_ggH_GG2H_1J_PTH_60_120[1,-70,70]"' \
+        --PO '"map=^.*/ggH_1J_PTH_120_200_htt:r_ggH_GG2H_1J_PTH_120_200[1,-70,70]"' \
+        --PO '"map=^.*/ggH_GE2J_MJJ_0_350_PTH_0_60_htt:r_ggH_GG2H_GE2J[1,-70,70]"' \
+        --PO '"map=^.*/ggH_GE2J_MJJ_0_350_PTH_60_120_htt:r_ggH_GG2H_GE2J[1,-70,70]"' \
+        --PO '"map=^.*/ggH_GE2J_MJJ_0_350_PTH_120_200_htt:r_ggH_GG2H_GE2J[1,-70,70]"' \
+        --PO '"map=^.*/ggH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt:r_ggH_GG2H_GE2J[1,-70,70]"' \
+        --PO '"map=^.*/ggH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt:r_ggH_GG2H_GE2J[1,-70,70]"' \
+        --PO '"map=^.*/ggH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt:r_ggH_GG2H_GE2J[1,-70,70]"' \
+        --PO '"map=^.*/ggH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt:r_ggH_GG2H_GE2J[1,-70,70]"' \
+        --PO '"map=^.*/qqH_FWDH_htt:r_qqH_QQ2HQQ_noVBFtopo[1,-70,70]"' \
+        --PO '"map=^.*/qqH_0J_htt:r_qqH_QQ2HQQ_noVBFtopo[1,-70,70]"' \
+        --PO '"map=^.*/qqH_1J_htt:r_qqH_QQ2HQQ_noVBFtopo[1,-70,70]"' \
+        --PO '"map=^.*/qqH_GE2J_MJJ_0_60_htt:r_qqH_QQ2HQQ_noVBFtopo[1,-70,70]"' \
+        --PO '"map=^.*/qqH_GE2J_MJJ_60_120_htt:r_qqH_QQ2HQQ_noVBFtopo[1,-70,70]"' \
+        --PO '"map=^.*/qqH_GE2J_MJJ_120_350_htt:r_qqH_QQ2HQQ_noVBFtopo[1,-70,70]"' \
+        --PO '"map=^.*/qqH_GE2J_MJJ_GT350_PTH_GT200_htt:r_qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200[1,-70,70]"' \
+        --PO '"map=^.*/qqH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt:r_qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200[1,-70,70]"' \
+        --PO '"map=^.*/qqH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt:r_qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200[1,-70,70]"' \
+        --PO '"map=^.*/qqH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt:r_qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200[1,-70,70]"' \
+        --PO '"map=^.*/qqH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt:r_qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200[1,-70,70]"' | tee $LOGFILE
 fi

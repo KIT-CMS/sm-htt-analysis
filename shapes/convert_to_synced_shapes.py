@@ -68,6 +68,9 @@ def main(args):
                     name))
             raise Exception
         name_output = "{PROCESS}".format(PROCESS=process)
+        name_output = name_output.replace("GG2H_", "").replace("QQ2HQQ_", "").replace("125", "_htt125").replace("HWW_htt125", "H_hww")
+        if ("WH" in name_output or "ZH" in name_output or "ttH" in name_output):
+            name_output = name_output.replace("125", "")
         if len(properties) == 8:
             systematic = properties[7]
             name_output += "_" + systematic
