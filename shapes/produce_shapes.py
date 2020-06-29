@@ -1199,8 +1199,8 @@ def main(args):
                 # "ff_qcd_syst{ch}{era}{shift}",
                 # "ff_qcd_dm0_njet0{ch}_stat{era}{shift}",
                 # "ff_qcd_dm0_njet1{ch}_stat{era}{shift}",
-                "ff_qcd_dm0_njet0_morphed_stat{ch}{era}{shift}", "ff_qcd_dm0_njet1_morphed_stat{ch}{era}{shift}", "ff_qcd_dm0_njet2_morphed_stat{ch}{era}{shift}", #change dm0 to dr0 if fake factor friends are produced with new inputs also for tt (no difference for tt)
-                "ff_w_syst{ch}{era}{shift}",
+                "ff_qcd_dr0_njet0_morphed_stat{ch}{era}{shift}", "ff_qcd_dr0_njet1_morphed_stat{ch}{era}{shift}", "ff_qcd_dr0_njet2_morphed_stat{ch}{era}{shift}",
+		"ff_w_syst{ch}{era}{shift}",
                 "ff_tt_syst{ch}{era}{shift}",
                 # "ff_w_frac_syst{ch}{era}{shift}",
                 # "ff_tt_frac_syst{ch}{era}{shift}",
