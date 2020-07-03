@@ -267,17 +267,20 @@ def main(args):
         raise Exception
     logger.debug("Channel Categories: {}".format(channel_categories))
     plots = []
-    if args.categories == "stxs_stage0":
+    if args.categories == "stxs_stage0" and args.single_category == "1":
         # special for 2D category
         dummy = ROOT.TH1F("dummy", "dummy", 28, 0.0, 28.0)
     else:
         dummy = ROOT.TH1F("dummy", "dummy", 5, 0.0, 1.0)
+        dummy_signal = ROOT.TH1F("dummy", "dummy", 28, 0.0, 28.0)
     for channel in args.channels:
         if args.single_category is not "":
             categories = set(channel_categories[channel]).intersection(set([args.single_category]))
         else:
             categories = channel_categories[channel]
         for category in categories:
+            if args.categories == "stxs_stage0" and category == "1":
+                dummy = dummy_signal
             rootfile = rootfile_parser.Rootfile_parser(args.input)
             if channel == "em" and args.embedding:
                 bkg_processes = ["VVL", "W", "TTL", "ZL", "QCD", "EMB"]
@@ -319,19 +322,19 @@ def main(args):
             for i in plot_idx_to_add_signal:
                 try:
                     plot.subplot(i).add_hist(
-                        rootfile.get(era, channel, category, "ggH"), "ggH")
+                        rootfile.get(era, channel, category, "ggH_htt"), "ggH")
                     plot.subplot(i).add_hist(
-                        rootfile.get(era, channel, category, "ggH"), "ggH_top")
+                        rootfile.get(era, channel, category, "ggH_htt"), "ggH_top")
                     plot.subplot(i).add_hist(
-                        rootfile.get(era, channel, category, "qqH"), "qqH")
+                        rootfile.get(era, channel, category, "qqH_htt"), "qqH")
                     plot.subplot(i).add_hist(
-                        rootfile.get(era, channel, category, "qqH"), "qqH_top")
+                        rootfile.get(era, channel, category, "qqH_htt"), "qqH_top")
                     if isinstance(
-                            rootfile.get(era, channel, category, "ZH125"),
+                            rootfile.get(era, channel, category, "ZH_htt"),
                             ROOT.TH1):
                         VHhist = rootfile.get(era, channel, category,
-                                              "ZH125").Clone("VH")
-                    WHhist = rootfile.get(era, channel, category, "WH125")
+                                              "ZH_htt").Clone("VH")
+                    WHhist = rootfile.get(era, channel, category, "WH_htt")
                     if isinstance(WHhist, ROOT.TH1) and VHhist:
                         VHhist.Add(WHhist)
                     elif WHhist:
@@ -340,23 +343,23 @@ def main(args):
                     plot.subplot(i).add_hist(VHhist, "VH_top")
 
                     if isinstance(
-                            rootfile.get(era, channel, category, "ttH125"),
+                            rootfile.get(era, channel, category, "ttH_htt"),
                             ROOT.TH1):
                         plot.subplot(i).add_hist(
-                            rootfile.get(era, channel, category, "ttH125"),
+                            rootfile.get(era, channel, category, "ttH_htt"),
                             "ttH")
                         plot.subplot(i).add_hist(
-                            rootfile.get(era, channel, category, "ttH125"),
+                            rootfile.get(era, channel, category, "ttH_htt"),
                             "ttH_top")
 
-                    HWWhist = rootfile.get(era, channel, category, "ggHWW125")
+                    HWWhist = rootfile.get(era, channel, category, "ggH_hww")
                     if isinstance(
-                            rootfile.get(era, channel, category, "ggHWW125"),
+                            rootfile.get(era, channel, category, "ggH_hww"),
                             ROOT.TH1):
                         HWWhist = rootfile.get(era, channel, category,
-                                               "ggHWW125").Clone("ggHWW125")
+                                               "ggH_hww").Clone("ggH_hww")
                     qqHWWhist = rootfile.get(era, channel, category,
-                                             "qqHWW125")
+                                             "qqH_hww")
                     if isinstance(qqHWWhist, ROOT.TH1) and HWWhist:
                         HWWhist.Add(qqHWWhist)
                     elif qqHWWhist:
@@ -387,7 +390,7 @@ def main(args):
                             data_obs.SetBinError(i, 0.0)
                 elif category not in background_categories:
                     for i in xrange(data_obs.GetNbinsX() + 1):
-                        if data_obs.GetBinLowEdge(i) >= 0.5:
+                        if data_obs.GetBinLowEdge(i) + data_obs.GetBinWidth(i) > 0.5:
                             data_obs.SetBinContent(i, 0.0)
                             data_obs.SetBinError(i, 0.0)
             plot.add_hist(data_obs, "data_obs")
@@ -476,9 +479,11 @@ def main(args):
                 split_dict[channel],
                 max(2 * plot.subplot(0).get_hist("data_obs").GetMaximum(),
                     split_dict[channel] * 2))
-            
-            #plot.subplot(2).setYlims(0.45, 1.65)
-            plot.subplot(2).setYlims(0.85, 1.25)
+
+            if args.categories == "stxs_stage1p1_15node":
+                plot.subplot(2).setYlims(0.45, 1.65)
+            else:
+                plot.subplot(2).setYlims(0.85, 1.25)
             if category in signalcats:
                 plot.subplot(0).setLogY()
                 plot.subplot(0).setYlims(1, 150000000)
@@ -551,8 +556,9 @@ def main(args):
             if not args.linear:
                 plot.subplot(1).Draw(procs_to_draw_1)
             plot.subplot(2).Draw(procs_to_draw_2)
-            plot.subplot(2).setXlims(0.0, 1.0)
-            plot.subplot(0).setXlims(0.0, 1.0)
+            if not (args.categories == "stxs_stage0" and category == "1"):
+                plot.subplot(2).setXlims(0.0, 1.0)
+                plot.subplot(0).setXlims(0.0, 1.0)
             # create legends
             suffix = ["", "_top"]
             for i in range(2):
