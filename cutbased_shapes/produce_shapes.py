@@ -273,7 +273,7 @@ def main(args):
             processes[ch]['ZTTpTTTauTauUp'] = Process("ZTTpTTTauTauUp", AddHistogramEstimationMethod("AddHistogram", "nominal", era, directory, channel_dict[args.era][ch], [processes[ch]["EMB"], processes[ch]["TTT"]], [1.0, 0.1]))
             for category in categories[ch]:
                 for updownvar in ["Down", "Up"]:
-                    systematics.add(Systematic(category=category, process=processes[ch]['ZTTpTTTauTau%s'%updownvar], analysis="mssmvssm", era=era, variation=Relabel("CMS_htt_emb_ttbar_{ERA}".format(ERA=args.era), updownvar), mass="125"))
+                    systematics.add(Systematic(category=category, process=processes[ch]['ZTTpTTTauTau%s'%updownvar], analysis="mssmvssm", era=era, variation=Relabel("CMS_htt_emb_ttbar_{}".format(args.era), updownvar), mass="125"))
 
     # Prefiring weights
     if "2018" in args.era:
