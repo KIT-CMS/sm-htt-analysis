@@ -268,14 +268,12 @@ def main(args):
 
     # EMB: 10% removed events in ttbar simulation (ttbar -> real tau tau events) will be added/subtracted to EMB shape to use as systematic. Technical procedure different to usual systematic variations
     if args.process == "EMB" and not args.skip_systematic_variations:
-        tttautau_process = {}
         for ch in args.channels:
-            tttautau_process[ch] = Process("TTT", TTTEstimation(era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
-            processes[ch]['ZTTpTTTauTauDown'] = Process("ZTTpTTTauTauDown", AddHistogramEstimationMethod("AddHistogram", "nominal", era, directory, channel_dict[args.era][ch], [processes[ch]["EMB"], tttautau_process[ch]], [1.0, -0.1]))
-            processes[ch]['ZTTpTTTauTauUp'] = Process("ZTTpTTTauTauUp", AddHistogramEstimationMethod("AddHistogram", "nominal", era, directory, channel_dict[args.era][ch], [processes[ch]["EMB"], tttautau_process[ch]], [1.0, 0.1]))
+            processes[ch]['ZTTpTTTauTauDown'] = Process("ZTTpTTTauTauDown", AddHistogramEstimationMethod("AddHistogram", "nominal", era, directory, channel_dict[args.era][ch], [processes[ch]["EMB"], processes[ch]["TTT"]], [1.0, -0.1]))
+            processes[ch]['ZTTpTTTauTauUp'] = Process("ZTTpTTTauTauUp", AddHistogramEstimationMethod("AddHistogram", "nominal", era, directory, channel_dict[args.era][ch], [processes[ch]["EMB"], processes[ch]["TTT"]], [1.0, 0.1]))
             for category in categories[ch]:
                 for updownvar in ["Down", "Up"]:
-                    systematics.add(Systematic(category=category, process=processes[ch]['ZTTpTTTauTau%s'%updownvar], analysis="smhtt", era=era, variation=Relabel("CMS_htt_emb_ttbar_{}".format(args.era), updownvar), mass="125"))
+                    systematics.add(Systematic(category=category, process=processes[ch]['ZTTpTTTauTau%s'%updownvar], analysis="mssmvssm", era=era, variation=Relabel("CMS_htt_emb_ttbar_{ERA}".format(ERA=args.era), updownvar), mass="125"))
 
     # Prefiring weights
     if "2018" in args.era:
