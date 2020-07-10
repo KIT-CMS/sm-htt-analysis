@@ -525,6 +525,15 @@ function prepareBackgroundGofs() {
     wait
 }
 
+function prepareSignalGofs() {
+    # generate all datacards and needed workspaces
+    ensureoutdirs
+    genDatacards
+    genCmbDatacards 
+    genCmbWorkspaces
+    genWorkspaces
+}
+
 function runBackgroundGofs() {
     source gof/build_mask.sh
     mode=$1
@@ -608,6 +617,71 @@ function runBackgroundGofs() {
 }
 
 
+function runSignalGofs() {
+    source gof/build_mask_signal.sh
+    mode=$1
+    for tag in ${tags[@]}; do
+        if [[ $tag == *"1p1"* ]]; then
+            trainingstype="15node"
+            tagtype="stxs_stage1p1"
+        else
+            trainingstype=$mode
+            tagtype="stxs_stage0"
+        fi
+        echo "Running GoFs with settings:"
+        echo "Tags:     ${tags}"
+        echo "Eras:     ${eras}"
+        echo "Channels: ${channels}"
+        echo "Training: ${trainingstype}"
+        echo "Tagtype:  ${tagtype}"
+        if [[ $mode == "1" ]]; then
+            echo "Mode:     ${mode} - All categories seperately"
+            for era in ${eras[@]}; do
+                for channel in ${channels[@]}; do
+                    backlist=$(buildCategories $trainingstype $tag $era $channel "backgrounds")
+                    for category in ${backlist[@]}; do
+                        mask=$(buildMask ${trainingstype} $tag $era $channel $category)
+                        ./gof/gof_signal_saturated.sh $mode $tag $era $channel $category $mask $tagtype 1
+                    done
+                done
+            done
+        elif [[ $mode == "2" ]]; then
+            echo "Mode:     ${mode} - Combine channels"
+            category="999"
+            for era in ${eras[@]}; do
+                for channel in ${channels[@]}; do
+                    mask="asdf"
+                    ./gof/gof_signal_saturated.sh $mode $tag $era $channel $category $mask ${tagtype} 0
+                    ./gof/gof_signal_KSAD.sh $mode $tag $era $channel $category ${tagtype} "AD"
+                    ./gof/gof_signal_KSAD.sh $mode $tag $era $channel $category ${tagtype} "KS"
+                done
+            done
+        elif [[ $mode == "3" ]]; then
+            echo "Mode:     ${mode} - Combine eras"
+            category="999"
+            channel="cmb"
+            for era in ${eras[@]}; do
+                mask="asdf"
+                ./gof/gof_signal_saturated.sh $mode $tag $era $channel $category $mask $tagtype 0
+            done
+        elif [[ $mode == "4" ]]; then
+            echo "Mode:     ${mode} - Combine everything"
+            category="999"
+            channel="cmb"
+            era="all"
+            mask="asdf"
+            ./gof/gof_signal_saturated.sh $mode $tag $era $channel $category $mask $tagtype 0
+        else
+            echo "GoF mode unknown, possible modes are:"
+            echo "Mode 1: all background categories seperately"
+            echo "Mode 2: Combine channels"
+            echo "Mode 3: Combine eras"
+            echo "Mode 4: Combine everything"
+        fi
+    done
+}
+
+
 function plotBackgroundGofSummary() {
     mode=$1
     echo $mode
@@ -629,6 +703,32 @@ function plotBackgroundGofSummary() {
         ./gof/plot_background_gof_summary.py --path output/gof \
                 --tags ${tagstring} --eras ${erastring} --channels ${channelstring} \
                 --outputpath output/gof_summary --mode $mode
+    fi
+    
+}
+
+function plotSignalGofSummary() {
+    mode=$1
+    echo $mode
+    possible_modes=("1" "2" "3" "4")
+    if [[ ! " ${possible_modes[@]} " =~ " ${mode} " ]]; then
+        echo "GoF Plot mode unknown, possible modes are:"
+        echo "Mode 1: plot all results"
+        echo "Mode 2: plot combined channel results"
+        echo "Mode 3: plot all failing results"
+        echo "Mode 3: plot distribution of all category p-values"
+    else
+        if [[ ! -d output/gof_signal_summary ]]
+        then
+            mkdir -p output/gof_signal_summary
+        fi
+        tagstring=$( IFS=$','; echo "${tags[*]}" )
+        erastring=$( IFS=$','; echo "${eras[*]}" )
+        channelstring=$( IFS=$','; echo "${channels[*]}" )
+
+        logandrun ./gof/plot_signal_gof_summary.py --path output/gof_signal \
+                --tags ${tagstring} --eras ${erastring} --channels ${channelstring} \
+                --outputpath output/gof_signal_summary --mode $mode
     fi
     
 }
