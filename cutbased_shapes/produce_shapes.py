@@ -478,6 +478,56 @@ def main(args):
     lep_fake_es_variations["et"] += create_systematic_variations("CMS_ZLShape_et_1prong1pizero_endcap_%s"%args.era, "tauEleFakeEsOneProngPiZerosEndcap", DifferentPipeline)
 
 
+    # ZL fakes rate uncertainties
+    lep_fake_eff_variations = {}
+    efake_dict = {
+        "2016" : {
+            "BA" : "0.31*(abs(eta_1)<1.448)",
+            "EC" : "0.22*(abs(eta_1)>1.558)"
+        },
+        "2017" : {
+            "BA" : "0.26*(abs(eta_1)<1.448)",
+            "EC" : "0.41*(abs(eta_1)>1.558)"
+        },
+        "2018" : {
+            "BA" : "0.18*(abs(eta_1)<1.448)",
+            "EC" : "0.30*(abs(eta_1)>1.558)"
+        }
+    }
+    mfake_dict = {
+        "2016" : {
+            "WH1" : "0.09*((abs(eta_1)<0.4))",
+            "WH2" : "0.42*((abs(eta_1)>=0.4)*((abs(eta_1)<0.8)))",
+            "WH3" : "0.20*((abs(eta_1)>=0.8)*((abs(eta_1)<1.2)))",
+            "WH4" : "0.63*((abs(eta_1)>=1.2)*((abs(eta_1)<1.7)))",
+            "WH5" : "0.17*((abs(eta_1)>=1.7))"
+        },
+        "2017" : {
+            "WH1" : "0.18*((abs(eta_1)<0.4))",
+            "WH2" : "0.32*((abs(eta_1)>=0.4)*((abs(eta_1)<0.8)))",
+            "WH3" : "0.39*((abs(eta_1)>=0.8)*((abs(eta_1)<1.2)))",
+            "WH4" : "0.42*((abs(eta_1)>=1.2)*((abs(eta_1)<1.7)))",
+            "WH5" : "0.21*((abs(eta_1)>=1.7))"
+        },
+        "2018" : {
+            "WH1" : "0.19*((abs(eta_1)<0.4))",
+            "WH2" : "0.34*((abs(eta_1)>=0.4)*((abs(eta_1)<0.8)))",
+            "WH3" : "0.24*((abs(eta_1)>=0.8)*((abs(eta_1)<1.2)))",
+            "WH4" : "0.57*((abs(eta_1)>=1.2)*((abs(eta_1)<1.7)))",
+            "WH5" : "0.20*((abs(eta_1)>=1.7))"
+        }
+    }
+
+    lep_fake_eff_variations["et"] = []
+    for section, weight in efake_dict[args.era].items():
+        lep_fake_eff_variations["et"].append(AddWeight("CMS_fake_e_%s_%s"%(section, args.era), "eFakeTau_reweight",Weight("(1.0+%s)"%weight, "eFakeTau_reweight"),"Up"))
+        lep_fake_eff_variations["et"].append(AddWeight("CMS_fake_e_%s_%s"%(section, args.era), "eFakeTau_reweight",Weight("(1.0-%s)"%weight, "eFakeTau_reweight"),"Down"))
+
+    lep_fake_eff_variations["mt"] = []
+    for section, weight in mfake_dict[args.era].items():
+        lep_fake_eff_variations["mt"].append(AddWeight("CMS_fake_m_%s_%s"%(section, args.era), "mFakeTau_reweight",Weight("(1.0+%s)"%weight, "mFakeTau_reweight"),"Up"))
+        lep_fake_eff_variations["mt"].append(AddWeight("CMS_fake_m_%s_%s"%(section, args.era), "mFakeTau_reweight",Weight("(1.0-%s)"%weight, "mFakeTau_reweight"),"Down"))
+
     # Lepton trigger efficiency; the same values for (MC & EMB) and (mt & et)
     lep_trigger_eff_variations = {}
     for ch in ["mt", "et"]:
@@ -745,7 +795,7 @@ def main(args):
 
         zl_variations = zpt_variations
         if ch in ["et", "mt"]:
-            zl_variations += lep_fake_es_variations[ch]
+            zl_variations += lep_fake_es_variations[ch] + lep_fake_eff_variations[ch]
         for variation in zl_variations:
             if args.process == "ZL":
                 systematics.add_systematic_variation(variation=variation, process=processes[ch]["ZL"], channel=channel_dict[args.era][ch], era=era)
