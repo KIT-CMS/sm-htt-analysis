@@ -594,7 +594,9 @@ def main(args):
             # QCD FF's
             ## mvis correction
             "ff_corr_qcd_mvis{ch}{era}{shift}", # applying correction twice/not applying it
+            "ff_corr_qcd_mvis_osss{ch}{era}{shift}", # applying correction twice/not applying it
             "ff_qcd_mvis{ch}{era}{shift}", # statistical uncertainty from smoothed band (morphed)
+            "ff_qcd_mvis_osss{ch}{era}{shift}", # statistical uncertainty from smoothed band (morphed)
             ## lepton (!!!) isolation correction
             "ff_corr_qcd_muiso{ch}{era}{shift}", # applying correction twice/not applying it
             "ff_qcd_muiso{ch}{era}{shift}", # statistical uncertainty from smoothed band (morphed)
@@ -602,11 +604,13 @@ def main(args):
             "ff_qcd_syst{ch}{era}{shift}",
             ## uncertainty from the sampling method of the raw FF's
             ### morphed
-            "ff_qcd_dm0_njet0_morphed_stat{ch}{era}{shift}",
-            "ff_qcd_dm0_njet1_morphed_stat{ch}{era}{shift}",
+            "ff_qcd_dr0_njet0_morphed_stat{ch}{era}{shift}",
+            "ff_qcd_dr0_njet1_morphed_stat{ch}{era}{shift}",
+            "ff_qcd_dr0_njet2_morphed_stat{ch}{era}{shift}",
             ### not morphed (needed for normalization uncertainty via lnN)
-            "ff_qcd_dm0_njet0_stat{ch}{era}{shift}",
-            "ff_qcd_dm0_njet1_stat{ch}{era}{shift}",
+            "ff_qcd_dr0_njet0_stat{ch}{era}{shift}",
+            "ff_qcd_dr0_njet1_stat{ch}{era}{shift}",
+            "ff_qcd_dr0_njet2_stat{ch}{era}{shift}",
             ## uncertainty for the mc subtraction
             "ff_qcd_mc{ch}{era}{shift}",
             # WJets FF's
@@ -620,11 +624,19 @@ def main(args):
             "ff_w_syst{ch}{era}{shift}",
             ## uncertainty from the sampling method of the raw FF's
             ### morphed
-            "ff_w_dm0_njet0_morphed_stat{ch}{era}{shift}",
-            "ff_w_dm0_njet1_morphed_stat{ch}{era}{shift}",
+            "ff_w_dr0_njet0_morphed_stat{ch}{era}{shift}",
+            "ff_w_dr0_njet1_morphed_stat{ch}{era}{shift}",
+            "ff_w_dr0_njet2_morphed_stat{ch}{era}{shift}",
+            "ff_w_dr1_njet0_morphed_stat{ch}{era}{shift}",
+            "ff_w_dr1_njet1_morphed_stat{ch}{era}{shift}",
+            "ff_w_dr1_njet2_morphed_stat{ch}{era}{shift}",
             ### not morphed (needed for normalization uncertainty via lnN)
-            "ff_w_dm0_njet0_stat{ch}{era}{shift}",
-            "ff_w_dm0_njet1_stat{ch}{era}{shift}",
+            "ff_w_dr0_njet0_stat{ch}{era}{shift}",
+            "ff_w_dr0_njet1_stat{ch}{era}{shift}",
+            "ff_w_dr0_njet2_stat{ch}{era}{shift}",
+            "ff_w_dr1_njet0_stat{ch}{era}{shift}",
+            "ff_w_dr1_njet1_stat{ch}{era}{shift}",
+            "ff_w_dr1_njet2_stat{ch}{era}{shift}",
             ## uncertainty for the mc subtraction
             "ff_w_mc{ch}{era}{shift}",
             # TT FF's
@@ -634,7 +646,8 @@ def main(args):
             "ff_tt_syst{ch}{era}{shift}", # statistical uncertainty from smoothed band (not morphed, needed for normalization uncertainty via lnN)
             ## uncertainty from the sampling method of the raw FF's
             ### morphed
-            "ff_tt_dm0_njet0_morphed_stat{ch}{era}{shift}",
+            "ff_tt_dr0_njet0_morphed_stat{ch}{era}{shift}",
+            "ff_tt_dr0_njet1_morphed_stat{ch}{era}{shift}",
             ### not morphed (needed for normalization uncertainty via lnN)
             "ff_tt_stat{ch}{era}{shift}",
             ## uncertainty on the correction from MC to data
@@ -647,7 +660,9 @@ def main(args):
     fake_factor_names["tt"] = [
             # correciton in mvis
             "ff_corr_qcd_mvis{ch}{era}{shift}", # applying correction twice/not applying it
+            "ff_corr_qcd_mvis_osss{ch}{era}{shift}", # applying correction twice/not applying it
             "ff_qcd_mvis{ch}{era}{shift}", # statistical uncertainty from smoothed band (morphed)
+            "ff_qcd_mvis_osss{ch}{era}{shift}", # statistical uncertainty from smoothed band (morphed)
             # correction in isolated (trailing) tau pt
             "ff_corr_qcd_tau2_pt{ch}{era}{shift}", # applying correction twice/not applying it
             "ff_qcd_tau2_pt{ch}{era}{shift}", # statistical uncertainty from smoothed band (morphed)
@@ -655,11 +670,13 @@ def main(args):
             "ff_qcd_syst{ch}{era}{shift}",
             # uncertainty from the sampling method of the raw FF's
             ## morphed
-            "ff_qcd_dm0_njet0_morphed_stat{ch}{era}{shift}",
-            "ff_qcd_dm0_njet1_morphed_stat{ch}{era}{shift}",
+            "ff_qcd_dr0_njet0_morphed_stat{ch}{era}{shift}",
+            "ff_qcd_dr0_njet1_morphed_stat{ch}{era}{shift}",
+            "ff_qcd_dr0_njet2_morphed_stat{ch}{era}{shift}",
             ## not morphed (needed for normalization uncertainty via lnN)
-            "ff_qcd_dm0_njet0_stat{ch}{era}{shift}",
-            "ff_qcd_dm0_njet1_stat{ch}{era}{shift}",
+            "ff_qcd_dr0_njet0_stat{ch}{era}{shift}",
+            "ff_qcd_dr0_njet1_stat{ch}{era}{shift}",
+            "ff_qcd_dr0_njet2_stat{ch}{era}{shift}",
             # uncertainty for the mc subtraction
             "ff_qcd_mc{ch}{era}{shift}",
             # 30% uncertainty for contamination of other processes, derived from fractions in tt
