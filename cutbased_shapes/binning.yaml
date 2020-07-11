@@ -135,7 +135,7 @@ stxs_stage1p1_v2:
 # Binning for the quantities as final discriminators
 variables:
     DiTauDeltaR:
-      bins: [[0.0, 5.0, 0.1]]
+      bins: [[0.5, 4.0, 0.1]]
       expression: "DiTauDeltaR"
     mTdileptonMET:
       bins: [[0.0, 300.0, 4.0]]
@@ -147,7 +147,7 @@ variables:
       bins: [[-200.0, 200.0, 5.0]]
       expression: "pZetaMissVis"
     pZetaPuppiMissVis:
-      bins: [[-200.0, 200.0, 5.0]]
+      bins: [[-100.0, 100.0, 5.0]]
       expression: "pZetaPuppiMissVis"
     m_sv:
       bins: [[0.0, 50.0, 50.0], [50.0, 250.0, 5.0]]
@@ -158,11 +158,17 @@ variables:
     m_sv_puppi:
       bins: [[0.0, 50.0, 50.0], [50.0, 250.0, 5.0]]
       expression: "m_sv_puppi"
+    m_sv_puppi_sm:
+      bins: [[50.0, 150.0, 10.0], [150.0, 250.0, 50.0]]
+      expression: "m_sv_puppi"
+    m_sv_puppi_bsm:
+      bins: [[50.0, 200.0, 5.0], [200.0, 600.0, 100.0], [600.0, 5000.0, 4400.0]]
+      expression: "m_sv_puppi"
     pt_sv_puppi:
       bins: [[0.0, 300.0, 5.0], [300.0, 500.0, 10.0], [500.0, 1000.0, 50.0]]
       expression: "pt_sv_puppi"
     m_vis:
-      bins: [[0.0, 250.0, 5.0]]
+      bins: [[50.0, 1000.0, 5.0]]
       expression: "m_vis"
     ME_vbf_vs_Z:
       bins: [[0.0, 0.95, 0.25], [0.95, 1.0, 0.001]]
@@ -172,6 +178,12 @@ variables:
       expression: "mt_tot"
     mt_tot_puppi:
       bins: [[0.0, 50.0, 50.0], [50.0, 250.0, 5.0], [250.0, 500.0, 10.0], [500.0, 1000.0, 25.0], [1000.0, 2000.0, 50.0], [2000.0, 5000.0, 100.0]]
+      expression: "mt_tot_puppi"
+    mt_tot_puppi_sm:
+      bins: [[50.0, 150.0, 10.0], [150.0, 250.0, 50.0]]
+      expression: "mt_tot_puppi"
+    mt_tot_puppi_bsm:
+      bins: [[50.0, 200.0, 5.0], [200.0, 600.0, 100.0], [600.0, 5000.0, 4400.0]]
       expression: "mt_tot_puppi"
     pt_1:
       bins: [[0.0, 150.0, 5.0]]
@@ -198,19 +210,19 @@ variables:
       bins: [[-4.8, 4.8, 0.2]]
       expression: "jeta_2"
     jdeta:
-      bins: [[0.0, 6.0, 0.2], [6.0, 10.0, 0.5]]
+      bins: [[0.0, 6.0, 0.2], [6.0, 8.0, 0.5]]
       expression: "jdeta"
     njets:
-      bins: [[-0.5, 10.5, 1.0]]
-      expression: "njets"
+      bins: [[-0.5, 2.5, 1.0]]
+      expression: "(njets <= 1)*njets + (njets > 1)*2.0"
     nbtag:
-      bins: [[-0.5, 6.5, 1.0]]
-      expression: "nbtag"
+      bins: [[-0.5, 1.5, 1.0]]
+      expression: "(nbtag == 0)*nbtag + (nbtag > 0)*1.0"
     mt_1:
       bins: [[0.0, 300.0, 5.0]]
       expression: "mt_1"
     mt_1_puppi:
-      bins: [[0.0, 300.0, 5.0]]
+      bins: [[0.0, 150.0, 5.0]]
       expression: "mt_1_puppi"
     ptvis:
       bins: [[0.0, 300.0, 5.0]]
@@ -222,13 +234,13 @@ variables:
       bins: [[0.0, 300.0, 5.0]]
       expression: "pt_ttjj"
     pt_tt_puppi:
-      bins: [[0.0, 300.0, 5.0]]
+      bins: [[0.0, 300.0, 10.0]]
       expression: "pt_tt_puppi"
     pt_ttjj_puppi:
       bins: [[0.0, 300.0, 5.0]]
       expression: "pt_ttjj_puppi"
     mjj:
-      bins: [[0.0, 700.0, 5.0], [700.0, 1500.0, 20.0], [1500.0, 4000.0, 100.0]]
+      bins: [[10.0, 100.0, 10.0], [100.0, 700.0, 50.0], [700.0, 2000.0, 100.0], [2000.0, 4000.0, 1000.0]]
       expression: "mjj"
     dijetpt:
       bins: [[0.0, 300.0, 5.0]]
