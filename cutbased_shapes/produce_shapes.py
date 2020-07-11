@@ -489,8 +489,96 @@ def main(args):
             lep_trigger_eff_variations[ch][unctype] = []
             lep_trigger_eff_variations[ch][unctype].append(AddWeight("CMS_eff_trigger%s_%s_%s"%(unctype, ch, args.era), "trg_%s_eff_weight"%ch, Weight("(1.0*(pt_1<={0})+1.02*(pt_1>{0}))".format(thresh_dict[args.era][ch]), "trg_%s_eff_weight"%ch), "Up"))
             lep_trigger_eff_variations[ch][unctype].append(AddWeight("CMS_eff_trigger%s_%s_%s"%(unctype, ch, args.era), "trg_%s_eff_weight"%ch, Weight("(1.0*(pt_1<={0})+0.98*(pt_1>{0}))".format(thresh_dict[args.era][ch]), "trg_%s_eff_weight"%ch), "Down"))
-            lep_trigger_eff_variations[ch][unctype].append(AddWeight("CMS_eff_xtrigger%s_%s_%s"%(unctype, ch, args.era), "xtrg_%s_eff_weight"%ch, Weight("(1.054*(pt_1<={0})+1.0*(pt_1>{0}))".format(thresh_dict[args.era][ch]), "xtrg_%s_eff_weight"%ch), "Up"))
-            lep_trigger_eff_variations[ch][unctype].append(AddWeight("CMS_eff_xtrigger%s_%s_%s"%(unctype, ch, args.era), "xtrg_%s_eff_weight"%ch, Weight("(0.946*(pt_1<={0})+1.0*(pt_1>{0}))".format(thresh_dict[args.era][ch]), "xtrg_%s_eff_weight"%ch), "Down"))
+            lep_trigger_eff_variations[ch][unctype].append(AddWeight("CMS_eff_xtrigger_l%s_%s_%s"%(unctype, ch, args.era), "xtrg_%s_eff_weight"%ch, Weight("(1.02*(pt_1<={0})+1.0*(pt_1>{0}))".format(thresh_dict[args.era][ch]), "xtrg_%s_eff_weight"%ch), "Up"))
+            lep_trigger_eff_variations[ch][unctype].append(AddWeight("CMS_eff_xtrigger_l%s_%s_%s"%(unctype, ch, args.era), "xtrg_%s_eff_weight"%ch, Weight("(0.98*(pt_1<={0})+1.0*(pt_1>{0}))".format(thresh_dict[args.era][ch]), "xtrg_%s_eff_weight"%ch), "Down"))
+
+
+    # Tau trigger efficiency; needed separately for ( MC | EMB ) x (mt & et | tt)
+    tau_trigger_variations = { "Embedded" : {}, "MC" : {}}
+    single_lep_common = { "Embedded" : {}, "MC" : {}}
+    xtrg_lep_common = { "Embedded" : {},  "MC" : {}}
+
+    single_lep_common["MC"] = {
+            "2016": {
+                "et": "(trg_singleelectron==1 && pt_1 > 30)*(singleTriggerDataEfficiencyWeightKIT_1/singleTriggerMCEfficiencyWeightKIT_1)",
+                "mt": "(trg_singlemuon==1 && pt_1 > 23)*(singleTriggerDataEfficiencyWeightKIT_1/singleTriggerMCEfficiencyWeightKIT_1)"},
+            "2017": {
+                "et": "(trg_singlemuon_27==1 && pt_1 > 28)*(singleTriggerDataEfficiencyWeightKIT_1/singleTriggerMCEfficiencyWeightKIT_1)",
+                "mt": "(trg_singleelectron_35==1 && pt_1 > 40)*(singleTriggerDataEfficiencyWeightKIT_1/singleTriggerMCEfficiencyWeightKIT_1)"},
+            "2018": {
+                "et": "((trg_singleelectron_32==1 && pt_1>37)*trigger_32_35_Weight_1)",
+                "mt": "((trg_singlemuon_27==1 && pt_1>28)*trigger_27_Weight_1)"},
+    }
+    xtrg_lep_common["MC"] = {
+            "2016": {
+                "et": "(trg_eletaucross==1 && pt_1<=30)*(crossTriggerDataEfficiencyWeightKIT_1/crossTriggerMCEfficiencyWeightKIT_1)",
+                "mt": "(trg_mutaucross==1 && pt_1 <= 23)*(crossTriggerDataEfficiencyWeightKIT_1/crossTriggerMCEfficiencyWeightKIT_1)"},
+            "2017": {
+                "et": "(trg_crossele_ele24tau30==1 && pt_1>29 && pt_1<=40)*(crossTriggerDataEfficiencyWeight_1/crossTriggerMCEfficiencyWeight_1)",
+                "mt": "(trg_crossmuon_mu20tau27==1 && pt_1 > 21 && pt_1 <= 28)*(crossTriggerDataEfficiencyWeight_1/crossTriggerMCEfficiencyWeight_1)"},
+            "2018": {
+                "et": "(pt_1>29 && pt_1<= 37 && (trg_crossele_ele24tau30==1 || trg_crossele_ele24tau30_hps==1))*(crossTriggerDataEfficiencyWeight_1/crossTriggerMCEfficiencyWeight_1)",
+                "mt": "(pt_1 > 21 && pt_1 <= 28 && (trg_crossmuon_mu20tau27==1 || trg_crossmuon_mu20tau27_hps==1))*(crossTriggerDataEfficiencyWeight_1/crossTriggerMCEfficiencyWeight_1)"}
+    }
+    single_lep_common["Embedded"] = {
+            "2016": {
+                "et": "(trg_singleelectron==1 && pt_1 > 30)*(singleTriggerDataEfficiencyWeightKIT_1/singleTriggerEmbeddedEfficiencyWeightKIT_1)",
+                "mt": "(trg_singlemuon==1 && pt_1 > 23)*(singleTriggerDataEfficiencyWeightKIT_1/singleTriggerEmbeddedEfficiencyWeightKIT_1)"},
+            "2017": {
+                "et": "(trg_singleelectron_35==1 && pt_1 > 40)*(trigger_27_32_35_Weight_1)",
+                "mt": "(trg_singlemuon_27==1 && pt_1 > 28)*(trigger_27_Weight_1)"},
+            "2018": {
+                "et": "((trg_singleelectron_32==1 && pt_1>37)*(trigger_32_35_Weight_1)",
+                "mt": "((trg_singlemuon_27==1 && pt_1>28)*(trigger_27_Weight_1)"},
+    }
+    xtrg_lep_common["Embedded"] = {
+            "2016": {
+                "et": "(trg_eletaucross==1 && pt_1<=30)*(crossTriggerDataEfficiencyWeightKIT_1/crossTriggerEmbeddedEfficiencyWeightKIT_1)",
+                "mt": "(trg_mutaucross==1 && pt_1 <= 23)*(crossTriggerDataEfficiencyWeightKIT_1/crossTriggerEmbeddedEfficiencyWeightKIT_1)"},
+            "2017": {
+                "et": "(trg_crossele_ele24tau30==1 && pt_1>29 && pt_1<=40)*crossTriggerEmbeddedWeight_1",
+                "mt": "(trg_crossmuon_mu20tau27==1 && pt_1 > 21 && pt_1 <= 28)*crossTriggerEmbeddedWeight_1"},
+            "2018": {
+                "et": "(pt_1>29 && pt_1<= 37 && (trg_crossele_ele24tau30==1 || trg_crossele_ele24tau30_hps==1))*crossTriggerEmbeddedWeight_1",
+                "mt": "(pt_1 > 21 && pt_1 <= 28 && (trg_crossmuon_mu20tau27==1 || trg_crossmuon_mu20tau27_hps==1))*crossTriggerEmbeddedWeight_1"}
+    }
+
+    for ch in ["mt", "et", "tt"]:
+        weight_string_template = "({TAU})" if ch == "tt" else "({SLEP} + {XLEP}*{TAU})"
+        tauindices = ["1", "2"] if ch == "tt" else ["2"]
+        for processtype in ["MC", "Embedded"]:
+            unctypes = ["", "_emb"] if processtype == "Embedded" else unctypes = [""]
+            weight_string = weight_string_template if ch == "tt" else weight_string_template.format(SLEP=single_lep_common[processtype][args.era][ch],XLEP=xtrg_lep_common[processtype][args.era][ch])
+            variationname = "CMS_eff_xtrigger_t{unctype}_{ch}_dm{dm}_{era}"
+            tautrigweightname = "crossTriggerCorrected{PROCESS}EfficiencyWeight{VARIATION}_tight_DeepTau_{INDEX}"
+            tauvarelement = "({DATAW}/{PW})*({DM}*(1.0 {OPERATOR} TMath::Sqrt( (({DATAW} - {DATADOWNW})/(DATAW))**2 + (({PW} - {PDOWNW})/(PW))**2 )) + {DMNOT})"
+            tau_trigger_variations[processtype][ch] = {}
+            for unctype in unctypes:
+                tau_trigger_variations[processtype][ch][unctype] = []
+                for shift_direction in ["Up", "Down"]:
+                    for decaymode in [0, 1, 10, 11]:
+                        dmpassed = "(decayMode_{INDEX} == {DM})".format(DM=decaymode) if decaymode != 1 else "(decayMode_{INDEX} == 1 || decayMode_{INDEX} == 2)"
+                        dmnotpassed = "(decayMode_{INDEX} != {DM})".format(DM=decaymode) if decaymode != 1 else "(decayMode_{INDEX} != 1 && decayMode_{INDEX} != 2)"
+                        tautrg_varelements = []
+                        for tauind in  tauindices:
+                            tautrg_varelements.append(tauvarelement.format(
+                                DATAW=tautrigweightname.format(PROCESS="Data",VARIATION="",INDEX=tauind),
+                                DATADOWNW=tautrigweightname.format(PROCESS="Data",VARIATION="Down",INDEX=tauind),
+                                PW=tautrigweightname.format(PROCESS=processtype,VARIATION="",INDEX=tauind),
+                                PDOWNW=tautrigweightname.format(PROCESS=processtype,VARIATION="Down",INDEX=tauind),
+                                DM=dmpassed.format(INDEX=tauind),
+                                DMNOT=dmnotpassed.format(INDEX=tauind),
+                                OPERATOR="+" if shift_direction == "Up" else "-"
+                                )
+                            )
+                        tautrgweight = tautrg_varelements[0] if len(tautrg_varelements) == 1 else "*".join(tautrg_varelements)
+                        tau_trigger_variations[processtype][ch][unctype].append(ReplaceWeight(
+                            variationname.format(unctype=unctype,ch=ch,dm=decaymode,era=args.era),
+                            "triggerweight",
+                            Weight(weight_string.format(TAU=tautrgweight),"triggerweight"),
+                            shift_direction)
+                        )
+
 
     # Fake factor uncertainties
     fake_factor_names = {}
@@ -601,7 +689,7 @@ def main(args):
         if ch in ["et", "em"]:
             channel_mc_common_variations += ele_es_variations
         if ch in ["et", "mt", "tt"]:
-            channel_mc_common_variations += tau_es_variations[""] + tau_id_variations[ch][""]
+            channel_mc_common_variations += tau_es_variations[""] + tau_id_variations[ch][""] + tau_trigger_variations["MC"][ch][""]
         if ch in ["et", "mt"]:
             channel_mc_common_variations += lep_trigger_eff_variations[ch][""]
 
@@ -658,7 +746,9 @@ def main(args):
 
         emb_variations = []
         if ch in ["mt", "et", "tt"]:
-            emb_variations += tau_es_variations[""] + tau_es_variations["_emb"]  + tau_id_variations[ch][""]+ tau_id_variations[ch]["_emb"] + decayMode_variations
+            emb_variations += tau_es_variations[""] + tau_es_variations["_emb"]
+            emb_variations += tau_id_variations[ch][""] + tau_id_variations[ch]["_emb"] + decayMode_variations
+            emb_variations += tau_trigger_variations["Embedded"][ch][""] + tau_trigger_variations["Embedded"][ch]["_emb"]
         if ch in ["mt", "et"]:
             emb_variations += lep_trigger_eff_variations[ch]["_emb"]
         if ch in ["et", "em"]:
