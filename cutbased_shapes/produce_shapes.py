@@ -586,7 +586,7 @@ def main(args):
                 "et": "(trg_eletaucross==1 && pt_1<=30)*(crossTriggerDataEfficiencyWeightKIT_1/crossTriggerEmbeddedEfficiencyWeightKIT_1)",
                 "mt": "(trg_mutaucross==1 && pt_1 <= 23)*(crossTriggerDataEfficiencyWeightKIT_1/crossTriggerEmbeddedEfficiencyWeightKIT_1)"},
             "2017": {
-                "et": "(trg_crossele_ele24tau30==1 && pt_1>29 && pt_1<=40)*crossTriggerEmbeddedWeight_1",
+                "et": "(trg_crossele_ele24tau30==1 && pt_1>29 && pt_1<=40)*crossTriggerDataEfficiencyWeight_1",
                 "mt": "(trg_crossmuon_mu20tau27==1 && pt_1 > 21 && pt_1 <= 28)*crossTriggerEmbeddedWeight_1"},
             "2018": {
                 "et": "(pt_1>29 && pt_1<= 37 && (trg_crossele_ele24tau30==1 || trg_crossele_ele24tau30_hps==1))*crossTriggerEmbeddedWeight_1",
