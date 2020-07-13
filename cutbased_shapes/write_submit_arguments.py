@@ -59,7 +59,7 @@ def main():
                         f.write(
                             tmp_str.format(
                                 os.getcwd(),
-                                1,
+                                8 if process in ["EMB", "QCD", "jetFakes", "TTL"] else 1,
                                 year,
                                 variable, # category dependent
                                 process,
