@@ -597,8 +597,8 @@ def main(args):
         weight_string_template = "({TAU})" if ch == "tt" else "({SLEP} + {XLEP}*{TAU})"
         tauindices = ["1", "2"] if ch == "tt" else ["2"]
         for processtype in ["MC", "Embedded"]:
-            unctypes = ["", "_emb"] if processtype == "Embedded" else unctypes = [""]
-            weight_string = weight_string_template if ch == "tt" else weight_string_template.format(SLEP=single_lep_common[processtype][args.era][ch],XLEP=xtrg_lep_common[processtype][args.era][ch])
+            unctypes = ["", "_emb"] if processtype == "Embedded" else [""]
+            weight_string = weight_string_template if ch == "tt" else weight_string_template.format(SLEP=single_lep_common[processtype][args.era][ch],XLEP=xtrg_lep_common[processtype][args.era][ch],TAU="{TAU}")
             variationname = "CMS_eff_xtrigger_t{unctype}_{ch}_dm{dm}_{era}"
             tautrigweightname = "crossTriggerCorrected{PROCESS}EfficiencyWeight{VARIATION}_tight_DeepTau_{INDEX}"
             tauvarelement = "({DATAW}/{PW})*({DM}*(1.0 {OPERATOR} TMath::Sqrt( (({DATAW} - {DATADOWNW})/(DATAW))**2 + (({PW} - {PDOWNW})/(PW))**2 )) + {DMNOT})"
@@ -607,8 +607,8 @@ def main(args):
                 tau_trigger_variations[processtype][ch][unctype] = []
                 for shift_direction in ["Up", "Down"]:
                     for decaymode in [0, 1, 10, 11]:
-                        dmpassed = "(decayMode_{INDEX} == {DM})".format(DM=decaymode) if decaymode != 1 else "(decayMode_{INDEX} == 1 || decayMode_{INDEX} == 2)"
-                        dmnotpassed = "(decayMode_{INDEX} != {DM})".format(DM=decaymode) if decaymode != 1 else "(decayMode_{INDEX} != 1 && decayMode_{INDEX} != 2)"
+                        dmpassed = "(decayMode_{INDEX} == {DM})".format(DM=decaymode, INDEX="{INDEX}") if decaymode != 1 else "(decayMode_{INDEX} == 1 || decayMode_{INDEX} == 2)"
+                        dmnotpassed = "(decayMode_{INDEX} != {DM})".format(DM=decaymode, INDEX="{INDEX}") if decaymode != 1 else "(decayMode_{INDEX} != 1 && decayMode_{INDEX} != 2)"
                         tautrg_varelements = []
                         for tauind in  tauindices:
                             tautrg_varelements.append(tauvarelement.format(
