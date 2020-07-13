@@ -597,6 +597,7 @@ def main(args):
         weight_string_template = "({TAU})" if ch == "tt" else "({SLEP} + {XLEP}*{TAU})"
         tauindices = ["1", "2"] if ch == "tt" else ["2"]
         for processtype in ["MC", "Embedded"]:
+            processinweight = processtype if processtype == "MC" else "EMB"
             unctypes = ["", "_emb"] if processtype == "Embedded" else [""]
             weight_string = weight_string_template if ch == "tt" else weight_string_template.format(SLEP=single_lep_common[processtype][args.era][ch],XLEP=xtrg_lep_common[processtype][args.era][ch],TAU="{TAU}")
             variationname = "CMS_eff_xtrigger_t{unctype}_{ch}_dm{dm}_{era}"
@@ -614,8 +615,8 @@ def main(args):
                             tautrg_varelements.append(tauvarelement.format(
                                 DATAW=tautrigweightname.format(PROCESS="Data",VARIATION="",INDEX=tauind),
                                 DATADOWNW=tautrigweightname.format(PROCESS="Data",VARIATION="Down",INDEX=tauind),
-                                PW=tautrigweightname.format(PROCESS=processtype,VARIATION="",INDEX=tauind),
-                                PDOWNW=tautrigweightname.format(PROCESS=processtype,VARIATION="Down",INDEX=tauind),
+                                PW=tautrigweightname.format(PROCESS=processinweight,VARIATION="",INDEX=tauind),
+                                PDOWNW=tautrigweightname.format(PROCESS=processinweight,VARIATION="Down",INDEX=tauind),
                                 DM=dmpassed.format(INDEX=tauind),
                                 DMNOT=dmnotpassed.format(INDEX=tauind),
                                 OPERATOR="+" if shift_direction == "Up" else "-"
