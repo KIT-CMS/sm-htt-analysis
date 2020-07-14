@@ -271,8 +271,8 @@ def main(args):
     # EMB: 10% removed events in ttbar simulation (ttbar -> real tau tau events) will be added/subtracted to EMB shape to use as systematic. Technical procedure different to usual systematic variations
     if args.process == "EMB" and not args.skip_systematic_variations:
         for ch in args.channels:
-            processes[ch]['ZTTpTTTauTauDown'] = Process("ZTTpTTTauTauDown", AddHistogramEstimationMethod("AddHistogram", "nominal", era, directory, channel_dict[args.era][ch], [processes[ch]["EMB"], processes[ch]["TTT"]], [1.0, -0.1]))
-            processes[ch]['ZTTpTTTauTauUp'] = Process("ZTTpTTTauTauUp", AddHistogramEstimationMethod("AddHistogram", "nominal", era, directory, channel_dict[args.era][ch], [processes[ch]["EMB"], processes[ch]["TTT"]], [1.0, 0.1]))
+            processes[ch]['ZTTpTTTauTauDown'] = Process("EMB", AddHistogramEstimationMethod("AddHistogram", "nominal", era, directory, channel_dict[args.era][ch], [processes[ch]["EMB"], processes[ch]["TTT"]], [1.0, -0.1]))
+            processes[ch]['ZTTpTTTauTauUp'] = Process("EMB", AddHistogramEstimationMethod("AddHistogram", "nominal", era, directory, channel_dict[args.era][ch], [processes[ch]["EMB"], processes[ch]["TTT"]], [1.0, 0.1]))
             for category in categories[ch]:
                 for updownvar in ["Down", "Up"]:
                     systematics.add(Systematic(category=category, process=processes[ch]['ZTTpTTTauTau%s'%updownvar], analysis="mssmvssm", era=era, variation=Relabel("CMS_htt_emb_ttbar_{}".format(args.era), updownvar), mass="125"))
