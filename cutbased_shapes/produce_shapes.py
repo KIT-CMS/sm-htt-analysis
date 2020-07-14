@@ -604,7 +604,7 @@ def main(args):
             weight_string = weight_string_template if ch == "tt" else weight_string_template.format(SLEP=single_lep_common[processtype][args.era][ch],XLEP=xtrg_lep_common[processtype][args.era][ch],TAU="{TAU}")
             variationname = "CMS_eff_xtrigger_t{unctype}_{ch}_dm{dm}_{era}"
             tautrigweightname = "crossTriggerCorrected{PROCESS}EfficiencyWeight{VARIATION}_tight_DeepTau_{INDEX}"
-            tauvarelement = "({DATAW}/{PW})*({DM}*(1.0 {OPERATOR} TMath::Sqrt( (({DATAW} - {DATADOWNW})/(DATAW))**2 + (({PW} - {PDOWNW})/(PW))**2 )) + {DMNOT})"
+            tauvarelement = "({DATAW}/{PW})*({DM}*(1.0 {OPERATOR} TMath::Sqrt( (({DATAW} - {DATADOWNW})/({DATAW}))**2 + (({PW} - {PDOWNW})/({PW}))**2 )) + {DMNOT})"
             tau_trigger_variations[processtype][ch] = {}
             for unctype in unctypes:
                 tau_trigger_variations[processtype][ch][unctype] = []
