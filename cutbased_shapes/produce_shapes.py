@@ -81,6 +81,7 @@ def parse_arguments():
     parser.add_argument("--skip-systematic-variations",action="store_true",help="Do not produce the systematic variations.")
     parser.add_argument("--process",default=None,type=str,help="Explicit process to be considered within the shape production")
     parser.add_argument("--category",default="nobtag",type=str,help="Category to be considered within the shape production")
+    parser.add_argument("--log-level",default="INFO",type=str,help="Set level of logging")
     return parser.parse_args()
 
 
@@ -833,5 +834,5 @@ def main(args):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    setup_logging("{}_produce_cutbased_shapes_{}.log".format(args.tag, args.discriminator_variable), logging.INFO)
+    setup_logging("{}_produce_cutbased_shapes_{}.log".format(args.tag, args.discriminator_variable), getattr(logging, args.log_level))
     main(args)
