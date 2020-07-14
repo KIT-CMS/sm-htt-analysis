@@ -173,6 +173,7 @@ def main(args):
         processes[ch]["EMB"]  = Process("EMB",      ZTTEmbeddedEstimation  (era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
         processes[ch]["ZL"]   = Process("ZL",       ZLEstimation           (era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
         processes[ch]["TTL"]  = Process("TTL",      TTLEstimation          (era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
+        processes[ch]["TTT"]  = Process("TTT",      TTTEstimation          (era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
         processes[ch]["VVL"]  = Process("VVL",      VVLEstimation          (era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
 
         processes[ch]["WH125"]   = Process("WH125",    WHEstimation        (era, directory, channel_dict[args.era][ch], friend_directory=friend_directories[ch]))
