@@ -86,8 +86,7 @@ def create_synced_category_files(info):
         hist.SetName(name_output)
         hist.Write()
         if "201" in name_output:
-            if ("scale_t_" in name_output
-                or "prefiring" in name_output
+            if ("prefiring" in name_output
                 or "scale_e_" in name_output
                 or "res_e_" in name_output
                 or "scale_t_" in name_output
