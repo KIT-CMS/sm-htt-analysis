@@ -75,22 +75,31 @@ def create_synced_category_files(info):
     for name in sorted(info["processes"]):
         hist = file_input.Get(name)
         name_output = info["processes"][name]
+        if (not "ZTTpTTTauTau" in name) and ("CMS_htt_emb_ttbar" in name):
+            continue
+        name_output = hist_map[channel][category][name]
+        if "ZTTpTTTauTauUp" in name_output:
+            name_output = name_output.replace("ZTTpTTTauTauUp","EMB")
+        if "ZTTpTTTauTauDown" in name_output:
+            name_output = name_output.replace("ZTTpTTTauTauDown","EMB")
         hist.SetTitle(name_output)
         hist.SetName(name_output)
         hist.Write()
-        if "Run201" in name_output:
+        if "201" in name_output:
             if ("scale_t_" in name_output
                 or "prefiring" in name_output
-                or "scale_mc_e_" in name_output
-                or "reso_mc_e_" in name_output
-                or "scale_mc_t_" in name_output
-                or "scale_emb_t_" in name_output
+                or "scale_e_" in name_output
+                or "res_e_" in name_output
+                or "scale_t_" in name_output
+                or "scale_t_emb_" in name_output
                 or "scale_j_" in name_output
+                or "boson_res_met_" in name_output
+                or "boson_scale_met_" in name_output
                 or "_1ProngPi0Eff_" in name_output
                 or "_3ProngEff_" in name_output
                 or ("_ff_" in name_output and "_syst_" in name_output)):
-                hist.SetTitle(name_output.replace("_Run2016", "").replace("_Run2017", "").replace("_Run2018",""))
-                hist.SetName(name_output.replace("_Run2016", "").replace("_Run2017", "").replace("_Run2018",""))
+                hist.SetTitle(name_output.replace("_2016", "").replace("_2017", "").replace("_2018",""))
+                hist.SetName(name_output.replace("_2016", "").replace("_2017", "").replace("_2018",""))
                 hist.Write()
     file_output.Close()
     file_input.Close()
