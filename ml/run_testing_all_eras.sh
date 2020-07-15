@@ -22,7 +22,7 @@ else
   tag=$3
 fi
 
-[[ -z $tag ]] && outdir=output/ml/all_eras_${CHANNEL} ||  outdir=output/ml/all_eras_${CHANNEL}_${tag}
+[[ -z $tag ]] && outdir=output/ml/all_eras_${CHANNEL} ||  outdir=output/ml/all_eras_${CHANNEL}
 
 mkdir -p ${outdir}
 

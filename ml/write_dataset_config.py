@@ -87,8 +87,8 @@ def main(args):
     # Write arparse arguments to YAML config
     logger.debug("Write argparse arguments to YAML config.")
     output_config = {}
-    output_config["base_path"] = args.base_path
-    output_config["friend_paths"] = args.friend_paths
+    output_config["base_path"] = args.base_path.replace("+CH+",args.channel)
+    output_config["friend_paths"] = [x.replace("+CH+",args.channel) for x in args.friend_paths]
     output_config["output_path"] = args.output_path
     output_config["output_filename"] = args.output_filename
     output_config["tree_path"] = args.tree_path
@@ -423,7 +423,7 @@ def main(args):
         else:
             channel_qcd.cuts.remove("tau_2_iso")
             channel_qcd.cuts.add(
-                Cut("byTightDeepTau2017v2p1VSjet_2<0.5", "tau_2_iso"))
+                Cut("byMediumDeepTau2017v2p1VSjet_2<0.5", "tau_2_iso"))
             channel_qcd.cuts.add(
                 Cut("byMediumDeepTau2017v2p1VSjet_2>0.5", "tau_2_iso_loose"))
 
@@ -442,15 +442,15 @@ def main(args):
         aiso = copy.deepcopy(channel)
         if args.channel in ["et", "mt"]:
             aisoCut = Cut(
-                "byTightDeepTau2017v2p1VSjet_2<0.5&&byVLooseDeepTau2017v2p1VSjet_2>0.5",
+                "byMediumDeepTau2017v2p1VSjet_2<0.5&&byVVVLooseDeepTau2017v2p1VSjet_2>0.5",
                 "tau_aiso")
             fakeWeightstring = "ff2_nom"
             aiso.cuts.remove("tau_iso")
         elif args.channel == "tt":
             aisoCut = Cut(
-                "(byTightDeepTau2017v2p1VSjet_2>0.5&&byTightDeepTau2017v2p1VSjet_1<0.5&&byVLooseDeepTau2017v2p1VSjet_1>0.5)||(byTightDeepTau2017v2p1VSjet_1>0.5&&byTightDeepTau2017v2p1VSjet_2<0.5&&byVLooseDeepTau2017v2p1VSjet_2>0.5)",
+                "(byMediumDeepTau2017v2p1VSjet_2>0.5&&byMediumDeepTau2017v2p1VSjet_1<0.5&&byVVVLooseDeepTau2017v2p1VSjet_1>0.5)||(byMediumDeepTau2017v2p1VSjet_1>0.5&&byMediumDeepTau2017v2p1VSjet_2<0.5&&byVVVLooseDeepTau2017v2p1VSjet_2>0.5)",
                 "tau_aiso")
-            fakeWeightstring = "(0.5*ff1_nom*(byTightDeepTau2017v2p1VSjet_1<0.5)+0.5*ff2_nom*(byTightDeepTau2017v2p1VSjet_2<0.5))"
+            fakeWeightstring = "(0.5*ff1_nom*(byMediumDeepTau2017v2p1VSjet_1<0.5)+0.5*ff2_nom*(byMediumDeepTau2017v2p1VSjet_2<0.5))"
             aiso.cuts.remove("tau_1_iso")
             aiso.cuts.remove("tau_2_iso")
         # self._nofake_processes = [copy.deepcopy(p) for p in nofake_processes]

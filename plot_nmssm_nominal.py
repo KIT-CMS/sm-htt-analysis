@@ -10,6 +10,7 @@ import logging
 logger = logging.getLogger("")
 
 
+
 def parse_arguments():
     parser = argparse.ArgumentParser(
         description=
@@ -176,8 +177,8 @@ def main(args,heavy_mass,light_mass):
     mass = args.mass
     variables = args.variables
     categories = [c for c in args.categories] if args.categories is not None else None
-    if "em" in args.channels:
-        categories = [c if c!="ff" else "ss" for c in categories]
+    #if "em" in args.channels:
+    #    categories = [c if c!="ff" else "ss" for c in categories]
     if "all" in variables:
         variables = ["mt_1","mt_2", "pt_1","pt_2", "eta_1", "eta_2", "m_vis", "ptvis", "npv", "njets", "nbtag", "jpt_1", "jpt_2", "jeta_1", "jeta_2", "met", "mjj", "dijetpt", "pZetaMissVis", "m_1", "m_2", "decayMode_1", "decayMode_2", "iso_1", "iso_2", "rho", "mt_tot", "d0_1", "d0_2", "dZ_1", "dZ_2"]
 
@@ -243,12 +244,12 @@ def main(args,heavy_mass,light_mass):
 
 
             config["y_rel_lims"] = [5, 500] if (variable in logvars) else [0., 1.5]
-            config["markers"] = ["HIST"] * len(bkg_processes_names) + ["LINE"]*len(signal_names) + ["P"] + ["E2"] + ["LINE"]*len(signal_names) + ["P"]
-            config["legend_markers"] = ["F"] * (len(bkg_processes_names))  +  ["LX0"]*len(signal_names) +  ["ELP"] + ["E2"] + ["L"]*len(signal_names) + ["P"]
-            signal_label = ['#scale[0.8]{H({}) #rightarrow h(125)h"({}) #rightarrow #tau#tau bb (1 pb)}'.format(heavy_mass,light_mass)]
-            config["labels"] = bkg_processes_names + signal_label + ["data"
+            config["markers"] = ["HIST"] * len(bkg_processes_names) + ["E2"]  + ["LINE"]*len(signal_names) + ["P"] + ["E2"] + ["LINE"]*len(signal_names) + ["P"]
+            config["legend_markers"] = ["F"] * (len(bkg_processes_names))   + ["F"] +  ["LX0"]*len(signal_names) + ["ELP"] + ["E2"] + ["L"]*len(signal_names) + ["P"]
+            signal_label = ['#scale[0.85]{H(%s)#rightarrowh(125)h"(%s) (1 pb)}'%(heavy_mass,light_mass)]
+            config["labels"] = bkg_processes_names + ["Bkg.unc."] + signal_label + ["data"
                                                       ] + [""]*len(signal_names) + config["labels"]
-            config["colors"] = bkg_processes_names + ["#8B008B"]*len(signal_names) + ["data"
+            config["colors"] = bkg_processes_names + ["transgrey"] + ["#8B008B"]*len(signal_names) + ["data"
                                                       ] + ["#B7B7B7"] + ["#8B008B"]*len(signal_names) + ["#000000"]
             config["nicks"] = bkg_processes_names + signal_names + ["data"]
                 
@@ -287,7 +288,7 @@ def main(args,heavy_mass,light_mass):
             title_dict["em"] = "e#mu"
 
             config["title"] = "#scale[0.8]{" + title_dict[channel] + " " + category[3:].replace("NMSSM_","") + "}" #"_".join(["channel", channel])
-            config["stacks"] = ["mc"] * len(bkg_processes_names) + signal_names + [
+            config["stacks"] = ["mc"] * len(bkg_processes_names) + signal_names + ["bkg_unc"] +[
                 "data"
             ] + [x+"Ratio" for x in signal_names] + config["stacks"]
             config["ratio_denominator_nicks"] = [
@@ -298,51 +299,11 @@ def main(args,heavy_mass,light_mass):
                 config["ratio_numerator_nicks"].append(" ".join(bkg_processes_names+[signal_names[i]]))
             config["ratio_numerator_nicks"].append("data")
             config["ratio_result_nicks"] = ["bkg_ratio"] + [x+"_ratio" for x in signal_names] + ["data_ratio"]
-            if args.comparison:
-                config["markers"] = ["HIST"] + ["LINE"] + ["HIST"] * (len(bkg_processes_names)-1) +  ["EX0"] + ["E2", "EX0"] + ["EX0"]
-                config["legend_markers"] = ["F"] + ["L"]  + ["F"]  * (len(bkg_processes_names)-1)  + ["PEX0"] +  ["F", "PEX0"] + ["PEX0"]
-                config["labels"] = [bkg_processes_names[0]] + ["Z #rightarrow #tau#tau (simulation)"] + bkg_processes_names[1:] + ["data"
-                                                          ] +  ["Bkg. (embedded) unc.",  "Obs./Bkg. (simulation)", "Obs./Bkg. (embedded)"]
-                config["colors"] = [bkg_processes_names[0]] + ["#C70039"] + bkg_processes_names[1:] + ["data"
-                                                          ] + ["#B7B7B7", " #C70039 ", "#000000"]
 
-                config["subplot_legend"] =  [
-                                            0.195,
-                                            0.77,
-                                            0.92,
-                                            0.93
-                                        ],
-                config["subplot_legend_cols"] = 3
-                config["subplot_legend_fontsize"] = 0.06
-                config["y_subplot_label"] = ""
-                config["legend_fontsize"] = 0.044
-                bkg_processes_names_noplot = ["ztt_noplot","ttt_noplot","vvt_noplot"] + [x+"_noplot" for x in bkg_processes_names if not "emb" in x]
-                config["nicks"] = bkg_processes_names + bkg_processes_names_noplot + ["data"]
-                config["scale_factors"] = [1.0]*(len(bkg_processes_names)+len(bkg_processes_names_noplot))+[0.0]
-                config["analysis_modules"].append("AddHistograms")
-                config["add_nicks"] = [" ".join(bkg_processes_names_noplot)]
-                config["add_result_nicks"] = ["ztt"]
-                config["add_result_position"] = 1
-                config["x_expressions"] = [
-                    "#" + "#".join([
-                        channel, category, process, analysis, era, variable, mass
-                    ]) + "#" for process in bkg_processes
-                ] + [
-                    "#" + "#".join([
-                        channel, category, process, analysis, era, variable, mass
-                    ]) + "#" for process in ["ZTT","TTT","VVT"] + [x for x in bkg_processes if x!="EMB"]
-                ] + [
-                    "#" + "#".join([
-                        channel, category, "data_obs", analysis, era, variable,
-                        mass
-                    ]) + "#"
-                ]
-                config["stacks"] = ["mc"] + ["ztt"] + ["mc"] * (len(bkg_processes_names)-1) + ["data"] + config_template["stacks"] + ["ratio_data_zttmc"]
-                config["ratio_denominator_nicks"] = [" ".join(bkg_processes_names)] + [" ".join(bkg_processes_names_noplot)] + [" ".join(bkg_processes_names)]
-                config["ratio_numerator_nicks"] = [
-                    " ".join(bkg_processes_names), "data", "data"
-                ]
-                config["ratio_result_nicks"] = ["ratio_Bkg", "ratio_Data_to_MC", "ratio_Data"]
+            config["analysis_modules"].append("AddHistograms")
+            config["add_nicks"] = [" ".join(bkg_processes_names)]
+            config["add_result_nicks"] = ["background_uncertainty"]
+
             if args.blind:
                 for key in config.keys():
                     if isinstance(config[key], list):
@@ -382,6 +343,7 @@ def prefit(args,heavy_mass,light_mass):
         14 : "NMSSM_MH701to1000_boosted",
         15 : "NMSSM_MH701to1000_unboosted"
     }
+    
 
     # folders = ["htt_{}_{}_2016_prefit".format(args.channels[0],x,era.strip("Run") for x in categories.keys())
 
@@ -389,6 +351,7 @@ def prefit(args,heavy_mass,light_mass):
     # signal=["ggH125","qqH125"]
     if "em" in args.channels:
         args.ff=False
+	prefit_categories.update({4: "ss"})
     signal.append("NMSSM_{}_125_{}".format(heavy_mass,light_mass))
     signal_names.append("nmssm_{}_125_{}".format(heavy_mass,light_mass))
     if args.emb and args.ff:
@@ -474,9 +437,15 @@ def prefit(args,heavy_mass,light_mass):
                     print "Process {} not found for category htt_{}_{}_{}_prefit. Continuing.".format(process,args.channels[0],category,era.strip("Run"))
                     empty_processes.append(process)
                     empty_names.append(name)
+            for process,name in zip(signal,signal_names):
+                if not rfile.Get("htt_{}_{}_{}_prefit/{}".format(args.channels[0],category,era.strip("Run"),process)):
+                    print "Process {} not found for category htt_{}_{}_{}_prefit. Continuing.".format(process,args.channels[0],category,era.strip("Run"))
+                    empty_processes.append(process)
+                    empty_names.append(name)
+                    signal = ["TotalSig"]
+	
             bkg_processes = [p for p in bkg_processes if not p in empty_processes]
             bkg_processes_names = [p for p in bkg_processes_names if not p in empty_names]
-
             config["files"] = [shapes]
             config["folders"] = "htt_{}_{}_{}_prefit".format(args.channels[0],category,era.strip("Run"))
             config["lumis"] = [lumi]
@@ -502,12 +471,12 @@ def prefit(args,heavy_mass,light_mass):
 
 
             config["y_rel_lims"] = [5, 500] if (variable in logvars) else [0., 1.5]
-            config["markers"] = ["HIST"] * len(bkg_processes_names) + ["LINE"]*len(signal_names) + ["P"] + ["E2"] + ["LINE"]*len(signal_names) + ["P"]
-            config["legend_markers"] = ["F"] * (len(bkg_processes_names))  +  ["LX0"]*len(signal_names) +  ["ELP"] + ["E2"] + ["L"]*len(signal_names) + ["P"]
-            signal_label = ['#scale[0.95]{H(%s) #rightarrow h(125)h"(%s) #rightarrow #tau#tau bb (0.1 pb)}'%(heavy_mass,light_mass)]
-            config["labels"] = bkg_processes_names + signal_label + ["data"
+            config["markers"] = ["HIST"] * len(bkg_processes_names) + ["E2"]  + ["LINE"]*len(signal_names) + ["P"] + ["E2"] + ["LINE"]*len(signal_names) + ["P"]
+            config["legend_markers"] = ["F"] * (len(bkg_processes_names))   + ["F"] +  ["LX0"]*len(signal_names) + ["ELP"] + ["E2"] + ["L"]*len(signal_names) + ["P"]
+            signal_label = ['#scale[0.85]{H(%s)#rightarrowh(125)h"(%s) (0.1 pb)}'%(heavy_mass,light_mass)]
+            config["labels"] = bkg_processes_names + ["Bkg.unc."] + signal_label + ["data"
                                                       ] + [""]*len(signal_names) + config["labels"]
-            config["colors"] = bkg_processes_names + ["#8B008B"]*len(signal_names) + ["data"
+            config["colors"] = bkg_processes_names + ["transgrey"] + ["#8B008B"]*len(signal_names) + ["data"
                                                       ] + ["#B7B7B7"] + ["#8B008B"]*len(signal_names) + ["#000000"]
             config["nicks"] = bkg_processes_names + signal_names + ["data"]
                 
@@ -536,7 +505,7 @@ def prefit(args,heavy_mass,light_mass):
             title_dict["em"] = "e#mu"
 
             config["title"] = "#scale[0.8]{" + title_dict[channel] + " " + prefit_categories[category].replace("NMSSM_","") + "}" #"_".join(["channel", channel])
-            config["stacks"] = ["mc"] * len(bkg_processes_names) + signal_names + [
+            config["stacks"] = ["mc"] * len(bkg_processes_names) + signal_names + ["bkg_unc"] +[
                 "data"
             ] + [x+"Ratio" for x in signal_names] + config["stacks"]
             config["ratio_denominator_nicks"] = [
@@ -547,51 +516,9 @@ def prefit(args,heavy_mass,light_mass):
                 config["ratio_numerator_nicks"].append(" ".join(bkg_processes_names+[signal_names[i]]))
             config["ratio_numerator_nicks"].append("data")
             config["ratio_result_nicks"] = ["bkg_ratio"] + [x+"_ratio" for x in signal_names] + ["data_ratio"]
-            if args.comparison:
-                config["markers"] = ["HIST"] + ["LINE"] + ["HIST"] * (len(bkg_processes_names)-1) +  ["EX0"] + ["E2", "EX0"] + ["EX0"]
-                config["legend_markers"] = ["F"] + ["L"]  + ["F"]  * (len(bkg_processes_names)-1)  + ["PEX0"] +  ["F", "PEX0"] + ["PEX0"]
-                config["labels"] = [bkg_processes_names[0]] + ["Z #rightarrow #tau#tau (simulation)"] + bkg_processes_names[1:] + ["data"
-                                                          ] +  ["Bkg. (embedded) unc.",  "Obs./Bkg. (simulation)", "Obs./Bkg. (embedded)"]
-                config["colors"] = [bkg_processes_names[0]] + ["#C70039"] + bkg_processes_names[1:] + ["data"
-                                                          ] + ["#B7B7B7", " #C70039 ", "#000000"]
-
-                config["subplot_legend"] =  [
-                                            0.195,
-                                            0.77,
-                                            0.92,
-                                            0.93
-                                        ],
-                config["subplot_legend_cols"] = 3
-                config["subplot_legend_fontsize"] = 0.06
-                config["y_subplot_label"] = ""
-                config["legend_fontsize"] = 0.044
-                bkg_processes_names_noplot = ["ztt_noplot","ttt_noplot","vvt_noplot"] + [x+"_noplot" for x in bkg_processes_names if not "emb" in x]
-                config["nicks"] = bkg_processes_names + bkg_processes_names_noplot + ["data"]
-                config["scale_factors"] = [1.0]*(len(bkg_processes_names)+len(bkg_processes_names_noplot))+[0.0]
-                config["analysis_modules"].append("AddHistograms")
-                config["add_nicks"] = [" ".join(bkg_processes_names_noplot)]
-                config["add_result_nicks"] = ["ztt"]
-                config["add_result_position"] = 1
-                config["x_expressions"] = [
-                    "#" + "#".join([
-                        channel, category, process, analysis, era, variable, mass
-                    ]) + "#" for process in bkg_processes
-                ] + [
-                    "#" + "#".join([
-                        channel, category, process, analysis, era, variable, mass
-                    ]) + "#" for process in ["ZTT","TTT","VVT"] + [x for x in bkg_processes if x!="EMB"]
-                ] + [
-                    "#" + "#".join([
-                        channel, category, "data_obs", analysis, era, variable,
-                        mass
-                    ]) + "#"
-                ]
-                config["stacks"] = ["mc"] + ["ztt"] + ["mc"] * (len(bkg_processes_names)-1) + ["data"] + config_template["stacks"] + ["ratio_data_zttmc"]
-                config["ratio_denominator_nicks"] = [" ".join(bkg_processes_names)] + [" ".join(bkg_processes_names_noplot)] + [" ".join(bkg_processes_names)]
-                config["ratio_numerator_nicks"] = [
-                    " ".join(bkg_processes_names), "data", "data"
-                ]
-                config["ratio_result_nicks"] = ["ratio_Bkg", "ratio_Data_to_MC", "ratio_Data"]
+            config["analysis_modules"].append("AddHistograms")
+            config["add_nicks"] = [" ".join(bkg_processes_names)]
+            config["add_result_nicks"] = ["background_uncertainty"]
             if args.blind:
                 for key in config.keys():
                     if isinstance(config[key], list):
@@ -623,8 +550,8 @@ if __name__ == "__main__":
         for heavy_mass in [240,360,500,600,800,1000,1400,2000,3000]:# mass_dict["heavy_mass"]:
             light_masses = mass_dict["light_mass_coarse"] if heavy_mass > 1001 else mass_dict["light_mass_fine"]
             for light_mass in [100, max([x for x in light_masses if (x+125)<heavy_mass])]:
-                # if light_mass+125>heavy_mass:
-                #     continue
-                main(args,heavy_mass,light_mass)
+               if light_mass+125>heavy_mass:
+                    continue
+        main(args,500,100)
     else:
         prefit(args,500,100)

@@ -1,203 +1,196 @@
 variables:
-    - pt_1
-    - pt_2
-    # iso_1
-    # iso_2
-    - jpt_1
-    - jpt_2
-    # bpt_1
-    # bpt_2
-    - njets
-    - nbtag
-    - m_sv_puppi
-    # mt_1
-    # mt_2
-    - ptvis
-    - pt_tt_puppi
-    - mjj
-    - jdeta
-    - m_vis
-    - dijetpt
-    # met
-    - ME_q2v1
-    - ME_q2v2
-    - DiTauDeltaR
-    - mTdileptonMET_puppi
+            - pt_1
+            - pt_2
+            - m_vis
+            - ptvis
+            - m_sv_puppi
+            - nbtag
+            - jpt_1
+            - njets
+            - jdeta
+            - mjj
+            - dijetpt
+            - bpt_bReg_1
+            - bpt_bReg_2
+            - bm_bReg_1
+            - bm_bReg_2
+            - bcsv_1
+            - bcsv_2
+            - jpt_2
+            - mbb_highCSV_bReg
+            - pt_bb_highCSV_bReg
+            - m_ttvisbb_highCSV_bReg
+            - kinfit_mH
+            - kinfit_mh2
+            - kinfit_chi2
+            - highCSVjetUsedFordiBJetSystemCSV
 
 selected_variables:
     2016:
         mt:
             - pt_1
             - pt_2
-            # iso_1
-            # iso_2
-            - jpt_1
-            - jpt_2
-            # bpt_1
-            # bpt_2
-            - njets
-            - nbtag
-            - m_sv_puppi
-            # mt_1
-            # mt_2
-            - ptvis
-            - pt_tt_puppi
-            - mjj
-            - jdeta
             - m_vis
+            - ptvis
+            - m_sv_puppi
+            - nbtag
+            - jpt_1
+            - njets
+            - jdeta
+            - mjj
             - dijetpt
-            # met
-            - ME_q2v1
-            - ME_q2v2
-            - DiTauDeltaR
+            - bpt_bReg_1
+            - bpt_bReg_2
+            - jpt_2
+            - mbb_highCSV_bReg
+            - pt_bb_highCSV_bReg
+            - m_ttvisbb_highCSV_bReg
+            - kinfit_mH
+            - kinfit_mh2
+            - kinfit_chi2
         et:
             - pt_1
             - pt_2
-            # iso_1
-            # iso_2
-            - jpt_1
-            - jpt_2
-            # bpt_1
-            # bpt_2
-            - njets
-            - nbtag
-            - m_sv_puppi
-            # mt_1
-            # mt_2
-            - ptvis
-            - pt_tt_puppi
-            - mjj
-            - jdeta
             - m_vis
+            - ptvis
+            - m_sv_puppi
+            - nbtag
+            - jpt_1
+            - njets
+            - jdeta
+            - mjj
             - dijetpt
-            # met
-            - ME_q2v1
-            - ME_q2v2
-            - DiTauDeltaR
+            - bpt_bReg_1
+            - bpt_bReg_2
+            - jpt_2
+            - mbb_highCSV_bReg
+            - pt_bb_highCSV_bReg
+            - m_ttvisbb_highCSV_bReg
+            - kinfit_mH
+            - kinfit_mh2
+            - kinfit_chi2
         tt:
             - pt_1
             - pt_2
-            # iso_1
-            # iso_2
-            - jpt_1
-            - jpt_2
-            # bpt_1
-            # bpt_2
-            - njets
-            - nbtag
-            - m_sv_puppi
-            # mt_1
-            # mt_2
-            - ptvis
-            - pt_tt_puppi
-            - mjj
-            - jdeta
             - m_vis
+            - ptvis
+            - m_sv_puppi
+            - nbtag
+            - jpt_1
+            - njets
+            - jdeta
+            - mjj
             - dijetpt
-            # met
-            - ME_q2v1
-            - ME_q2v2
-            - DiTauDeltaR
+            - bpt_bReg_1
+            - bpt_bReg_2
+            - bm_bReg_1
+            - bm_bReg_2
+            - bcsv_1
+            - bcsv_2
+            - jpt_2
+            - mbb_highCSV_bReg
+            - pt_bb_highCSV_bReg
+            - m_ttvisbb_highCSV_bReg
+            - kinfit_mH
+            - kinfit_mh2
+            - kinfit_chi2
+            - highCSVjetUsedFordiBJetSystemCSV
         em:
             - pt_1
             - pt_2
-            # iso_1
-            # iso_2
-            - jpt_1
-            - jpt_2
-            # bpt_1
-            # bpt_2
-            - njets
-            # nbtag
-            - m_sv_puppi
-            # mt_1
-            # mt_2
-            - ptvis
-            - pt_tt_puppi
-            - mjj
-            - jdeta
             - m_vis
+            - ptvis
+            - m_sv_puppi
+            - nbtag
+            - jpt_1
+            - njets
+            - jdeta
+            - mjj
             - dijetpt
-            # met
-            - ME_q2v1
-            - ME_q2v2
-            # eta_1
-            - DiTauDeltaR
-            - mTdileptonMET_puppi
-            # bpt_1
+            - bpt_bReg_1
+            - bpt_bReg_2
+            - jpt_2
+            - mbb_highCSV_bReg
+            - pt_bb_highCSV_bReg
+            - m_ttvisbb_highCSV_bReg
+            - kinfit_mH
+            - kinfit_mh2
+            - kinfit_chi2
+
+
     2017:
         mt:
             - pt_1
             - pt_2
-            # iso_1
-            # iso_2
-            - jpt_1
-            - jpt_2
-            # bpt_1
-            # bpt_2
-            - njets
-            - nbtag
-            - m_sv_puppi
-            # mt_1
-            # mt_2
-            - ptvis
-            - pt_tt_puppi
-            - mjj
-            - jdeta
             - m_vis
+            - ptvis
+            - m_sv_puppi
+            - nbtag
+            - jpt_1
+            - njets
+            - jdeta
+            - mjj
             - dijetpt
-            # met
-            - ME_q2v1
-            - ME_q2v2
-            - DiTauDeltaR
+            - bpt_bReg_1
+            - bpt_bReg_2
+            - jpt_2
+            - mbb_highCSV_bReg
+            - pt_bb_highCSV_bReg
+            - m_ttvisbb_highCSV_bReg
+            - kinfit_mH
+            - kinfit_mh2
+            - kinfit_chi2
+           
+
         et:
             - pt_1
             - pt_2
-            # iso_1
-            # iso_2
-            - jpt_1
-            - jpt_2
-            # bpt_1
-            # bpt_2
-            - njets
-            - nbtag
-            - m_sv_puppi
-            # mt_1
-            # mt_2
-            - ptvis
-            - pt_tt_puppi
-            - mjj
-            - jdeta
             - m_vis
+            - ptvis
+            - m_sv_puppi
+            - nbtag
+            - jpt_1
+            - njets
+            - jdeta
+            - mjj
             - dijetpt
-            # met
-            - ME_q2v1
-            - ME_q2v2
-            - DiTauDeltaR
+            - bpt_bReg_1
+            - bpt_bReg_2
+            - jpt_2
+            - mbb_highCSV_bReg
+            - pt_bb_highCSV_bReg
+            - m_ttvisbb_highCSV_bReg
+            - kinfit_mH
+            - kinfit_mh2
+            - kinfit_chi2
+
+
         tt:
             - pt_1
             - pt_2
-            # iso_1
-            # iso_2
-            - jpt_1
-            - jpt_2
-            # bpt_1
-            # bpt_2
-            - njets
-            - nbtag
-            - m_sv_puppi
-            # mt_1
-            # mt_2
-            - ptvis
-            - pt_tt_puppi
-            - mjj
-            - jdeta
             - m_vis
+            - ptvis
+            - m_sv_puppi
+            - nbtag
+            - jpt_1
+            - njets
+            - jdeta
+            - mjj
             - dijetpt
-            # met
-            - ME_q2v1
-            - ME_q2v2
-            - DiTauDeltaR
+            - bpt_bReg_1
+            - bpt_bReg_2
+            - bm_bReg_1
+            - bm_bReg_2
+            - bcsv_1
+            - bcsv_2
+            - jpt_2
+            - mbb_highCSV_bReg
+            - pt_bb_highCSV_bReg
+            - m_ttvisbb_highCSV_bReg
+            - kinfit_mH
+            - kinfit_mh2
+            - kinfit_chi2
+            - highCSVjetUsedFordiBJetSystemCSV
         em:
             - pt_1
             - pt_2
@@ -228,75 +221,75 @@ selected_variables:
         mt:
             - pt_1
             - pt_2
-            # iso_1
-            # iso_2
-            - jpt_1
-            - jpt_2
-            # bpt_1
-            # bpt_2
-            - njets
-            - nbtag
-            - m_sv_puppi
-            # mt_1
-            # mt_2
-            - ptvis
-            - pt_tt_puppi
-            - mjj
-            - jdeta
             - m_vis
+            - ptvis
+            - m_sv_puppi
+            - nbtag
+            - jpt_1
+            - njets
+            - jdeta
+            - mjj
             - dijetpt
-            # met
-            - ME_q2v1
-            - ME_q2v2
-            - DiTauDeltaR
+            - bpt_bReg_1
+            - bpt_bReg_2
+            - jpt_2
+            - mbb_highCSV_bReg
+            - pt_bb_highCSV_bReg
+            - m_ttvisbb_highCSV_bReg
+            - kinfit_mH
+            - kinfit_mh2
+            - kinfit_chi2
+
+
         et:
             - pt_1
             - pt_2
-            # iso_1
-            # iso_2
-            - jpt_1
-            - jpt_2
-            # bpt_1
-            # bpt_2
-            - njets
-            - nbtag
-            - m_sv_puppi
-            # mt_1
-            # mt_2
-            - ptvis
-            - pt_tt_puppi
-            - mjj
-            - jdeta
             - m_vis
+            - ptvis
+            - m_sv_puppi
+            - nbtag
+            - jpt_1
+            - njets
+            - jdeta
+            - mjj
             - dijetpt
-            # met
-            - ME_q2v1
-            - ME_q2v2
-            - DiTauDeltaR
+            - bpt_bReg_1
+            - bpt_bReg_2
+            - jpt_2
+            - mbb_highCSV_bReg
+            - pt_bb_highCSV_bReg
+            - m_ttvisbb_highCSV_bReg
+            - kinfit_mH
+            - kinfit_mh2
+            - kinfit_chi2
+
+
         tt:
             - pt_1
             - pt_2
-            # iso_1
-            # iso_2
-            - jpt_1
-            - jpt_2
-            # bpt_1
-            # bpt_2
-            - njets
-            - nbtag
-            - m_sv_puppi
-            # mt_1
-            # mt_2
-            - ptvis
-            - pt_tt_puppi
-            - mjj
-            - jdeta
             - m_vis
+            - ptvis
+            - m_sv_puppi
+            - nbtag
+            - jpt_1
+            - njets
+            - jdeta
+            - mjj
             - dijetpt
-            # met
-            - ME_q2v1
-            - ME_q2v2
-            - DiTauDeltaR
+            - bpt_bReg_1
+            - bpt_bReg_2
+            - bm_bReg_1
+            - bm_bReg_2
+            - bcsv_1
+            - bcsv_2
+            - jpt_2
+            - mbb_highCSV_bReg
+            - pt_bb_highCSV_bReg
+            - m_ttvisbb_highCSV_bReg
+            - kinfit_mH
+            - kinfit_mh2
+            - kinfit_chi2
+            - highCSVjetUsedFordiBJetSystemCSV
         em:
             - pt_1
             - pt_2

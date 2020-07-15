@@ -10,6 +10,8 @@ def parse_arguments():
     parser = argparse.ArgumentParser(
         description="plot 2d limits")
     parser.add_argument(
+        "--era", "-e" , help="era")
+    parser.add_argument(
         "--channel", "-c" , help="channel")
     parser.add_argument(
         "--variable", "-v", help="variables")
@@ -61,7 +63,10 @@ def main(args):
 
     for mass in mass_dict["heavy_mass"]:
         theory_diff_value = theory_graph.Eval(mass)
-        json_file = "nmssm_{}_{}_{}_cmb.json".format(channel,variable,mass)
+        if channel != "all":
+            json_file = "limit_jsons/nmssm_{}_{}_{}_cmb.json".format(args.era,channel,mass)
+        else:
+            json_file = "limit_jsons/nmssm_{}_{}_{}_cmb.json".format(args.era,channel,mass)
         with open(json_file,"r") as read_file:
             limit_dict = json.load(read_file)
         x_bin = xaxis.FindBin(mass)
@@ -87,11 +92,11 @@ def main(args):
     ROOT.gStyle.SetCanvasDefW(900)
     ROOT.gStyle.SetCanvasDefH(600)
 
-    channel_label = {"mt": "#mu#tau_{h}",
+    channel_label = {"mt": "#mu_{}#tau_{h}",
                 "tt": "#tau_{h}#tau_{h}",
                 "et":  "e#tau_{h}",
                 "em": "e#mu_{}",
-                "all": "e#tau_{h}+#mu#tau_{h}+#tau_{h}#tau_{h}"
+                "all": "e#tau_{h}+#mu_{}#tau_{h}+#tau_{h}#tau_{h}"
                 }
     variable_label = {"mbb": "m_{bb}",
                 "m_sv_puppi": "m_{#tau#tau (SV-Fit)}",
@@ -131,14 +136,23 @@ def main(args):
     c1.RedrawAxis()
     c1.RedrawAxis("g")
     plot.DrawCMSLogo(c1, 'CMS', "Own Work", 11, 0.045, 0.035, 1.2, '', 0.8)
-    plot.DrawTitle(c1,"35.9 fb^{-1} (2016, 13 TeV)",3)
-    plot.DrawTitle(c1,channel_label[channel]+": "+variable_label[variable],1)
+    era_string = "35.9 fb^{-1} (2016, 13 TeV)"
+    if args.era == "2017":
+	era_string = "41.5 fb^{-1} (2017, 13 TeV)" 
+    if args.era == "2018":
+	era_string = "59.7 fb^{-1} (2018, 13 TeV)"
+    plot.DrawTitle(c1,era_string,3)
+    plot.DrawTitle(c1,channel_label[channel],1)#+": "+variable_label[variable],1)
     # ROOT.gPad.GetFrame().Draw("SAME")
     ROOT.gStyle.SetPalette(53)
     ROOT.gPad.RedrawAxis()
     # c1.GetFrame().Draw("same")
-    c1.SaveAs("{}/{}_{}_2d.pdf".format(args.output,channel,variable))
-    c1.SaveAs("{}/{}_{}_2d.png".format(args.output,channel,variable))
+    if channel != "all":
+        c1.SaveAs("{}/{}_{}_2d.pdf".format(args.output,args.era,channel))
+        c1.SaveAs("{}/{}_{}_2d.png".format(args.output,args.era,channel))
+    else:
+        c1.SaveAs("{}/{}_{}_2d.pdf".format(args.output,args.era,channel))
+        c1.SaveAs("{}/{}_{}_2d.png".format(args.output,args.era,channel))
 
     c2 = ROOT.TCanvas()
     c2.cd()
@@ -166,16 +180,18 @@ def main(args):
     c2.RedrawAxis()
     c2.RedrawAxis("g")
     plot.DrawCMSLogo(c2, 'CMS', "Own Work", 11, 0.045, 0.035, 1.2, '', 0.8)
-    plot.DrawTitle(c2,"35.9 fb^{-1} (2016, 13 TeV)",3)
-    plot.DrawTitle(c2,channel_label[channel]+": "+variable_label[variable],1)
+    plot.DrawTitle(c2,era_string,3)
+    plot.DrawTitle(c1,channel_label[channel],1)#+": "+variable_label[variable],1)
     # ROOT.gPad.GetFrame().Draw("SAME")
     ROOT.gStyle.SetPalette(53)
     ROOT.gPad.RedrawAxis()
     # c2.GetFrame().Draw("same")
-    c2.SaveAs("{}/{}_{}_2d_theory.pdf".format(args.output,channel,variable))
-    c2.SaveAs("{}/{}_{}_2d_theory.png".format(args.output,channel,variable))
-
-
+    if channel != "all":
+        c2.SaveAs("{}/{}_{}_2d_theory.pdf".format(args.output,channel,variable))
+        c2.SaveAs("{}/{}_{}_2d_theory.png".format(args.output,channel,variable))
+    else:
+        c2.SaveAs("{}/{}_{}_2d_theory.pdf".format(args.output,args.era,channel))
+        c2.SaveAs("{}/{}_{}_2d_theory.png".format(args.output,args.era,channel))
 
 if __name__ == "__main__":
     args = parse_arguments()

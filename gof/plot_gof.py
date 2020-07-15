@@ -60,6 +60,7 @@ def parse_arguments():
         "path", help="Path to directory with goodness of fit results")
     parser.add_argument("channel", type=str, help="Select channel to be plotted")
     parser.add_argument("era", type=str, help="Select era to be plotted")
+    parser.add_argument("-c", "--classification", type=str, default=None)
     return parser.parse_args()
 
 
@@ -79,9 +80,14 @@ def make_cmap(colors, position):
     return cmap
 
 
-def plot_2d(variables, results, filename):
+def plot_2d(variables, results, filename, t_coeff=None):
     plt.figure(figsize=(1.5 * len(variables), 1.0 * len(variables)))
     a = plt.gca()
+    if t_coeff is None:
+        pass
+    else:
+        max_coeff = max(map(float, t_coeff.values()))
+        marks_x, marks_y = [], []
     for i1 in range(len(variables)):
         for i2 in range(len(variables)):
             if results[i1, i2] == -1.0:
@@ -96,6 +102,19 @@ def plot_2d(variables, results, filename):
                 '{0:.2f}'.format(results[i1, i2]),
                 ha='center',
                 va='center')
+            if t_coeff is None:
+                pass
+            else:
+                if "{}, {}".format(variables[i1], variables[i2]) in t_coeff.keys():
+                    if float(t_coeff["{}, {}".format(variables[i1], variables[i2])]) > (0.1 * max_coeff):
+                        marks_x.append(i1 + 0.85)
+                        marks_y.append(i2 + 0.85)
+                elif "{}, {}".format(variables[i2], variables[i1]) in t_coeff.keys():
+                    if float(t_coeff["{}, {}".format(variables[i2], variables[i1])]) > (0.1 * max_coeff):
+                        marks_x.append(i1 + 0.85)
+                        marks_y.append(i2 + 0.85)
+                else:
+                    raise Exception("Variable combination {} {} not present in variables.".format(variables[i1], variables[i2]))
     cmap = make_cmap([(1, 0, 0), (1, 1, 0), (0, 1, 0)],
                      np.array([0.0, 0.05, 1.0]))
     cmap.set_bad(color='w')
@@ -105,13 +124,17 @@ def plot_2d(variables, results, filename):
     cbar.set_label(
         'Saturated goodness of fit p-value', rotation=270, labelpad=50)
     plt.xticks(
-        np.array(range(len(variables))) + 0.5, [labeldict[x] for x in variables], rotation='vertical')
+        np.array(range(len(variables))) + 0.5, variables, rotation='vertical')
     plt.yticks(
         np.array(range(len(variables))) + 0.5,
-        [labeldict[x] for x in variables],
+        variables,
         rotation='horizontal')
     plt.xlim(0, len(variables))
     plt.ylim(0, len(variables))
+    if t_coeff is None:
+        pass
+    else:
+        plt.plot(marks_x, marks_y, "b*", ms=12)
     plt.savefig(filename+".png", bbox_inches="tight")
     plt.savefig(filename+".pdf", bbox_inches="tight")
 
@@ -123,8 +146,12 @@ def plot_1d(variables, results, filename):
     plt.plot(x, y, '+', mew=4, ms=16)
     plt.ylim((-0.05, 1.05))
     plt.xlim((-0.5, len(x) - 0.5))
-    plt.xticks(x, [labeldict[x] for x in variables], rotation='vertical')
+    plt.xticks(x, variables, rotation='vertical')
     plt.axhline(y=0.05, linewidth=3, color='r')
+    for i, res in enumerate(y):
+        if res < 0.05:
+            plt.text(i, 0.9, "{:.3f}".format(res), rotation='vertical',
+                     horizontalalignment="center", verticalalignment="center")
     plt.ylabel('Saturated goodness of fit p-value', labelpad=20)
     ax = plt.gca()
     ax.xaxis.grid()
@@ -136,7 +163,7 @@ def search_results_1d(path, channel, era, variables):
     results = []
     missing = []
     for variable in variables:
-        filename = os.path.join(path, "{}_{}_{}".format(era, channel, variable),
+        filename = os.path.join(path, "{}-{}-{}".format(era, channel, variable),
                                 "gof.json")
         if not os.path.exists(filename):
             missing.append(variable)
@@ -159,7 +186,7 @@ def search_results_2d(path, channel, era, variables):
         for i2, v2 in enumerate(variables):
             if i2 <= i1:
                 continue
-            filename = os.path.join(path, "{}_{}_{}_{}".format(era, channel, v1, v2),
+            filename = os.path.join(path, "{}-{}-{}_{}".format(era, channel, v1, v2),
                                     "gof.json")
             if not os.path.exists(filename):
                 missing.append("{}_{}".format(v1, v2))
@@ -172,6 +199,18 @@ def search_results_2d(path, channel, era, variables):
             results[i1, i2] = p_value["125.0"]["p"]
 
     return missing, results
+
+
+def create_mock_results_2d(result, variables):
+    mock = np.ones((len(variables), len(variables))) * (-1.0)
+    for i1, v1 in enumerate(variables):
+        for i2, v2 in enumerate(variables):
+            if i2 <= i1:
+                continue
+            if result[i1] < 0 or result[i2] < 0:
+                continue
+            mock[i1, i2] = result[i1] * result[i2]
+    return mock
 
 
 def main(args):
@@ -190,7 +229,7 @@ def main(args):
     for variable in missing_1d:
         print("{} {} {}".format(args.era, args.channel, variable))
 
-    plot_1d(variables, results_1d, "{}_{}_gof_1d".format(args.era, args.channel))
+    plot_1d(variables, results_1d, "{}/{}_{}_gof_1d".format(args.path, args.era, args.channel))
 
     # Plot 2D gof results
     """
@@ -216,17 +255,30 @@ def main(args):
     ]
 
     plot_1d(variables_selected, results_1d_selected,
-            "{}_{}_gof_1d_selected".format(args.era, args.channel))
+            "{}/{}_{}_gof_1d_selected".format(args.path, args.era, args.channel))
 
     # Plot 2D gof results for reduced variable set
     missing_2d_selected, results_2d_selected = search_results_2d(
         args.path, args.channel, args.era, variables_selected)
+    # Read in taylor coefficients.
+    if args.classification == "stage0":
+        taylor = yaml.load(open("all_eras_{}_final_stage0/combined_keras_taylor_ranking_signals_{}.yaml".format(args.channel, args.era), "r"))
+    elif args.classification == "stage1p1":
+        taylor = yaml.load(open("all_eras_{}_final_stage1p1/combined_keras_taylor_ranking_signals_{}.yaml".format(args.channel, args.era), "r"))
+    else:
+        taylor = None
     plot_2d(variables_selected, results_2d_selected,
-            "{}_{}_gof_2d_selected".format(args.era, args.channel))
+            "{}/{}_{}_gof_2d_selected".format(args.path, args.era, args.channel),
+            taylor)
 
     logger.debug("Missing variables for 2D plot in channel %s:", args.channel)
     for variable in missing_2d_selected:
         print("{} {} {}".format(args.era, args.channel, variable))
+
+    # Plot mock 2D results for comparison with bad 1d GoFs
+    mock_2d_selected = create_mock_results_2d(results_1d_selected, variables_selected)
+    plot_2d(variables_selected, mock_2d_selected,
+            "{}/{}_{}_gof_2d_selected_mock".format(args.path, args.era, args.channel))
 
 if __name__ == "__main__":
     args = parse_arguments()

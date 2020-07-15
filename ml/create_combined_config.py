@@ -26,7 +26,7 @@ def main(args):
     eras = ["2016", "2017", "2018"]
     configs = []
     for era in eras:
-        config_path = "output/ml/{}_{}_{}/dataset_config.yaml".format(era, args.channel, args.tag)
+        config_path = "output/ml/{}_{}/dataset_config.yaml".format(era, args.channel)
         logger.info("Try to open {}".format(config_path))
         config = yaml.load(open(config_path, 'r'))
         configs.append(config)

@@ -18,7 +18,7 @@ source utils/setup_samples.sh $ERA
 # Produce shapes
 
 
-python shapes/produce_nmssm_shapes.py \
+python shapes/produce_nmssm_shapes_allProcesses.py \
     --directory $ARTUS_OUTPUTS \
     --em-friend-directory $HHKinFit_Friends $SVFit_Friends \
     --et-friend-directory $HHKinFit_Friends $SVFit_Friends \

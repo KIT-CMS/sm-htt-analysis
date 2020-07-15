@@ -5,9 +5,10 @@ source utils/setup_python.sh
 
 ERA=$1
 OUTPUTS=$2
+#CHANNEL=$3
 VARIABLES=gof/variables.yaml
-
-for CHANNEL in et mt tt em
+for CHANNEL in et mt tt
 do
-    ./gof/plot_gof.py $VARIABLES $OUTPUTS $CHANNEL $ERA
+./gof/plot_gof.py $VARIABLES $OUTPUTS $CHANNEL $ERA
 done
+

@@ -264,7 +264,7 @@ def main(args):
 
     # collect all MC backgrounds
     MCBkgDS = {
-        cn_: leptonTauBkgS
+        cn_: trueTauBkgS | leptonTauBkgS | jetFakeBkgD[cn_]
         for cn_ in selectedChannels}
 
     mass_dict = {
@@ -299,14 +299,14 @@ def main(args):
             "EMB": ZTTEmbeddedEstimation,
             "TTT": TTTEstimation,
             "VVT": VVTEstimation,
-            # "ZTT": ZTTEstimation,
+            "ZTT": ZTTEstimation,
             "TTL": TTLEstimation,
             "VVL": VVLEstimation,
             "ZL": ZLEstimation,
-            #"W": WEstimation,
-            # "VVJ": VVJEstimation,
-            # "TTJ": TTJEstimation,
-            # "ZJ": ZJEstimation,
+            "W": WEstimation,
+            "VVJ": VVJEstimation,
+            "TTJ": TTJEstimation,
+            "ZJ": ZJEstimation,
         }
     else:
         pnameToEstD = {}
@@ -338,7 +338,7 @@ def main(args):
     
     for chname_, ch_ in selectedChannelsTuples:
         if args.shape_group in [ "backgrounds"]:  
-            pS_ = {"data_obs"} | MCBkgDS[chname_] | {"TTT"} | {"EMB"}
+            pS_ = {"data_obs"} | MCBkgDS[chname_] | {"EMB"}
         elif args.shape_group in [ "sm_signals"]: 
             pS_ = set(signal_nicks)
         elif args.shape_group in [ "all"]:  
@@ -356,11 +356,11 @@ def main(args):
         if args.shape_group in [ "nmssm_low", "nmssm_mid", "nmssm_high", "all"]:
             nmssm_nicks = []
             for heavy_mass in mass_dict["heavy_mass"]:
-                if args.shape_group in ["nmssm_low"] and heavy_mass>701:
+                if args.shape_group in ["nmssm_low"] and heavy_mass>801:
                     continue
-                if args.shape_group in ["nmssm_mid"] and (heavy_mass<701 or heavy_mass>1401):
+                if args.shape_group in ["nmssm_mid"] and (heavy_mass<801 or heavy_mass>1201):
                     continue
-                if args.shape_group in ["nmssm_high"] and heavy_mass<1401:
+                if args.shape_group in ["nmssm_high"] and heavy_mass<1201:
                     continue
                 light_masses = mass_dict["light_mass_coarse"] if heavy_mass > 1001 else mass_dict["light_mass_fine"]
                 for light_mass in light_masses:
@@ -387,34 +387,65 @@ def main(args):
                     processes[chname_]["data_obs"],
                     friend_directory=friend_directory[chname_] +
                     [args.fake_factor_friend_directory.replace("+CH+",chname_)]))
-        # QCD process setup
-        for chname_, ch_ in selectedChannelsTuples:
-            
+
+    # QCD process setup
+    for chname_, ch_ in selectedChannelsTuples:
+        if chname_ != "tt":
             est_ = QCDEstimation_SStoOS_MTETEM
-            qcdpS = {"EMB"} | leptonTauBkgS | jetFakeBkgD[chname_]
+        else:
+            if args.era != "2016":
+                est_ = QCDEstimation_ABCD_TT_ISO2
+            else:
+                est_ = QCDEstimationTT
 
-            if chname_ == "em":
-                # qcd_weight = Weight("em_qcd_osss_binned_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight")
-                ROOT.v5.TFormula.SetMaxima(3000)
+        qcdpS = {"EMB"} | leptonTauBkgS | jetFakeBkgD[chname_]
 
-                if args.era == "2016":
-                    qcd_aisoiso_string = "*(1.0*(pt_1>=150.0||pt_2>=150.0)+0.889611*(pt_1>=0.0&&pt_1<20.0&&pt_2>=20.0&&pt_2<25.0)+0.906323*(pt_1>=0.0&&pt_1<20.0&&pt_2>=25.0&&pt_2<30.0)+0.838287*(pt_1>=0.0&&pt_1<20.0&&pt_2>=30.0&&pt_2<150.0)+0.900872*(pt_1>=20.0&&pt_1<25.0&&pt_2>=0.0&&pt_2<20.0)+0.918876*(pt_1>=20.0&&pt_1<25.0&&pt_2>=20.0&&pt_2<25.0)+0.857904*(pt_1>=20.0&&pt_1<25.0&&pt_2>=25.0&&pt_2<30.0)+0.833439*(pt_1>=20.0&&pt_1<25.0&&pt_2>=30.0&&pt_2<150.0)+0.956127*(pt_1>=25.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<20.0)+0.863690*(pt_1>=25.0&&pt_1<30.0&&pt_2>=20.0&&pt_2<25.0)+1.060816*(pt_1>=25.0&&pt_1<30.0&&pt_2>=25.0&&pt_2<30.0)+0.938181*(pt_1>=25.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<150.0)+0.993274*(pt_1>=30.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<20.0)+0.936018*(pt_1>=30.0&&pt_1<150.0&&pt_2>=20.0&&pt_2<25.0)+0.864106*(pt_1>=30.0&&pt_1<150.0&&pt_2>=25.0&&pt_2<30.0)+0.954102*(pt_1>=30.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<150.0))"
-                    qcd_weight_string = "((-0.1138*(njets==0)+(-0.07938)*(njets==1)+(-0.02602)*(njets>=2))*((DiTauDeltaR-3.0)**2.0-3.0)+(-0.2287*(njets==0)+(-0.3251)*(njets==1)+(-0.2802)*(njets>=2))*(DiTauDeltaR-3.0)+(1.956*(njets==0)+(1.890)*(njets==1)+(1.753)*(njets>=2)))*(1.0*(pt_1>=150.0||pt_2>=150.0)+1.132149*(pt_1>=0.0&&pt_1<24.0&&pt_2>=24.0&&pt_2<30.0)+1.118163*(pt_1>=0.0&&pt_1<24.0&&pt_2>=30.0&&pt_2<40.0)+1.142240*(pt_1>=0.0&&pt_1<24.0&&pt_2>=40.0&&pt_2<150.0)+1.004560*(pt_1>=24.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<24.0)+1.055802*(pt_1>=24.0&&pt_1<30.0&&pt_2>=24.0&&pt_2<30.0)+1.171731*(pt_1>=24.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<40.0)+1.351143*(pt_1>=24.0&&pt_1<30.0&&pt_2>=40.0&&pt_2<150.0)+0.921943*(pt_1>=30.0&&pt_1<40.0&&pt_2>=0.0&&pt_2<24.0)+1.078412*(pt_1>=30.0&&pt_1<40.0&&pt_2>=24.0&&pt_2<30.0)+1.096989*(pt_1>=30.0&&pt_1<40.0&&pt_2>=30.0&&pt_2<40.0)+1.222142*(pt_1>=30.0&&pt_1<40.0&&pt_2>=40.0&&pt_2<150.0)+0.848351*(pt_1>=40.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<24.0)+0.852887*(pt_1>=40.0&&pt_1<150.0&&pt_2>=24.0&&pt_2<30.0)+0.891202*(pt_1>=40.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<40.0)+0.913323*(pt_1>=40.0&&pt_1<150.0&&pt_2>=40.0&&pt_2<150.0))%s"%qcd_aisoiso_string
-                elif args.era == "2017":
-                    qcd_aisoiso_string = "*(1.0*(pt_1>=150.0||pt_2>=150.0)+0.878304*(pt_1>=0.0&&pt_1<20.0&&pt_2>=20.0&&pt_2<25.0)+0.916277*(pt_1>=0.0&&pt_1<20.0&&pt_2>=25.0&&pt_2<30.0)+0.853211*(pt_1>=0.0&&pt_1<20.0&&pt_2>=30.0&&pt_2<150.0)+0.920458*(pt_1>=20.0&&pt_1<25.0&&pt_2>=0.0&&pt_2<20.0)+0.872271*(pt_1>=20.0&&pt_1<25.0&&pt_2>=20.0&&pt_2<25.0)+0.957983*(pt_1>=20.0&&pt_1<25.0&&pt_2>=25.0&&pt_2<30.0)+0.910988*(pt_1>=20.0&&pt_1<25.0&&pt_2>=30.0&&pt_2<150.0)+0.935900*(pt_1>=25.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<20.0)+0.903964*(pt_1>=25.0&&pt_1<30.0&&pt_2>=20.0&&pt_2<25.0)+0.888112*(pt_1>=25.0&&pt_1<30.0&&pt_2>=25.0&&pt_2<30.0)+0.872235*(pt_1>=25.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<150.0)+0.927075*(pt_1>=30.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<20.0)+0.983504*(pt_1>=30.0&&pt_1<150.0&&pt_2>=20.0&&pt_2<25.0)+0.921924*(pt_1>=30.0&&pt_1<150.0&&pt_2>=25.0&&pt_2<30.0)+0.881401*(pt_1>=30.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<150.0))"
-                    qcd_weight_string = "((-0.1430*(njets==0)+(-0.05544)*(njets==1)+(0.03128)*(njets>=2))*((DiTauDeltaR-3.0)**2.0-3.0)+(-0.1949*(njets==0)+(-0.3685)*(njets==1)+(-0.3531)*(njets>=2))*(DiTauDeltaR-3.0)+(1.928*(njets==0)+(2.020)*(njets==1)+(1.855)*(njets>=2)))*(1.0*(pt_1>=150.0||pt_2>=150.0)+1.155767*(pt_1>=0.0&&pt_1<24.0&&pt_2>=24.0&&pt_2<30.0)+1.136188*(pt_1>=0.0&&pt_1<24.0&&pt_2>=30.0&&pt_2<40.0)+1.163907*(pt_1>=0.0&&pt_1<24.0&&pt_2>=40.0&&pt_2<150.0)+0.988366*(pt_1>=24.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<24.0)+1.198820*(pt_1>=24.0&&pt_1<30.0&&pt_2>=24.0&&pt_2<30.0)+1.134818*(pt_1>=24.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<40.0)+1.051062*(pt_1>=24.0&&pt_1<30.0&&pt_2>=40.0&&pt_2<150.0)+0.917948*(pt_1>=30.0&&pt_1<40.0&&pt_2>=0.0&&pt_2<24.0)+1.042672*(pt_1>=30.0&&pt_1<40.0&&pt_2>=24.0&&pt_2<30.0)+0.973973*(pt_1>=30.0&&pt_1<40.0&&pt_2>=30.0&&pt_2<40.0)+1.143160*(pt_1>=30.0&&pt_1<40.0&&pt_2>=40.0&&pt_2<150.0)+0.845711*(pt_1>=40.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<24.0)+0.853038*(pt_1>=40.0&&pt_1<150.0&&pt_2>=24.0&&pt_2<30.0)+0.890487*(pt_1>=40.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<40.0)+1.037247*(pt_1>=40.0&&pt_1<150.0&&pt_2>=40.0&&pt_2<150.0))%s"%qcd_aisoiso_string
-                elif args.era == "2018":
-                    qcd_aisoiso_string = "*(1.0*(pt_1>=150.0||pt_2>=150.0)+0.847702*(pt_1>=0.0&&pt_1<20.0&&pt_2>=20.0&&pt_2<25.0)+0.878120*(pt_1>=0.0&&pt_1<20.0&&pt_2>=25.0&&pt_2<30.0)+0.887496*(pt_1>=0.0&&pt_1<20.0&&pt_2>=30.0&&pt_2<150.0)+0.874935*(pt_1>=20.0&&pt_1<25.0&&pt_2>=0.0&&pt_2<20.0)+0.829801*(pt_1>=20.0&&pt_1<25.0&&pt_2>=20.0&&pt_2<25.0)+0.922954*(pt_1>=20.0&&pt_1<25.0&&pt_2>=25.0&&pt_2<30.0)+0.954270*(pt_1>=20.0&&pt_1<25.0&&pt_2>=30.0&&pt_2<150.0)+0.935953*(pt_1>=25.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<20.0)+0.908383*(pt_1>=25.0&&pt_1<30.0&&pt_2>=20.0&&pt_2<25.0)+0.927804*(pt_1>=25.0&&pt_1<30.0&&pt_2>=25.0&&pt_2<30.0)+0.917511*(pt_1>=25.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<150.0)+0.983508*(pt_1>=30.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<20.0)+0.952974*(pt_1>=30.0&&pt_1<150.0&&pt_2>=20.0&&pt_2<25.0)+0.945860*(pt_1>=30.0&&pt_1<150.0&&pt_2>=25.0&&pt_2<30.0)+0.858417*(pt_1>=30.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<150.0))"
-                    qcd_weight_string = "((-0.1249*(njets==0)+(-0.04374)*(njets==1)+(-0.00606)*(njets>=2))*((DiTauDeltaR-3.0)**2.0-3.0)+(-0.1644*(njets==0)+(-0.3172)*(njets==1)+(-0.3627)*(njets>=2))*(DiTauDeltaR-3.0)+(1.963*(njets==0)+(2.014)*(njets==1)+(1.757)*(njets>=2)))*(1.0*(pt_1>=150.0||pt_2>=150.0)+1.163939*(pt_1>=0.0&&pt_1<24.0&&pt_2>=24.0&&pt_2<30.0)+1.128795*(pt_1>=0.0&&pt_1<24.0&&pt_2>=30.0&&pt_2<40.0)+1.083493*(pt_1>=0.0&&pt_1<24.0&&pt_2>=40.0&&pt_2<150.0)+1.006878*(pt_1>=24.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<24.0)+1.078046*(pt_1>=24.0&&pt_1<30.0&&pt_2>=24.0&&pt_2<30.0)+1.080539*(pt_1>=24.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<40.0)+1.080385*(pt_1>=24.0&&pt_1<30.0&&pt_2>=40.0&&pt_2<150.0)+0.930821*(pt_1>=30.0&&pt_1<40.0&&pt_2>=0.0&&pt_2<24.0)+1.077226*(pt_1>=30.0&&pt_1<40.0&&pt_2>=24.0&&pt_2<30.0)+1.030334*(pt_1>=30.0&&pt_1<40.0&&pt_2>=30.0&&pt_2<40.0)+0.940508*(pt_1>=30.0&&pt_1<40.0&&pt_2>=40.0&&pt_2<150.0)+0.836243*(pt_1>=40.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<24.0)+0.878972*(pt_1>=40.0&&pt_1<150.0&&pt_2>=24.0&&pt_2<30.0)+0.867798*(pt_1>=40.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<40.0)+0.910642*(pt_1>=40.0&&pt_1<150.0&&pt_2>=40.0&&pt_2<150.0))%s"%qcd_aisoiso_string
-                qcd_weight = Weight(qcd_weight_string, "qcd_weight")
-                processes[chname_]["QCD"] = Process(
-                    "QCD",
-                    est_(
-                        era, directory, ch_,
-                        [processes[chname_][process] for process in qcdpS],
-                        processes[chname_]["data_obs"],
-                        friend_directory=friend_directory[chname_],
-                        qcd_weight=qcd_weight))
+        if chname_ in ["mt", "et"]:
+            if args.era == "2016":
+                extrapolation_factor = 1.17
+            else:
+                extrapolation_factor = 1.
+            # QCD extrapolation_factor 1.17 for mt et 2016
+            processes[chname_]["QCD"] = Process(
+                "QCD",
+                est_(
+                    era, directory, ch_,
+                    [processes[chname_][process] for process in qcdpS],
+                    processes[chname_]["data_obs"],
+                    friend_directory=friend_directory[chname_],
+                    extrapolation_factor=extrapolation_factor))
+        elif chname_ == "tt":
+            processes[chname_]["QCD"] = Process(
+                "QCD",
+                est_(
+                    era, directory, ch_,
+                    [processes[chname_][process] for process in qcdpS],
+                    processes[chname_]["data_obs"],
+                    friend_directory=friend_directory[chname_]))
+        else:
+            # qcd_weight = Weight("em_qcd_osss_binned_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight")
+            ROOT.v5.TFormula.SetMaxima(3000)
+
+            if args.era == "2016":
+                qcd_aisoiso_string = "*(1.0*(pt_1>=150.0||pt_2>=150.0)+0.889611*(pt_1>=0.0&&pt_1<20.0&&pt_2>=20.0&&pt_2<25.0)+0.906323*(pt_1>=0.0&&pt_1<20.0&&pt_2>=25.0&&pt_2<30.0)+0.838287*(pt_1>=0.0&&pt_1<20.0&&pt_2>=30.0&&pt_2<150.0)+0.900872*(pt_1>=20.0&&pt_1<25.0&&pt_2>=0.0&&pt_2<20.0)+0.918876*(pt_1>=20.0&&pt_1<25.0&&pt_2>=20.0&&pt_2<25.0)+0.857904*(pt_1>=20.0&&pt_1<25.0&&pt_2>=25.0&&pt_2<30.0)+0.833439*(pt_1>=20.0&&pt_1<25.0&&pt_2>=30.0&&pt_2<150.0)+0.956127*(pt_1>=25.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<20.0)+0.863690*(pt_1>=25.0&&pt_1<30.0&&pt_2>=20.0&&pt_2<25.0)+1.060816*(pt_1>=25.0&&pt_1<30.0&&pt_2>=25.0&&pt_2<30.0)+0.938181*(pt_1>=25.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<150.0)+0.993274*(pt_1>=30.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<20.0)+0.936018*(pt_1>=30.0&&pt_1<150.0&&pt_2>=20.0&&pt_2<25.0)+0.864106*(pt_1>=30.0&&pt_1<150.0&&pt_2>=25.0&&pt_2<30.0)+0.954102*(pt_1>=30.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<150.0))"
+                qcd_weight_string = "((-0.1138*(njets==0)+(-0.07938)*(njets==1)+(-0.02602)*(njets>=2))*((DiTauDeltaR-3.0)**2.0-3.0)+(-0.2287*(njets==0)+(-0.3251)*(njets==1)+(-0.2802)*(njets>=2))*(DiTauDeltaR-3.0)+(1.956*(njets==0)+(1.890)*(njets==1)+(1.753)*(njets>=2)))*(1.0*(pt_1>=150.0||pt_2>=150.0)+1.132149*(pt_1>=0.0&&pt_1<24.0&&pt_2>=24.0&&pt_2<30.0)+1.118163*(pt_1>=0.0&&pt_1<24.0&&pt_2>=30.0&&pt_2<40.0)+1.142240*(pt_1>=0.0&&pt_1<24.0&&pt_2>=40.0&&pt_2<150.0)+1.004560*(pt_1>=24.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<24.0)+1.055802*(pt_1>=24.0&&pt_1<30.0&&pt_2>=24.0&&pt_2<30.0)+1.171731*(pt_1>=24.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<40.0)+1.351143*(pt_1>=24.0&&pt_1<30.0&&pt_2>=40.0&&pt_2<150.0)+0.921943*(pt_1>=30.0&&pt_1<40.0&&pt_2>=0.0&&pt_2<24.0)+1.078412*(pt_1>=30.0&&pt_1<40.0&&pt_2>=24.0&&pt_2<30.0)+1.096989*(pt_1>=30.0&&pt_1<40.0&&pt_2>=30.0&&pt_2<40.0)+1.222142*(pt_1>=30.0&&pt_1<40.0&&pt_2>=40.0&&pt_2<150.0)+0.848351*(pt_1>=40.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<24.0)+0.852887*(pt_1>=40.0&&pt_1<150.0&&pt_2>=24.0&&pt_2<30.0)+0.891202*(pt_1>=40.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<40.0)+0.913323*(pt_1>=40.0&&pt_1<150.0&&pt_2>=40.0&&pt_2<150.0))%s"%qcd_aisoiso_string
+            elif args.era == "2017":
+                qcd_aisoiso_string = "*(1.0*(pt_1>=150.0||pt_2>=150.0)+0.878304*(pt_1>=0.0&&pt_1<20.0&&pt_2>=20.0&&pt_2<25.0)+0.916277*(pt_1>=0.0&&pt_1<20.0&&pt_2>=25.0&&pt_2<30.0)+0.853211*(pt_1>=0.0&&pt_1<20.0&&pt_2>=30.0&&pt_2<150.0)+0.920458*(pt_1>=20.0&&pt_1<25.0&&pt_2>=0.0&&pt_2<20.0)+0.872271*(pt_1>=20.0&&pt_1<25.0&&pt_2>=20.0&&pt_2<25.0)+0.957983*(pt_1>=20.0&&pt_1<25.0&&pt_2>=25.0&&pt_2<30.0)+0.910988*(pt_1>=20.0&&pt_1<25.0&&pt_2>=30.0&&pt_2<150.0)+0.935900*(pt_1>=25.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<20.0)+0.903964*(pt_1>=25.0&&pt_1<30.0&&pt_2>=20.0&&pt_2<25.0)+0.888112*(pt_1>=25.0&&pt_1<30.0&&pt_2>=25.0&&pt_2<30.0)+0.872235*(pt_1>=25.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<150.0)+0.927075*(pt_1>=30.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<20.0)+0.983504*(pt_1>=30.0&&pt_1<150.0&&pt_2>=20.0&&pt_2<25.0)+0.921924*(pt_1>=30.0&&pt_1<150.0&&pt_2>=25.0&&pt_2<30.0)+0.881401*(pt_1>=30.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<150.0))"
+                qcd_weight_string = "((-0.1430*(njets==0)+(-0.05544)*(njets==1)+(0.03128)*(njets>=2))*((DiTauDeltaR-3.0)**2.0-3.0)+(-0.1949*(njets==0)+(-0.3685)*(njets==1)+(-0.3531)*(njets>=2))*(DiTauDeltaR-3.0)+(1.928*(njets==0)+(2.020)*(njets==1)+(1.855)*(njets>=2)))*(1.0*(pt_1>=150.0||pt_2>=150.0)+1.155767*(pt_1>=0.0&&pt_1<24.0&&pt_2>=24.0&&pt_2<30.0)+1.136188*(pt_1>=0.0&&pt_1<24.0&&pt_2>=30.0&&pt_2<40.0)+1.163907*(pt_1>=0.0&&pt_1<24.0&&pt_2>=40.0&&pt_2<150.0)+0.988366*(pt_1>=24.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<24.0)+1.198820*(pt_1>=24.0&&pt_1<30.0&&pt_2>=24.0&&pt_2<30.0)+1.134818*(pt_1>=24.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<40.0)+1.051062*(pt_1>=24.0&&pt_1<30.0&&pt_2>=40.0&&pt_2<150.0)+0.917948*(pt_1>=30.0&&pt_1<40.0&&pt_2>=0.0&&pt_2<24.0)+1.042672*(pt_1>=30.0&&pt_1<40.0&&pt_2>=24.0&&pt_2<30.0)+0.973973*(pt_1>=30.0&&pt_1<40.0&&pt_2>=30.0&&pt_2<40.0)+1.143160*(pt_1>=30.0&&pt_1<40.0&&pt_2>=40.0&&pt_2<150.0)+0.845711*(pt_1>=40.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<24.0)+0.853038*(pt_1>=40.0&&pt_1<150.0&&pt_2>=24.0&&pt_2<30.0)+0.890487*(pt_1>=40.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<40.0)+1.037247*(pt_1>=40.0&&pt_1<150.0&&pt_2>=40.0&&pt_2<150.0))%s"%qcd_aisoiso_string
+            elif args.era == "2018":
+                qcd_aisoiso_string = "*(1.0*(pt_1>=150.0||pt_2>=150.0)+0.847702*(pt_1>=0.0&&pt_1<20.0&&pt_2>=20.0&&pt_2<25.0)+0.878120*(pt_1>=0.0&&pt_1<20.0&&pt_2>=25.0&&pt_2<30.0)+0.887496*(pt_1>=0.0&&pt_1<20.0&&pt_2>=30.0&&pt_2<150.0)+0.874935*(pt_1>=20.0&&pt_1<25.0&&pt_2>=0.0&&pt_2<20.0)+0.829801*(pt_1>=20.0&&pt_1<25.0&&pt_2>=20.0&&pt_2<25.0)+0.922954*(pt_1>=20.0&&pt_1<25.0&&pt_2>=25.0&&pt_2<30.0)+0.954270*(pt_1>=20.0&&pt_1<25.0&&pt_2>=30.0&&pt_2<150.0)+0.935953*(pt_1>=25.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<20.0)+0.908383*(pt_1>=25.0&&pt_1<30.0&&pt_2>=20.0&&pt_2<25.0)+0.927804*(pt_1>=25.0&&pt_1<30.0&&pt_2>=25.0&&pt_2<30.0)+0.917511*(pt_1>=25.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<150.0)+0.983508*(pt_1>=30.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<20.0)+0.952974*(pt_1>=30.0&&pt_1<150.0&&pt_2>=20.0&&pt_2<25.0)+0.945860*(pt_1>=30.0&&pt_1<150.0&&pt_2>=25.0&&pt_2<30.0)+0.858417*(pt_1>=30.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<150.0))"
+                qcd_weight_string = "((-0.1249*(njets==0)+(-0.04374)*(njets==1)+(-0.00606)*(njets>=2))*((DiTauDeltaR-3.0)**2.0-3.0)+(-0.1644*(njets==0)+(-0.3172)*(njets==1)+(-0.3627)*(njets>=2))*(DiTauDeltaR-3.0)+(1.963*(njets==0)+(2.014)*(njets==1)+(1.757)*(njets>=2)))*(1.0*(pt_1>=150.0||pt_2>=150.0)+1.163939*(pt_1>=0.0&&pt_1<24.0&&pt_2>=24.0&&pt_2<30.0)+1.128795*(pt_1>=0.0&&pt_1<24.0&&pt_2>=30.0&&pt_2<40.0)+1.083493*(pt_1>=0.0&&pt_1<24.0&&pt_2>=40.0&&pt_2<150.0)+1.006878*(pt_1>=24.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<24.0)+1.078046*(pt_1>=24.0&&pt_1<30.0&&pt_2>=24.0&&pt_2<30.0)+1.080539*(pt_1>=24.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<40.0)+1.080385*(pt_1>=24.0&&pt_1<30.0&&pt_2>=40.0&&pt_2<150.0)+0.930821*(pt_1>=30.0&&pt_1<40.0&&pt_2>=0.0&&pt_2<24.0)+1.077226*(pt_1>=30.0&&pt_1<40.0&&pt_2>=24.0&&pt_2<30.0)+1.030334*(pt_1>=30.0&&pt_1<40.0&&pt_2>=30.0&&pt_2<40.0)+0.940508*(pt_1>=30.0&&pt_1<40.0&&pt_2>=40.0&&pt_2<150.0)+0.836243*(pt_1>=40.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<24.0)+0.878972*(pt_1>=40.0&&pt_1<150.0&&pt_2>=24.0&&pt_2<30.0)+0.867798*(pt_1>=40.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<40.0)+0.910642*(pt_1>=40.0&&pt_1<150.0&&pt_2>=40.0&&pt_2<150.0))%s"%qcd_aisoiso_string
+            qcd_weight = Weight(qcd_weight_string, "qcd_weight")
+            processes[chname_]["QCD"] = Process(
+                "QCD",
+                est_(
+                    era, directory, ch_,
+                    [processes[chname_][process] for process in qcdpS],
+                    processes[chname_]["data_obs"],
+                    friend_directory=friend_directory[chname_],
+                    qcd_weight=qcd_weight))
+
+
 
     # If no processes are passed as an argument, generate all
     if args.processes in [None, []]:
@@ -433,9 +464,9 @@ def main(args):
     def readclasses(channelname, selectedCategories):
         confFileName = "output/ml/{}_{}/dataset_config.yaml".format(
                 args.era, channelname)
-        logger.info("Parse classes from " + confFileName)
+        logger.debug("Parse classes from " + confFileName)
         confdict = yaml.load(open(confFileName, "r"), Loader=yaml.Loader)
-        logger.info(
+        logger.debug(
             "Classes for {} loaded: {}".format(
                 channelname, str(
                     confdict["classes"])))
@@ -569,7 +600,8 @@ def main(args):
     if len(selectedChannels & {"et", "mt"}) > 0:
         pt = [30, 35, 40, 500, 1000, "inf"]
         for histname_, pS_ in {
-            "CMS_eff_t_{}-{}_{}": signal_nicks | {"EMB", "VVL", "TTL"} , "CMS_eff_t_emb_{}-{}_{}": {"EMB"}}.items():
+            "CMS_eff_t_{}-{}_{}": signal_nicks | {"EMB", "VVL", "TTL"} |
+                trueTauBkgS, "CMS_eff_t_emb_{}-{}_{}": {"EMB"}}.items():
             tau_id_variations = []
             for shift_direction in ["Up", "Down"]:
                 for i, ptbin in enumerate(pt[:-1]):
@@ -599,7 +631,8 @@ def main(args):
     # for tautau, the id is split by decay mode, and each decay mode is assosicated one nuicance
     for chname_ in selectedChannels & {"tt"}:
         for histname_, pS_ in {
-            "CMS_eff_t_dm{dm}_{era}": signal_nicks | {"EMB", "VVL", "TTL"} , "CMS_eff_t_emb_dm{dm}_{era}": {"EMB"}}.items():
+            "CMS_eff_t_dm{dm}_{era}": signal_nicks | {"EMB", "VVL", "TTL"} |
+                trueTauBkgS, "CMS_eff_t_emb_dm{dm}_{era}": {"EMB"}}.items():
             tau_id_variations = []
             for shift_direction in ["Up", "Down"]:
                 for decaymode in [0, 1, 10, 11]:
@@ -624,7 +657,7 @@ def main(args):
         # Tau energy scale
     for name_, pS_ in {
         "_emb_": {
-            "EMB", "FAKES"}, "_": signal_nicks | {
+            "EMB", "FAKES"}, "_": signal_nicks | trueTauBkgS | {
             "TTL", "VVL", "EMB", "FAKES"}}.items():
         tau_es_3prong_variations = create_systematic_variations(
             "CMS_scale_t{name}3prong_{era}".format(
@@ -658,7 +691,7 @@ def main(args):
     for variation_ in ele_es_variations:
         for chname_ in selectedChannels & {"et", "em"}:
             for process_nick in selectedProcesses & (
-                    signal_nicks | leptonTauBkgS |
+                    signal_nicks | trueTauBkgS | leptonTauBkgS |
                     jetFakeBkgD[chname_]):
                 variationsToAdd[chname_][process_nick].append(variation_)
 
@@ -733,9 +766,9 @@ def main(args):
     for variation_ in recoil_resolution_variations + recoil_response_variations:
         for chname_ in selectedChannels:
             if chname_ != "em":
-                pS_ = signal_nicks | {"ZL"}
+                pS_ = signal_nicks | {"ZTT", "ZL", "ZJ", "W"}
             else:
-                pS_ = signal_nicks | {"ZL"}
+                pS_ = signal_nicks | {"ZTT", "ZL", "W"}
             for process_nick in selectedProcesses & pS_:
                 variationsToAdd[chname_][process_nick].append(variation_)
 
@@ -751,9 +784,9 @@ def main(args):
     for variation_ in zpt_variations:
         for chname_ in selectedChannels:
             if chname_ != "em":
-                pS_ = {"ZL"}
+                pS_ = {"ZTT", "ZL", "ZJ"}
             else:
-                pS_ = {"ZL"}
+                pS_ = {"ZTT", "ZL"}
             for process_nick in selectedProcesses & pS_:
                 variationsToAdd[chname_][process_nick].append(variation_)
 
@@ -764,12 +797,12 @@ def main(args):
     for variation_ in top_pt_variations:
         for chname_ in selectedChannels:
             if chname_ != "em":
-                pS_ = {"TTL"}
+                pS_ = {"TTT", "TTL", "TTJ"}
             else:
-                pS_ = {"TTL"}
+                pS_ = {"TTT", "TTL"}
             for process_nick in selectedProcesses & pS_:
                 variationsToAdd[chname_][process_nick].append(variation_)
-    """
+
     # jet to tau fake efficiency
     jet_to_tau_fake_variations = []
     jet_to_tau_fake_variations.append(
@@ -786,7 +819,7 @@ def main(args):
         for process_nick in selectedProcesses & jetFakeBkgS:
             for chname_ in selectedChannels - {"em"}:
                 variationsToAdd[chname_][process_nick].append(variation_)
-    """
+
     # ZL fakes energy scale
     ele_fake_es_1prong_variations = create_systematic_variations(
         "CMS_ZLShape_et_1prong_barrel_{era}".format(era=args.era),
@@ -1311,91 +1344,90 @@ def main(args):
     if len(selectedChannels & {"em"}) == 0:
         qcd_weight_string = "1."
         qcd_aisoiso_string = "(1.0)"
-    if args.shape_group in ["all", "backgrounds"]:  
-        for shift_direction in ["up", "down"]:
-            qcd_variations.append(
-                ReplaceWeight(
-                    "CMS_htt_qcd_0jet_rate_{era}".format(era=args.era),
-                    "qcd_weight",
-                    Weight(qcd_weight_string.replace(p0_[args.era]["0j"]["nom"], p0_[args.era]["0j"][shift_direction]), "qcd_weight"),
-                    shift_direction.capitalize(),
-                )
-            )
-            qcd_variations.append(
-                ReplaceWeight(
-                    "CMS_htt_qcd_0jet_shape_{era}".format(era=args.era),
-                    "qcd_weight",
-                    Weight(qcd_weight_string.replace(p1_[args.era]["0j"]["nom"], p1_[args.era]["0j"][shift_direction]), "qcd_weight"),
-                    shift_direction.capitalize(),
-                )
-            )
-            qcd_variations.append(
-                ReplaceWeight(
-                    "CMS_htt_qcd_0jet_shape2_{era}".format(era=args.era),
-                    "qcd_weight",
-                    Weight(qcd_weight_string.replace(p2_[args.era]["0j"]["nom"], p2_[args.era]["0j"][shift_direction]), "qcd_weight"),
-                    shift_direction.capitalize(),
-                )
-            )
-            qcd_variations.append(
-                ReplaceWeight(
-                    "CMS_htt_qcd_1jet_rate_{era}".format(
-                        era=args.era),
-                    "qcd_weight",
-                    Weight(qcd_weight_string.replace(p0_[args.era]["1j"]["nom"], p0_[args.era]["1j"][shift_direction]), "qcd_weight"),
-                    shift_direction.capitalize()))
-            qcd_variations.append(
-                ReplaceWeight(
-                    "CMS_htt_qcd_1jet_shape_{era}".format(
-                        era=args.era),
-                    "qcd_weight",
-                    Weight(qcd_weight_string.replace(p1_[args.era]["1j"]["nom"], p1_[args.era]["1j"][shift_direction]), "qcd_weight"),
-                    shift_direction.capitalize()))
-            qcd_variations.append(
-                ReplaceWeight(
-                    "CMS_htt_qcd_1jet_shape2_{era}".format(
-                        era=args.era),
-                    "qcd_weight",
-                    Weight(qcd_weight_string.replace(p2_[args.era]["1j"]["nom"], p2_[args.era]["1j"][shift_direction]), "qcd_weight"),
-                    shift_direction.capitalize()))
-            qcd_variations.append(
-                ReplaceWeight(
-                    "CMS_htt_qcd_2jet_rate_{era}".format(
-                        era=args.era),
-                    "qcd_weight",
-                    Weight(qcd_weight_string.replace(p0_[args.era]["2j"]["nom"], p0_[args.era]["2j"][shift_direction]), "qcd_weight"),
-                    shift_direction.capitalize()))
-            qcd_variations.append(
-                ReplaceWeight(
-                    "CMS_htt_qcd_2jet_shape_{era}".format(
-                        era=args.era),
-                    "qcd_weight",
-                    Weight(qcd_weight_string.replace(p1_[args.era]["2j"]["nom"], p1_[args.era]["2j"][shift_direction]), "qcd_weight"),
-                    shift_direction.capitalize()))
-            qcd_variations.append(
-                ReplaceWeight(
-                    "CMS_htt_qcd_2jet_shape2_{era}".format(
-                        era=args.era),
-                    "qcd_weight",
-                    Weight(qcd_weight_string.replace(p2_[args.era]["2j"]["nom"], p2_[args.era]["2j"][shift_direction]), "qcd_weight"),
-                    shift_direction.capitalize()))
+    for shift_direction in ["up", "down"]:
         qcd_variations.append(
             ReplaceWeight(
-                "CMS_htt_qcd_iso",
+                "CMS_htt_qcd_0jet_rate_{era}".format(era=args.era),
                 "qcd_weight",
-                Weight(qcd_weight_string.replace(qcd_aisoiso_string, qcd_aisoiso_string+"**2"), "qcd_weight"),
-                "Up"))
+                Weight(qcd_weight_string.replace(p0_[args.era]["0j"]["nom"], p0_[args.era]["0j"][shift_direction]), "qcd_weight"),
+                shift_direction.capitalize(),
+            )
+        )
         qcd_variations.append(
             ReplaceWeight(
-                "CMS_htt_qcd_iso",
+                "CMS_htt_qcd_0jet_shape_{era}".format(era=args.era),
                 "qcd_weight",
-                Weight(qcd_weight_string.replace(qcd_aisoiso_string, ""), "qcd_weight"),
-                "Down"))
+                Weight(qcd_weight_string.replace(p1_[args.era]["0j"]["nom"], p1_[args.era]["0j"][shift_direction]), "qcd_weight"),
+                shift_direction.capitalize(),
+            )
+        )
+        qcd_variations.append(
+            ReplaceWeight(
+                "CMS_htt_qcd_0jet_shape2_{era}".format(era=args.era),
+                "qcd_weight",
+                Weight(qcd_weight_string.replace(p2_[args.era]["0j"]["nom"], p2_[args.era]["0j"][shift_direction]), "qcd_weight"),
+                shift_direction.capitalize(),
+            )
+        )
+        qcd_variations.append(
+            ReplaceWeight(
+                "CMS_htt_qcd_1jet_rate_{era}".format(
+                    era=args.era),
+                "qcd_weight",
+                Weight(qcd_weight_string.replace(p0_[args.era]["1j"]["nom"], p0_[args.era]["1j"][shift_direction]), "qcd_weight"),
+                shift_direction.capitalize()))
+        qcd_variations.append(
+            ReplaceWeight(
+                "CMS_htt_qcd_1jet_shape_{era}".format(
+                    era=args.era),
+                "qcd_weight",
+                Weight(qcd_weight_string.replace(p1_[args.era]["1j"]["nom"], p1_[args.era]["1j"][shift_direction]), "qcd_weight"),
+                shift_direction.capitalize()))
+        qcd_variations.append(
+            ReplaceWeight(
+                "CMS_htt_qcd_1jet_shape2_{era}".format(
+                    era=args.era),
+                "qcd_weight",
+                Weight(qcd_weight_string.replace(p2_[args.era]["1j"]["nom"], p2_[args.era]["1j"][shift_direction]), "qcd_weight"),
+                shift_direction.capitalize()))
+        qcd_variations.append(
+            ReplaceWeight(
+                "CMS_htt_qcd_2jet_rate_{era}".format(
+                    era=args.era),
+                "qcd_weight",
+                Weight(qcd_weight_string.replace(p0_[args.era]["2j"]["nom"], p0_[args.era]["2j"][shift_direction]), "qcd_weight"),
+                shift_direction.capitalize()))
+        qcd_variations.append(
+            ReplaceWeight(
+                "CMS_htt_qcd_2jet_shape_{era}".format(
+                    era=args.era),
+                "qcd_weight",
+                Weight(qcd_weight_string.replace(p1_[args.era]["2j"]["nom"], p1_[args.era]["2j"][shift_direction]), "qcd_weight"),
+                shift_direction.capitalize()))
+        qcd_variations.append(
+            ReplaceWeight(
+                "CMS_htt_qcd_2jet_shape2_{era}".format(
+                    era=args.era),
+                "qcd_weight",
+                Weight(qcd_weight_string.replace(p2_[args.era]["2j"]["nom"], p2_[args.era]["2j"][shift_direction]), "qcd_weight"),
+                shift_direction.capitalize()))
+    qcd_variations.append(
+        ReplaceWeight(
+            "CMS_htt_qcd_iso",
+            "qcd_weight",
+            Weight(qcd_weight_string.replace(qcd_aisoiso_string, qcd_aisoiso_string+"**2"), "qcd_weight"),
+            "Up"))
+    qcd_variations.append(
+        ReplaceWeight(
+            "CMS_htt_qcd_iso",
+            "qcd_weight",
+            Weight(qcd_weight_string.replace(qcd_aisoiso_string, ""), "qcd_weight"),
+            "Down"))
 
-        for variation_ in qcd_variations:
-            for process_nick in selectedProcesses & {"QCD"}:
-                if "em" in selectedChannels:
-                    variationsToAdd["em"][process_nick].append(variation_)
+    for variation_ in qcd_variations:
+        for process_nick in selectedProcesses & {"QCD"}:
+            if "em" in selectedChannels:
+                variationsToAdd["em"][process_nick].append(variation_)
     if args.gof_variable is None:
 
         nmssm_variations = []

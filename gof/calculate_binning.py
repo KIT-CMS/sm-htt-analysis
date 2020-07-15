@@ -282,13 +282,13 @@ def main(args):
         additional_cuts = Cuts()
         logger.warning("Use additional cuts for %s: %s" %
                        (ch,additional_cuts.expand()))
-        dict_ = get_properties(dict_, era, channel, args.directory,
+        dict_ = get_properties(dict_, era, channel, args.directory.replace("+CH+",ch),
                                additional_cuts)
 
         # Build chain
         dict_["tree_path"] = "%s_nominal/ntuple" % ch
 
-        chain = build_chain(dict_, friend_directories_dict[ch])
+        chain = build_chain(dict_, [x.replace("+CH+",ch) for x in friend_directories_dict[ch]])
 
         # Get percentiles and calculate 1d binning
         binning = get_1d_binning(ch, chain, variables[int(eraname)][ch], percentiles)

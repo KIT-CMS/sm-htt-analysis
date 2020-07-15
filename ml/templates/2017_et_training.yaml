@@ -43,10 +43,20 @@ variables:
 - jdeta
 - mjj
 - dijetpt
-- ME_q2v1
-- ME_q2v2
+- bpt_bReg_1
+- bpt_bReg_2
+# - bm_bReg_1
+# - bm_bReg_2
+# - bcsv_1
+# - bcsv_2
 - jpt_2
-- DiTauDeltaR
+- mbb_highCSV_bReg
+- pt_bb_highCSV_bReg
+- m_ttvisbb_highCSV_bReg
+- kinfit_mH
+- kinfit_mh2
+- kinfit_chi2
+# - highCSVjetUsedFordiBJetSystemCSV
 
 # Split of dataset in training and validation (in TMVA called training and testing)
 train_test_split: 0.75
