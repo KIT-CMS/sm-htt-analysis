@@ -1199,7 +1199,7 @@ def main(args):
                 # "ff_tt_syst{era}{shift}",
                 # "ff_tt_stat{era}{shift}",
                 "ff_tt_morphed{ch}{era}{shift}",
-                "ff_tt_sf{ch}{era}{shift}",
+                #"ff_tt_sf{ch}{era}{shift}",
                 "ff_corr_tt_syst{ch}{era}{shift}",
                 "ff_frac_w{ch}{era}{shift}",
                 "ff_qcd_dm0_njet0_morphed_stat{ch}{era}{shift}", "ff_qcd_dm0_njet1_morphed_stat{ch}{era}{shift}", "ff_qcd_dm0_njet2_morphed_stat{ch}{era}{shift}", 
