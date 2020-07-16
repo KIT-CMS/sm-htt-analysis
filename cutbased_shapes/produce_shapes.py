@@ -555,8 +555,8 @@ def main(args):
                 "et": "(trg_singleelectron==1 && pt_1 > 30)*(singleTriggerDataEfficiencyWeightKIT_1/singleTriggerMCEfficiencyWeightKIT_1)",
                 "mt": "(trg_singlemuon==1 && pt_1 > 23)*(singleTriggerDataEfficiencyWeightKIT_1/singleTriggerMCEfficiencyWeightKIT_1)"},
             "2017": {
-                "et": "(trg_singleelectron_35==1 && pt_1 > 40)*(singleTriggerDataEfficiencyWeightKIT_1/singleTriggerMCEfficiencyWeightKIT_1)"},
-                "mt": "(trg_singlemuon_27==1 && pt_1 > 28)*(singleTriggerDataEfficiencyWeightKIT_1/singleTriggerMCEfficiencyWeightKIT_1)",
+                "et": "(trg_singleelectron_35==1 && pt_1 > 40)*(singleTriggerDataEfficiencyWeightKIT_1/singleTriggerMCEfficiencyWeightKIT_1)",
+                "mt": "(trg_singlemuon_27==1 && pt_1 > 28)*(singleTriggerDataEfficiencyWeightKIT_1/singleTriggerMCEfficiencyWeightKIT_1)"},
             "2018": {
                 "et": "((trg_singleelectron_32==1 && pt_1>37)*trigger_32_35_Weight_1)",
                 "mt": "((trg_singlemuon_27==1 && pt_1>28)*trigger_27_Weight_1)"},
