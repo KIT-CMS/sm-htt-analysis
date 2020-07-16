@@ -39,10 +39,10 @@ def main():
             "em" : ['nbtag'],
         },
         "nobtag_lowmsv" : {
-            "mt" : ['DiTauDeltaR','mjj','pt_tt_puppi','jdeta'],#'njets'],
-            "et" : ['DiTauDeltaR','mjj','pt_tt_puppi','jdeta'],#'njets'],
-            "tt" : ['DiTauDeltaR','mjj','pt_tt_puppi','jdeta'],#'njets'],
-            "em" : ['DiTauDeltaR','mjj','pt_tt_puppi','jdeta'],#'njets'],
+            "mt" : ['DiTauDeltaR','mjj','pt_tt_puppi','jdeta','njets'],
+            "et" : ['DiTauDeltaR','mjj','pt_tt_puppi','jdeta','njets'],
+            "tt" : ['DiTauDeltaR','mjj','pt_tt_puppi','jdeta','njets'],
+            "em" : ['DiTauDeltaR','mjj','pt_tt_puppi','jdeta','njets'],
         },
         "nobtag_lowmsv_2jet_lowdeltar_mediummjj" : {
             "mt" : ['m_sv_puppi_sm', 'mt_tot_puppi_sm'],
@@ -66,10 +66,8 @@ def main():
 
     with open("categorization_arguments.txt", "w") as f:
         for year in ['2016', '2017', '2018']:
-        #for year in ['2018']:
             for ch in processes:
-                #for category in ["btag_tightmt","nobtag_lowmsv_2jet_lowdeltar_highmjj"]:
-                for category in ["nobtag_lowmsv"]:
+                for category in variables_per_cat:
                     for variable in variables_per_cat[category][ch]:
                         process_list = copy.deepcopy(processes[ch])
                         process_list += ["_".join(["bbH",str(m)]) for m in mass_dict[year]["bbH"]]
@@ -77,7 +75,7 @@ def main():
                             f.write(
                                 tmp_str.format(
                                     os.getcwd(),
-                                    1,
+                                    8 if process in ["EMB", "QCD", "jetFakes", "TTL"] else 1,
                                     year,
                                     variable, # category dependent
                                     process,
