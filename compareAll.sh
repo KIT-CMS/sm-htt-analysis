@@ -834,17 +834,19 @@ function plotBlindedPostFitShapes(){
 ### generate postfitshape
 function plotPreFitShapes() (
     ensureoutdirs
-    set -e
+    #set -e
     for tag in ${tags[@]}; do
         export tag
         for era in ${eras[@]}; do
-            STXS_FIT="stxs_stage1p1"
-            if [[ $STXS_FIT == "inclusive" || $STXS_FIT == "stxs_stage0" ]]; then
-                STXS_SIGNALS=stxs_stage0
-            elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
-                STXS_SIGNALS=stxs_stage1p1
+            STXS_FIT="inclusive"
+            STXS_SIGNALS="stxs_stage0"
+            if [[ $tag == *"stage0"* ]]; then
+                CATEGORIES="stxs_stage0"
+            elif [[ $tag == *"stage1p1"* ]]; then
+                CATEGORIES="stxs_stage1p1_15node"
+            else
+                CATEGORIES="stxs_stage1p1"
             fi
-
             for channel in ${channels[@]}; do
                 DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/$channel/125
                 WORKSPACE=$DATACARDDIR/${era}-${STXS_FIT}-workspace.root
@@ -863,11 +865,15 @@ function plotPreFitShapes() (
                 (
                     source utils/setup_cvmfs_sft.sh
                     source utils/setup_python.sh
-                    PLOTDIR=output/plots/${era}-${tag}-${channel}_shape-plots
+                    PLOTDIR=output/plots/all-${tag}-${channel}_shape-plots
                     [ -d $PLOTDIR ] || mkdir -p $PLOTDIR
                     for OPTION in "--png" ""
                     do
-                        logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channel} -e $era $OPTION --png --categories $STXS_SIGNALS --fake-factor --embedding --normalize-by-bin-width -l --train-ff True --train-emb True
+                        logandrun ./plotting/plot_shapes.py -i $FILE \
+                            -o $PLOTDIR -c ${channel} -e $era \
+                            $OPTION --categories $CATEGORIES --fake-factor \
+                            --embedding --normalize-by-bin-width -l \
+                            --train-ff True --train-emb True
                     done
                 )
             done
@@ -879,45 +885,56 @@ function plotPostFitShapes(){
     ensureoutdirs
     for tag in ${tags[@]}; do
         export tag
-        for era in ${eras[@]}; do
+        era="all"
+        STXS_SIGNALS="stxs_stage0"
+        STXS_FIT="inclusive"
+        channel="cmb"
+        if [[ $tag == *"stage0"* ]]; then
+            CATEGORIES="stxs_stage0"
+            STXS_SIGNALS="stxs_stage0"
             STXS_FIT="stxs_stage0"
-            if [[ $STXS_FIT == "inclusive" || $STXS_FIT == "stxs_stage0" ]]; then
-                STXS_SIGNALS=stxs_stage0
-            elif [[ $STXS_FIT == "stxs_stage1p1" ]] ; then
-                STXS_SIGNALS=stxs_stage1p1
-            fi
-
-            for channel in ${channels[@]}; do
-                DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/$channel/125
-
-                # Generate the fitDiagnostics
-                FITFILE=$DATACARDDIR/fitDiagnostics${era}-${STXS_FIT}.MultiDimFit.mH125.root
-                [[ -f $FITFILE ]] || logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR $channel ${tag} "robustHesse"
-
-                # generate the postfitshape
-                FILE="${DATACARDDIR}/postfitshape-${era}-${tag}-${STXS_FIT}.root"
-                [[ -f $FILE ]] || (
-                    source utils/setup_cmssw.sh
-                    WORKSPACE=$DATACARDDIR/${era}-${STXS_FIT}-workspace.root
-                    logandrun PostFitShapesFromWorkspace \
-                        -m 125 -w ${WORKSPACE} \
-                        -d ${DATACARDDIR}/combined.txt.cmb \
-                        -o ${FILE} \
-                        -f ${FITFILE}:fit_s \
-                        --postfit
-                )
-                ## plot the preditshape and postfitshape
-                (
-                    source utils/setup_cvmfs_sft.sh
-                    source utils/setup_python.sh
-                    PLOTDIR=output/plots/${era}-${tag}-${channel}_shape-plots
-                    [ -d $PLOTDIR ] || mkdir -p $PLOTDIR
-                    for OPTION in "--png" ""
-                    do
-                        logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR -c ${channel} -e $era $OPTION --categories $CATEGORIES --fake-factor --embedding --normalize-by-bin-width -l --train-ff True --train-emb True
-                    done
-                )
-            done
+        elif [[ $tag == *"stage1p1"* ]]; then
+            CATEGORIES="stxs_stage1p1_15node"
+            STXS_SIGNALS="stxs_stage1p1"
+            STXS_FIT="stxs_stage1p1"
+        else
+            CATEGORIES="stxs_stage1p1"
+            STXS_SIGNALS="stxs_stage1p1"
+            STXS_FIT="stxs_stage1p1"
+        fi
+        DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}/$channel/125
+        # Generate the fitDiagnostics
+        FITFILE=$DATACARDDIR/fitDiagnostics.hesse-${era}-${tag}-${channel}-${STXS_FIT}.MultiDimFit.mH125.root
+        [[ -f $FITFILE ]] || 
+        logandrun ./combine/signal_strength.sh ${era} $STXS_FIT $DATACARDDIR $channel ${tag} "robustHesse" 
+        # generate the postfitshape
+        FILE="${DATACARDDIR}/postfitshape-${era}-${tag}-${STXS_FIT}.root"
+        [[ -f $FILE ]] || 
+        (
+            source utils/setup_cmssw.sh
+            WORKSPACE=$DATACARDDIR/${era}-${STXS_FIT}-workspace.root
+            logandrun PostFitShapesFromWorkspace \
+                -m 125 -w ${WORKSPACE} \
+                -d ${DATACARDDIR}/combined.txt.cmb \
+                -o ${FILE} \
+                -f ${FITFILE}:fit_s \
+                --postfit --skip-prefit
+        )
+        for channel in ${channels[@]}; do
+            ## plot the preditshape and postfitshape
+            (
+                source utils/setup_cvmfs_sft.sh
+                source utils/setup_python.sh
+                PLOTDIR=output/plots/${era}-${tag}-${channel}_shape-plots_postfit
+                [ -d $PLOTDIR ] || mkdir -p $PLOTDIR
+                for PLOTERA in "2016" "2017" "2018"
+                do
+                    logandrun ./plotting/plot_shapes.py -i $FILE -o $PLOTDIR \
+                        -c ${channel} -e $PLOTERA $OPTION --categories $CATEGORIES \
+                        --fake-factor --embedding --normalize-by-bin-width \
+                        -l --train-ff True --train-emb True
+                done
+            )
         done
     done
 }
