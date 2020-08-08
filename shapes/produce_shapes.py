@@ -1200,7 +1200,7 @@ def main(args):
                 # "ff_qcd_dm0_njet0{ch}_stat{era}{shift}",
                 # "ff_qcd_dm0_njet1{ch}_stat{era}{shift}",
                 "ff_qcd_dr0_njet0_morphed_stat{ch}{era}{shift}", "ff_qcd_dr0_njet1_morphed_stat{ch}{era}{shift}", "ff_qcd_dr0_njet2_morphed_stat{ch}{era}{shift}",
-		"ff_w_syst{ch}{era}{shift}",
+	        	"ff_w_syst{ch}{era}{shift}",
                 "ff_tt_syst{ch}{era}{shift}",
                 # "ff_w_frac_syst{ch}{era}{shift}",
                 # "ff_tt_frac_syst{ch}{era}{shift}",
@@ -1209,7 +1209,13 @@ def main(args):
                 "ff_corr_qcd_mvis{ch}{era}{shift}",
                 "ff_corr_qcd_mvis_osss{ch}{era}{shift}",
                 "ff_qcd_tau2_pt{ch}{era}{shift}",
+                "ff_qcd_tau2_pt_1jet{ch}{era}{shift}",
+                "ff_qcd_tau2_pt_0jet{ch}{era}{shift}",
+
                 "ff_corr_qcd_tau2_pt{ch}{era}{shift}",
+                "ff_corr_qcd_tau2_pt_1jet{ch}{era}{shift}",
+                "ff_corr_qcd_tau2_pt_0jet{ch}{era}{shift}",
+
                 "ff_qcd_mc{ch}{era}{shift}",
             ]
             fake_factor_weight[chname_] = "(0.5*ff1_{syst}*(byTightDeepTau2017v2p1VSjet_1<0.5)+0.5*ff2_{syst}*(byTightDeepTau2017v2p1VSjet_2<0.5))"
@@ -1223,12 +1229,40 @@ def main(args):
                         shift="_" + shift_direction.lower(),
                         era=""
                     )
-                    variation_ = ReplaceWeight(
-                        hname_, "fake_factor", Weight(
-                            fake_factor_weight[chname_].format(
-                                syst=systname_), "fake_factor"), shift_direction)
+                    if "tau2_pt_0jet" in systname_:
+                        variation_ = ReplaceWeight(
+                            hname_, "fake_factor", Weight(
+                                "((njets==0)*"+fake_factor_weight[chname_].format(
+                                    syst=systname_)+"+(njets>0)*"+fake_factor_weight[chname_].format(
+                                    syst="nom")+")", "fake_factor"), shift_direction)
+                    elif "tau2_pt_1jet" in systname_:
+                        variation_ = ReplaceWeight(
+                            hname_, "fake_factor", Weight(
+                                "((njets>0)*"+fake_factor_weight[chname_].format(
+                                    syst=systname_)+"+(njets==0)*"+fake_factor_weight[chname_].format(
+                                    syst="nom")+")", "fake_factor"), shift_direction)
+                    else:
+                        variation_ = ReplaceWeight(
+                            hname_, "fake_factor", Weight(
+                                fake_factor_weight[chname_].format(
+                                    syst=systname_), "fake_factor"), shift_direction)
                     variationsToAdd[chname_]["FAKES"].append(variation_)
-    
+
+    ff_lnN_factor = {
+        "tt": "1.096",
+        "et": "1.057",
+        "mt": "1.064"
+    }
+    variationff_lnN_factor = []
+    variationff_lnN_factor.append(AddWeight("CMS_ff_jetbinned_stat_0jet_norm{ch}{era}".format(ch="_" + chname_,era="_" + args.era),"0jet_norm_weight",Weight("((njets==0)*{}+(njets==1)+(njets>1))".format(ff_lnN_factor[chname_]),"0jet_norm_weight"),"Up"))
+    variationff_lnN_factor.append(AddWeight("CMS_ff_jetbinned_stat_0jet_norm{ch}{era}".format(ch="_" + chname_,era="_" + args.era),"0jet_norm_weight",Weight("((njets==0)*(1.0/{})+(njets==1)+(njets>1))".format(ff_lnN_factor[chname_]),"0jet_norm_weight"),"Down"))
+    variationff_lnN_factor.append(AddWeight("CMS_ff_jetbinned_stat_1jet_norm{ch}{era}".format(ch="_" + chname_,era="_" + args.era),"1jet_norm_weight",Weight("((njets==0)+(njets==1)*{}+(njets>1))".format(ff_lnN_factor[chname_]),"1jet_norm_weight"),"Up"))
+    variationff_lnN_factor.append(AddWeight("CMS_ff_jetbinned_stat_1jet_norm{ch}{era}".format(ch="_" + chname_,era="_" + args.era),"1jet_norm_weight",Weight("((njets==0)+(njets==1)*(1.0/{})++(njets>1))".format(ff_lnN_factor[chname_]),"1jet_norm_weight"),"Down"))
+    variationff_lnN_factor.append(AddWeight("CMS_ff_jetbinned_stat_2jet_norm{ch}{era}".format(ch="_" + chname_,era="_" + args.era),"2jet_norm_weight",Weight("((njets==0)+(njets==1)+(njets>1)*{})".format(ff_lnN_factor[chname_]),"2jet_norm_weight"),"Up"))
+    variationff_lnN_factor.append(AddWeight("CMS_ff_jetbinned_stat_2jet_norm{ch}{era}".format(ch="_" + chname_,era="_" + args.era),"2jet_norm_weight",Weight("((njets==0)+(njets==1)+(njets>1)*(1.0/{}))".format(ff_lnN_factor[chname_]),"2jet_norm_weight"),"Down"))
+
+    for variation_ in variationff_lnN_factor:
+        variationsToAdd[chname_]["FAKES"].append(variation_)
     # QCD for em
     p0_ = { # constant parameter
               "2016" : {
