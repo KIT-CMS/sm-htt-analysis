@@ -233,16 +233,16 @@ if __name__ == "__main__":
     pois = label_list
 
     num_pois = len(pois)
-    m = ROOT.TH2D("h", "h", num_pois, 0, num_pois, num_pois, 0, num_pois)
-    for i in range(num_pois):
-        for j in range(num_pois):
-            val = result.correlation(params.find(pois[i]), params.find(pois[j]))
+    m = ROOT.TH2D("h", "h", num_pois-1, 0, num_pois-1, num_pois-1, 0, num_pois-1)
+    for i in range(num_pois-1):
+        for j in range(i,num_pois-1):
+            val = result.correlation(params.find(pois[i]), params.find(pois[j+1]))
             m.SetBinContent(i+1, j+1, val)
 
     m.SetTitle("")
-    for i in range(num_pois):
+    for i in range(num_pois-1):
         m.GetXaxis().SetBinLabel(i+1, "")
-        m.GetYaxis().SetBinLabel(i+1, label_dict[pois[i]])
+        m.GetYaxis().SetBinLabel(i+1, label_dict[pois[i+1]])
     m.GetXaxis().LabelsOption("v")
     m.GetYaxis().SetLabelFont(43)
     m.GetYaxis().SetLabelSize(10) ########################################################
@@ -266,7 +266,7 @@ if __name__ == "__main__":
     tex.DrawLatex(0.65, 0.955, "137.1 fb^{-1} (13 TeV)")
     tex.SetTextFont(53)
     tex.DrawLatex(0.40, 0.955, "Preliminary")
-    for i in range(num_pois):
+    for i in range(num_pois-1):
         texlabel = ROOT.TLatex()
         texlabel.SetTextAngle(30)
         texlabel.SetTextFont(43)
@@ -278,16 +278,16 @@ if __name__ == "__main__":
     texgrouplabel.SetTextFont(42)
     texgrouplabel.SetTextAlign(23)
     texgrouplabel.SetTextSize(0.04)
-    texgrouplabel.DrawLatex(3.5,-2.5,"gg#rightarrowH,bbH")
-    texgrouplabel.DrawLatex(10.0,-2.5,"VBF+V(qq)H")
+    texgrouplabel.DrawLatex(3.5,-2.0,"gg#rightarrowH,bbH")
+    texgrouplabel.DrawLatex(9.0,-2.0,"VBF+V(qq)H")
     texgrouplabel.SetTextAngle(90)
-    texgrouplabel.DrawLatex(-5.4,3.5,"gg#rightarrowH,bbH")
-    texgrouplabel.DrawLatex(-5.4,10.0,"VBF+V(qq)H")
+    texgrouplabel.DrawLatex(-5.0,3.5,"gg#rightarrowH,bbH")
+    texgrouplabel.DrawLatex(-5.0,9.0,"VBF+V(qq)H")
 
-    lineh = ROOT.TLine(0.0,8.0,12.0,8.0)
+    lineh = ROOT.TLine(0.0,7.0,11.0,7.0)
     lineh.SetLineWidth(2)
     lineh.Draw()
-    linev = ROOT.TLine(8.0,0.0,8.0,12.0)
+    linev = ROOT.TLine(8.0,0.0,8.0,11.0)
     linev.SetLineWidth(2)
     linev.Draw()
 
