@@ -125,7 +125,7 @@ def SetTDRStyle():
     ROOT.gStyle.SetLabelColor(1, 'XYZ')
     ROOT.gStyle.SetLabelFont(42, 'XYZ')
     ROOT.gStyle.SetLabelOffset(0.007, 'XYZ')
-    ROOT.gStyle.SetLabelSize(0.025, 'XYZ')
+    ROOT.gStyle.SetLabelSize(0.02, 'XYZ') ###############################################
 
     # For the axis:
 
@@ -173,30 +173,34 @@ if __name__ == "__main__":
     #ROOT.gStyle.SetPalette(cp) #kBlueGreenYellow kCoffee
     #ROOT.TColor.InvertPalette()
     label_dict = {
-        "r_ggH_GG2H_0J" : "0 Jet p_{T}^{H} [0,200]",
-        "r_ggH_GG2H_PTH_GT200" : "p_{T}^{H} [200,#infty]",
-        "r_ggH_GG2H_1J_PTH_0_120" : "1 Jet p_{T}^{H} [0,120]",
+        "r_ggH_GG2H_0J_PTH_0_10" : "0 Jet p_{T}^{H} [0,10]",
+        "r_ggH_GG2H_0J_PTH_GT10" : "0 Jet p_{T}^{H} [10,200]",
+        "r_ggH_GG2H_PTH_200_300" : "p_{T}^{H} [200,300]",
+        "r_ggH_GG2H_PTH_GT300" : "p_{T}^{H} [300,#infty]",
+        "r_ggH_GG2H_1J_PTH_0_60" : "1 Jet p_{T}^{H} [0,60]",
+        "r_ggH_GG2H_1J_PTH_60_120" : "1 Jet p_{T}^{H} [60,120]",
         "r_ggH_GG2H_1J_PTH_120_200" : "1 Jet p_{T}^{H} [120,200]",
-        "r_ggH_GG2H_GE2J_MJJ_0_350" : "#geq 2 Jet m_{jj} [0,350] p_{T}^{H} [0,200]",
+        "r_ggH_GG2H_GE2J" : "#geq 2 Jet p_{T}^{H} [0,200]",
 
-        "r_qqH_QQ2HQQ_LE1J" : "#leq 1 Jet",
-        "r_qqH_QQ2HQQ_GE2J_MJJ_0_350" : "#geq 2 Jet m_{jj} [0,350]",
+        "r_qqH_QQ2HQQ_noVBFtopo" : "no VBF topo",
         "r_qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200" : "#geq 2 Jet m_{jj} [350,#infty] p_{T}^{H} [200,#infty]",
-        "r_xxH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200" : "#geq 2 Jet m_{jj} [350,700] p_{T}^{H} [0,200]",
-        "r_xxH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200" : "#geq 2 Jet m_{jj} [700,#infty] p_{T}^{H} [0,200]",
+        "r_qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200" : "#geq 2 Jet m_{jj} [350,700] p_{T}^{H} [0,200]",
+        "r_qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200" : "#geq 2 Jet m_{jj} [700,#infty] p_{T}^{H} [0,200]",
     }
     label_list = [
-        "r_ggH_GG2H_0J",
-        "r_ggH_GG2H_PTH_GT200",
-        "r_ggH_GG2H_1J_PTH_0_120",
+        "r_ggH_GG2H_0J_PTH_0_10",
+        "r_ggH_GG2H_0J_PTH_GT10",
+        "r_ggH_GG2H_PTH_200_300",
+        "r_ggH_GG2H_PTH_GT300",
+        "r_ggH_GG2H_1J_PTH_0_60",
+        "r_ggH_GG2H_1J_PTH_60_120",
         "r_ggH_GG2H_1J_PTH_120_200",
-        "r_ggH_GG2H_GE2J_MJJ_0_350",
+        "r_ggH_GG2H_GE2J",
 
-        "r_qqH_QQ2HQQ_LE1J",
-        "r_qqH_QQ2HQQ_GE2J_MJJ_0_350",
+        "r_qqH_QQ2HQQ_noVBFtopo",
         "r_qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200",
-        "r_xxH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200",
-        "r_xxH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200",
+        "r_qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200",
+        "r_qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200",
     ]
 
     era = sys.argv[1]
@@ -241,7 +245,7 @@ if __name__ == "__main__":
         m.GetYaxis().SetBinLabel(i+1, label_dict[pois[i]])
     m.GetXaxis().LabelsOption("v")
     m.GetYaxis().SetLabelFont(43)
-    m.GetYaxis().SetLabelSize(12)
+    m.GetYaxis().SetLabelSize(10) ########################################################
     m.SetMinimum(-1)
     m.SetMaximum(1)
 
@@ -267,23 +271,23 @@ if __name__ == "__main__":
         texlabel.SetTextAngle(30)
         texlabel.SetTextFont(43)
         texlabel.SetTextAlign(32)
-        texlabel.SetTextSize(12)
+        texlabel.SetTextSize(10)   ###########################################
         texlabel.DrawLatex(i+0.6,-0.19,label_dict[pois[i]])
 
     texgrouplabel = ROOT.TLatex()
     texgrouplabel.SetTextFont(42)
     texgrouplabel.SetTextAlign(23)
     texgrouplabel.SetTextSize(0.04)
-    texgrouplabel.DrawLatex(2.5,-1.8,"gg#rightarrowH,bbH")
-    texgrouplabel.DrawLatex(7.0,-1.8,"VBF+V(qq)H")
+    texgrouplabel.DrawLatex(3.5,-2.5,"gg#rightarrowH,bbH")
+    texgrouplabel.DrawLatex(10.0,-2.5,"VBF+V(qq)H")
     texgrouplabel.SetTextAngle(90)
-    texgrouplabel.DrawLatex(-4.4,2.5,"gg#rightarrowH,bbH")
-    texgrouplabel.DrawLatex(-4.4,7.0,"VBF+V(qq)H")
+    texgrouplabel.DrawLatex(-5.4,3.5,"gg#rightarrowH,bbH")
+    texgrouplabel.DrawLatex(-5.4,10.0,"VBF+V(qq)H")
 
-    lineh = ROOT.TLine(0.0,5.0,9.0,5.0)
+    lineh = ROOT.TLine(0.0,8.0,12.0,8.0)
     lineh.SetLineWidth(2)
     lineh.Draw()
-    linev = ROOT.TLine(5.0,0.0,5.0,9.0)
+    linev = ROOT.TLine(8.0,0.0,8.0,12.0)
     linev.SetLineWidth(2)
     linev.Draw()
 
