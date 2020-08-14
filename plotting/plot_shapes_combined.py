@@ -207,17 +207,20 @@ def get_signal_for_category(category):
         },
         "105": {
             "style": "inclusive",
-            "displayname": "gg#rightarrowH 2-jet, mjj [0,350], p_{T}^{H} [0,60]",
+            "displayname":
+            "gg#rightarrowH 2-jet, mjj [0,350], p_{T}^{H} [0,60]",
             "signals": ["ggH_GE2J_MJJ_0_350_PTH_0_60_htt"]
         },
         "106": {
             "style": "inclusive",
-            "displayname": "gg#rightarrowH 2-jet, mjj [0,350], p_{T}^{H} [60,120]",
+            "displayname":
+            "gg#rightarrowH 2-jet, mjj [0,350], p_{T}^{H} [60,120]",
             "signals": ["ggH_GE2J_MJJ_0_350_PTH_60_120_htt"]
         },
         "107": {
             "style": "inclusive",
-            "displayname": "gg#rightarrowH 2-jet, mjj [0,350], p_{T}^{H} [120,200]",
+            "displayname":
+            "gg#rightarrowH 2-jet, mjj [0,350], p_{T}^{H} [120,200]",
             "signals": ["ggH_GE2J_MJJ_0_350_PTH_120_200_htt"]
         },
         "108": {
@@ -433,7 +436,8 @@ class plot():
                         for k, channel in enumerate(["et", "mt", "tt", "em"]):
                             for h, category in enumerate(["105", "106",
                                                           "107"]):
-                                histid = "{}-{}-{}-{}".format(era,channel,category,subprocess)
+                                histid = "{}-{}-{}-{}".format(
+                                    era, channel, category, subprocess)
                                 hists[histid] = {
                                     "era": era,
                                     "channel": channel,
@@ -445,7 +449,8 @@ class plot():
                         self.signal_processes[process]["histnames"]):
                     for j, era in enumerate(["2016", "2017", "2018"]):
                         for k, channel in enumerate(["et", "mt", "tt", "em"]):
-                            histid = "{}-{}-{}-{}".format(era,channel,self.category,subprocess)
+                            histid = "{}-{}-{}-{}".format(
+                                era, channel, self.category, subprocess)
                             hists[histid] = {
                                 "era": era,
                                 "channel": channel,
@@ -457,9 +462,9 @@ class plot():
                 for i, subprocess in enumerate(
                         self.signal_processes[process]["histnames"]):
                     for j, era in enumerate(["2016", "2017", "2018"]):
-                        for h, category in enumerate(["105", "106",
-                                                        "107"]):
-                            histid = "{}-{}-{}-{}".format(era,self.channel,category,subprocess)
+                        for h, category in enumerate(["105", "106", "107"]):
+                            histid = "{}-{}-{}-{}".format(
+                                era, self.channel, category, subprocess)
                             hists[histid] = {
                                 "era": era,
                                 "channel": self.channel,
@@ -482,7 +487,9 @@ class plot():
                             continue
                         if self.channel == "et" and self.category in ["19"]:
                             continue
-                        histid = "{}-{}-{}-{}".format(era,self.channel,self.category,subprocess)
+                        histid = "{}-{}-{}-{}".format(era, self.channel,
+                                                      self.category,
+                                                      subprocess)
                         hists[histid] = {
                             "era": era,
                             "channel": self.channel,
@@ -492,7 +499,8 @@ class plot():
         else:
             for i, subprocess in enumerate(
                     self.signal_processes[process]["histnames"]):
-                histid = "{}-{}-{}-{}".format(self.era,self.channel,self.category,subprocess)
+                histid = "{}-{}-{}-{}".format(self.era, self.channel,
+                                              self.category, subprocess)
                 hists[histid] = {
                     "era": self.era,
                     "channel": self.channel,
@@ -500,8 +508,9 @@ class plot():
                     "process": subprocess
                 }
         for histid in hists:
-            hists[histid]["rootfile"] = self.rootfile.get(hists[histid]["era"],  hists[histid]["channel"],
-                                             hists[histid]["category"], hists[histid]["process"])
+            hists[histid]["rootfile"] = self.rootfile.get(
+                hists[histid]["era"], hists[histid]["channel"],
+                hists[histid]["category"], hists[histid]["process"])
             if not isinstance(hists[histid]["rootfile"], ROOT.TH1):
                 hists.rm(histid)
         # if no files found nothing to do here
@@ -509,10 +518,10 @@ class plot():
             logger.warning(
                 "No histograms for {} found --> skipping".format(process))
         else:
-            # rebin 
+            # rebin
             best_binning = set([
-                hists[min(hists.keys())]["rootfile"].GetBinLowEdge(i)
-                for i in xrange(hists[min(hists.keys())]["rootfile"].GetNbinsX() + 2)
+                hists[min(hists.keys())]["rootfile"].GetBinLowEdge(i) for i in
+                xrange(hists[min(hists.keys())]["rootfile"].GetNbinsX() + 2)
             ])
             logger.debug("Initial binning: {}".format(best_binning))
             for histid in hists:
@@ -533,7 +542,8 @@ class plot():
             for histid in hists:
                 hists[histid]["rootfile"] = hists[histid]["rootfile"].Rebin(
                     len(binning) - 1,
-                    "{}_rebinned".format(hists[histid]["rootfile"].GetName()), binning)
+                    "{}_rebinned".format(hists[histid]["rootfile"].GetName()),
+                    binning)
                 logger.debug("Rebinned: {}".format(hists[histid]["rootfile"]))
                 logger.warning("found {} histograms".format(len(hists.keys())))
             basehist = hists[min(hists.keys())]["rootfile"]
@@ -550,8 +560,8 @@ class plot():
                     "{}".format(process),
                     "hist",
                     fillcolor=self.signal_processes[process]["style"])
-                self.painter.subplot(index).add_hist(basehist,
-                                                 "{}_ratio".format(process))
+                self.painter.subplot(index).add_hist(
+                    basehist, "{}_ratio".format(process))
                 self.painter.subplot(index).setGraphStyle(
                     "{}_ratio".format(process),
                     "hist",
@@ -559,10 +569,10 @@ class plot():
                     linewidth=2)
             else:
                 self.painter.subplot(index).setGraphStyle(
-                "{}".format(process),
-                "hist",
-                linecolor=self.signal_processes[process]["style"],
-                linewidth=2)
+                    "{}".format(process),
+                    "hist",
+                    linecolor=self.signal_processes[process]["style"],
+                    linewidth=2)
 
     def add_background_hist(self, process, index):
         hists = {}
@@ -574,7 +584,8 @@ class plot():
                         for k, channel in enumerate(["et", "mt", "tt", "em"]):
                             for h, category in enumerate(["105", "106",
                                                           "107"]):
-                                histid = "{}-{}-{}-{}".format(era, channel, category, subprocess)
+                                histid = "{}-{}-{}-{}".format(
+                                    era, channel, category, subprocess)
                                 hists[histid] = {
                                     "era": era,
                                     "channel": channel,
@@ -598,22 +609,23 @@ class plot():
                                 continue
                             if channel == "et" and self.category in ["19"]:
                                 continue
-                            histid = "{}-{}-{}-{}".format(era, channel, self.category, subprocess)
+                            histid = "{}-{}-{}-{}".format(
+                                era, channel, self.category, subprocess)
                             hists[histid] = {
                                 "era": era,
                                 "channel": channel,
                                 "category": self.category,
                                 "process": subprocess
                             }
-            
+
         elif self.era == "all" and self.channel != "cmb":
             if self.category == "111":
                 for i, subprocess in enumerate(
                         self.background_processes[process]["histnames"]):
                     for j, era in enumerate(["2016", "2017", "2018"]):
-                        for h, category in enumerate(["105", "106",
-                                                        "107"]):
-                            histid = "{}-{}-{}-{}".format(era, self.channel, category, subprocess)
+                        for h, category in enumerate(["105", "106", "107"]):
+                            histid = "{}-{}-{}-{}".format(
+                                era, self.channel, category, subprocess)
                             hists[histid] = {
                                 "era": era,
                                 "channel": self.channel,
@@ -636,7 +648,9 @@ class plot():
                             continue
                         if self.channel == "et" and self.category in ["19"]:
                             continue
-                        histid = "{}-{}-{}-{}".format(era, self.channel, self.category, subprocess)
+                        histid = "{}-{}-{}-{}".format(era, self.channel,
+                                                      self.category,
+                                                      subprocess)
                         hists[histid] = {
                             "era": era,
                             "channel": self.channel,
@@ -646,7 +660,8 @@ class plot():
         else:
             for i, subprocess in enumerate(
                     self.background_processes[process]["histnames"]):
-                histid = "{}-{}-{}-{}".format(self.era, self.channel, self.category, subprocess)
+                histid = "{}-{}-{}-{}".format(self.era, self.channel,
+                                              self.category, subprocess)
                 hists[histid] = {
                     "era": self.era,
                     "channel": self.channel,
@@ -654,8 +669,9 @@ class plot():
                     "process": subprocess
                 }
         for histid in hists:
-            hists[histid]["rootfile"] = self.rootfile.get(hists[histid]["era"],  hists[histid]["channel"],
-                                             hists[histid]["category"], hists[histid]["process"])
+            hists[histid]["rootfile"] = self.rootfile.get(
+                hists[histid]["era"], hists[histid]["channel"],
+                hists[histid]["category"], hists[histid]["process"])
             if not isinstance(hists[histid]["rootfile"], ROOT.TH1):
                 hists.rm(histid)
         if len(hists.keys()) == 0:
@@ -666,8 +682,8 @@ class plot():
             logger.warning("found {} histograms".format(len(hists.keys())))
             # now the the smallest binning of all histograms
             best_binning = set([
-                hists[min(hists.keys())]["rootfile"].GetBinLowEdge(i)
-                for i in xrange(hists[min(hists.keys())]["rootfile"].GetNbinsX() + 2)
+                hists[min(hists.keys())]["rootfile"].GetBinLowEdge(i) for i in
+                xrange(hists[min(hists.keys())]["rootfile"].GetNbinsX() + 2)
             ])
             for histid in hists:
                 test_binning = set([
@@ -687,7 +703,8 @@ class plot():
                 logger.debug("Rebinning: {}".format(hists[histid]["rootfile"]))
                 hists[histid]["rootfile"] = hists[histid]["rootfile"].Rebin(
                     len(binning) - 1,
-                    "{}_rebinned".format(hists[histid]["rootfile"].GetName()), binning)
+                    "{}_rebinned".format(hists[histid]["rootfile"].GetName()),
+                    binning)
             basehist = hists[min(hists.keys())]["rootfile"]
             if len(hists.keys()) >= 2:
                 for hist in hists:
@@ -709,7 +726,8 @@ class plot():
                 for j, era in enumerate(["2016", "2017", "2018"]):
                     for k, channel in enumerate(["et", "mt", "tt", "em"]):
                         for h, category in enumerate(["105", "106", "107"]):
-                            histid = "{}-{}-{}-{}".format(era,channel,category)
+                            histid = "{}-{}-{}-{}".format(
+                                era, channel, category)
                             hists_data[histid] = {
                                 "era": era,
                                 "channel": channel,
@@ -735,10 +753,10 @@ class plot():
                             continue
                         histid = "{}-{}-{}".format(era, channel, self.category)
                         hists_data[histid] = {
-                                "era": era,
-                                "channel": channel,
-                                "category": self.category
-                            }
+                            "era": era,
+                            "channel": channel,
+                            "category": self.category
+                        }
                         hists_bkg[histid] = {
                             "era": era,
                             "channel": channel,
@@ -750,10 +768,10 @@ class plot():
                     for h, category in enumerate(["105", "106", "107"]):
                         histid = "{}-{}-{}".format(era, self.channel, category)
                         hists_data[histid] = {
-                                "era": era,
-                                "channel": self.channel,
-                                "category": category
-                            }
+                            "era": era,
+                            "channel": self.channel,
+                            "category": category
+                        }
                         hists_bkg[histid] = {
                             "era": era,
                             "channel": self.channel,
@@ -771,12 +789,13 @@ class plot():
                         continue
                     if self.channel == "et" and self.category in ["19"]:
                         continue
-                    histid = "{}-{}-{}".format(era, self.channel, self.category)
+                    histid = "{}-{}-{}".format(era, self.channel,
+                                               self.category)
                     hists_data[histid] = {
-                                "era": era,
-                                "channel": self.channel,
-                                "category": self.category
-                            }
+                        "era": era,
+                        "channel": self.channel,
+                        "category": self.category
+                    }
                     hists_bkg[histid] = {
                         "era": era,
                         "channel": self.channel,
@@ -795,14 +814,17 @@ class plot():
                 "category": self.category
             }
         for histid in hists_data:
-            hists_data[histid]["rootfile"] = self.rootfile.get(hists_data[histid]["era"],  hists_data[histid]["channel"],
-                                             hists_data[histid]["category"], "data_obs")
-            hists_bkg[histid]["rootfile"] = self.rootfile.get(hists_bkg[histid]["era"],  hists_bkg[histid]["channel"],
-                                             hists_bkg[histid]["category"], "TotalBkg")
+            hists_data[histid]["rootfile"] = self.rootfile.get(
+                hists_data[histid]["era"], hists_data[histid]["channel"],
+                hists_data[histid]["category"], "data_obs")
+            hists_bkg[histid]["rootfile"] = self.rootfile.get(
+                hists_bkg[histid]["era"], hists_bkg[histid]["channel"],
+                hists_bkg[histid]["category"], "TotalBkg")
         # now the the smallest binning of all histograms
         best_binning = set([
-            hists_data[min(hists_data.keys())]["rootfile"].GetBinLowEdge(i) for i in
-            xrange(hists_data[min(hists_data.keys())]["rootfile"].GetNbinsX() + 2)
+            hists_data[min(hists_data.keys())]["rootfile"].GetBinLowEdge(i)
+            for i in xrange(
+                hists_data[min(hists_data.keys())]["rootfile"].GetNbinsX() + 2)
         ])
         for histid in hists_data:
             test_binning = set([
@@ -810,8 +832,7 @@ class plot():
                 for i in xrange(hists_data[histid]["rootfile"].GetNbinsX() + 2)
             ])
             best_binning = test_binning.intersection(best_binning)
-        binning = np.array(
-            sorted([x for x in list(best_binning) if x >= 0]))
+        binning = np.array(sorted([x for x in list(best_binning) if x >= 0]))
         if self.category == 1:
             np.append(binning, 28.0)
         else:
@@ -819,16 +840,18 @@ class plot():
         logger.debug("Final binning: {}".format(binning))
         # apply binning to all hists
         for histid in hists_data:
-            logger.debug("Rebinning: {}".format(hists_data[histid]["rootfile"]))
-            hists_data[histid]["rootfile"] = hists_data[histid]["rootfile"].Rebin(
-                len(binning) - 1,
-                "{}_rebinned".format(hists_data[histid]["rootfile"].GetName()),
-                binning)
+            logger.debug("Rebinning: {}".format(
+                hists_data[histid]["rootfile"]))
+            hists_data[histid]["rootfile"] = hists_data[histid][
+                "rootfile"].Rebin(
+                    len(binning) - 1, "{}_rebinned".format(
+                        hists_data[histid]["rootfile"].GetName()), binning)
         for histid in hists_bkg:
             logger.debug("Rebinning: {}".format(hists_bkg[histid]["rootfile"]))
-            hists_bkg[histid]["rootfile"] = hists_bkg[histid]["rootfile"].Rebin(
-                len(binning) - 1,
-                "{}_rebinned".format(hists_bkg[histid]["rootfile"].GetName()), binning)
+            hists_bkg[histid]["rootfile"] = hists_bkg[histid][
+                "rootfile"].Rebin(
+                    len(binning) - 1, "{}_rebinned".format(
+                        hists_bkg[histid]["rootfile"].GetName()), binning)
         data_obs = hists_data[min(hists_data.keys())]["rootfile"]
         total_bkg = hists_bkg[min(hists_bkg.keys())]["rootfile"]
         for hist in hists_data:
@@ -840,7 +863,6 @@ class plot():
                 continue
             total_bkg.Add(hists_bkg[hist]["rootfile"])
 
-        
         if self.plotConfig.settings["blind_data"]:
             self.blind_data(data_obs)
         self.painter.add_hist(data_obs, "data_obs")
@@ -911,12 +933,14 @@ class plot():
             self.painter.subplot(1).setYlims(
                 0.1, self.plotConfig.split_dict[self.channel])
             self.painter.subplot(1).setLogY()
-        
+
         if self.category == "1":
             self.painter.subplot(0).setYlims(
-            self.plotConfig.split_dict[self.channel],
-            max(1.5 * self.painter.subplot(0).get_hist("data_obs").GetMaximum(),
-                self.plotConfig.split_dict[self.channel] * 1.5))
+                self.plotConfig.split_dict[self.channel],
+                max(
+                    1.5 *
+                    self.painter.subplot(0).get_hist("data_obs").GetMaximum(),
+                    self.plotConfig.split_dict[self.channel] * 1.5))
             # self.painter.subplot(0).setLogY()
             # self.painter.subplot(0).setYlims(1, 4500000000)
             self.painter.subplot(1).setXlims(0.0, 28.0)
@@ -965,7 +989,7 @@ class plot():
                 self.painter.subplot(0).setLogY()
                 self.painter.subplot(1).setYlims(0.45, 2.55)
                 self.painter.subplot(0).setYlims(1, 4500000000)
-    
+
     def set_axis_labels(self):
         if not self.linear:
             self.painter.subplot(1).setYlabel(
@@ -989,29 +1013,37 @@ class plot():
     def rescale_upper_plot(self):
         scaling = {}
         signalsteps = [7, 12, 16, 19, 21, 28]
-        for i,edge in enumerate(signalsteps[:-1]):
-            scaling[i] = {
-                "interval" :[edge, signalsteps[i+1]],
-                "sf" :1.0 }
+        for i, edge in enumerate(signalsteps[:-1]):
+            scaling[i] = {"interval": [edge, signalsteps[i + 1]], "sf": 1.0}
         # first calculate the sf for the different steps
-        maxheight = self.painter.subplot(0).get_hist("data_obs").GetMaximum()*0.4
+        maxheight = self.painter.subplot(0).get_hist(
+            "data_obs").GetMaximum() * 0.4
         k = 0
         for interval in scaling:
             content = []
-            for i in xrange(self.painter.subplot(0).get_hist("data_obs").GetNbinsX() + 1):
-                binedge = self.painter.subplot(0).get_hist("data_obs").GetBinLowEdge(i)
-                if binedge >= scaling[interval]["interval"][0] and binedge < scaling[interval]["interval"][1]:
-                    content.append(self.painter.subplot(0).get_hist("data_obs").GetBinContent(i))
+            for i in xrange(
+                    self.painter.subplot(0).get_hist("data_obs").GetNbinsX() +
+                    1):
+                binedge = self.painter.subplot(0).get_hist(
+                    "data_obs").GetBinLowEdge(i)
+                if binedge >= scaling[interval]["interval"][
+                        0] and binedge < scaling[interval]["interval"][1]:
+                    content.append(
+                        self.painter.subplot(0).get_hist(
+                            "data_obs").GetBinContent(i))
             sf = round(maxheight / max(content), 0)
             if sf > 5:
-                sf = 5 * round((maxheight / max(content))/5)
+                sf = 5 * round((maxheight / max(content)) / 5)
             scaling[interval]["sf"] = sf
-        
+
         # now set the labels of the scalefactor
         # the plot starts at ~3/28 and ends at ~27/28
-        for i,interval in enumerate(scaling):
-            step = 0.03042 * scaling[interval]["interval"][0] + 0.1211 
-            self.painter.DrawText(step, 0.72,"x {}".format(int(scaling[interval]["sf"])), textsize=0.025)
+        for i, interval in enumerate(scaling):
+            step = 0.03042 * scaling[interval]["interval"][0] + 0.1211
+            self.painter.DrawText(step,
+                                  0.72,
+                                  "x {}".format(int(scaling[interval]["sf"])),
+                                  textsize=0.025)
 
         for hist_name in self.painter.subplot(0)._hists.keys():
             histogram = self.painter.subplot(0).get_hist(hist_name)
@@ -1021,10 +1053,10 @@ class plot():
                 binedge = histogram.GetBinLowEdge(i)
                 sf = 1.0
                 for interval in scaling:
-                     if binedge >= scaling[interval]["interval"][0]:
+                    if binedge >= scaling[interval]["interval"][0]:
                         sf = scaling[interval]["sf"]
-                histogram.SetBinContent(i, bin*sf)
-                histogram.SetBinError(i, binerror*sf)
+                histogram.SetBinContent(i, bin * sf)
+                histogram.SetBinError(i, binerror * sf)
 
     def draw_subplots(self):
         procs_to_draw_0 = ["stack", "total_bkg", "data_obs"]
@@ -1038,11 +1070,13 @@ class plot():
 
     def set_upper_legend(self):
         height = 0.15
-        if not self.isSignal and self.plotConfig.settings["combine_backgrounds"]:
+        if not self.isSignal and self.plotConfig.settings[
+                "combine_backgrounds"]:
             height = 0.10
         self.painter.add_legend(width=0.62, height=height)
         # set background labels
-        for process in collections.OrderedDict(reversed(list(self.background_processes.items()))):
+        for process in collections.OrderedDict(
+                reversed(list(self.background_processes.items()))):
             try:
                 self.painter.legend(0).add_entry(
                     0, process, styles.legend_label_dict[process.replace(
@@ -1051,15 +1085,13 @@ class plot():
                 pass
         # set signal
         for signal in self.signal_processes:
-            if self.category == "1" and signal=="inclusive":
+            if self.category == "1" and signal == "inclusive":
                 self.painter.legend(0).add_entry(
-                    0, signal,
-                    self.signal_processes[signal]["label"], 'f')
+                    0, signal, self.signal_processes[signal]["label"], 'f')
             else:
                 try:
                     self.painter.legend(0).add_entry(
-                        0, signal,
-                        self.signal_processes[signal]["label"], 'l')
+                        0, signal, self.signal_processes[signal]["label"], 'l')
                 except BaseException:
                     pass
         self.painter.legend(0).add_entry(0, "total_bkg", "Bkg. unc.", 'f')
@@ -1098,10 +1130,8 @@ class plot():
                                 width=width,
                                 height=height)
         self.painter.legend(1).setNColumns(ncol)
-        self.painter.legend(1).add_entry(1, "data_obs", "Observed",
-                                                'PEL')
-        self.painter.legend(1).add_entry(1, "total_bkg", "Bkg. unc.",
-                                                'f')
+        self.painter.legend(1).add_entry(1, "data_obs", "Observed", 'PEL')
+        self.painter.legend(1).add_entry(1, "total_bkg", "Bkg. unc.", 'f')
         if self.isSignal and self.plotConfig.settings["exact_signals"]:
             main_signal_label = ""
             if len(
@@ -1116,27 +1146,23 @@ class plot():
                     mu_dict[self.category])
             else:
                 main_signal_label = "#splitline{%s}{(#mu=%s)}" % (
-                    get_signal_for_category(self.category)["displayname"],
-                    mu_dict[self.category])
+                    get_signal_for_category(
+                        self.category)["displayname"], mu_dict[self.category])
+            self.painter.legend(1).add_entry(1, "main_signal",
+                                             main_signal_label, 'l')
             self.painter.legend(1).add_entry(
-                1,"main_signal", main_signal_label, 'l')
-            self.painter.legend(1).add_entry(
-                1, "ggH_rest_signal", 
-                "gg#rightarrowH {}".format(
+                1, "ggH_rest_signal", "gg#rightarrowH {}".format(
                     " (other)" if "ggH" in get_signal_for_category(
                         self.category)["displayname"] else ""), 'l')
             self.painter.legend(1).add_entry(
-                1, "qqH_rest_signal",
-                "qq#rightarrowH {}".format(
+                1, "qqH_rest_signal", "qq#rightarrowH {}".format(
                     " (other)" if "qqH" in get_signal_for_category(
                         self.category)["displayname"] else ""), 'l')
         elif self.isSignal:
             self.painter.legend(1).add_entry(
-                1, "ggH",
-                "{}".format(signal_labels["ggH"]["label"]), 'l')
+                1, "ggH", "{}".format(signal_labels["ggH"]["label"]), 'l')
             self.painter.legend(1).add_entry(
-                1, "qqH",
-                "{}".format(signal_labels["qqH"]["label"]), 'l')
+                1, "qqH", "{}".format(signal_labels["qqH"]["label"]), 'l')
             self.painter.legend(1).add_entry(
                 1, "inclusive_ratio",
                 "{}".format(signal_labels["inclusive"]["label"]), 'l')
@@ -1147,24 +1173,54 @@ class plot():
         # add vertical lines to highlight the qqH binning
         if self.category == "1":
             # line in the ratio
-            self.painter.add_line(reference_subplot=1, xmin=0, ymin=1, xmax=28, ymax=1, color=1, linestyle=7)
-            height =  max(self.painter.subplot(0).get_hist("data_obs").GetMaximum(),
+            self.painter.add_line(reference_subplot=1,
+                                  xmin=0,
+                                  ymin=1,
+                                  xmax=28,
+                                  ymax=1,
+                                  color=1,
+                                  linestyle=7)
+            height = max(
+                self.painter.subplot(0).get_hist("data_obs").GetMaximum(),
                 self.plotConfig.split_dict[self.channel])
-            subplot_min = self.painter.subplot(1).get_hist("total_bkg").GetMinimum()
-            subplot_max = self.painter.subplot(1).get_hist("total_bkg").GetMaximum()
+            subplot_min = self.painter.subplot(1).get_hist(
+                "total_bkg").GetMinimum()
+            subplot_max = self.painter.subplot(1).get_hist(
+                "total_bkg").GetMaximum()
             if self.channel == "cmb" and self.era == "all":
                 subplot_min = 0.95
                 subplot_max = 1.65
-            
+
             signalsteps = [7, 12, 16, 19, 21]
-            for i,edge in enumerate(signalsteps):
-                self.painter.add_line(0, xmin=edge, ymin=0, xmax=edge, ymax=height, color=16, linestyle=7, linewidth=2)
-                self.painter.add_line(1, xmin=edge, ymin=round(subplot_min, 3), xmax=edge, ymax=0.7*round(subplot_max, 3),color=16, linestyle=7, linewidth=2)
+            for i, edge in enumerate(signalsteps):
+                self.painter.add_line(0,
+                                      xmin=edge,
+                                      ymin=0,
+                                      xmax=edge,
+                                      ymax=height,
+                                      color=16,
+                                      linestyle=7,
+                                      linewidth=2)
+                self.painter.add_line(1,
+                                      xmin=edge,
+                                      ymin=round(subplot_min, 3),
+                                      xmax=edge,
+                                      ymax=0.7 * round(subplot_max, 3),
+                                      color=16,
+                                      linestyle=7,
+                                      linewidth=2)
         else:
             # plot the 1 line in the ratio all other plots
-            self.painter.add_line(reference_subplot=1, xmin=0, ymin=1, xmax=1, ymax=1, color=1, linestyle=7)
+            self.painter.add_line(reference_subplot=1,
+                                  xmin=0,
+                                  ymin=1,
+                                  xmax=1,
+                                  ymax=1,
+                                  color=1,
+                                  linestyle=7)
         for i in xrange(len(self.painter._lines)):
             self.painter.line(i).Draw()
+
 
 class plotConfigurator():
     def __init__(self, tag, channels, era, inputfile):
@@ -1365,7 +1421,9 @@ class plotConfigurator():
                     single_plot.add_background(
                         "jetFakesCMB", styles.legend_label_dict["jetFakesCMB"],
                         styles.color_dict["QCD"], ["QCD", "jetFakes"])
-                    single_plot.add_background("EMB",styles.legend_label_dict["EMBCMB"], styles.color_dict["EMB"],["EMB"])
+                    single_plot.add_background(
+                        "EMB", styles.legend_label_dict["EMBCMB"],
+                        styles.color_dict["EMB"], ["EMB"])
                 else:
                     for process in bkg_processes:
                         single_plot.add_background(
@@ -1430,16 +1488,20 @@ class plotConfigurator():
                                     category)["displayname"] else ""),
                             styles.color_dict["qqH"], merge_signals_qqH, False)
                     else:
-                        single_plot.mainsignal.extend(["ggH_htt", "qqH_htt", "inclusive"])
-                        single_plot.add_signal(
-                            "ggH", signal_labels["ggH"]["label"],
-                            styles.color_dict["ggH"], ["ggH_htt"], True)
-                        single_plot.add_signal(
-                            "qqH", signal_labels["qqH"]["label"],
-                            styles.color_dict["qqH"], ["qqH_htt"], True)
+                        single_plot.mainsignal.extend(
+                            ["ggH_htt", "qqH_htt", "inclusive"])
+                        single_plot.add_signal("ggH",
+                                               signal_labels["ggH"]["label"],
+                                               styles.color_dict["ggH"],
+                                               ["ggH_htt"], True)
+                        single_plot.add_signal("qqH",
+                                               signal_labels["qqH"]["label"],
+                                               styles.color_dict["qqH"],
+                                               ["qqH_htt"], True)
                         single_plot.add_signal(
                             "inclusive", signal_labels["inclusive"]["label"],
-                            styles.color_dict["inclusive"], ["qqH_htt", "ggH_htt"], True)
+                            styles.color_dict["inclusive"],
+                            ["qqH_htt", "ggH_htt"], True)
                 self.plots.append(single_plot)
 
 
@@ -1530,7 +1592,7 @@ def main(args):
         ##################
         # plot line in top plot
         ##################
-        
+
         plot.draw_lines()
 
         ##################
@@ -1555,7 +1617,7 @@ def main(args):
                         get_label_for_category(category, plotConfig.tag)),
             begin_left=None,
             textsize=0.026)
-        
+
         # save plot
         postfix = "prefit" if "prefit" in plotConfig.inputfile else "postfit" if "postfit" in plotConfig.inputfile else "undefined"
         plot.painter.save(
