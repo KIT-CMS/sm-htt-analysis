@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from collections import OrderedDict
 import Dumbledraw.dumbledraw as dd
 import Dumbledraw.rootfile_parser as rootfile_parser
 import Dumbledraw.styles as styles
@@ -997,8 +996,8 @@ class plot():
         if self.plotConfig.tag == "stxs_stage0" and self.category == "1":
             self.painter.subplot(1).setXlabel("")
             self.painter.subplot(1).setXlabel("2D discriminator bin index")
-            #self.painter.subplot(1).setNXdivisions(28, 0)
-            #self.painter.subplot(1).changeXLabels(["Bin {}".format(x) for x in xrange(29)])
+            # self.painter.subplot(1).setNXdivisions(28, 0)
+            # self.painter.subplot(1).changeXLabels(["Bin {}".format(x) for x in xrange(29)])
         else:
             self.painter.subplot(1).setXlabel("NN output")
         if self.plotConfig.settings["normalize_by_bin_width"]:
@@ -1007,7 +1006,7 @@ class plot():
             self.painter.subplot(0).setYlabel("N_{events}")
 
         self.painter.subplot(1).setYlabel("Ratio")
-        #self.painter.scaleYLabelSize(0.6)
+        # self.painter.scaleYLabelSize(0.6)
         self.painter.scaleYTitleOffset(1.1)
 
     def rescale_upper_plot(self):
