@@ -278,8 +278,8 @@ if __name__ == "__main__":
     texgrouplabel.SetTextFont(42)
     texgrouplabel.SetTextAlign(23)
     texgrouplabel.SetTextSize(0.04)
-    texgrouplabel.DrawLatex(3.5,-2.0,"gg#rightarrowH,bbH")
-    texgrouplabel.DrawLatex(9.0,-2.0,"VBF+V(qq)H")
+    texgrouplabel.DrawLatex(4.0,-2.0,"gg#rightarrowH,bbH")
+    texgrouplabel.DrawLatex(9.5,-2.0,"VBF+V(qq)H")
     texgrouplabel.SetTextAngle(90)
     texgrouplabel.DrawLatex(-5.0,3.5,"gg#rightarrowH,bbH")
     texgrouplabel.DrawLatex(-5.0,9.0,"VBF+V(qq)H")
@@ -290,6 +290,20 @@ if __name__ == "__main__":
     linev = ROOT.TLine(8.0,0.0,8.0,11.0)
     linev.SetLineWidth(2)
     linev.Draw()
+
+    linex1=[]
+    linex2=[]
+    for i in range(num_pois-2):
+        linex1.append(ROOT.TArrow(1.5+i,0.5+i,1.15+i,0.5+i,0.01,"|>"))
+        linex1[-1].SetLineWidth(2)
+        linex1[-1].SetLineColor(14)
+       	linex1[-1].SetFillColor(14)
+        linex1[-1].Draw()
+       	linex2.append(ROOT.TArrow(1.5+i,0.5+i,1.5+i,0.85+i,0.01,"|>"))
+       	linex2[-1].SetLineWidth(2)
+       	linex2[-1].SetLineColor(14)
+        linex2[-1].SetFillColor(14)
+       	linex2[-1].Draw()
 
     c.Update()
 
