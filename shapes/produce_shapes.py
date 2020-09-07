@@ -1473,7 +1473,75 @@ def main(args):
             }:
                 for chname_ in selectedChannels:
                     variationsToAdd[chname_][process_nick].append(variation_)
-
+        # STXS Acceptance Uncertainties
+        scheme_ggH = {
+            "ggH_scale_0jet": ["ggH_GG2H_0J_PTH_0_10125", "ggH_GG2H_0J_PTH_GT10125"],
+            "ggH_scale_1jet_lowpt": ["ggH_GG2H_1J_PTH_0_60125", "ggH_GG2H_1J_PTH_60_120125", "ggH_GG2H_1J_PTH_120_200125"],
+            "ggH_scale_2jet_lowpt": ["ggH_GG2H_GE2J_MJJ_0_350_PTH_0_60125", "ggH_GG2H_GE2J_MJJ_0_350_PTH_60_120125", "ggH_GG2H_GE2J_MJJ_0_350_PTH_120_200125"],
+            "ggH_scale_highpt": ["ggH_GG2H_PTH_200_300125", "ggH_GG2H_PTH_300_450125"],
+            "ggH_scale_very_highpt": ["ggH_GG2H_PTH_450_650125", "ggH_GG2H_PTH_GT650125"],
+            "ggH_scale_vbf": ["ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25125", "ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25125" , "ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25125", "ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25125"]
+        }
+        scheme_qqH = {
+            "vbf_scale_0jet": ["qqH_QQ2HQQ_0J125"],
+            "vbf_scale_1jet": ["qqH_QQ2HQQ_1J125"],
+            "vbf_scale_lowmjj": ["qqH_QQ2HQQ_GE2J_MJJ_0_60125", "qqH_QQ2HQQ_GE2J_MJJ_60_120125", "qqH_QQ2HQQ_GE2J_MJJ_120_350125"],
+            "vbf_scale_highmjj_lowpt": ["qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25125", "qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25125", "qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25125", "qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25125"],
+            "vbf_scale_highmjj_highpt": ["qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200125"]
+        }
+        stxs_acceptance_variations_ggH = []
+        for parameter in scheme_ggH:
+            weightup = ""
+            weightdown = ""
+            weightname = "stxs_acceptance_uncertainty_{}".format(parameter)
+            for i,signal in enumerate(scheme_ggH[parameter]):
+                if i > 0:
+                    weightup += "*"
+                    weightdown += "*"
+                weightup += ("(1.0+(({weight}-1.0)*({cut})))".format(weight="muR2p0_muF2p0_weight*htxs_accSF_muR2p0_muF2p0", cut=ggHEstimation.htxs_dict[signal]))
+                weightdown += ("(1.0+(({weight}-1.0)*({cut})))".format(weight="muR0p5_muF0p5_weight*htxs_accSF_muR0p5_muF0p5", cut=ggHEstimation.htxs_dict[signal]))
+            print weightup
+            stxs_acceptance_variations_ggH.append(
+                AddWeight(
+                    "{paramter}".format(paramter=parameter),
+                    weightname, Weight(weightup, weightname), "Up"))
+            stxs_acceptance_variations_ggH.append(
+                AddWeight(
+                    "{paramter}".format(paramter=parameter),
+                    weightname, Weight(weightdown, weightname), "Down"))
+        for variation_ in stxs_acceptance_variations_ggH:
+            for chname_, _ in selectedChannelsTuples:
+                for process_nick in selectedProcesses & {
+                        nick for nick in signal_nicks
+                        if "ggH" in nick
+                }:
+                    variationsToAdd[chname_][process_nick].append(variation_)
+        stxs_acceptance_variations_qqH = []
+        for parameter in scheme_qqH:
+            weightup = ""
+            weightdown = ""
+            weightname = "stxs_acceptance_uncertainty_{}".format(parameter)
+            for i,signal in enumerate(scheme_qqH[parameter]):
+                if i > 0:
+                    weightup += "*"
+                    weightdown += "*"
+                weightup += ("(1.0+(({weight}-1.0)*({cut})))".format(weight="muR2p0_muF2p0_weight*htxs_accSF_muR2p0_muF2p0", cut=qqHEstimation.htxs_dict[signal]))
+                weightdown += ("(1.0+(({weight}-1.0)*({cut})))".format(weight="muR0p5_muF0p5_weight*htxs_accSF_muR0p5_muF0p5", cut=qqHEstimation.htxs_dict[signal]))
+            stxs_acceptance_variations_qqH.append(
+                AddWeight(
+                    "{paramter}".format(paramter=parameter),
+                    weightname, Weight(weightup, weightname), "Up"))
+            stxs_acceptance_variations_qqH.append(
+                AddWeight(
+                    "{paramter}".format(paramter=parameter),
+                    weightname, Weight(weightdown, weightname), "Down"))
+        for variation_ in stxs_acceptance_variations_qqH:
+            for chname_, _ in selectedChannelsTuples:
+                for process_nick in selectedProcesses & {
+                        nick for nick in signal_nicks
+                        if "qqH" in nick
+                }:
+                    variationsToAdd[chname_][process_nick].append(variation_)
 
 
     # add all variation from the systematics
