@@ -196,6 +196,25 @@ def plot_shapes(tag, mode, shapefile, channels, eras):
                 break
         if (returncode != 0):
             break
+        returncode = os.system(
+            "./plotting/plot_shapes_combined.py -i {FILE} -o {PLOTDIR} \
+            -c {CHANNEL} -e all --categories {CATEGORIES} \
+            --fake-factor --embedding --normalize-by-bin-width \
+            -l --train-ff True --train-emb True {ADDITIONALS}".format(
+                FILE=shapefile,
+                CATEGORIES=categories,
+                CHANNEL=channel,
+                PLOTDIR=plotdir,
+                ADDITIONALS=additionals + " --combine-backgrounds"))
+    returncode = os.system(
+                "./plotting/plot_shapes_combined.py -i {FILE} -o {PLOTDIR} \
+                -c cmb -e all --categories {CATEGORIES} \
+                --fake-factor --embedding --normalize-by-bin-width \
+                -l --train-ff True --train-emb True {ADDITIONALS}".format(
+                    FILE=shapefile,
+                    CATEGORIES=categories,
+                    PLOTDIR=plotdir,
+                    ADDITIONALS=additionals + " --combine-backgrounds"))
 
 
 def main(args):
