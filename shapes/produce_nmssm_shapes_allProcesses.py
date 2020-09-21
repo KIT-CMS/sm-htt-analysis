@@ -199,7 +199,7 @@ def main(args):
             "tt": TTSM2017(),
             "em": EMSM2017()
         }
-        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, NMSSMEstimation
+        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, NMSSMEstimation, VHEstimation
 
         from shape_producer.era import Run2017
         era = Run2017(args.datasets)
@@ -211,7 +211,7 @@ def main(args):
             "tt": TTSM2018(),
             "em": EMSM2018()
         }
-        from shape_producer.estimation_methods_2018 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, NMSSMEstimation
+        from shape_producer.estimation_methods_2018 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, NMSSMEstimation, VHEstimation
 
         from shape_producer.era import Run2018
         era = Run2018(args.datasets)
@@ -273,6 +273,13 @@ def main(args):
         "light_mass_fine": [60, 70, 75, 80, 85, 90, 95, 100, 110, 120, 130, 150, 170, 190, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850],
     }
 
+    mass_dict = {
+        "heavy_mass": [500],
+        "light_mass_fine": [100],
+        "light_mass_coarse": [100],
+
+    }
+
     nmssm_nicks = []
     # for heavy_mass in mass_dict["heavy_mass"]:
     #     light_masses = mass_dict["light_mass_coarse"] if heavy_mass > 1001 else mass_dict["light_mass_fine"]
@@ -283,14 +290,14 @@ def main(args):
 
     ww_nicks = {"ggHWW125", "qqHWW125", "WHWW125", "ZHWW125"}
 
-    if args.gof_variable is None:
-        signal_nicks = {
-            "ttH125"} | {
-            ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict} | {
-            qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict}
-    else:
-        if args.shape_group in ["all", "sm_signals"]:
-            signal_nicks = {"ggH125", "qqH125", "ttH125"}
+    # if args.gof_variable is None:
+    #     signal_nicks = {
+    #         "ttH125"} | {
+    #         ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict} | {
+    #         qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict}
+    # else:
+    if args.shape_group in ["all", "sm_signals"]:
+        signal_nicks = {"ggH125", "qqH125", "ttH125", "VH125"}
 
 
     if args.shape_group in ["all", "backgrounds"]:  
@@ -330,6 +337,7 @@ def main(args):
                 friend_directory=friend_directory)
             for qqH_htxs in qqHEstimation.htxs_dict})
         pnameToEstD.update({"ttH125": ttHEstimation})
+        pnameToEstD.update({"VH125": VHEstimation})
 
     # Generate dict mapping processnames to processes
     processes = {}

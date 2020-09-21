@@ -19,25 +19,28 @@ ARTUS_OUTPUTS_2016="/ceph/jbechtel/nmssm/ntuples/2016/+CH+/"
 SVFit_Friends_2016="/ceph/jbechtel/nmssm/friends/2016/+CH+/SVFit/"
 FF_Friends_2016="/ceph/jbechtel/nmssm/friends/2016/+CH+/FakeFactors_nmssm/"
 HHKinFit_Friends_2016="/ceph/jbechtel/nmssm/friends/2016/+CH+/HHKinFit/"
-NNScore_Friends_2016="/ceph/jbechtel/nmssm/friends/2016/+CH+/NNScore_medium_v2/NNScore_workdir/NNScore_collected/"
+#NNScore_Friends_2016="/ceph/jbechtel/nmssm/friends/2016/+CH+/NNScore_nmssm_v5/NNScore_workdir/NNScore_collected/"
+NNScore_Friends_2016="/ceph/jbechtel/nmssm/friends/2016/+CH+/NNScore_retrain_cutonChi2/NNScore_workdir/NNScore_collected/"
 
 # Samples Run2017
 ARTUS_OUTPUTS_2017="/ceph/jbechtel/nmssm/ntuples/2017/+CH+/"
 SVFit_Friends_2017="/ceph/jbechtel/nmssm/friends/2017/+CH+/SVFit/"
 FF_Friends_2017="/ceph/jbechtel/nmssm/friends/2017/+CH+/FakeFactors_nmssm/"
-#FF_Friends_2017="/ceph/jbechtel/nmssm/friends/2017/+CH+/FakeFactors_medium_v4/FakeFactors_workdir/FakeFactors_collected/"
+#FF_Friends_2017="/ceph/jbechtel/nmssm/friends/2017/+CH+/FakeFactors_medium_v5/FakeFactors_workdir/FakeFactors_collected/"
 HHKinFit_Friends_2017="/ceph/jbechtel/nmssm/friends/2017/+CH+/HHKinFit/"
-NNScore_Friends_2017="/ceph/jbechtel/nmssm/friends/2017/+CH+/NNScore_medium_v2/NNScore_workdir/NNScore_collected/"
+#NNScore_Friends_2017="/ceph/jbechtel/nmssm/friends/2017/+CH+/NNScore_nmssm_v5/NNScore_workdir/NNScore_collected/"
+NNScore_Friends_2017="/ceph/jbechtel/nmssm/friends/2017/+CH+/NNScore_retrain_cutonChi2/NNScore_workdir/NNScore_collected/"
 
-# Samples Run2017
+# Samples Run2018
 ARTUS_OUTPUTS_2018="/ceph/jbechtel/nmssm/ntuples/2018/+CH+/"
 SVFit_Friends_2018="/ceph/jbechtel/nmssm/friends/2018/+CH+/SVFit/"
 #FF_Friends_2018="/ceph/jbechtel/nmssm/friends/2018/+CH+/FakeFactors_medium/"
+#FF_Friends_2018="/ceph/jbechtel/friend-tree-workdirs/FF_Sep20_2018_tt/FakeFactors_workdir/FakeFactors_collected/"
 FF_Friends_2018="/ceph/jbechtel/nmssm/friends/2018/+CH+/FakeFactors_nmssm/"
 #FF_Friends_2018="/ceph/jbechtel/nmssm/friends/2018/+CH+/FakeFactors_medium_v7/FakeFactors_workdir/FakeFactors_collected/"
-
 HHKinFit_Friends_2018="/ceph/jbechtel/nmssm/friends/2018/+CH+/HHKinFit/"
-NNScore_Friends_2018="/ceph/jbechtel/nmssm/friends/2018/+CH+/NNScore_medium_v2/NNScore_workdir/NNScore_collected/"
+#NNScore_Friends_2018="/ceph/jbechtel/nmssm/friends/2018/+CH+/NNScore_nmssm_v5/NNScore_workdir/NNScore_collected/"
+NNScore_Friends_2018="/ceph/jbechtel/nmssm/friends/2018/+CH+/NNScore_retrain_cutonChi2/NNScore_workdir/NNScore_collected/"
 
 
 # ERA handling

@@ -195,16 +195,16 @@ def main(args):
             }
 
             nmssm_classes = [
-                    "NMSSM_MH240to320_unboosted",
+                    "NMSSM_MH240to240_unboosted",
+                    "NMSSM_MH280to280_unboosted",
+                    "NMSSM_MH320to320_unboosted",
                     "NMSSM_MH321to500_unboosted",
                     "NMSSM_MH321to500_boosted",
                     "NMSSM_MH501to700_unboosted",
                     "NMSSM_MH501to700_boosted",
                     "NMSSM_MH701to1000_unboosted",
-                    "NMSSM_MH801to1000_boosted",
-                    "NMSSM_MH1001to1999_unboosted",
-                    "NMSSM_MH1001to1999_unboosted",
-                    "NMSSM_MH2000toinfty_boosted",
+                    "NMSSM_MH701to1000_boosted",
+                    "NMSSM_MH1001toinfty_boosted",
                 ]
 
             upper_edge = {}
@@ -223,7 +223,7 @@ def main(args):
                         if heavy_mass<=upper_edge[nmssm_class]:
                             thisclass = nmssm_class.replace("_boosted","").replace("_unboosted","")
                             break
-                    if heavy_mass-light_mass-125>=150:
+                    if (heavy_mass>1001) or (heavy_mass-light_mass-125>=150):
                         thisclass += "_boosted"
                     else:
                         thisclass += "_unboosted"
@@ -291,7 +291,8 @@ def main(args):
                 "VVL": "misc",
                 "ggH125": "misc",
                 "qqH125": "misc",
-                "ttH125": "misc"
+                "ttH125": "misc",
+		"VH125": "misc"
             })            
         ######## Check for emb vs MC
         if args.training_z_estimation_method == "emb":

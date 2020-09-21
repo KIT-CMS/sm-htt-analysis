@@ -90,7 +90,9 @@ then
     if [ "$ERA" -eq 2018 ]; then
         ERA_STRING="59.7 fb^{-1} (2018, 13 TeV)"
     fi
-
+    if [ "$ERA" = "combined" ]; then
+        ERA_STRING="137.2 fb^{-1} (13 TeV)"
+    fi
 
     if [ "$CHANNEL" == "all" ]; then
 
@@ -105,20 +107,20 @@ then
                     then
                         continue  
                     fi
-                    IN_JSON="${IN_JSON} /storage/gridka-nrg/jbechtel/gc_storage/nmssm_limits/2020_07_10/medium/${ERA}/${CHANNEL}/nmssm_${CHANNEL}_${MASS}_${MASS_H2}_cmb.json" 
-
+                    #IN_JSON="${IN_JSON} /storage/gridka-nrg/jbechtel/gc_storage/nmssm_limits/2020_09_08/mbb/${ERA}/${CHANNEL}/nmssm_combined${CHANNEL}_${MASS}_${MASS_H2}_cmb.json" 
+                    IN_JSON="${IN_JSON} /storage/gridka-nrg/jbechtel/gc_storage/nmssm_limits/2020_09_08/medium/retrain_cutonChi2/${ERA}/${CHANNEL}/nmssm_combined_${CHANNEL}_${MASS}_${MASS_H2}_cmb.json"   
+ 
                 done
 
                 python merge_json.py --input $IN_JSON --output limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json
 
                 python plot_2d_limits.py -e $ERA -c $CHANNEL -o plots/limits/${ERA}/${CHANNEL}    
 
-                compare_limits.py  limit_jsons/nmssm_${ERA}_et_${MASS}_cmb.json:exp0:Title='e#tau_{h}',LineStyle=1,LineWidth=2,LineColor=46,MarkerSize=0 limit_jsons/nmssm_${ERA}_mt_${MASS}_cmb.json:exp0:Title='#mu_{}#tau_{h}',LineStyle=1,LineWidth=2,LineColor=8,MarkerSize=0 limit_jsons/nmssm_${ERA}_tt_${MASS}_cmb.json:exp0:Title='#tau_{h}#tau_{h}',LineStyle=1,LineWidth=2,LineColor=9,MarkerSize=0 limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='e#tau_{h}+#mu_{}#tau_{h}+#tau_{h}#tau_{h}',LineStyle=1,LineWidth=2,LineColor=1,MarkerSize=0 --cms-sub "Own Work" --title-right "59.7 fb^{-1} (2016, 13 TeV)" --y-axis-min 0.001 --y-axis-max 200.0 --show exp   --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_compare_${MASS} --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 800.0  --logx  #--draw-theory 
+                compare_limits.py  limit_jsons/nmssm_${ERA}_et_${MASS}_cmb.json:exp0:Title='e#tau_{h}',LineStyle=1,LineWidth=2,LineColor=46,MarkerSize=0 limit_jsons/nmssm_${ERA}_mt_${MASS}_cmb.json:exp0:Title='#mu_{}#tau_{h}',LineStyle=1,LineWidth=2,LineColor=8,MarkerSize=0 limit_jsons/nmssm_${ERA}_tt_${MASS}_cmb.json:exp0:Title='#tau_{h}#tau_{h}',LineStyle=1,LineWidth=2,LineColor=9,MarkerSize=0 limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='e#tau_{h}+#mu_{}^{}#tau_{h}+#tau_{h}#tau_{h}',LineStyle=1,LineWidth=2,LineColor=1,MarkerSize=0 --cms-sub "Own Work" --title-right "$ERA_STRING"  --y-axis-min 0.0001 --y-axis-max 200.0 --show exp   --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_compare_${MASS} --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 800.0  --logx  #--draw-theory
 
-                #compare_limits.py  limit_jsons_final/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='tt cat',LineStyle=1,LineWidth=2,LineColor=1,MarkerSize=0 limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='no tt cat',LineStyle=1,LineWidth=2,LineColor=8,MarkerSize=0  --cms-sub "Own Work" --title-right "59.7 fb^{-1} (2016, 13 TeV)" --y-axis-min 0.001 --y-axis-max 200.0 --show exp   --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_compare_csv_${MASS} --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 800.0  --logx  #--draw-theory 
+                #compare_limits.py  ../retrain_uncorrUnc/limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='Inclusive',LineStyle=1,LineWidth=2,LineColor=46,MarkerSize=0 limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='#splitline{Remove events}{with nonconv. kin.fit}',LineStyle=1,LineWidth=2,LineColor=8,MarkerSize=0 --cms-sub "Own Work" --title-right "$ERA_STRING"  --y-axis-min 0.0001 --y-axis-max 200.0 --show exp   --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_compare_${MASS} --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 800.0  --logx  #--draw-theory 
 
-
-                plotMSSMLimits.py limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json --cms-sub "Own Work" --title-right "59.7 fb^{-1} (2016, 13 TeV)" --y-axis-min 0.001 --y-axis-max 200.0  --show exp  --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_${MASS} --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 800.0  --logx 
+                plotMSSMLimits.py limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json --cms-sub "Own Work" --title-right "$ERA_STRING" --y-axis-min 0.0001 --y-axis-max 200.0  --show exp  --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_${MASS}_cutonChi2 --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 800.0  --logx 
             else
                 IN_JSON=""
                 for MASS_H2 in 60 70 80 90 100 120 150 170 190 250 300 350 400 450 500 550 600 650 700 800 900 1000 1100 1200 1300 1400 1600 1800 2000 2200 2400 2600 2800
@@ -128,7 +130,9 @@ then
                     then
                         continue  
                     fi
-                    IN_JSON="${IN_JSON} /storage/gridka-nrg/jbechtel/gc_storage/nmssm_limits/2020_07_10/medium/${ERA}/${CHANNEL}/nmssm_${CHANNEL}_${MASS}_${MASS_H2}_cmb.json" 
+                    #IN_JSON="${IN_JSON} /storage/gridka-nrg/jbechtel/gc_storage/nmssm_limits/2020_09_08/mbb/${ERA}/${CHANNEL}/nmssm_combined${CHANNEL}_${MASS}_${MASS_H2}_cmb.json" 
+                    IN_JSON="${IN_JSON} /storage/gridka-nrg/jbechtel/gc_storage/nmssm_limits/2020_09_08/medium/retrain_cutonChi2/${ERA}/${CHANNEL}/nmssm_combined_${CHANNEL}_${MASS}_${MASS_H2}_cmb.json" 
+
 
                 done
 
@@ -136,11 +140,14 @@ then
 
                 python plot_2d_limits.py -e $ERA -c $CHANNEL -o plots/limits/${ERA}/${CHANNEL}    
 
-                compare_limits.py  limit_jsons/nmssm_${ERA}_et_${MASS}_cmb.json:exp0:Title='e#tau_{h}',LineStyle=1,LineWidth=2,LineColor=46,MarkerSize=0 limit_jsons/nmssm_${ERA}_mt_${MASS}_cmb.json:exp0:Title='#mu_{}#tau_{h}',LineStyle=1,LineWidth=2,LineColor=8,MarkerSize=0 limit_jsons/nmssm_${ERA}_tt_${MASS}_cmb.json:exp0:Title='#tau_{h}#tau_{h}',LineStyle=1,LineWidth=2,LineColor=9,MarkerSize=0 limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='e#tau_{h}+#mu_{}#tau_{h}+#tau_{h}#tau_{h}',LineStyle=1,LineWidth=2,LineColor=1,MarkerSize=0 --cms-sub "Own Work" --title-right "59.7 fb^{-1} (2016, 13 TeV)" --y-axis-min 0.001 --y-axis-max 200.0 --show exp   --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_compare_${MASS} --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 2800.0  --logx  #--draw-theory 
+                compare_limits.py  limit_jsons/nmssm_${ERA}_et_${MASS}_cmb.json:exp0:Title='e#tau_{h}',LineStyle=1,LineWidth=2,LineColor=46,MarkerSize=0 limit_jsons/nmssm_${ERA}_mt_${MASS}_cmb.json:exp0:Title='#mu_{}#tau_{h}',LineStyle=1,LineWidth=2,LineColor=8,MarkerSize=0 limit_jsons/nmssm_${ERA}_tt_${MASS}_cmb.json:exp0:Title='#tau_{h}#tau_{h}',LineStyle=1,LineWidth=2,LineColor=9,MarkerSize=0 limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='e#tau_{h}+#mu_{}^{}#tau_{h}+#tau_{h}#tau_{h}',LineStyle=1,LineWidth=2,LineColor=1,MarkerSize=0 --cms-sub "Own Work" --title-right "$ERA_STRING"  --y-axis-min 0.0001 --y-axis-max 200.0 --show exp   --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_compare_${MASS} --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 2800.0  --logx  #--draw-theory
 
-                # compare_limits.py  limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='no CSV vars',LineStyle=1,LineWidth=2,LineColor=1,MarkerSize=0 limit_jsons_CSV/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='with CSV vars',LineStyle=1,LineWidth=2,LineColor=8,MarkerSize=0  --cms-sub "Own Work" --title-right "59.7 fb^{-1} (2016, 13 TeV)" --y-axis-min 0.001 --y-axis-max 200.0 --show exp   --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_compare_csv_${MASS} --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 2800.0  --logx  #--draw-theory 
 
-                plotMSSMLimits.py limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json --cms-sub "Own Work" --title-right "59.7 fb^{-1} (2016, 13 TeV)" --y-axis-min 0.001 --y-axis-max 200.0  --show exp  --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_${MASS} --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 2800.0  --logx 
+                compare_limits.py  ../retrain_uncorrUnc/limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='Inclusive',LineStyle=1,LineWidth=2,LineColor=46,MarkerSize=0 limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='#splitline{Remove events}{with nonconv. kin.fit}',LineStyle=1,LineWidth=2,LineColor=8,MarkerSize=0 --cms-sub "Own Work" --title-right "$ERA_STRING"  --y-axis-min 0.0001 --y-axis-max 200.0 --show exp   --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_compare_${MASS} --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 2800.0  --logx  #--draw-theory 
+
+
+
+                plotMSSMLimits.py limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json --cms-sub "Own Work" --title-right "$ERA_STRING" --y-axis-min 0.0001 --y-axis-max 200.0  --show exp  --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_${MASS}_cutonChi2 --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 2800.0  --logx 
         fi
         done
 
@@ -157,19 +164,16 @@ then
                     then
                         continue  
                     fi
-                    IN_JSON="${IN_JSON} /storage/gridka-nrg/jbechtel/gc_storage/nmssm_limits/2020_07_10/medium/${ERA}/${CHANNEL}/nmssm_${CHANNEL}_${MASS}_${MASS_H2}_cmb.json" 
+                    IN_JSON="${IN_JSON} /storage/gridka-nrg/jbechtel/gc_storage/nmssm_limits/2020_09_08/medium/retrain_cutonChi2/${ERA}/${CHANNEL}/nmssm_${CHANNEL}_${MASS}_${MASS_H2}_cmb.json" 
 
                 done
 
                 python merge_json.py --input $IN_JSON --output limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json
+                #python plot_2d_limits.py -e $ERA -c $CHANNEL -o plots/limits/${ERA}/${CHANNEL}    
+                
+                compare_limits.py  ../retrain_uncorrUnc/limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='Inclusive',LineStyle=1,LineWidth=2,LineColor=46,MarkerSize=0 limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='cut',LineStyle=1,LineWidth=2,LineColor=8,MarkerSize=0 --cms-sub "Own Work" --title-right "$ERA_STRING"  --y-axis-min 0.0001 --y-axis-max 200.0 --show exp   --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_compare_${MASS} --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 800.0  --logx  #--draw-theory 
 
-                python plot_2d_limits.py -e $ERA -c $CHANNEL -o plots/limits/${ERA}/${CHANNEL}    
-
-                # compare_limits.py  limit_jsons/nmssm_${ERA}_et_et_max_score_${MASS}_cmb.json:exp0:Title='e#tau_{h}',LineStyle=1,LineWidth=2,LineColor=46,MarkerSize=0 limit_jsons/nmssm_${ERA}_${CHANNEL}_mt_max_score_${MASS}_cmb.json:exp0:Title='#mu_{}#tau_{h}',LineStyle=1,LineWidth=2,LineColor=8,MarkerSize=0 limit_jsons/nmssm_${ERA}_tt_tt_max_score_${MASS}_cmb.json:exp0:Title='#tau_{h}#tau_{h}',LineStyle=1,LineWidth=2,LineColor=9,MarkerSize=0 limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='e#tau_{h}+#mu_{}#tau_{h}+#tau_{h}#tau_{h}',LineStyle=1,LineWidth=2,LineColor=1,MarkerSize=0 --cms-sub "Own Work" --title-right "59.7 fb^{-1} (2016, 13 TeV)" --y-axis-min 0.001 --y-axis-max 200.0 --show exp   --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_compare_${MASS} --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 800.0  --logx  #--draw-theory 
-
-                #compare_limits.py  limit_jsons_final/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='tt cat',LineStyle=1,LineWidth=2,LineColor=1,MarkerSize=0 limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='no tt cat',LineStyle=1,LineWidth=2,LineColor=8,MarkerSize=0  --cms-sub "Own Work" --title-right "59.7 fb^{-1} (2016, 13 TeV)" --y-axis-min 0.001 --y-axis-max 200.0 --show exp   --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_compare_version_${MASS} --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 800.0  --logx  #--draw-theory 
-
-                plotMSSMLimits.py limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json --cms-sub "Own Work" --title-right "59.7 fb^{-1} (2016, 13 TeV)" --y-axis-min 0.001 --y-axis-max 500.0  --show exp  --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_${MASS} --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 800.0  --logx 
+                plotMSSMLimits.py limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json --cms-sub "Own Work" --title-right "$ERA_STRING" --y-axis-min 0.0001 --y-axis-max 500.0  --show exp  --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_${MASS}_cutonChi2 --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 800.0  --logx 
             else
                 IN_JSON=""
                 for MASS_H2 in 60 70 80 90 100 120 150 170 190 250 300 350 400 450 500 550 600 650 700 800 900 1000 1100 1200 1300 1400 1600 1800 2000 2200 2400 2600 2800
@@ -179,21 +183,15 @@ then
                     then
                         continue  
                     fi
-                    IN_JSON="${IN_JSON} /storage/gridka-nrg/jbechtel/gc_storage/nmssm_limits/2020_07_10/medium/${ERA}/${CHANNEL}/nmssm_${CHANNEL}_${MASS}_${MASS_H2}_cmb.json" 
+                    IN_JSON="${IN_JSON} /storage/gridka-nrg/jbechtel/gc_storage/nmssm_limits/2020_09_08/medium/retrain_cutonChi2/${ERA}/${CHANNEL}/nmssm_${CHANNEL}_${MASS}_${MASS_H2}_cmb.json" 
 
                 done
 
                 python merge_json.py --input $IN_JSON --output limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json
 
-                python plot_2d_limits.py -e $ERA -c $CHANNEL -o plots/limits/${ERA}/${CHANNEL}    
+                compare_limits.py  ../retrain_uncorrUnc/limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='Inclusive',LineStyle=1,LineWidth=2,LineColor=46,MarkerSize=0 limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='cut',LineStyle=1,LineWidth=2,LineColor=8,MarkerSize=0 --cms-sub "Own Work" --title-right "$ERA_STRING"  --y-axis-min 0.0001 --y-axis-max 200.0 --show exp   --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_compare_${MASS} --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 2800.0  --logx  #--draw-theory 
 
-
-                # compare_limits.py  limit_jsons/nmssm_${ERA}_et_et_max_score_${MASS}_cmb.json:exp0:Title='e#tau_{h}',LineStyle=1,LineWidth=2,LineColor=46,MarkerSize=0 limit_jsons/nmssm_${ERA}_${CHANNEL}_mt_max_score_${MASS}_cmb.json:exp0:Title='#mu_{}#tau_{h}',LineStyle=1,LineWidth=2,LineColor=8,MarkerSize=0 limit_jsons/nmssm_${ERA}_tt_tt_max_score_${MASS}_cmb.json:exp0:Title='#tau_{h}#tau_{h}',LineStyle=1,LineWidth=2,LineColor=9,MarkerSize=0 limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='e#tau_{h}+#mu_{}#tau_{h}+#tau_{h}#tau_{h}',LineStyle=1,LineWidth=2,LineColor=1,MarkerSize=0 --cms-sub "Own Work" --title-right "59.7 fb^{-1} (2016, 13 TeV)" --y-axis-min 0.001 --y-axis-max 200.0 --show exp   --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_compare_${MASS} --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 2800.0  --logx  #--draw-theory 
-
-                #compare_limits.py  limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='v2',LineStyle=1,LineWidth=2,LineColor=1,MarkerSize=0 limit_jsons_FF_v1/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json:exp0:Title='v1',LineStyle=1,LineWidth=2,LineColor=8,MarkerSize=0  --cms-sub "Own Work" --title-right "59.7 fb^{-1} (2016, 13 TeV)" --y-axis-min 0.001 --y-axis-max 200.0 --show exp   --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_compare_version_${MASS} --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 2800.0  --logx  #--draw-theory 
-
-
-                plotMSSMLimits.py limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json --cms-sub "Own Work" --title-right "59.7 fb^{-1} (2016, 13 TeV)" --y-axis-min 0.001 --y-axis-max 500.0  --show exp  --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_${MASS} --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 2800.0  --logx 
+                plotMSSMLimits.py limit_jsons/nmssm_${ERA}_${CHANNEL}_${MASS}_cmb.json --cms-sub "Own Work" --title-right "$ERA_STRING"  --y-axis-min 0.0001 --y-axis-max 500.0  --show exp  --output plots/limits/${ERA}/${CHANNEL}/nmssm_${ERA}_${CHANNEL}_${MASS}_cutonChi2 --logy --process "nmssm" --title-left ${CHANNEL}"   m_{H} = "${MASS}" GeV" --xmax 2800.0  --logx 
         fi
         done
 

@@ -3,6 +3,7 @@ from array import array
 import json
 import CombineHarvester.CombineTools.plotting as plot
 import argparse
+import numpy as np
 
 ROOT.gROOT.SetBatch(True)
 
@@ -88,15 +89,15 @@ def main(args):
     # ROOT.PyConfig.IgnoreCommandLineOptions = True
     # ROOT.gROOT.SetBatch(ROOT.kTRUE)
     # plot.ModTDRStyle()
-    ROOT.gStyle.SetNdivisions(510, 'XYZ') # probably looks better
+    ROOT.gStyle.SetNdivisions(505, 'XYZ') # probably looks better
     ROOT.gStyle.SetCanvasDefW(900)
     ROOT.gStyle.SetCanvasDefH(600)
 
-    channel_label = {"mt": "#mu_{}#tau_{h}",
-                "tt": "#tau_{h}#tau_{h}",
-                "et":  "e#tau_{h}",
-                "em": "e#mu_{}",
-                "all": "e#tau_{h}+#mu_{}#tau_{h}+#tau_{h}#tau_{h}"
+    channel_label = {"mt": "#scale[0.8]{#mu_{}#tau_{h}}",
+                "tt": "#scale[0.8]{#tau_{h}#tau_{h}}",
+                "et":  "#scale[0.8]{e#tau_{h}}",
+                "em": "#scale[0.8]{e#mu_{}}",
+                "all": "#scale[0.8]{e#tau_{h}+#mu_{}#tau_{h}+#tau_{h}#tau_{h}}"
                 }
     variable_label = {"mbb": "m_{bb}",
                 "m_sv_puppi": "m_{#tau#tau (SV-Fit)}",
@@ -121,8 +122,12 @@ def main(args):
     hist.GetXaxis().SetNoExponent()
     hist.GetYaxis().SetNoExponent()
     hist.GetZaxis().SetNoExponent()
+    hist.GetZaxis().SetTitleOffset(1.4)
     hist.GetYaxis().SetTitle("Light Mass m_{h'} (GeV)")
-    hist.GetZaxis().SetRangeUser(0.001,20.)
+    hist.GetZaxis().SetRangeUser(0.0005,2.)
+    hist.GetXaxis().SetMoreLogLabels()
+    hist.GetYaxis().SetMoreLogLabels()
+    hist.GetXaxis().SetTitleOffset(1.2)
 
     c1.SetLogz()
     c1.SetLogx()
@@ -136,16 +141,21 @@ def main(args):
     c1.RedrawAxis()
     c1.RedrawAxis("g")
     plot.DrawCMSLogo(c1, 'CMS', "Own Work", 11, 0.045, 0.035, 1.2, '', 0.8)
-    era_string = "35.9 fb^{-1} (2016, 13 TeV)"
+    era_string = "#scale[0.8]{35.9 fb^{-1} (2016, 13 TeV)}"
     if args.era == "2017":
-	era_string = "41.5 fb^{-1} (2017, 13 TeV)" 
+        era_string = "#scale[0.8]{41.5 fb^{-1} (2017, 13 TeV)}" 
     if args.era == "2018":
-	era_string = "59.7 fb^{-1} (2018, 13 TeV)"
+        era_string = "#scale[0.8]{59.7 fb^{-1} (2018, 13 TeV)}"
+    if args.era == "combined":
+        era_string = "#scale[0.8]{137.2 fb^{-1} (13 TeV)}"
     plot.DrawTitle(c1,era_string,3)
     plot.DrawTitle(c1,channel_label[channel],1)#+": "+variable_label[variable],1)
     # ROOT.gPad.GetFrame().Draw("SAME")
     ROOT.gStyle.SetPalette(53)
     ROOT.gPad.RedrawAxis()
+
+
+
     # c1.GetFrame().Draw("same")
     if channel != "all":
         c1.SaveAs("{}/{}_{}_2d.pdf".format(args.output,args.era,channel))
@@ -158,10 +168,14 @@ def main(args):
     c2.cd()
 
     c2.SetRightMargin(0.15)
+    theory_diff_hist.GetXaxis().SetRangeUser(400,1100.)
+    theory_diff_hist.GetYaxis().SetRangeUser(60.,1000)
+    theory_diff_hist.GetZaxis().SetRangeUser(0.1,100.)
+    ROOT.gStyle.SetPalette(ROOT.kFall)
+
+    ROOT.gStyle.SetNumberContours(3)
 
     theory_diff_hist.SetStats(0)
-
-    ROOT.gStyle.SetOptStat(0)
 
     theory_diff_hist.GetZaxis().SetTitle("95% CL limit on #sigma #times BR expected / #sigma #times BR allowed by theory")
     theory_diff_hist.GetXaxis().SetTitle("Heavy Mass m_{H} (GeV)")
@@ -169,7 +183,9 @@ def main(args):
     theory_diff_hist.GetYaxis().SetNoExponent()
     theory_diff_hist.GetZaxis().SetNoExponent()
     theory_diff_hist.GetYaxis().SetTitle("Light Mass m_{h'} (GeV)")
-    theory_diff_hist.GetZaxis().SetRangeUser(0.5,1000.)
+    theory_diff_hist.GetXaxis().SetMoreLogLabels()
+    theory_diff_hist.GetYaxis().SetMoreLogLabels()
+    theory_diff_hist.GetXaxis().SetTitleOffset(1.2)
 
     c2.SetLogz()
     c2.SetLogx()
@@ -181,9 +197,9 @@ def main(args):
     c2.RedrawAxis("g")
     plot.DrawCMSLogo(c2, 'CMS', "Own Work", 11, 0.045, 0.035, 1.2, '', 0.8)
     plot.DrawTitle(c2,era_string,3)
-    plot.DrawTitle(c1,channel_label[channel],1)#+": "+variable_label[variable],1)
+    plot.DrawTitle(c2,channel_label[channel],1)#+": "+variable_label[variable],1)
     # ROOT.gPad.GetFrame().Draw("SAME")
-    ROOT.gStyle.SetPalette(53)
+    # ROOT.gStyle.SetPalette(53)
     ROOT.gPad.RedrawAxis()
     # c2.GetFrame().Draw("same")
     if channel != "all":

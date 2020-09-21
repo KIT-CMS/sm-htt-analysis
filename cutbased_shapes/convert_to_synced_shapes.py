@@ -75,6 +75,10 @@ def create_synced_category_files(info):
     for name in sorted(info["processes"]):
         hist = file_input.Get(name)
         name_output = info["processes"][name]
+        if "ZTTpTTTauTauUp" in name_output:
+            name_output = name_output.replace("ZTTpTTTauTauUp","EMB")
+        if "ZTTpTTTauTauDown" in name_output:
+            name_output = name_output.replace("ZTTpTTTauTauDown","EMB")
         hist.SetTitle(name_output)
         hist.SetName(name_output)
         hist.Write()
@@ -91,6 +95,14 @@ def create_synced_category_files(info):
                 or ("_ff_" in name_output and "_syst_" in name_output)):
                 hist.SetTitle(name_output.replace("_2016", "").replace("_2017", "").replace("_2018",""))
                 hist.SetName(name_output.replace("_2016", "").replace("_2017", "").replace("_2018",""))
+                hist.Write()
+        if "eff_b" in name_output or "mistag_b" in name_output:
+                hist.SetTitle(name_output.replace("_2016", "_2016_"+info["channel"]).replace("_2017", "_2017_"+info["channel"]).replace("_2018","_2018_"+info["channel"]))
+                hist.SetName(name_output.replace("_2016", "_2016_"+info["channel"]).replace("_2017", "_2017_"+info["channel"]).replace("_2018","_2018_"+info["channel"]))
+                hist.Write()
+        if "ttbarShape" in name_output :
+                hist.SetTitle(name_output.replace("ttbarShape", "ttbarShape_"+info["era"]))
+                hist.SetName(name_output.replace("ttbarShape", "ttbarShape_"+info["era"]))
                 hist.Write()
     file_output.Close()
     file_input.Close()

@@ -127,15 +127,18 @@ def build_chain(dict_, friend_directories):
     for f in dict_["files"]:
         chain.AddFile(f)
         # Make sure, that friend files are put in the same order together
-        for d in friendchains:
+        for i,d in enumerate(friendchains):
             friendfile = os.path.join(d,f.replace(dict_["directory"], ""))
             friendchains[d].AddFile(friendfile)
+            chain.AddFriend(friendchains[d],'fr%d' % i)
     chain_numentries = chain.GetEntries()
     if not chain_numentries > 0:
         logger.fatal("Chain (before skimming) does not contain any events.")
         raise Exception
     logger.debug("Found %s events before skimming with cut string.",
                  chain_numentries)
+ 
+
 
     # Skim chain
     chain_skimmed = chain.CopyTree(dict_["cut_string"])
@@ -287,7 +290,7 @@ def main(args):
 
         # Build chain
         dict_["tree_path"] = "%s_nominal/ntuple" % ch
-
+      
         chain = build_chain(dict_, [x.replace("+CH+",ch) for x in friend_directories_dict[ch]])
 
         # Get percentiles and calculate 1d binning

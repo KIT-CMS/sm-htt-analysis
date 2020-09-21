@@ -23,6 +23,10 @@ def main(args):
         with open(file_,"r") as f:
             in_dict = json.load(f)
         output_dict.update(in_dict)
+    for key in output_dict.keys():
+	for key2 in output_dict[key]:
+		
+		output_dict[key][key2] = 0.1 * output_dict[key][key2]
     with open(args.output,"w") as f:
         json.dump(output_dict, f)
 if __name__ == "__main__":

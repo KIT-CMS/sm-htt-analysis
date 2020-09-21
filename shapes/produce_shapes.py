@@ -197,15 +197,18 @@ def main(args):
     else:
         logger.critical("Era {} is not implemented.".format(args.era))
         raise Exception
-
+    if len(args.channels)>1:
+        print "Only one channel at a time is supported"
+        exit()
+    channel = args.channels[0]
     # Channels and processes
     # yapf: disable
-    directory = args.directory
+    directory = args.directory.replace("+CH+",channel)
     friend_directory = {
-        "mt": args.mt_friend_directory,
-        "et": args.et_friend_directory,
-        "tt": args.tt_friend_directory,
-        "em": args.em_friend_directory}
+        "mt": [x.replace("+CH+",channel) for x in args.mt_friend_directory],
+        "et": [x.replace("+CH+",channel) for x in args.et_friend_directory],
+        "tt": [x.replace("+CH+",channel) for x in args.tt_friend_directory],
+        "em": [x.replace("+CH+",channel) for x in args.em_friend_directory]}
 
     if args.QCD_extrap_fit:
         smChannelsDict["mt"].cuts.remove("muon_iso")
@@ -309,6 +312,10 @@ def main(args):
 
     # Create the jetFakes process for all channels but em
     for chname_, ch_ in selectedChannelsTuplesNoEM:
+	if chname_ == "tt" and args.era == "2017":
+		fakedir = "/ceph/jbechtel/nmssm/friends/2017/tt/FakeFactors_nmssm_v2/FakeFactors_workdir/FakeFactors_collected/"
+	else:
+		fakedir = args.fake_factor_friend_directory.replace("+CH+",channel)
         if chname_ != "tt":
             est_ = NewFakeEstimationLT
         else:
@@ -321,7 +328,7 @@ def main(args):
                     for process in {"EMB"} | leptonTauBkgS],
                 processes[chname_]["data_obs"],
                 friend_directory=friend_directory[chname_] +
-                [args.fake_factor_friend_directory]))
+                [fakedir]))
 
     # QCD process setup
     for chname_, ch_ in selectedChannelsTuples:
@@ -359,13 +366,18 @@ def main(args):
                     friend_directory=friend_directory[chname_]))
         else:
             # qcd_weight = Weight("em_qcd_osss_binned_Weight*em_qcd_extrap_uncert_Weight", "qcd_weight")
+            ROOT.v5.TFormula.SetMaxima(3000)
+
             if args.era == "2016":
-                closureweight = 1.2
+                qcd_aisoiso_string = "*(1.0*(pt_1>=150.0||pt_2>=150.0)+0.889611*(pt_1>=0.0&&pt_1<20.0&&pt_2>=20.0&&pt_2<25.0)+0.906323*(pt_1>=0.0&&pt_1<20.0&&pt_2>=25.0&&pt_2<30.0)+0.838287*(pt_1>=0.0&&pt_1<20.0&&pt_2>=30.0&&pt_2<150.0)+0.900872*(pt_1>=20.0&&pt_1<25.0&&pt_2>=0.0&&pt_2<20.0)+0.918876*(pt_1>=20.0&&pt_1<25.0&&pt_2>=20.0&&pt_2<25.0)+0.857904*(pt_1>=20.0&&pt_1<25.0&&pt_2>=25.0&&pt_2<30.0)+0.833439*(pt_1>=20.0&&pt_1<25.0&&pt_2>=30.0&&pt_2<150.0)+0.956127*(pt_1>=25.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<20.0)+0.863690*(pt_1>=25.0&&pt_1<30.0&&pt_2>=20.0&&pt_2<25.0)+1.060816*(pt_1>=25.0&&pt_1<30.0&&pt_2>=25.0&&pt_2<30.0)+0.938181*(pt_1>=25.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<150.0)+0.993274*(pt_1>=30.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<20.0)+0.936018*(pt_1>=30.0&&pt_1<150.0&&pt_2>=20.0&&pt_2<25.0)+0.864106*(pt_1>=30.0&&pt_1<150.0&&pt_2>=25.0&&pt_2<30.0)+0.954102*(pt_1>=30.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<150.0))"
+                qcd_weight_string = "((-0.1138*(njets==0)+(-0.07938)*(njets==1)+(-0.02602)*(njets>=2))*((DiTauDeltaR-3.0)**2.0-3.0)+(-0.2287*(njets==0)+(-0.3251)*(njets==1)+(-0.2802)*(njets>=2))*(DiTauDeltaR-3.0)+(1.956*(njets==0)+(1.890)*(njets==1)+(1.753)*(njets>=2)))*(1.0*(pt_1>=150.0||pt_2>=150.0)+1.132149*(pt_1>=0.0&&pt_1<24.0&&pt_2>=24.0&&pt_2<30.0)+1.118163*(pt_1>=0.0&&pt_1<24.0&&pt_2>=30.0&&pt_2<40.0)+1.142240*(pt_1>=0.0&&pt_1<24.0&&pt_2>=40.0&&pt_2<150.0)+1.004560*(pt_1>=24.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<24.0)+1.055802*(pt_1>=24.0&&pt_1<30.0&&pt_2>=24.0&&pt_2<30.0)+1.171731*(pt_1>=24.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<40.0)+1.351143*(pt_1>=24.0&&pt_1<30.0&&pt_2>=40.0&&pt_2<150.0)+0.921943*(pt_1>=30.0&&pt_1<40.0&&pt_2>=0.0&&pt_2<24.0)+1.078412*(pt_1>=30.0&&pt_1<40.0&&pt_2>=24.0&&pt_2<30.0)+1.096989*(pt_1>=30.0&&pt_1<40.0&&pt_2>=30.0&&pt_2<40.0)+1.222142*(pt_1>=30.0&&pt_1<40.0&&pt_2>=40.0&&pt_2<150.0)+0.848351*(pt_1>=40.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<24.0)+0.852887*(pt_1>=40.0&&pt_1<150.0&&pt_2>=24.0&&pt_2<30.0)+0.891202*(pt_1>=40.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<40.0)+0.913323*(pt_1>=40.0&&pt_1<150.0&&pt_2>=40.0&&pt_2<150.0))%s"%qcd_aisoiso_string
             elif args.era == "2017":
-                closureweight = 1.1
+                qcd_aisoiso_string = "*(1.0*(pt_1>=150.0||pt_2>=150.0)+0.878304*(pt_1>=0.0&&pt_1<20.0&&pt_2>=20.0&&pt_2<25.0)+0.916277*(pt_1>=0.0&&pt_1<20.0&&pt_2>=25.0&&pt_2<30.0)+0.853211*(pt_1>=0.0&&pt_1<20.0&&pt_2>=30.0&&pt_2<150.0)+0.920458*(pt_1>=20.0&&pt_1<25.0&&pt_2>=0.0&&pt_2<20.0)+0.872271*(pt_1>=20.0&&pt_1<25.0&&pt_2>=20.0&&pt_2<25.0)+0.957983*(pt_1>=20.0&&pt_1<25.0&&pt_2>=25.0&&pt_2<30.0)+0.910988*(pt_1>=20.0&&pt_1<25.0&&pt_2>=30.0&&pt_2<150.0)+0.935900*(pt_1>=25.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<20.0)+0.903964*(pt_1>=25.0&&pt_1<30.0&&pt_2>=20.0&&pt_2<25.0)+0.888112*(pt_1>=25.0&&pt_1<30.0&&pt_2>=25.0&&pt_2<30.0)+0.872235*(pt_1>=25.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<150.0)+0.927075*(pt_1>=30.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<20.0)+0.983504*(pt_1>=30.0&&pt_1<150.0&&pt_2>=20.0&&pt_2<25.0)+0.921924*(pt_1>=30.0&&pt_1<150.0&&pt_2>=25.0&&pt_2<30.0)+0.881401*(pt_1>=30.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<150.0))"
+                qcd_weight_string = "((-0.1430*(njets==0)+(-0.05544)*(njets==1)+(0.03128)*(njets>=2))*((DiTauDeltaR-3.0)**2.0-3.0)+(-0.1949*(njets==0)+(-0.3685)*(njets==1)+(-0.3531)*(njets>=2))*(DiTauDeltaR-3.0)+(1.928*(njets==0)+(2.020)*(njets==1)+(1.855)*(njets>=2)))*(1.0*(pt_1>=150.0||pt_2>=150.0)+1.155767*(pt_1>=0.0&&pt_1<24.0&&pt_2>=24.0&&pt_2<30.0)+1.136188*(pt_1>=0.0&&pt_1<24.0&&pt_2>=30.0&&pt_2<40.0)+1.163907*(pt_1>=0.0&&pt_1<24.0&&pt_2>=40.0&&pt_2<150.0)+0.988366*(pt_1>=24.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<24.0)+1.198820*(pt_1>=24.0&&pt_1<30.0&&pt_2>=24.0&&pt_2<30.0)+1.134818*(pt_1>=24.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<40.0)+1.051062*(pt_1>=24.0&&pt_1<30.0&&pt_2>=40.0&&pt_2<150.0)+0.917948*(pt_1>=30.0&&pt_1<40.0&&pt_2>=0.0&&pt_2<24.0)+1.042672*(pt_1>=30.0&&pt_1<40.0&&pt_2>=24.0&&pt_2<30.0)+0.973973*(pt_1>=30.0&&pt_1<40.0&&pt_2>=30.0&&pt_2<40.0)+1.143160*(pt_1>=30.0&&pt_1<40.0&&pt_2>=40.0&&pt_2<150.0)+0.845711*(pt_1>=40.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<24.0)+0.853038*(pt_1>=40.0&&pt_1<150.0&&pt_2>=24.0&&pt_2<30.0)+0.890487*(pt_1>=40.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<40.0)+1.037247*(pt_1>=40.0&&pt_1<150.0&&pt_2>=40.0&&pt_2<150.0))%s"%qcd_aisoiso_string
             elif args.era == "2018":
-                closureweight = 1.2
-            qcd_weight = Weight("{closureweight}*em_qcd_osss_binned_Weight".format(closureweight=closureweight), "qcd_weight")
+                qcd_aisoiso_string = "*(1.0*(pt_1>=150.0||pt_2>=150.0)+0.847702*(pt_1>=0.0&&pt_1<20.0&&pt_2>=20.0&&pt_2<25.0)+0.878120*(pt_1>=0.0&&pt_1<20.0&&pt_2>=25.0&&pt_2<30.0)+0.887496*(pt_1>=0.0&&pt_1<20.0&&pt_2>=30.0&&pt_2<150.0)+0.874935*(pt_1>=20.0&&pt_1<25.0&&pt_2>=0.0&&pt_2<20.0)+0.829801*(pt_1>=20.0&&pt_1<25.0&&pt_2>=20.0&&pt_2<25.0)+0.922954*(pt_1>=20.0&&pt_1<25.0&&pt_2>=25.0&&pt_2<30.0)+0.954270*(pt_1>=20.0&&pt_1<25.0&&pt_2>=30.0&&pt_2<150.0)+0.935953*(pt_1>=25.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<20.0)+0.908383*(pt_1>=25.0&&pt_1<30.0&&pt_2>=20.0&&pt_2<25.0)+0.927804*(pt_1>=25.0&&pt_1<30.0&&pt_2>=25.0&&pt_2<30.0)+0.917511*(pt_1>=25.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<150.0)+0.983508*(pt_1>=30.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<20.0)+0.952974*(pt_1>=30.0&&pt_1<150.0&&pt_2>=20.0&&pt_2<25.0)+0.945860*(pt_1>=30.0&&pt_1<150.0&&pt_2>=25.0&&pt_2<30.0)+0.858417*(pt_1>=30.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<150.0))"
+                qcd_weight_string = "((-0.1249*(njets==0)+(-0.04374)*(njets==1)+(-0.00606)*(njets>=2))*((DiTauDeltaR-3.0)**2.0-3.0)+(-0.1644*(njets==0)+(-0.3172)*(njets==1)+(-0.3627)*(njets>=2))*(DiTauDeltaR-3.0)+(1.963*(njets==0)+(2.014)*(njets==1)+(1.757)*(njets>=2)))*(1.0*(pt_1>=150.0||pt_2>=150.0)+1.163939*(pt_1>=0.0&&pt_1<24.0&&pt_2>=24.0&&pt_2<30.0)+1.128795*(pt_1>=0.0&&pt_1<24.0&&pt_2>=30.0&&pt_2<40.0)+1.083493*(pt_1>=0.0&&pt_1<24.0&&pt_2>=40.0&&pt_2<150.0)+1.006878*(pt_1>=24.0&&pt_1<30.0&&pt_2>=0.0&&pt_2<24.0)+1.078046*(pt_1>=24.0&&pt_1<30.0&&pt_2>=24.0&&pt_2<30.0)+1.080539*(pt_1>=24.0&&pt_1<30.0&&pt_2>=30.0&&pt_2<40.0)+1.080385*(pt_1>=24.0&&pt_1<30.0&&pt_2>=40.0&&pt_2<150.0)+0.930821*(pt_1>=30.0&&pt_1<40.0&&pt_2>=0.0&&pt_2<24.0)+1.077226*(pt_1>=30.0&&pt_1<40.0&&pt_2>=24.0&&pt_2<30.0)+1.030334*(pt_1>=30.0&&pt_1<40.0&&pt_2>=30.0&&pt_2<40.0)+0.940508*(pt_1>=30.0&&pt_1<40.0&&pt_2>=40.0&&pt_2<150.0)+0.836243*(pt_1>=40.0&&pt_1<150.0&&pt_2>=0.0&&pt_2<24.0)+0.878972*(pt_1>=40.0&&pt_1<150.0&&pt_2>=24.0&&pt_2<30.0)+0.867798*(pt_1>=40.0&&pt_1<150.0&&pt_2>=30.0&&pt_2<40.0)+0.910642*(pt_1>=40.0&&pt_1<150.0&&pt_2>=40.0&&pt_2<150.0))%s"%qcd_aisoiso_string
+            qcd_weight = Weight(qcd_weight_string, "qcd_weight")
             processes[chname_]["QCD"] = Process(
                 "QCD",
                 est_(
@@ -518,7 +530,6 @@ def main(args):
          for process_nick in processes[chname_]}
         for chname_, _ in selectedChannelsTuples
     }
-
     if args.era in ["2016", "2017"]:
         # Prefiring weights
         prefiring_variaitons = [
@@ -548,9 +559,9 @@ def main(args):
                     bindown = ptbin
                     binup = pt[i + 1]
                     if binup == "inf":
-                        weightstr = "(((pt_2 >= {bindown})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
+                        weightstr = "(((pt_2 >= {bindown})*tauIDScaleFactorWeight{shift_direction}_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))"
                     else:
-                        weightstr = "(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
+                        weightstr = "(((pt_2 >= {bindown} && pt_2 <= {binup})*tauIDScaleFactorWeight{shift_direction}_medium_DeepTau2017v2p1VSjet_2)+((pt_2 < {bindown} || pt_2 > {binup})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))"
                     tau_id_variations.append(
                         ReplaceWeight(
                             histname_.format(bindown, binup, args.era),
@@ -576,7 +587,7 @@ def main(args):
             tau_id_variations = []
             for shift_direction in ["Up", "Down"]:
                 for decaymode in [0, 1, 10, 11]:
-                    weightstr = "(((decayMode_1=={dm})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_1))*(((decayMode_2=={dm})*tauIDScaleFactorWeight{shift_direction}_tight_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_tight_DeepTau2017v2p1VSjet_2))"
+                    weightstr = "(((decayMode_1=={dm})*tauIDScaleFactorWeight{shift_direction}_medium_DeepTau2017v2p1VSjet_1)+((decayMode_1!={dm})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_1))*(((decayMode_2=={dm})*tauIDScaleFactorWeight{shift_direction}_medium_DeepTau2017v2p1VSjet_2)+((decayMode_2!={dm})*tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2))"
                     tau_id_variations.append(
                         ReplaceWeight(
                             histname_.format(
@@ -592,7 +603,6 @@ def main(args):
                 for process_nick in selectedProcesses & pS_:
                     variationsToAdd[chname_][process_nick].append(
                         variation_)
-
     # Tau energy scale
         # Tau energy scale
     for name_, pS_ in {
@@ -798,20 +808,88 @@ def main(args):
             for variation_ in mu_fake_es_1prong_variations + mu_fake_es_1prong1pizero_variations:
                 variationsToAdd["mt"][process_nick].append(variation_)
 
+    # Zll l to tau fake uncertainties:
+    efake_dict = {
+        "2016" : {
+            "BA" : "0.31*(abs(eta_1)<1.448)",
+            "EC" : "0.22*(abs(eta_1)>1.558)"
+        },
+     	"2017" : {
+            "BA" : "0.26*(abs(eta_1)<1.448)",
+            "EC" : "0.41*(abs(eta_1)>1.558)"
+        },
+     	"2018" : {
+            "BA" : "0.18*(abs(eta_1)<1.448)",
+            "EC" : "0.30*(abs(eta_1)>1.558)"
+        }
+    }
+    mfake_dict = {
+        "2016" : {
+            "WH1" : "0.09*((abs(eta_1)<0.4))",
+            "WH2" : "0.42*((abs(eta_1)>=0.4)*((abs(eta_1)<0.8)))",
+            "WH3" : "0.20*((abs(eta_1)>=0.8)*((abs(eta_1)<1.2)))",
+            "WH4" : "0.63*((abs(eta_1)>=1.2)*((abs(eta_1)<1.7)))",
+       	    "WH5" : "0.17*((abs(eta_1)>=1.7))"
+        },
+        "2017" : {
+            "WH1" : "0.18*((abs(eta_1)<0.4))",
+            "WH2" : "0.32*((abs(eta_1)>=0.4)*((abs(eta_1)<0.8)))",
+            "WH3" : "0.39*((abs(eta_1)>=0.8)*((abs(eta_1)<1.2)))",
+            "WH4" : "0.42*((abs(eta_1)>=1.2)*((abs(eta_1)<1.7)))",
+            "WH5" : "0.21*((abs(eta_1)>=1.7))"
+        },
+        "2018" : {
+            "WH1" : "0.19*((abs(eta_1)<0.4))",
+            "WH2" : "0.34*((abs(eta_1)>=0.4)*((abs(eta_1)<0.8)))",
+            "WH3" : "0.24*((abs(eta_1)>=0.8)*((abs(eta_1)<1.2)))",
+            "WH4" : "0.57*((abs(eta_1)>=1.2)*((abs(eta_1)<1.7)))",
+            "WH5" : "0.20*((abs(eta_1)>=1.7))"
+        }
+    }
+    zll_et_weight_variations = []
+    for section, weight in efake_dict[args.era].items():
+        zll_et_weight_variations.append(
+            AddWeight("CMS_fake_e_%s_%s"%(section, args.era), "eFakeTau_reweight",
+                Weight("(1.0+%s)"%weight, "eFakeTau_reweight"),
+                "Up"))
+       	zll_et_weight_variations.append(
+            AddWeight("CMS_fake_e_%s_%s"%(section, args.era), "eFakeTau_reweight",
+       	       	Weight("(1.0-%s)"%weight, "eFakeTau_reweight"),
+       	       	"Down"))
+    for variation_ in zll_et_weight_variations:
+        for chname_ in selectedChannels & {"et"}:
+            for process_nick in selectedProcesses & {"ZL"}:
+                variationsToAdd[chname_][process_nick].append(variation_)
+    zll_mt_weight_variations = []
+    for section, weight in mfake_dict[args.era].items():
+       	zll_mt_weight_variations.append(
+            AddWeight("CMS_fake_m_%s_%s"%(section, args.era), "mFakeTau_reweight",
+       	       	Weight("(1.0+%s)"%weight, "mFakeTau_reweight"),
+       	       	"Up"))
+        zll_mt_weight_variations.append(
+            AddWeight("CMS_fake_m_%s_%s"%(section, args.era), "mFakeTau_reweight",
+                Weight("(1.0-%s)"%weight, "mFakeTau_reweight"),
+                "Down"))
+    for variation_ in zll_mt_weight_variations:
+        for chname_ in selectedChannels & {"mt"}:
+            for process_nick in selectedProcesses & {"ZL"}:
+                variationsToAdd[chname_][process_nick].append(variation_)
+
     # lepton trigger efficiency
-    if args.era in ["2017","2018"]:
-        lteffCutD = {
-            "mt": "25",
-            "et": "28",
-        }
-    elif args.era == "2016":
-        lteffCutD = {
-            "mt": "23",
-            "et": "28",
-        }
+    lteffCutDEra = {
+            "2016": {
+                "mt": "23",
+                "et": "26"},
+            "2017": {
+                "mt": "25",
+                "et": "28"},
+            "2018": {
+                "mt": "25",
+                "et": "33"},
+    }
+    lteffCutD = lteffCutDEra[args.era]
+
     for chname_ in selectedChannels & {"mt", "et"}:
-        if chname_ == "et" and args.era not in ["2017", "2018"]:
-            continue
         for flag, pS_ in {
             "_emb_": {"EMB"},
                 "_": signal_nicks | MCBkgDS[chname_]}.items():
@@ -834,28 +912,181 @@ def main(args):
                             ch=chname_)), "Down"))
             lep_trigger_eff_variations.append(
                 AddWeight(
-                    "CMS_eff_xtrigger{embflag}{ch}_{era}".format(
+                    "CMS_eff_xtrigger_l{embflag}{ch}_{era}".format(
                         embflag=flag, ch=chname_, era=args.era), "xtrg_{ch}_eff_weight".format(
                         ch=chname_), Weight(
-                        "(1.054*(pt_1<={ptcut})+1.0*(pt_1>{ptcut}))".format(
+                        "(1.02*(pt_1<={ptcut})+1.0*(pt_1>{ptcut}))".format(
                             ptcut=lteffCutD[chname_]), "xtrg_{ch}_eff_weight".format(
                             ch=chname_)), "Up"))
             lep_trigger_eff_variations.append(
                 AddWeight(
-                    "CMS_eff_xtrigger{embflag}{ch}_{era}".format(
+                    "CMS_eff_xtrigger_l{embflag}{ch}_{era}".format(
                         embflag=flag, ch=chname_, era=args.era), "xtrg_{ch}_eff_weight".format(
                         ch=chname_), Weight(
-                        "(0.946*(pt_1<={ptcut})+1.0*(pt_1>{ptcut}))".format(
+                        "(0.98*(pt_1<={ptcut})+1.0*(pt_1>{ptcut}))".format(
                             ptcut=lteffCutD[chname_]), "xtrg_{ch}_eff_weight".format(
                             ch=chname_)), "Down"))
             for variation_ in lep_trigger_eff_variations:
                 for process_nick in selectedProcesses & pS_:
                     variationsToAdd[chname_][process_nick].append(variation_)
 
-    # Zll reweighting !!! replaced by log normal uncertainties:
-    # CMS_eFakeTau_Run2018 16%; CMS_mFakeTau_Run2018 26%
+    # MC tau trigger systematics
+    lteff_exp = {
+            "2016": {
+                "et": "(pt_1>=26)*(singleTriggerDataEfficiencyWeightKIT_1/singleTriggerMCEfficiencyWeightKIT_1)",
+                "mt": "(pt_1>=23)*(singleTriggerDataEfficiencyWeightKIT_1/singleTriggerMCEfficiencyWeightKIT_1)"},
+            "2017": {
+                "et": "(pt_1>=28)*(singleTriggerDataEfficiencyWeightKIT_1/singleTriggerMCEfficiencyWeightKIT_1)",
+                "mt": "(pt_1>=25)*(singleTriggerDataEfficiencyWeightKIT_1/singleTriggerMCEfficiencyWeightKIT_1)"},
+            "2018": {
+                "et": "(pt_1>=36)*trigger_32_35_Weight_1+(pt_1>=33)*(pt_1<36)*(trigger_32_Weight_1)",
+                "mt": "(pt_1>=25)*(pt_1<28)*(trigger_24_Weight_1)+(pt_1>=28)*(trigger_24_27_Weight_1)"},
+    }
+    xtrg_lep_weight = {
+            "2016": {
+                "et": "(crossTriggerDataEfficiencyWeightKIT_1/crossTriggerMCEfficiencyWeightKIT_1)",
+                "mt": "(crossTriggerDataEfficiencyWeightKIT_1/crossTriggerMCEfficiencyWeightKIT_1)"},
+            "2017": {
+                "et": "(crossTriggerDataEfficiencyWeight_1/crossTriggerMCEfficiencyWeight_1)",
+                "mt": "(crossTriggerDataEfficiencyWeight_1/crossTriggerMCEfficiencyWeight_1)"},
+            "2018": {
+                "et": "(crossTriggerDataEfficiencyWeight_1/crossTriggerMCEfficiencyWeight_1)",
+                "mt": "(crossTriggerDataEfficiencyWeight_1/crossTriggerMCEfficiencyWeight_1)"}
+    }
+    # Tau trigger variations for MC
+    for chname_ in selectedChannels & {"mt", "et"}:
+        for histname_, pS_ in {
+            "CMS_eff_xtrigger_t_{ch}_dm{dm}_{era}": signal_nicks | MCBkgDS[chname_]}.items():
+            tau_trigger_variations = []
+            for shift_direction in ["Up", "Down"]:
+                for decaymode in [0, 1, 10, 11]:
+                    weightstr = "({lt_eff}+(pt_1<{ptcut})*(abs(eta_2)<2.1)*{xtrigger_leptonweight}*(((decayMode_2=={dm})*((crossTriggerDataEfficiencyWeight_medium_DeepTau_2/crossTriggerMCEfficiencyWeight_medium_DeepTau_2)*(1{operator}TMath::Sqrt(((crossTriggerDataEfficiencyWeight_medium_DeepTau_2-crossTriggerDataEfficiencyWeightDown_medium_DeepTau_2)/crossTriggerDataEfficiencyWeight_medium_DeepTau_2)**2+((crossTriggerMCEfficiencyWeight_medium_DeepTau_2-crossTriggerMCEfficiencyWeightDown_medium_DeepTau_2)/crossTriggerMCEfficiencyWeight_medium_DeepTau_2)**2))))+((decayMode_2!={dm})*(crossTriggerDataEfficiencyWeight_medium_DeepTau_2/crossTriggerMCEfficiencyWeight_medium_DeepTau_2))))"
+                    tau_trigger_variations.append(
+                        ReplaceWeight(
+                            histname_.format(
+                                dm=decaymode, era=args.era,
+                                ch=chname_),
+                            "triggerweight",
+                            Weight(
+                                weightstr.format(
+                                    dm=decaymode,
+                                    operator="+" if shift_direction is "Up" else "-",
+                                    lt_eff=lteff_exp[args.era][chname_],
+                                    ptcut=lteffCutD[chname_],
+                                    xtrigger_leptonweight=xtrg_lep_weight[args.era][chname_]),
+                                "triggerweight"),
+                            shift_direction))
+            # run two times, one for regular, one for embedding
+            for variation_ in tau_trigger_variations:
+                for process_nick in selectedProcesses & pS_:
+                    variationsToAdd[chname_][process_nick].append(
+                        variation_)
 
-    # Embedded event specifics
+    # Tau trigger variations for Embedded
+    lteff_exp = {
+            "2016": {
+                "et": "(pt_1>=26)*(singleTriggerDataEfficiencyWeightKIT_1/singleTriggerEmbeddedEfficiencyWeightKIT_1)",
+                "mt": "(pt_1>=23)*(singleTriggerDataEfficiencyWeightKIT_1/singleTriggerEmbeddedEfficiencyWeightKIT_1)"},
+            "2017": {
+                "et": "(pt_1>=28)", # Special treatment in loop due to special composition of weight.
+                "mt": "(pt_1>=25 && pt_1<28)*(trigger_24_Weight_1)+(pt_1>=28)*(trigger_24_27_Weight_1)"},
+            "2018": {
+                "et": "(pt_1>=36)*trigger_32_35_Weight_1+(pt_1>=33)*(pt_1<36)*(trigger_32_Weight_1)",
+                "mt": "(pt_1>=25)*(pt_1<28)*(trigger_24_Weight_1)+(pt_1>=28)*(trigger_24_27_Weight_1)"},
+    }
+    xtrg_lep_weight = {
+            "2016": {
+                "et": "(crossTriggerDataEfficiencyWeightKIT_1/crossTriggerEmbeddedEfficiencyWeightKIT_1)",
+                "mt": "(crossTriggerDataEfficiencyWeightKIT_1/crossTriggerEmbeddedEfficiencyWeightKIT_1)"},
+            "2017": {
+                "et": "crossTriggerEmbeddedWeight_1",
+                "mt": "crossTriggerEmbeddedWeight_1"},
+            "2018": {
+                "et": "crossTriggerEmbeddedWeight_1",
+                "mt": "crossTriggerEmbeddedWeight_1"}
+    }
+    for chname_ in selectedChannels & {"mt", "et"}:
+        for histname_, pS_ in {
+            "CMS_eff_xtrigger_t_{ch}_dm{dm}_{era}": {"EMB"}
+                , "CMS_eff_xtrigger_t_emb_{ch}_dm{dm}_{era}": {"EMB"}}.items():
+            tau_trigger_variations = []
+            for shift_direction in ["Up", "Down"]:
+                for decaymode in [0, 1, 10, 11]:
+                    weightstr = "({lt_eff}+(pt_1<{ptcut})*(abs(eta_2)<2.1)*{xtrigger_leptonweight}*(((decayMode_2=={dm})*((crossTriggerDataEfficiencyWeight_medium_DeepTau_2/crossTriggerEMBEfficiencyWeight_medium_DeepTau_2)*(1{operator}TMath::Sqrt(((crossTriggerDataEfficiencyWeight_medium_DeepTau_2-crossTriggerDataEfficiencyWeightDown_medium_DeepTau_2)/crossTriggerDataEfficiencyWeight_medium_DeepTau_2)**2+((crossTriggerEMBEfficiencyWeight_medium_DeepTau_2-crossTriggerEMBEfficiencyWeightDown_medium_DeepTau_2)/crossTriggerEMBEfficiencyWeight_medium_DeepTau_2)**2))))+((decayMode_2!={dm})*(crossTriggerDataEfficiencyWeight_medium_DeepTau_2/crossTriggerEMBEfficiencyWeight_medium_DeepTau_2))))"
+                    if args.era == "2017" and chname_ == "et":
+                        weightstr = "{lt_eff}+(pt_1<{ptcut})*((abs(eta_1)>=1.5)*crossTriggerDataEfficiencyWeight_1*(((decayMode_2=={dm})*(crossTriggerDataEfficiencyWeight_medium_DeepTau_2{operator}(crossTriggerDataEfficiencyWeight_medium_DeepTau_2-crossTriggerDataEfficiencyWeightDown_medium_DeepTau_2)))+((decayMode_2!={dm})*crossTriggerDataEfficiencyWeight_medium_DeepTau_2))+(abs(eta_1)<1.5)*{xtrigger_leptonweight}*(((decayMode_2=={dm})*((crossTriggerDataEfficiencyWeight_medium_DeepTau_2/crossTriggerEMBEfficiencyWeight_medium_DeepTau_2)*(1{operator}TMath::Sqrt(((crossTriggerDataEfficiencyWeight_medium_DeepTau_2-crossTriggerDataEfficiencyWeightDown_medium_DeepTau_2)/crossTriggerDataEfficiencyWeight_medium_DeepTau_2)**2+((crossTriggerEMBEfficiencyWeight_medium_DeepTau_2-crossTriggerEMBEfficiencyWeightDown_medium_DeepTau_2)/crossTriggerEMBEfficiencyWeight_medium_DeepTau_2)**2))))+((decayMode_2!={dm})*(crossTriggerDataEfficiencyWeight_medium_DeepTau_2/crossTriggerEMBEfficiencyWeight_medium_DeepTau_2))))"
+                    tau_trigger_variations.append(
+                        ReplaceWeight(
+                            histname_.format(
+                                dm=decaymode, era=args.era,
+                                ch=chname_),
+                            "triggerweight",
+                            Weight(
+                                weightstr.format(
+                                    dm=decaymode,
+                                    operator="+" if shift_direction is "Up" else "-",
+                                    lt_eff=lteff_exp[args.era][chname_],
+                                    ptcut=lteffCutD[chname_],
+                                    xtrigger_leptonweight=xtrg_lep_weight[args.era][chname_]),
+                                "triggerweight"),
+                            shift_direction))
+            # run two times, one for regular, one for embedding
+            for variation_ in tau_trigger_variations:
+                for process_nick in selectedProcesses & pS_:
+                    variationsToAdd[chname_][process_nick].append(
+                        variation_)
+
+    # Tau trigger variations
+    for chname_ in selectedChannels & {"tt"}:
+        for histname_, pS_ in {
+            "CMS_eff_trigger_tt_dm{dm}_{era}": signal_nicks |
+                MCBkgDS[chname_]}.items():
+            tau_trigger_variations = []
+            for shift_direction in ["Up", "Down"]:
+                for decaymode in [0, 1, 10, 11]:
+                    weightstr = "(((decayMode_1=={dm})*((crossTriggerDataEfficiencyWeight_medium_DeepTau_1/crossTriggerMCEfficiencyWeight_medium_DeepTau_1)*(1{operator}TMath::Sqrt(((crossTriggerDataEfficiencyWeight_medium_DeepTau_1-crossTriggerDataEfficiencyWeightDown_medium_DeepTau_1)/crossTriggerDataEfficiencyWeight_medium_DeepTau_1)**2+((crossTriggerMCEfficiencyWeight_medium_DeepTau_1-crossTriggerMCEfficiencyWeightDown_medium_DeepTau_1)/crossTriggerMCEfficiencyWeight_medium_DeepTau_1)**2)))+((decayMode_1!={dm})*(crossTriggerDataEfficiencyWeight_medium_DeepTau_1/crossTriggerMCEfficiencyWeight_medium_DeepTau_1)))*(((decayMode_2=={dm})*((crossTriggerDataEfficiencyWeight_medium_DeepTau_2/crossTriggerMCEfficiencyWeight_medium_DeepTau_2)*(1{operator}TMath::Sqrt(((crossTriggerDataEfficiencyWeight_medium_DeepTau_2-crossTriggerDataEfficiencyWeightDown_medium_DeepTau_2)/crossTriggerDataEfficiencyWeight_medium_DeepTau_2)**2+((crossTriggerMCEfficiencyWeight_medium_DeepTau_2-crossTriggerMCEfficiencyWeightDown_medium_DeepTau_2)/crossTriggerMCEfficiencyWeight_medium_DeepTau_2)**2))))+((decayMode_2!={dm})*(crossTriggerDataEfficiencyWeight_medium_DeepTau_2/crossTriggerMCEfficiencyWeight_medium_DeepTau_2))))"
+                    tau_trigger_variations.append(
+                        ReplaceWeight(
+                            histname_.format(
+                                dm=decaymode, era=args.era),
+                            "triggerweight",
+                            Weight(
+                                weightstr.format(
+                                    dm=decaymode,operator="+" if shift_direction is "Up" else "-"),
+                                "triggerweight"),
+                            shift_direction))
+            # run two times, one for regular, one for embedding
+            for variation_ in tau_trigger_variations:
+                for process_nick in selectedProcesses & pS_:
+                    variationsToAdd[chname_][process_nick].append(
+                        variation_)
+
+    # Tau trigger variations for Embedded
+    for chname_ in selectedChannels & {"tt"}:
+        for histname_, pS_ in {
+            "CMS_eff_trigger_tt_dm{dm}_{era}": {"EMB"}
+                , "CMS_eff_trigger_emb_tt_dm{dm}_{era}": {"EMB"}}.items():
+            tau_trigger_variations = []
+            for shift_direction in ["Up", "Down"]:
+                for decaymode in [0, 1, 10, 11]:
+                    weightstr = "(((decayMode_1=={dm})*((crossTriggerDataEfficiencyWeight_medium_DeepTau_1/crossTriggerEMBEfficiencyWeight_medium_DeepTau_1)*(1{operator}TMath::Sqrt(((crossTriggerDataEfficiencyWeight_medium_DeepTau_1-crossTriggerDataEfficiencyWeightDown_medium_DeepTau_1)/crossTriggerDataEfficiencyWeight_medium_DeepTau_1)**2+((crossTriggerEMBEfficiencyWeight_medium_DeepTau_1-crossTriggerEMBEfficiencyWeightDown_medium_DeepTau_1)/crossTriggerEMBEfficiencyWeight_medium_DeepTau_1)**2)))+((decayMode_1!={dm})*(crossTriggerDataEfficiencyWeight_medium_DeepTau_1/crossTriggerEMBEfficiencyWeight_medium_DeepTau_1)))*(((decayMode_2=={dm})*((crossTriggerDataEfficiencyWeight_medium_DeepTau_2/crossTriggerEMBEfficiencyWeight_medium_DeepTau_2)*(1{operator}TMath::Sqrt(((crossTriggerDataEfficiencyWeight_medium_DeepTau_2-crossTriggerDataEfficiencyWeightDown_medium_DeepTau_2)/crossTriggerDataEfficiencyWeight_medium_DeepTau_2)**2+((crossTriggerEMBEfficiencyWeight_medium_DeepTau_2-crossTriggerEMBEfficiencyWeightDown_medium_DeepTau_2)/crossTriggerEMBEfficiencyWeight_medium_DeepTau_2)**2))))+((decayMode_2!={dm})*(crossTriggerDataEfficiencyWeight_medium_DeepTau_2/crossTriggerEMBEfficiencyWeight_medium_DeepTau_2))))"
+                    tau_trigger_variations.append(
+                        ReplaceWeight(
+                            histname_.format(
+                                dm=decaymode, era=args.era),
+                            "triggerweight",
+                            Weight(
+                                weightstr.format(
+                                    dm=decaymode,operator="+" if shift_direction is "Up" else "-"),
+                                "triggerweight"),
+                            shift_direction))
+            # run two times, one for regular, one for embedding
+            for variation_ in tau_trigger_variations:
+                for process_nick in selectedProcesses & pS_:
+                    variationsToAdd[chname_][process_nick].append(
+                        variation_)
+
+
     # b tagging
     btag_eff_variations = create_systematic_variations(
         "CMS_htt_eff_b_{era}".format(era=args.era), "btagEff",
@@ -878,6 +1109,7 @@ def main(args):
             for process_nick in selectedProcesses & {"EMB"}:
                 variationsToAdd[chname_][process_nick].append(variation_)
 
+    # Embedded event specifics
     # Emb DM variation
     mt_decayMode_variations = []
     et_decayMode_variations = []
@@ -938,36 +1170,55 @@ def main(args):
         fake_factor_weight = {}
         for chname_ in selectedChannels & {"et", "mt"}:
             fake_factor_variations[chname_] = [
-                "ff_qcd{ch}_syst{era}{shift}",
-                "ff_qcd_dm0_njet0{ch}_stat{era}{shift}",
-                "ff_qcd_dm0_njet1{ch}_stat{era}{shift}",
-                # "ff_qcd_dm1_njet0{ch}_stat{era}{shift}",
-                # "ff_qcd_dm1_njet1{ch}_stat{era}{shift}",
-                "ff_w_syst{era}{shift}",
-                "ff_w_dm0_njet0{ch}_stat{era}{shift}",
-                "ff_w_dm0_njet1{ch}_stat{era}{shift}",
-                # "ff_w_dm1_njet0{ch}_stat{era}{shift}",
-                # "ff_w_dm1_njet1{ch}_stat{era}{shift}",
-                "ff_tt_syst{era}{shift}",
-                "ff_tt_dm0_njet0_stat{era}{shift}",
-                "ff_tt_dm0_njet1_stat{era}{shift}",
-                # "ff_tt_dm1_njet0_stat{era}{shift}",
-                # "ff_tt_dm1_njet1_stat{era}{shift}"
+                # "ff_qcd{ch}_syst{era}{shift}",
+                # "ff_qcd_dm0_njet0{ch}_stat{era}{shift}",
+                # "ff_qcd_dm0_njet1{ch}_stat{era}{shift}",
+                # "ff_w_syst{era}{shift}",
+                # "ff_w_dm0_njet0{ch}_stat{era}{shift}",
+                # "ff_w_dm0_njet1{ch}_stat{era}{shift}",
+                # "ff_tt_syst{era}{shift}",
+                # "ff_tt_stat{era}{shift}",
+                "ff_tt_morphed{ch}{era}{shift}",
+                "ff_tt_sf{ch}{era}{shift}",
+                "ff_corr_tt_syst{ch}{era}{shift}",
+                "ff_frac_w{ch}{era}{shift}",
+                "ff_qcd_dm0_njet0_morphed_stat{ch}{era}{shift}", "ff_qcd_dm0_njet1_morphed_stat{ch}{era}{shift}", "ff_qcd_dm0_njet2_morphed_stat{ch}{era}{shift}",
+                "ff_w_dm0_njet0_morphed_stat{ch}{era}{shift}", "ff_w_dm0_njet1_morphed_stat{ch}{era}{shift}", "ff_w_dm0_njet2_morphed_stat{ch}{era}{shift}",
+                "ff_tt_dm0_njet0_morphed_stat{ch}{era}{shift}", "ff_tt_dm0_njet1_morphed_stat{ch}{era}{shift}",
+                "ff_w_lepPt{ch}{era}{shift}",
+                "ff_corr_w_lepPt{ch}{era}{shift}",
+                "ff_w_mc{ch}{era}{shift}",
+                "ff_corr_w_mt{ch}{era}{shift}",
+                "ff_w_mt{ch}{era}{shift}",
+                "ff_qcd_mvis{ch}{era}{shift}",
+                "ff_qcd_mvis_osss{ch}{era}{shift}",
+                "ff_corr_qcd_mvis{ch}{era}{shift}",
+                "ff_corr_qcd_mvis_osss{ch}{era}{shift}",
+                "ff_qcd_muiso{ch}{era}{shift}",
+                "ff_corr_qcd_muiso{ch}{era}{shift}",
+                "ff_qcd_mc{ch}{era}{shift}",
             ]
             fake_factor_weight[chname_] = "ff2_{syst}"
         for chname_ in selectedChannels & {"tt"}:
             fake_factor_variations[chname_] = [
-                "ff_qcd{ch}_syst{era}{shift}",
-                "ff_qcd_dm0_njet0{ch}_stat{era}{shift}",
-                "ff_qcd_dm0_njet1{ch}_stat{era}{shift}",
-                # "ff_qcd_dm1_njet0{ch}_stat{era}{shift}",
-                # "ff_qcd_dm1_njet1{ch}_stat{era}{shift}",
-                "ff_w{ch}_syst{era}{shift}",
-                "ff_tt{ch}_syst{era}{shift}",
-                "ff_w_frac{ch}_syst{era}{shift}",
-                "ff_tt_frac{ch}_syst{era}{shift}"
+                # "ff_qcd_syst{ch}{era}{shift}",
+                # "ff_qcd_dm0_njet0{ch}_stat{era}{shift}",
+                # "ff_qcd_dm0_njet1{ch}_stat{era}{shift}",
+                "ff_qcd_dm0_njet0_morphed_stat{ch}{era}{shift}", "ff_qcd_dm0_njet1_morphed_stat{ch}{era}{shift}", "ff_qcd_dm0_njet2_morphed_stat{ch}{era}{shift}",
+                "ff_w_syst{ch}{era}{shift}",
+                "ff_tt_syst{ch}{era}{shift}",
+                # "ff_w_frac_syst{ch}{era}{shift}",
+                # "ff_tt_frac_syst{ch}{era}{shift}",
+                "ff_qcd_mvis{ch}{era}{shift}",
+                "ff_qcd_mvis_osss{ch}{era}{shift}",
+                "ff_corr_qcd_mvis{ch}{era}{shift}",
+                "ff_corr_qcd_mvis_osss{ch}{era}{shift}",
+                "ff_qcd_tau2_pt{ch}{era}{shift}",
+                "ff_corr_qcd_tau2_pt{ch}{era}{shift}",
+                "ff_qcd_mc{ch}{era}{shift}",
             ]
-            fake_factor_weight[chname_] = "(0.5*ff1_{syst}*(byTightDeepTau2017v2p1VSjet_1<0.5)+0.5*ff2_{syst}*(byTightDeepTau2017v2p1VSjet_2<0.5))"
+            fake_factor_weight[chname_] = "(0.5*ff1_{syst}*(byMediumDeepTau2017v2p1VSjet_1<0.5)+0.5*ff2_{syst}*(byMediumDeepTau2017v2p1VSjet_2<0.5))"
+
         for chname_, ch_ in selectedChannelsTuplesNoEM:
             for shift_direction in ["Up", "Down"]:
                 for systematic_shift in fake_factor_variations[chname_]:
@@ -983,17 +1234,70 @@ def main(args):
                             fake_factor_weight[chname_].format(
                                 syst=systname_), "fake_factor"), shift_direction)
                     variationsToAdd[chname_]["FAKES"].append(variation_)
-
+    
     # QCD for em
+    p0_ = { # constant parameter
+              "2016" : {
+                  "0j" : {"nom": "1.956", "up": "2.018", "down": "1.894"},
+                  "1j" : {"nom": "1.890", "up": "1.930", "down": "1.850"},
+                  "2j" : {"nom": "1.753", "up": "1.814", "down": "1.692"},
+              },
+              "2017" : {
+                  "0j" : {"nom": "1.928", "up": "1.993", "down": "1.863"},
+                  "1j" : {"nom": "2.020", "up": "2.060", "down": "1.980"},
+                  "2j" : {"nom": "1.855", "up": "1.914", "down": "1.796"},
+              },
+              "2018" : {
+                  "0j" : {"nom": "1.963", "up": "2.010", "down": "1.916"},
+                  "1j" : {"nom": "2.014", "up": "2.045", "down": "1.983"},
+                  "2j" : {"nom": "1.757", "up": "1.794", "down": "1.720"},
+              }
+    }
+    p1_ = { # linear parameter
+              "2016" : {
+                  "0j" : {"nom": "-0.2287", "up": "-0.1954", "down": "-0.262"},
+                  "1j" : {"nom": "-0.3251", "up": "-0.2972", "down": "-0.353"},
+                  "2j" : {"nom": "-0.2802", "up": "-0.2402", "down": "-0.3202"},
+              },
+              "2017" : {
+                  "0j" : {"nom": "-0.1949", "up": "-0.1617", "down": "-0.2281"},
+                  "1j" : {"nom": "-0.3685", "up": "-0.3445", "down": "-0.3925"},
+                  "2j" : {"nom": "-0.3531", "up": "-0.3154", "down": "-0.3908"},
+              },
+              "2018" : {
+                  "0j" : {"nom": "-0.1644", "up": "-0.1402", "down": "-0.1886"},
+                  "1j" : {"nom": "-0.3172", "up": "-0.2977", "down": "-0.3367"},
+                  "2j" : {"nom": "-0.3627", "up": "-0.3389", "down": "-0.3865"},
+              }
+    }
+    p2_ = { # quadratic parameter
+              "2016" : {
+                  "0j" : {"nom": "-0.1138", "up": "-0.0922", "down": "-0.1354"},
+                  "1j" : {"nom": "-0.07938","up": "-0.06242", "down": "-0.09634"},
+                  "2j" : {"nom": "-0.02602","up": "-0.00307", "down": "-0.04897"},
+              },
+              "2017" : {
+                  "0j" : {"nom": "-0.1430", "up": "-0.12", "down": "-0.166"},
+                  "1j" : {"nom": "-0.05544","up": "-0.03986", "down": "-0.07102"},
+                  "2j" : {"nom": "0.03128","up": "0.05409", "down": "0.00847"},
+              },
+              "2018" : {
+                  "0j" : {"nom": "-0.1249", "up": "-0.1083", "down": "-0.1415"},
+                  "1j" : {"nom": "-0.04374","up": "-0.03139", "down": "-0.05609"},
+                  "2j" : {"nom": "-0.00606","up": "0.005143", "down": "-0.024355"},
+              }
+          }
+
     qcd_variations = []
     if len(selectedChannels & {"em"}) == 0:
-        closureweight = 1.
+        qcd_weight_string = "1."
+        qcd_aisoiso_string = "(1.0)"
     for shift_direction in ["up", "down"]:
         qcd_variations.append(
             ReplaceWeight(
                 "CMS_htt_qcd_0jet_rate_{era}".format(era=args.era),
                 "qcd_weight",
-                Weight("{closureweight}*em_qcd_osss_stat_0jet_rate{shift}_Weight".format(closureweight=closureweight,shift=shift_direction), "qcd_weight"),
+                Weight(qcd_weight_string.replace(p0_[args.era]["0j"]["nom"], p0_[args.era]["0j"][shift_direction]), "qcd_weight"),
                 shift_direction.capitalize(),
             )
         )
@@ -1001,7 +1305,15 @@ def main(args):
             ReplaceWeight(
                 "CMS_htt_qcd_0jet_shape_{era}".format(era=args.era),
                 "qcd_weight",
-                Weight("{closureweight}*em_qcd_osss_stat_0jet_shape{shift}_Weight".format(closureweight=closureweight,shift=shift_direction), "qcd_weight"),
+                Weight(qcd_weight_string.replace(p1_[args.era]["0j"]["nom"], p1_[args.era]["0j"][shift_direction]), "qcd_weight"),
+                shift_direction.capitalize(),
+            )
+        )
+        qcd_variations.append(
+            ReplaceWeight(
+                "CMS_htt_qcd_0jet_shape2_{era}".format(era=args.era),
+                "qcd_weight",
+                Weight(qcd_weight_string.replace(p2_[args.era]["0j"]["nom"], p2_[args.era]["0j"][shift_direction]), "qcd_weight"),
                 shift_direction.capitalize(),
             )
         )
@@ -1010,59 +1322,55 @@ def main(args):
                 "CMS_htt_qcd_1jet_rate_{era}".format(
                     era=args.era),
                 "qcd_weight",
-                Weight(
-                    "{closureweight}*em_qcd_osss_stat_1jet_rate".format(closureweight=closureweight) +
-                    shift_direction +
-                    "_Weight",
-                    "qcd_weight"),
+                Weight(qcd_weight_string.replace(p0_[args.era]["1j"]["nom"], p0_[args.era]["1j"][shift_direction]), "qcd_weight"),
                 shift_direction.capitalize()))
         qcd_variations.append(
             ReplaceWeight(
                 "CMS_htt_qcd_1jet_shape_{era}".format(
                     era=args.era),
                 "qcd_weight",
-                Weight(
-                    "{closureweight}*em_qcd_osss_stat_1jet_shape".format(closureweight=closureweight) +
-                    shift_direction +
-                    "_Weight",
-                    "qcd_weight"),
+                Weight(qcd_weight_string.replace(p1_[args.era]["1j"]["nom"], p1_[args.era]["1j"][shift_direction]), "qcd_weight"),
+                shift_direction.capitalize()))
+        qcd_variations.append(
+            ReplaceWeight(
+                "CMS_htt_qcd_1jet_shape2_{era}".format(
+                    era=args.era),
+                "qcd_weight",
+                Weight(qcd_weight_string.replace(p2_[args.era]["1j"]["nom"], p2_[args.era]["1j"][shift_direction]), "qcd_weight"),
                 shift_direction.capitalize()))
         qcd_variations.append(
             ReplaceWeight(
                 "CMS_htt_qcd_2jet_rate_{era}".format(
                     era=args.era),
                 "qcd_weight",
-                Weight(
-                    "{closureweight}*em_qcd_osss_stat_2jet_rate".format(closureweight=closureweight) +
-                    shift_direction +
-                    "_Weight",
-                    "qcd_weight"),
+                Weight(qcd_weight_string.replace(p0_[args.era]["2j"]["nom"], p0_[args.era]["2j"][shift_direction]), "qcd_weight"),
                 shift_direction.capitalize()))
         qcd_variations.append(
             ReplaceWeight(
                 "CMS_htt_qcd_2jet_shape_{era}".format(
                     era=args.era),
                 "qcd_weight",
-                Weight(
-                    "{closureweight}*em_qcd_osss_stat_2jet_shape".format(closureweight=closureweight) +
-                    shift_direction +
-                    "_Weight",
-                    "qcd_weight"),
+                Weight(qcd_weight_string.replace(p1_[args.era]["2j"]["nom"], p1_[args.era]["2j"][shift_direction]), "qcd_weight"),
                 shift_direction.capitalize()))
         qcd_variations.append(
             ReplaceWeight(
-                "CMS_htt_qcd_iso_{era}".format(
+                "CMS_htt_qcd_2jet_shape2_{era}".format(
                     era=args.era),
                 "qcd_weight",
-                Weight(
-                    "{closureweight}*em_qcd_extrap_".format(closureweight=closureweight) +
-                    shift_direction +
-                    "_Weight",
-                    "qcd_weight"),
+                Weight(qcd_weight_string.replace(p2_[args.era]["2j"]["nom"], p2_[args.era]["2j"][shift_direction]), "qcd_weight"),
                 shift_direction.capitalize()))
-        qcd_variations.append(  # why do we need both CMS_htt_qcd_iso_Run$ERA and CMS_htt_qcd_iso ?
-            ReplaceWeight("CMS_htt_qcd_iso", "qcd_weight",
-                          Weight("{closureweight}*em_qcd_extrap_".format(closureweight=closureweight) + shift_direction + "_Weight", "qcd_weight"), shift_direction.capitalize()))
+    qcd_variations.append(
+        ReplaceWeight(
+            "CMS_htt_qcd_iso",
+            "qcd_weight",
+            Weight(qcd_weight_string.replace(qcd_aisoiso_string, qcd_aisoiso_string+"**2"), "qcd_weight"),
+            "Up"))
+    qcd_variations.append(
+        ReplaceWeight(
+            "CMS_htt_qcd_iso",
+            "qcd_weight",
+            Weight(qcd_weight_string.replace(qcd_aisoiso_string, ""), "qcd_weight"),
+            "Down"))
 
     for variation_ in qcd_variations:
         for process_nick in selectedProcesses & {"QCD"}:
@@ -1140,7 +1448,6 @@ def main(args):
 
 
 
-
     # add all variation from the systematics
     for chname_, ch_ in selectedChannelsTuples:
         for process_nick in processes[chname_]:
@@ -1150,6 +1457,7 @@ def main(args):
                     process=processes[chname_][process_nick],
                     channel=ch_,
                     era=era)
+
     # Produce histograms
     logger.info("Start producing shapes.")
     systematics.produce()

@@ -199,7 +199,7 @@ def main(args):
             "tt": TTSM2017(),
             "em": EMSM2017()
         }
-        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, NMSSMEstimation
+        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, NMSSMEstimation
 
         from shape_producer.era import Run2017
         era = Run2017(args.datasets)
@@ -211,7 +211,7 @@ def main(args):
             "tt": TTSM2018(),
             "em": EMSM2018()
         }
-        from shape_producer.estimation_methods_2018 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, NMSSMEstimation
+        from shape_producer.estimation_methods_2018 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, NMSSMEstimation
 
         from shape_producer.era import Run2018
         era = Run2018(args.datasets)
@@ -283,16 +283,19 @@ def main(args):
 
     ww_nicks = {"ggHWW125", "qqHWW125", "WHWW125", "ZHWW125"}
 
-    if args.gof_variable is None:
-        signal_nicks = {
-            "ttH125"} | {
-            ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict} | {
-            qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict}
+    # if args.gof_variable is None:
+    #     signal_nicks = {
+    #         "ttH125"} | {
+    #         ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict} | {
+    #         qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict}
+    # else:
+    print args.gof_variable
+    
+    if args.shape_group in ["all", "sm_signals"]:
+        signal_nicks = {"ggH125", "qqH125", "ttH125", "VH125"}
     else:
-        if args.shape_group in ["all", "sm_signals"]:
-            signal_nicks = {"ggH125", "qqH125", "ttH125"}
-
-
+        signal_nicks = set([])
+    print signal_nicks
     if args.shape_group in ["all", "backgrounds"]:  
         pnameToEstD = {
             "data_obs": DataEstimation,
@@ -330,6 +333,7 @@ def main(args):
                 friend_directory=friend_directory)
             for qqH_htxs in qqHEstimation.htxs_dict})
         pnameToEstD.update({"ttH125": ttHEstimation})
+        pnameToEstD.update({"VH125": VHEstimation})
 
     # Generate dict mapping processnames to processes
     processes = {}
@@ -1399,17 +1403,17 @@ def main(args):
     if args.gof_variable is None:
 
         nmssm_variations = []
-        nmssm_variations.append(
-            AddWeight("MG_scale_choice", "muR1p0_muF1p0_scale_ht_weight",
-                          Weight("(muR1p0_muF1p0_scale_ht_weight)", "muR1p0_muF1p0_scale_ht_weight"),
-                          "Up"))
-        nmssm_variations.append(
-            AddWeight("MG_scale_choice", "muR1p0_muF1p0_scale_ht_weight",
-                          Weight("(1.0/muR1p0_muF1p0_scale_ht_weight)", "muR1p0_muF1p0_scale_ht_weight"),
-                          "Down"))
+        # nmssm_variations.append(
+        #     AddWeight("MG_scale_choice", "muR1p0_muF1p0_scale_ht_weight",
+        #                   Weight("(muR1p0_muF1p0_scale_ht_weight)", "muR1p0_muF1p0_scale_ht_weight"),
+        #                   "Up"))
+        # nmssm_variations.append(
+        #     AddWeight("MG_scale_choice", "muR1p0_muF1p0_scale_ht_weight",
+        #                   Weight("(1.0/muR1p0_muF1p0_scale_ht_weight)", "muR1p0_muF1p0_scale_ht_weight"),
+        #                   "Down"))
         nmssm_variations.append(
             AddWeight("MG_scale_norm", "muR1p0_muF2p0_weight",
-                          Weight("(muR1p0_muF2p0_weight)", "muR1p0_muF2p0_weight"),
+                          Weight("(1.0/muR1p0_muF0p5_weight)", "muR1p0_muF0p5_weight"),
                           "Up"))
         nmssm_variations.append(
             AddWeight("MG_scale_norm", "muR1p0_muF0p5_weight",

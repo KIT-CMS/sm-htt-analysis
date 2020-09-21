@@ -22,7 +22,7 @@ logandrun python shapes/produce_nmssm_shapes.py \
     --channels ${CHANNELS} \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
-    --num-threads 18 \
+    --num-threads 8 \
     --directory $ARTUS_OUTPUTS \
     --discriminator-variable $VARIABLE \
     --et-friend-directory $SVFit_Friends $NNScore_Friends $HHKinFit_Friends \
@@ -39,7 +39,7 @@ logandrun python shapes/produce_nmssm_shapes.py \
     --channels ${CHANNELS} \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
-    --num-threads 2 \
+    --num-threads 4 \
     --directory $ARTUS_OUTPUTS \
     --discriminator-variable $VARIABLE \
     --et-friend-directory $SVFit_Friends $NNScore_Friends $HHKinFit_Friends \
@@ -56,7 +56,7 @@ logandrun python shapes/produce_nmssm_shapes.py \
     --channels ${CHANNELS} \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
-    --num-threads 10 \
+    --num-threads 5 \
     --directory $ARTUS_OUTPUTS \
     --discriminator-variable $VARIABLE \
     --et-friend-directory $SVFit_Friends $NNScore_Friends $HHKinFit_Friends \
@@ -73,7 +73,7 @@ logandrun python shapes/produce_nmssm_shapes.py \
     --channels ${CHANNELS} \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
-    --num-threads 10 \
+    --num-threads 5 \
     --directory $ARTUS_OUTPUTS \
     --discriminator-variable $VARIABLE \
     --et-friend-directory $SVFit_Friends $NNScore_Friends $HHKinFit_Friends \
@@ -90,7 +90,7 @@ logandrun python shapes/produce_nmssm_shapes.py \
     --channels ${CHANNELS} \
     --datasets $KAPPA_DATABASE \
     --binning $BINNING \
-    --num-threads 10 \
+    --num-threads 5 \
     --directory $ARTUS_OUTPUTS \
     --discriminator-variable $VARIABLE \
     --et-friend-directory $SVFit_Friends $NNScore_Friends $HHKinFit_Friends \
