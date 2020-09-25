@@ -14,6 +14,7 @@ variables:
     - ME_q2v1
     - ME_q2v2
     - mTdileptonMET_puppi
+    - DiTauDeltaR
 
 selected_variables:
     2016:
@@ -32,6 +33,7 @@ selected_variables:
             - dijetpt
             - ME_q2v1
             - ME_q2v2
+            - DiTauDeltaR
         et:
             - pt_1
             - pt_2
@@ -47,6 +49,7 @@ selected_variables:
             - dijetpt
             - ME_q2v1
             - ME_q2v2
+            - DiTauDeltaR
         tt:
             - pt_1
             - pt_2
@@ -62,6 +65,7 @@ selected_variables:
             - dijetpt
             - ME_q2v1
             - ME_q2v2
+            - DiTauDeltaR
         em:
             - pt_1
             - pt_2
@@ -77,6 +81,7 @@ selected_variables:
             - ME_q2v1
             - ME_q2v2
             - mTdileptonMET_puppi
+            - DiTauDeltaR
     2017:
         mt:
             - pt_1
@@ -93,6 +98,7 @@ selected_variables:
             - dijetpt
             - ME_q2v1
             - ME_q2v2
+            - DiTauDeltaR
         et:
             - pt_1
             - pt_2
@@ -108,6 +114,7 @@ selected_variables:
             - dijetpt
             - ME_q2v1
             - ME_q2v2
+            - DiTauDeltaR
         tt:
             - pt_1
             - pt_2
@@ -123,6 +130,7 @@ selected_variables:
             - dijetpt
             - ME_q2v1
             - ME_q2v2
+            - DiTauDeltaR
         em:
             - pt_1
             - pt_2
@@ -138,6 +146,7 @@ selected_variables:
             - ME_q2v1
             - ME_q2v2
             - mTdileptonMET_puppi
+            - DiTauDeltaR
     2018:
         mt:
             - pt_1
@@ -154,6 +163,7 @@ selected_variables:
             - dijetpt
             - ME_q2v1
             - ME_q2v2
+            - DiTauDeltaR
         et:
             - pt_1
             - pt_2
@@ -169,6 +179,7 @@ selected_variables:
             - dijetpt
             - ME_q2v1
             - ME_q2v2
+            - DiTauDeltaR
         tt:
             - pt_1
             - pt_2
@@ -184,6 +195,7 @@ selected_variables:
             - dijetpt
             - ME_q2v1
             - ME_q2v2
+            - DiTauDeltaR
         em:
             - pt_1
             - pt_2
@@ -199,3 +211,4 @@ selected_variables:
             - ME_q2v1
             - ME_q2v2
             - mTdileptonMET_puppi
+            - DiTauDeltaR
