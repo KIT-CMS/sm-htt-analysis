@@ -196,20 +196,36 @@ def plot_shapes(tag, mode, shapefile, channels, eras):
                 break
         if (returncode != 0):
             break
+        if "postfit" in args.mode:
+                plotdir = "output/plots/{ERA}-{TAG}-{CHANNEL}_shape-plots_postfit".format(
+                    ERA="all", TAG=tag, CHANNEL=channel)
+        else:
+            plotdir = "output/plots/{ERA}-{TAG}-{CHANNEL}_shape-plots_prefit".format(
+                    ERA="all", TAG=tag, CHANNEL=channel)
+        if not os.path.exists(plotdir):
+            os.makedirs(plotdir)
         returncode = os.system(
             "./plotting/plot_shapes_combined.py -i {FILE} -o {PLOTDIR} \
             -c {CHANNEL} -e all --categories {CATEGORIES} \
-            --fake-factor --embedding --normalize-by-bin-width \
+            --fake-factor --embedding \
             -l --train-ff True --train-emb True {ADDITIONALS}".format(
                 FILE=shapefile,
                 CATEGORIES=categories,
                 CHANNEL=channel,
                 PLOTDIR=plotdir,
                 ADDITIONALS=additionals + " --combine-backgrounds"))
+    if "postfit" in args.mode:
+                plotdir = "output/plots/{ERA}-{TAG}-{CHANNEL}_shape-plots_postfit".format(
+                    ERA="all", TAG=tag, CHANNEL="cmb")
+    else:
+        plotdir = "output/plots/{ERA}-{TAG}-{CHANNEL}_shape-plots_prefit".format(
+                ERA="all", TAG=tag, CHANNEL="cmb")
+    if not os.path.exists(plotdir):
+        os.makedirs(plotdir)
     returncode = os.system(
                 "./plotting/plot_shapes_combined.py -i {FILE} -o {PLOTDIR} \
                 -c cmb -e all --categories {CATEGORIES} \
-                --fake-factor --embedding --normalize-by-bin-width \
+                --fake-factor --embedding \
                 -l --train-ff True --train-emb True {ADDITIONALS}".format(
                     FILE=shapefile,
                     CATEGORIES=categories,

@@ -121,15 +121,18 @@ def setup_logging(output_file, level=logging.DEBUG):
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 
+scaling = {}
 
 signal_labels = {
     "inclusive": {
         "style": "inclusive",
-        "label": "gg#rightarrowH + qq#rightarrowH (#mu=0.88)"
+        "label": "gg#rightarrowH + qq#rightarrowH (#mu=0.75)",
+        "label_prefit": "gg#rightarrowH + qq#rightarrowH"
     },
     "ggH": {
         "style": "ggH",
-        "label": "gg#rightarrowH (#mu=0.98)"
+        "label": "gg#rightarrowH (#mu=0.68)",
+        "label_prefit": "gg#rightarrowH "
     },
     "ggH_hww": {
         "style": "ggH",
@@ -137,7 +140,8 @@ signal_labels = {
     },
     "qqH": {
         "style": "qqH",
-        "label": "qq#rightarrowH (#mu=0.79)"
+        "label": "qq#rightarrowH",
+        "label_prefit": "qq#rightarrowH"
     },
     "qqH_hww": {
         "style": "qqH",
@@ -158,22 +162,22 @@ signal_labels = {
 }
 
 mu_dict = {
-    "200": "-1.27",
-    "201": "1.35",
-    "202": "1.26",
-    "203": "0.12",
-    "100": "-1.14",
+    "200": "-1.00",
+    "201": "0.15",
+    "202": "1.46",
+    "203": "1.24",
+    "100": "-1.69",
     "101": "-0.44",
-    "102": "1.74",
-    "103": "2.77",
-    "104": "2.11",
-    "105": "1.33",
-    "106": "1.33",
-    "107": "1.33",
-    "108": "1.8",
-    "109": "2.56",
-    "110": "1.33",
-    "111": "1.33"
+    "102": "0.75",
+    "103": "2.11",
+    "104": "1.62",
+    "105": "1.51",
+    "106": "1.51",
+    "107": "1.51",
+    "108": "1.57",
+    "109": "2.35",
+    "110": "2.35",
+    "111": "1.51"
 }
 
 
@@ -1006,11 +1010,13 @@ class plot():
             self.painter.subplot(0).setYlabel("N_{events}")
 
         self.painter.subplot(1).setYlabel("Ratio")
-        # self.painter.scaleYLabelSize(0.6)
+        self.painter.scaleYLabelSize(0.6)
         self.painter.scaleYTitleOffset(1.1)
+        if self.plotConfig.tag == "stxs_stage0" and self.category == "1":
+            self.painter.scaleYTitleOffset(0.85)
 
     def rescale_upper_plot(self):
-        scaling = {}
+        # scaling = {}
         signalsteps = [7, 12, 16, 19, 21, 28]
         for i, edge in enumerate(signalsteps[:-1]):
             scaling[i] = {"interval": [edge, signalsteps[i + 1]], "sf": 1.0}
@@ -1037,12 +1043,12 @@ class plot():
 
         # now set the labels of the scalefactor
         # the plot starts at ~3/28 and ends at ~27/28
-        for i, interval in enumerate(scaling):
-            step = 0.03042 * scaling[interval]["interval"][0] + 0.1211
-            self.painter.DrawText(step,
-                                  0.72,
-                                  "x {}".format(int(scaling[interval]["sf"])),
-                                  textsize=0.025)
+        # for i, interval in enumerate(scaling):
+        #     step = 0.03042 * scaling[interval]["interval"][0] + 0.1211
+        #     self.painter.DrawText(step,
+        #                           0.72,
+        #                           "x {}".format(int(scaling[interval]["sf"])),
+        #                           textsize=0.025)
 
         for hist_name in self.painter.subplot(0)._hists.keys():
             histogram = self.painter.subplot(0).get_hist(hist_name)
@@ -1136,17 +1142,31 @@ class plot():
             if len(
                     get_signal_for_category(
                         self.category)["displayname"].split(", ")) > 2:
-                main_signal_label = "#splitline{%s}{%s (#mu=%s)}" % (
-                    ", ".join(
+                
+                if "prefit" in self.plotConfig.inputfile:
+                    main_signal_label = "#splitline{%s}{%s}" % (
+                        ", ".join(
+                            get_signal_for_category(
+                                self.category)["displayname"].split(", ")[:2]),
                         get_signal_for_category(
-                            self.category)["displayname"].split(", ")[:2]),
-                    get_signal_for_category(
-                        self.category)["displayname"].split(", ")[2],
-                    mu_dict[self.category])
+                            self.category)["displayname"].split(", ")[2])
+                else:
+                    main_signal_label = "#splitline{%s}{%s (#mu=%s)}" % (
+                        ", ".join(
+                            get_signal_for_category(
+                                self.category)["displayname"].split(", ")[:2]),
+                        get_signal_for_category(
+                            self.category)["displayname"].split(", ")[2],
+                        mu_dict[self.category])
             else:
-                main_signal_label = "#splitline{%s}{(#mu=%s)}" % (
-                    get_signal_for_category(
-                        self.category)["displayname"], mu_dict[self.category])
+                if "prefit" in self.plotConfig.inputfile:
+                    main_signal_label = "%s" % (
+                        get_signal_for_category(
+                            self.category)["displayname"])
+                else:
+                    main_signal_label = "#splitline{%s}{(#mu=%s)}" % (
+                        get_signal_for_category(
+                            self.category)["displayname"], mu_dict[self.category])
             self.painter.legend(1).add_entry(1, "main_signal",
                                              main_signal_label, 'l')
             self.painter.legend(1).add_entry(
@@ -1158,13 +1178,22 @@ class plot():
                     " (other)" if "qqH" in get_signal_for_category(
                         self.category)["displayname"] else ""), 'l')
         elif self.isSignal:
-            self.painter.legend(1).add_entry(
-                1, "ggH", "{}".format(signal_labels["ggH"]["label"]), 'l')
-            self.painter.legend(1).add_entry(
-                1, "qqH", "{}".format(signal_labels["qqH"]["label"]), 'l')
-            self.painter.legend(1).add_entry(
-                1, "inclusive_ratio",
-                "{}".format(signal_labels["inclusive"]["label"]), 'l')
+            if "prefit" in self.plotConfig.inputfile:
+                self.painter.legend(1).add_entry(
+                    1, "ggH", "{}".format(signal_labels["ggH"]["label_prefit"]), 'l')
+                self.painter.legend(1).add_entry(
+                    1, "qqH", "{}".format(signal_labels["qqH"]["label_prefit"]), 'l')
+                self.painter.legend(1).add_entry(
+                    1, "inclusive_ratio",
+                    "{}".format(signal_labels["inclusive"]["label_prefit"]), 'l')
+            else:
+                self.painter.legend(1).add_entry(
+                    1, "ggH", "{}".format(signal_labels["ggH"]["label"]), 'l')
+                self.painter.legend(1).add_entry(
+                    1, "qqH", "{}".format(signal_labels["qqH"]["label"]), 'l')
+                self.painter.legend(1).add_entry(
+                    1, "inclusive_ratio",
+                    "{}".format(signal_labels["inclusive"]["label"]), 'l')
         self.painter.legend(1).setAlpha(0.0)
         self.painter.legend(1).Draw()
 
@@ -1459,17 +1488,30 @@ class plotConfigurator():
                         if len(
                                 get_signal_for_category(category)
                             ["displayname"].split(", ")) > 2:
-                            main_signal_label = "#splitline{%s}{%s (#mu=%s)}" % (
-                                ", ".join(
-                                    get_signal_for_category(category)
-                                    ["displayname"].split(", ")[:2]),
-                                get_signal_for_category(
-                                    category)["displayname"].split(", ")[2],
-                                mu_dict[category])
+                            if "prefit" in self.inputfile:
+                                main_signal_label = "#splitline{%s}{%s}" % (
+                                    ", ".join(
+                                        get_signal_for_category(category)
+                                        ["displayname"].split(", ")[:2]),
+                                    get_signal_for_category(
+                                        category)["displayname"].split(", ")[2])
+                            else:
+                                main_signal_label = "#splitline{%s}{%s (#mu=%s)}" % (
+                                    ", ".join(
+                                        get_signal_for_category(category)
+                                        ["displayname"].split(", ")[:2]),
+                                    get_signal_for_category(
+                                        category)["displayname"].split(", ")[2],
+                                    mu_dict[category])
                         else:
-                            main_signal_label = "#splitline{%s}{(#mu=%s)}" % (
+                            if "prefit" in self.inputfile:
+                                main_signal_label = "%s" % (
                                 get_signal_for_category(category)
-                                ["displayname"], mu_dict[category])
+                                ["displayname"],)
+                            else:
+                                main_signal_label = "#splitline{%s}{(#mu=%s)}" % (
+                                    get_signal_for_category(category)
+                                    ["displayname"], mu_dict[category])
                         single_plot.mainsignal = get_signal_for_category(
                             category)
                         single_plot.add_signal("main_signal",
@@ -1489,18 +1531,32 @@ class plotConfigurator():
                     else:
                         single_plot.mainsignal.extend(
                             ["ggH_htt", "qqH_htt", "inclusive"])
-                        single_plot.add_signal("ggH",
-                                               signal_labels["ggH"]["label"],
-                                               styles.color_dict["ggH"],
-                                               ["ggH_htt"], True)
-                        single_plot.add_signal("qqH",
-                                               signal_labels["qqH"]["label"],
-                                               styles.color_dict["qqH"],
-                                               ["qqH_htt"], True)
-                        single_plot.add_signal(
-                            "inclusive", signal_labels["inclusive"]["label"],
-                            styles.color_dict["inclusive"],
-                            ["qqH_htt", "ggH_htt"], True)
+                        if "prefit" in self.inputfile:
+                            single_plot.add_signal("ggH",
+                                                signal_labels["ggH"]["label_prefit"],
+                                                styles.color_dict["ggH"],
+                                                ["ggH_htt"], True)
+                            single_plot.add_signal("qqH",
+                                                signal_labels["qqH"]["label_prefit"],
+                                                styles.color_dict["qqH"],
+                                                ["qqH_htt"], True)
+                            single_plot.add_signal(
+                                "inclusive", signal_labels["inclusive"]["label_prefit"],
+                                styles.color_dict["inclusive"],
+                                ["qqH_htt", "ggH_htt"], True)
+                        else:
+                            single_plot.add_signal("ggH",
+                                                signal_labels["ggH"]["label"],
+                                                styles.color_dict["ggH"],
+                                                ["ggH_htt"], True)
+                            single_plot.add_signal("qqH",
+                                                signal_labels["qqH"]["label"],
+                                                styles.color_dict["qqH"],
+                                                ["qqH_htt"], True)
+                            single_plot.add_signal(
+                                "inclusive", signal_labels["inclusive"]["label"],
+                                styles.color_dict["inclusive"],
+                                ["qqH_htt", "ggH_htt"], True)
                 self.plots.append(single_plot)
 
 
@@ -1518,7 +1574,8 @@ def main(args):
         logger.debug(
             "Getting shapes for channel: {} / category: {} / era: {}".format(
                 channel, category, era))
-
+        if "stage1" in args.categories:
+            plotConfig.settings["normalize_by_bin_width"] = True
         ##################
         # get background histograms
         #################
@@ -1559,6 +1616,7 @@ def main(args):
         if plotConfig.settings["normalize_by_bin_width"]:
             plot.painter.subplot(0).normalizeByBinWidth()
             plot.painter.subplot(1).normalizeByBinWidth()
+        
 
         ##################
         # setup ratio plot
@@ -1616,6 +1674,14 @@ def main(args):
                         get_label_for_category(category, plotConfig.tag)),
             begin_left=None,
             textsize=0.026)
+
+        if plot.category == "1":
+            for i, interval in enumerate(scaling):
+                step = 0.03042 * scaling[interval]["interval"][0] + 0.1211
+                plot.painter.DrawText(step,
+                                        0.72,
+                                        "x {}".format(int(scaling[interval]["sf"])),
+                                        textsize=0.025)
 
         # save plot
         postfix = "prefit" if "prefit" in plotConfig.inputfile else "postfit" if "postfit" in plotConfig.inputfile else "undefined"
