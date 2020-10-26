@@ -110,7 +110,7 @@ config_template = {
     "files": [None],
     "labels": ["", ""],
     "legend": [0.38, 0.47, 0.88, 0.83],
-    "legend_cols": 2,
+    "legend_cols": 1,
     "legend_markers": ["ELP", "ELP"],
     "stacks": ["ratio_bkg", "ratio_data"],
     "markers": ["E2", "P"],
@@ -122,13 +122,13 @@ config_template = {
     "nicks_blacklist": ["noplot"],
     "analysis_modules": ["Ratio"],
     "ratio_result_nicks": ["ratio_Bkg", "ratio_Data"],
-    "y_subplot_lims": [0.75, 1.25],
+    "y_subplot_lims": [0.2, 2.2],
     "y_label": "N_{evts}",
-    "y_subplot_label": "#scale[0.8]{stat bkg unc.}",
-    "subplot_lines": [0.9, 1.0, 1.1]
+    "y_subplot_label": "Bkg. unc.",
+    "subplot_lines": [0.5, 1.0, 1.5]
 }
 
-logvars = ["nbtag","njets","jpt_1","jpt_2"]
+logvars = ["nbtag","njets","jpt_1","jpt_2", "kinfit_chi2"]
 
 
 def main(args,heavy_masses,light_masses):
@@ -147,9 +147,9 @@ def main(args,heavy_masses,light_masses):
         signal_names.append("nmssm_{}_125_{}".format(heavy_masses[i],light_masses[i]))
     if args.emb and args.ff:
         bkg_processes_names = [
-         "emb", "zll", "ttl", "vvl", "fakes"
+         "emb", "zll", "ttl", "vvl",  "fakes" ,"htt"
         ]   
-        bkg_processes = ["EMB", "ZL", "TTL", "VVL", "jetFakes"]
+        bkg_processes = ["EMB", "ZL", "TTL", "VVL",  "jetFakes", "HTT"]
     elif args.emb:
         bkg_processes_names = ["emb", "zll","zj", "ttl", "ttj","vvl", "vvj", "w", "qcd"]
         bkg_processes = ["EMB", "ZL", "ZJ","TTL", "TTJ","VVL", "VVJ", "W", "QCD"]
@@ -227,18 +227,18 @@ def main(args,heavy_masses,light_masses):
             config["files"] = [shapes]
             config["lumis"] = [lumi]
             config["year"] = era.strip("Run")
-            config["output_dir"] = output_dir+"/"+channel+"/"#+category
+            config["output_dir"] = output_dir+"/"+channel+"/"+category
             config["y_log"] = True if ((variable in logvars) or y_log) else False
             config["x_log"] = True if x_log else False
 
-            config["y_rel_lims"] = [5, 1500] if (variable in logvars) else [0., 1.9]
+            config["y_rel_lims"] = [5, 3500] if (variable in logvars) else [0., 1.9]
             if variable == "m_sv_puppi" and channel in ["mt","et"]:
                 config["y_rel_lims"] = [0.,1.9]
             config["markers"] = ["HIST"] * len(bkg_processes_names) + ["E2"]  + ["LINE"]*len(signal_names) + ["P"] + ["E2"] + ["LINE"]*len(signal_names) + ["P"]
             config["legend_markers"] = ["F"] * (len(bkg_processes_names))   + ["F"] +  ["LX0"]*len(signal_names) + ["ELP"] + ["E2"] + ["L"]*len(signal_names) + ["P"]
             signal_label = []#['#scale[0.85]{H(%s)#rightarrowh(125)h"(%s) (1 pb)}'%(heavy_mass,light_mass)] if channel=="tt" else ['#scale[0.85]{H(%s)#rightarrowh(125)h"(%s) (10 pb)}'%(heavy_mass,light_mass)]
             for i in range(len(heavy_masses)):
-                sig_string = '#scale[0.85]{H(%s)#rightarrowh(125)h"(%s) (1 pb)}'%(heavy_masses[i],light_masses[i]) if channel=="tt" else '#scale[0.85]{H(%s)#rightarrowh(125)h"(%s) (10 pb)}'%(heavy_masses[i],light_masses[i])
+                sig_string = '#scale[0.95]{H(%s)#rightarrowh(125)h"(%s) (1 pb)}'%(heavy_masses[i],light_masses[i]) if channel=="tt" else '#scale[0.95]{H(%s)#rightarrowh(125)h"(%s) (10 pb)}'%(heavy_masses[i],light_masses[i])
                 signal_label.append(sig_string)
             sig_colors = ["#8B008B", "#8a8a00", "#008a8a", "#8a0022", "#22008a"]
             config["labels"] = bkg_processes_names + ["Bkg.unc."] + signal_label + ["data"
@@ -265,7 +265,7 @@ def main(args,heavy_masses,light_masses):
                     [channel, category, analysis, era, variable, mass, str(heavy_mass), str(light_mass)])
             else:
                 config["filename"] = "_".join(
-                    [channel, category, analysis, era, variable, mass, str(heavy_mass), str(light_mass), "emb"])
+                    [channel, category, analysis, era, variable, mass, str(500), str(100), "emb"])
             if args.comparison:
                 config["filename"] = "_".join(
                     [channel, category, analysis, era, variable, mass,"comparison"]) + args.filename_prefix
@@ -356,9 +356,9 @@ def prefit(args,heavy_mass,light_mass):
 
     if args.emb and args.ff:
         bkg_processes_names = [
-         "emb", "zll", "ttl", "vvl", "ggh", "qqh","tth", "fakes"
+         "emb", "zll", "ttl", "vvl", "fakes", "htt"
         ]
-        bkg_processes = ["EMB", "ZL", "TTL", "VVL", "ggH125", "qqH125", "ttH125", "jetFakes"]
+        bkg_processes = ["EMB", "ZL", "TTL", "VVL", "jetFakes", "HTT"]
 
     elif args.emb:
         bkg_processes_names = ["emb", "zll","zj", "ttl", "ttj","vvl", "vvj", "w", "qcd"]
@@ -471,9 +471,9 @@ def prefit(args,heavy_mass,light_mass):
             signal_label = ['#scale[0.85]{H(%s)#rightarrowh(125)h"(%s) (0.1 pb)}'%(heavy_mass,light_mass)]
             config["labels"] = bkg_processes_names + ["Bkg.unc."] + signal_label + ["data"
                                                       ] + [""]*len(signal_names) + ["", "p={}".format(p_value)]
-            # if category>4:
-            #     config["labels"] = bkg_processes_names + ["Bkg.unc."] + signal_label + ["data"
-                                                    #   ] + [""]*len(signal_names) + ["", ""]
+            if category>4:
+                 config["labels"] = bkg_processes_names + ["Bkg.unc."] + signal_label + ["data"
+                                                       ] + [""]*len(signal_names) + ["", ""]
             config["nicks"] = bkg_processes_names + signal_names + ["data"]
             
             config["colors"] = bkg_processes_names + ["transgrey"] + ["#8B008B"]*len(signal_names) + ["data"
@@ -504,7 +504,7 @@ def prefit(args,heavy_mass,light_mass):
             title_dict["et"] = "e#tau_{h}"
             title_dict["em"] = "e#mu"
 
-            config["title"] = "#scale[0.8]{" + title_dict[channel] + " " + prefit_categories[category].replace("NMSSM_","") + "}" #"_".join(["channel", channel])
+            config["title"] = "#scale[0.8]{" + title_dict[channel] + " " + prefit_categories[category].replace("NMSSM_","").replace("MH280to280_unboosted","MH280").replace("MH240to240_unboosted","MH240").replace("MH320to320_unboosted","MH320") + "}" #"_".join(["channel", channel])
             config["stacks"] = ["mc"] * len(bkg_processes_names) + signal_names + ["bkg_unc"] +[
                 "data"
             ] + [x+"Ratio" for x in signal_names] + config["stacks"]
