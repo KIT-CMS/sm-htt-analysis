@@ -283,19 +283,12 @@ def main(args):
 
     ww_nicks = {"ggHWW125", "qqHWW125", "WHWW125", "ZHWW125"}
 
-    # if args.gof_variable is None:
-    #     signal_nicks = {
-    #         "ttH125"} | {
-    #         ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict} | {
-    #         qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict}
-    # else:
-    print args.gof_variable
     
     if args.shape_group in ["all", "sm_signals"]:
         signal_nicks = {"ggH125", "qqH125", "ttH125", "VH125"}
     else:
         signal_nicks = set([])
-    print signal_nicks
+   
     if args.shape_group in ["all", "backgrounds"]:  
         pnameToEstD = {
             "data_obs": DataEstimation,
