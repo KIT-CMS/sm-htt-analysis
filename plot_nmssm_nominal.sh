@@ -6,6 +6,8 @@ VARIABLE=$3
 
 ./shapes/produce_shapes_variables_nominal.sh $ERA $CHANNEL $VARIABLE 
 
+python add_hists.py --input-hist ttH125 VH125 ggH125 qqH125 --output-hist HTT --mode control output/shapes/${ERA}_${CHANNEL}_${VARIABLE}/${ERA}-${ERA}_${CHANNEL}_${VARIABLE}-${CHANNEL}-shapes.root 
+
 python plot_nmssm_nominal.py  -v ${VARIABLE} --era Run${ERA}  --shapes output/shapes/${ERA}_${CHANNEL}_${VARIABLE}/${ERA}-${ERA}_${CHANNEL}_${VARIABLE}-${CHANNEL}-shapes.root -c $CHANNEL --emb   --output-dir plots/hiscore/nolog --ff
 
 #done
