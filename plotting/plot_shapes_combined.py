@@ -1289,6 +1289,8 @@ class plotConfigurator():
         }
         self.categories = {}
         self.detailed_signals = [
+            'ggH_0J_PTH_0_10_htt', 'ggH_0J_PTH_GT10_htt',
+            'ggH_1J_PTH_0_60_htt', 'ggH_1J_PTH_60_120_htt',
             'ggH_1J_PTH_120_200_htt', 'ggH_GE2J_MJJ_0_350_PTH_120_200_htt',
             'ggH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt',
             'ggH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt',
