@@ -11,7 +11,7 @@ export LCG_RELEASE=96
 source utils/setup_cvmfs_sft.sh
 
 source utils/setup_python.sh
-source utils/setup_samples.sh $ERA $TAG
+source utils/setup_samples.sh $ERA $TAG $CHANNELS
 source utils/bashFunctionCollection.sh
 ensureoutdirs
 

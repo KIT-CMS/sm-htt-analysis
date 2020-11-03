@@ -3,11 +3,11 @@ set -e # quit on error
 shopt -s checkjobs # wait for all jobs before exiting
 
 era=$1
-channels=$( echo $2 | tr "," " " )
+channel=$2
 modus=$3
 tag=$4
 all_eras=$5
-outdir=${era}_${tag}
+
 source utils/bashFunctionCollection.sh
 ## set the user specific paths (cluster, remote, batch_out, cmssw_src)
 source .userconfig
@@ -25,9 +25,15 @@ if [[ ! "etp7 lxplus7 naf7" =~ $cluster || -z $cluster ]]; then
     exit 1
 fi
 
+outdir=${era}_${tag}_${channel}
 if [[ $cluster = "etp7" ]]; then
-    source utils/setup_samples.sh $era $tag
-    ARTUS_FRIENDS="${ARTUS_FRIENDS} ${ARTUS_FRIENDS_FAKE_FACTOR}"
+    source utils/setup_samples.sh $era $tag $channel
+    if [[ $channel == *"em"* ]]
+    then
+        ARTUS_FRIENDS="${ARTUS_FRIENDS_APPLICATION}"
+    else
+        ARTUS_FRIENDS="${ARTUS_FRIENDS_APPLICATION} ${ARTUS_FRIENDS_FAKE_FACTOR}"
+    fi
     eventsPerJob=2000000
     walltime=10000
 elif [[ $cluster == "lxplus7" ]]; then
@@ -90,31 +96,32 @@ if [[ "submit" == $modus && ! -f $submitlock  ]]; then
 if [[ $all_eras == 1 ]]; then
 echo Executing with conditional argument
 $jm --executable NNScore \\
-                  --batch_cluster $cluster \\
-                  --command $modus \\
-                  --input_ntuples_directory $ARTUS_OUTPUTS  \\
-                  --walltime $walltime  \\
-                  --events_per_job $eventsPerJob \\
-                  --friend_ntuples_directories $ARTUS_FRIENDS \\
-                  --extra-parameters "--lwtnn_config \$CMSSW_BASE/src/HiggsAnalysis/friend-tree-producer/data/inputs_lwtnn/$tag" \\
-                  --cores 6 \\
-                  --restrict_to_channels $channels \\
-                  --conditional 1 \\
-                  --custom_workdir_path $workdir && touch $submitlock
+                --batch_cluster $cluster \\
+                --command $modus \\
+                --input_ntuples_directory $ARTUS_OUTPUTS  \\
+                --walltime $walltime  \\
+                --events_per_job $eventsPerJob \\
+                --friend_ntuples_directories $ARTUS_FRIENDS \\
+                --extra-parameters "--lwtnn_config \$CMSSW_BASE/src/HiggsAnalysis/friend-tree-producer/data/inputs_lwtnn/$tag" \\
+                --cores 6 \\
+                --restrict_to_channels $channel \\
+                --conditional 1 \\
+                --custom_workdir_path $workdir && touch $submitlock
 
 else
 echo Executing without conditional argument
 $jm --executable NNScore \\
-                  --batch_cluster $cluster \\
-                  --command $modus \\
-                  --input_ntuples_directory $ARTUS_OUTPUTS  \\
-                  --walltime $walltime  \\
-                  --events_per_job $eventsPerJob \\
-                  --friend_ntuples_directories $ARTUS_FRIENDS \\
-                  --extra-parameters "--lwtnn_config \$CMSSW_BASE/src/HiggsAnalysis/friend-tree-producer/data/inputs_lwtnn/$tag" \\
-                  --cores 6 \\
-                  --restrict_to_channels $channels \\
-                  --custom_workdir_path $workdir && touch $submitlock
+                --batch_cluster $cluster \\
+                --command $modus \\
+                --input_ntuples_directory $ARTUS_OUTPUTS  \\
+                --walltime $walltime  \\
+                --events_per_job $eventsPerJob \\
+                --friend_ntuples_directories $ARTUS_FRIENDS \\
+                --extra-parameters "--lwtnn_config \$CMSSW_BASE/src/HiggsAnalysis/friend-tree-producer/data/inputs_lwtnn/$tag" \\
+                --cores 6 \\
+                --restrict_to_channels $channel \\
+                --conditional 1 \\
+                --custom_workdir_path $workdir && touch $submitlock
 fi
 else
 echo Skipping submission, because $submitlock exists
@@ -130,15 +137,15 @@ fi
 
 if [[ "collect" == $modus && ! -f $collectlock  ]]; then
 $jm --executable NNScore \\
-                  --batch_cluster $cluster \\
-                  --command $modus \\
-                  --input_ntuples_directory $ARTUS_OUTPUTS  \\
-                  --walltime $walltime  \\
-                  --events_per_job $eventsPerJob \\
-                  --friend_ntuples_directories $ARTUS_FRIENDS \\
-                  --cores 4 \\
-                  --restrict_to_channels $channels \\
-                  --custom_workdir_path $workdir && touch $collectlock
+                --batch_cluster $cluster \\
+                --command $modus \\
+                --input_ntuples_directory $ARTUS_OUTPUTS  \\
+                --walltime $walltime  \\
+                --events_per_job $eventsPerJob \\
+                --friend_ntuples_directories $ARTUS_FRIENDS \\
+                --cores 4 \\
+                --restrict_to_channels $channel \\
+                --custom_workdir_path $workdir && touch $collectlock
 fi
 
 if [[ "delete" == $modus ]]; then

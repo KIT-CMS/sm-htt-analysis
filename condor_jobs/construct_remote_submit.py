@@ -90,7 +90,33 @@ def buildprocesses(era, channelname):
         | {qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict}
         | ww_nicks
     )
-    
+        # add SUSY signals:
+    mass_dict = {
+        "2016": {
+            "ggH": [80, 90, 100, 110, 120, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200],
+            "bbH_nlo": [80, 90, 110, 120, 130, 140, 160, 180, 200, 250, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200],
+        },
+        "2017": {
+            "ggH": [80, 90, 100, 110, 120, 130, 140, 180, 200, 250, 300, 350, 400, 450, 600, 700, 800, 900, 1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200],
+            "bbH_nlo": [80, 90, 110, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500],
+        },
+        "2018": {
+            "ggH": [80, 90, 100, 110, 120, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 600, 700, 800, 900, 1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200],
+            "bbH_nlo": [80, 90, 100, 110, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500],
+        }
+    }
+
+    susyggH_masses = mass_dict[era]["ggH"]
+    susybbH_masses = mass_dict[era]["bbH_nlo"]
+    # mssm ggH and bbH signals
+    for ggH_contribution in ["ggh_t", "ggh_b", "ggh_i", "ggH_t", "ggH_b", "ggH_i", "ggA_t", "ggA_b", "ggA_i"]:
+        for mass in susyggH_masses:
+            name = ggH_contribution + "_" + str(mass)
+            signal_nicks.add(name)
+    for m in susybbH_masses:
+        name = "bbH_" + str(m)
+        signal_nicks.add(name)
+    print len(signal_nicks)
     background_nicks = set(
         trueTauBkgS
         | leptonTauBkgS

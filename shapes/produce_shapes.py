@@ -15,6 +15,8 @@ from shape_producer.systematics import Systematics, Systematic
 from shape_producer.cutstring import Cut, Cuts, Weight
 import ROOT
 import os
+import json
+from copy import deepcopy
 
 # disable ROOT internal argument parser
 ROOT.PyConfig.IgnoreCommandLineOptions = True
@@ -159,37 +161,37 @@ def main(args):
         skip_systematic_variations=args.skip_systematic_variations)
     # Era selection
     if "2016" == args.era:
-        from shape_producer.channel import ETSM2016, MTSM2016, TTSM2016, EMSM2016
+        from shape_producer.channel import ETMSSM2016, MTMSSM2016, TTMSSM2016, EMMSSM2016
         smChannelsDict = {
-            "et": ETSM2016(),
-            "mt": MTSM2016(),
-            "tt": TTSM2016(),
-            "em": EMSM2016()
+            "et": ETMSSM2016(),
+            "mt": MTMSSM2016(),
+            "tt": TTMSSM2016(),
+            "em": EMMSSM2016()
         }
-        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimation, VVLEstimation, VVTEstimation, VVJEstimation, TTLEstimation, TTTEstimation, TTJEstimation, QCDEstimation_SStoOS_MTETEM, QCDEstimationTT, ZTTEmbeddedEstimation, FakeEstimationLT, NewFakeEstimationLT, FakeEstimationTT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation
+        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimation, VVLEstimation, VVTEstimation, VVJEstimation, TTLEstimation, TTTEstimation, TTJEstimation, QCDEstimation_SStoOS_MTETEM, QCDEstimationTT, ZTTEmbeddedEstimation, FakeEstimationLT, NewFakeEstimationLT, FakeEstimationTT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation
         from shape_producer.era import Run2016
         era = Run2016(args.datasets)
     elif "2017" == args.era:
-        from shape_producer.channel import ETSM2017, MTSM2017, TTSM2017, EMSM2017
+        from shape_producer.channel import ETMSSM2017, MTMSSM2017, TTMSSM2017, EMMSSM2017
         smChannelsDict = {
-            "et": ETSM2017(),
-            "mt": MTSM2017(),
-            "tt": TTSM2017(),
-            "em": EMSM2017()
+            "et": ETMSSM2017(),
+            "mt": MTMSSM2017(),
+            "tt": TTMSSM2017(),
+            "em": EMMSSM2017()
         }
-        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, HWWEstimation, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation
+        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, HWWEstimation, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation
 
         from shape_producer.era import Run2017
         era = Run2017(args.datasets)
     elif "2018" == args.era:
-        from shape_producer.channel import ETSM2018, MTSM2018, TTSM2018, EMSM2018
+        from shape_producer.channel import ETMSSM2018, MTMSSM2018, TTMSSM2018, EMMSSM2018
         smChannelsDict = {
-            "et": ETSM2018(),
-            "mt": MTSM2018(),
-            "tt": TTSM2018(),
-            "em": EMSM2018()
+            "et": ETMSSM2018(),
+            "mt": MTMSSM2018(),
+            "tt": TTMSSM2018(),
+            "em": EMMSSM2018()
         }
-        from shape_producer.estimation_methods_2018 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, HWWEstimation, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation
+        from shape_producer.estimation_methods_2018 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, HWWEstimation, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation
 
         from shape_producer.era import Run2018
         era = Run2018(args.datasets)
@@ -253,6 +255,7 @@ def main(args):
     else:
         signal_nicks = {"ggH125", "qqH125", "WH125", "ZH125", "ttH125"} | ww_nicks
 
+    sm_signal_nicks = deepcopy(signal_nicks)
     pnameToEstD = {
         "data_obs": DataEstimation,
         "EMB": ZTTEmbeddedEstimation,
@@ -307,6 +310,39 @@ def main(args):
                     friend_directory=friend_directory[chname_])) for processname in
             pS_}
 
+    # add SUSY signals:
+    mass_dict = {
+        "2016": {
+            "ggH": [80, 90, 100, 110, 120, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200],
+            "bbH_nlo": [80, 90, 110, 120, 130, 140, 160, 180, 200, 250, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200],
+        },
+        "2017": {
+            "ggH": [80, 90, 100, 110, 120, 130, 140, 180, 200, 250, 300, 350, 400, 450, 600, 700, 800, 900, 1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200],
+            "bbH_nlo": [80, 90, 110, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500],
+        },
+        "2018": {
+            "ggH": [80, 90, 100, 110, 120, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 600, 700, 800, 900, 1200, 1400, 1500, 1600, 1800, 2000, 2300, 2600, 2900, 3200],
+            "bbH_nlo": [80, 90, 100, 110, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500],
+        }
+    }
+
+    susyggH_masses = mass_dict[args.era]["ggH"]
+    susybbH_masses = mass_dict[args.era]["bbH_nlo"]
+
+    for chname_, ch_ in selectedChannelsTuples:
+        # mssm ggH and bbH signals
+        gghfraction_corrections = json.load(open("shapes/ggphi_contirbution_weights.json","r"))
+        for ggH_contribution in ["ggh_t", "ggh_b", "ggh_i", "ggH_t", "ggH_b", "ggH_i", "ggA_t", "ggA_b", "ggA_i"]:
+            for mass in susyggH_masses:
+                name = ggH_contribution + "_" + str(mass)
+                weight = gghfraction_corrections[args.era][str(mass)][ggH_contribution]
+                processes[chname_][name] = Process(name, SUSYggHEstimation(era, directory, ch_, str(mass), ggH_contribution, weight, friend_directory=friend_directory[chname_]))
+                signal_nicks.add(name)
+        for m in susybbH_masses:
+            name = "bbH_" + str(m)
+            processes[chname_][name] = Process(name, SUSYbbHEstimation(era, directory, ch_, str(mass), friend_directory=friend_directory[chname_]))
+            signal_nicks.add(name)
+    print(sm_signal_nicks)
     # Create the jetFakes process for all channels but em
     for chname_, ch_ in selectedChannelsTuplesNoEM:
         if chname_ != "tt":
@@ -1438,7 +1474,7 @@ def main(args):
                           "Down"))
         for variation_ in ggh_variations:
             for process_nick in selectedProcesses & {
-                    nick for nick in signal_nicks
+                    nick for nick in sm_signal_nicks
                     if "ggH" in nick and "HWW" not in nick
             }:
                 for chname_ in selectedChannels:
@@ -1477,7 +1513,7 @@ def main(args):
 
         for variation_ in qqh_variations:
             for process_nick in selectedProcesses & {
-                    nick for nick in signal_nicks
+                    nick for nick in sm_signal_nicks
                     if "qqH" in nick and "qqHWW" not in nick
             }:
                 for chname_ in selectedChannels:
@@ -1521,7 +1557,7 @@ def main(args):
         for variation_ in stxs_acceptance_variations_ggH:
             for chname_, _ in selectedChannelsTuples:
                 for process_nick in selectedProcesses & {
-                        nick for nick in signal_nicks
+                        nick for nick in sm_signal_nicks
                         if "ggH" in nick
                 }:
                     variationsToAdd[chname_][process_nick].append(variation_)
@@ -1547,7 +1583,7 @@ def main(args):
         for variation_ in stxs_acceptance_variations_qqH:
             for chname_, _ in selectedChannelsTuples:
                 for process_nick in selectedProcesses & {
-                        nick for nick in signal_nicks
+                        nick for nick in sm_signal_nicks
                         if "qqH" in nick
                 }:
                     variationsToAdd[chname_][process_nick].append(variation_)

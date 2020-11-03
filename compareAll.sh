@@ -254,11 +254,14 @@ function applyOnCluster()(
         for era in ${eras[@]}; do
             if ! friendTreesExistLocal; then
                 provideCluster $tag $era
-                logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "submit" ${tag} $CONDITIONAL_TRAINING
-                logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "rungc" ${tag} $CONDITIONAL_TRAINING
-                logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "collect" ${tag} $CONDITIONAL_TRAINING
-                copyFromCluster
-                logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "delete" ${tag} $CONDITIONAL_TRAINING || return 1
+                for channel in ${channels[@]}; do
+                    logandrun ./batchrunNNApplication.sh ${era} ${channel} "submit" ${tag} $CONDITIONAL_TRAINING
+                    logandrun ./batchrunNNApplication.sh ${era} ${channel} "rungc" ${tag} $CONDITIONAL_TRAINING
+                    logandrun ./batchrunNNApplication.sh ${era} ${channel} "collect" ${tag} $CONDITIONAL_TRAINING
+                    #copyFromCluster
+                    #logandrun ./batchrunNNApplication.sh ${era} ${channelsarg} "delete" ${tag} $CONDITIONAL_TRAINING || return 1
+                done
+            mergeAndCopyFromCluster
             else
                 loginfo "Skipping Application for $tag $era because friend tree exists"
             fi
@@ -284,12 +287,38 @@ function friendTreesExistLocal() {
     fi
 }
 
+function mergeAndCopyFromCluster()(
+    set -e
+    for channel in ${channels[@]}; do
+        nnscorefolder_temp=$batch_out_local/${era}/nnscore_friends/_temp_${tag}_${channel}
+        [[ ! -d $nnscorefolder_temp  ]] && mkdir -p $nnscorefolder_temp
+        if [[ $cluster == etp7 ]]; then
+            logandrun rsync -rLPthz $batch_out/${era}_${tag}_${channel}/NNScore_workdir/NNScore_collected/ $nnscorefolder_temp
+        else
+            logandrun alogrsync $remote -rLPthz --delete $remote:$batch_out/${era}_${tag}/NNScore_workdir/NNScore_collected/ $nnscorefolder_temp
+        fi
+    done
+    nnscorefolder=$batch_out_local/${era}/nnscore_friends/${tag}
+    samples=$( ls -p $nnscorefolder_temp/* | sed "s/.*\///" | sed 's/://g')
+    SAVEIFS=$IFS   # Save current IFS
+    IFS=$'\n'      # Change IFS to new line
+    samples=($samples) # split to array $names
+    IFS=$SAVEIFS   # Restore IFS
+    for sample in $samples; do
+        if [[ $sample != *".root"* ]]; then
+        mkdir -p $nnscorefolder/$sample
+        logandrun hadd -f $nnscorefolder/$sample/$sample.root $batch_out_local/${era}/nnscore_friends/_temp_*/$sample/$sample.root
+        fi
+    done
+)
+
+
 function copyFromCluster()(
     set -e
     nnscorefolder=$batch_out_local/${era}/nnscore_friends/${tag}
     [[ ! -d $nnscorefolder  ]] && mkdir -p $nnscorefolder
     if [[ $cluster == etp7 ]]; then
-        logandrun rsync -rLPthz $batch_out/${era}_${tag}/NNScore_workdir/NNScore_collected/ $nnscorefolder
+        logandrun rsync -rLPthz $batch_out/${era}_${tag}_${channel}/NNScore_workdir/NNScore_collected/ $nnscorefolder
     else
         logandrun alogrsync $remote -rLPthz --delete $remote:$batch_out/${era}_${tag}/NNScore_workdir/NNScore_collected/ $nnscorefolder
     fi
@@ -368,24 +397,16 @@ function syncShapes() {
 }
 
 
-export JETFAKES=1 EMBEDDING=1 CATEGORIES="stxs_stage1p1"
+export JETFAKES=1 EMBEDDING=1 CATEGORIES="stxs_stage0"
 function genDatacards(){
     ensureoutdirs
     for era in ${eras[@]}; do
-        for STXS_SIGNALS in "stxs_stage0" "stxs_stage1p1"; do
-            for tag in ${tags[@]}; do
-                if [[ $tag == *"stage0"* ]]; then
-                    CATEGORIES="stxs_stage0"
-                elif [[ $tag == *"inc"* ]]; then
-                    CATEGORIES="inclusive"
-                else
-                    CATEGORIES="stxs_stage1p1"
-                fi
-                DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}
-                [ -d $DATACARDDIR ] || mkdir -p $DATACARDDIR
-                logandrun ./datacards/produce_datacard.sh ${era} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${tag} ${channelsarg} &
-            done
-            condwait
+        STXS_SIGNALS="stxs_stage0"
+        for tag in ${tags[@]}; do
+            CATEGORIES="stxs_stage0"
+            DATACARDDIR=output/datacards/${era}-${tag}-smhtt-ML/${STXS_SIGNALS}
+            [ -d $DATACARDDIR ] || mkdir -p $DATACARDDIR
+            logandrun ./datacards/produce_datacard.sh ${era} $STXS_SIGNALS $CATEGORIES $JETFAKES $EMBEDDING ${tag} ${channelsarg} &
         done
     done
     wait

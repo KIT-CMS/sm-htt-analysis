@@ -7,7 +7,7 @@ export LCG_RELEASE=95
 source utils/setup_cvmfs_sft.sh
 
 source utils/setup_python.sh
-source utils/setup_samples.sh $ERA $TAG $FRIEND_INPUT_MOUNT
+source utils/setup_samples.sh $ERA $TAG $CHANNELS $FRIEND_INPUT_MOUNT
 source utils/bashFunctionCollection.sh
 ensureoutdirs
 
