@@ -338,11 +338,10 @@ def main(args):
                 weight = gghfraction_corrections[args.era][str(mass)][ggH_contribution]
                 processes[chname_][name] = Process(name, SUSYggHEstimation(era, directory, ch_, str(mass), ggH_contribution, weight, friend_directory=friend_directory[chname_]))
                 signal_nicks.add(name)
-        for m in susybbH_masses:
+        for mass in susybbH_masses:
             name = "bbH_" + str(m)
             processes[chname_][name] = Process(name, SUSYbbHEstimation(era, directory, ch_, str(mass), friend_directory=friend_directory[chname_]))
             signal_nicks.add(name)
-    print(sm_signal_nicks)
     # Create the jetFakes process for all channels but em
     for chname_, ch_ in selectedChannelsTuplesNoEM:
         if chname_ != "tt":
@@ -1545,7 +1544,6 @@ def main(args):
                     weightdown += "*"
                 weightup += ("(1.0+(({weight}-1.0)*({cut})))".format(weight="muR2p0_muF2p0_weight*htxs_accSF_muR2p0_muF2p0", cut=ggHEstimation.htxs_dict[signal]))
                 weightdown += ("(1.0+(({weight}-1.0)*({cut})))".format(weight="muR0p5_muF0p5_weight*htxs_accSF_muR0p5_muF0p5", cut=ggHEstimation.htxs_dict[signal]))
-            print weightup
             stxs_acceptance_variations_ggH.append(
                 AddWeight(
                     "{paramter}".format(paramter=parameter),
