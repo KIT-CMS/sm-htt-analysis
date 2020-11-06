@@ -183,13 +183,13 @@ variables:
       bins: [[0.0, 300.0, 5.0], [300.0, 500.0, 10.0], [500.0, 1000.0, 50.0]]
       expression: "pt_sv"
     m_sv_puppi:
-      bins: [[0.0, 250.0, 5.0]] # , [250.0, 500.0, 25.0]]
+      bins: [[0.0, 225.0, 7.5]] # , [250.0, 500.0, 25.0]]
       expression: "m_sv_puppi"
     pt_sv_puppi:
       bins: [[0.0, 300.0, 5.0], [300.0, 500.0, 10.0], [500.0, 1000.0, 50.0]]
       expression: "pt_sv_puppi"
     m_vis:
-      bins: [[0.0, 200.0, 2.5]]
+      bins: [[0.0, 256.0, 8]]
       expression: "m_vis"
     ME_vbf_vs_Z:
       bins: [[0.0, 0.95, 0.25], [0.95, 1.0, 0.001]]
@@ -201,19 +201,19 @@ variables:
       bins: [[0.0, 50.0, 50.0], [50.0, 250.0, 5.0], [250.0, 500.0, 10.0], [500.0, 1000.0, 25.0], [1000.0, 2000.0, 50.0], [2000.0, 5000.0, 100.0]]
       expression: "mt_tot_puppi"
     pt_1:
-      bins: [[0.0, 300.0, 5.0]]
+      bins: [[0.0, 20.0, 20.0],[20.0,160.0, 5.0]]
       expression: "pt_1"
     pt_2:
-      bins: [[0.0, 300.0, 5.0]]
+      bins: [[0.0, 20.0, 20.0],[20.0,160.0, 5.0]]
       expression: "pt_2"
     eta_2:
       bins: [[-2.4,2.4,0.2]]
       expression: "eta_2"
     jpt_1:
-      bins: [[30.0, 300.0, 5.0]]
+      bins: [[0.0 ,20.0, 20.0],[20.0, 160.0, 5.0]]
       expression: "jpt_1"
     jpt_2:
-      bins: [[30.0, 300.0, 5.0]]
+      bins: [[0.0 ,20.0, 20.0],[20.0, 160.0, 5.0]]
       expression: "jpt_2"
     jeta_1:
       bins: [[-4.8, 4.8, 0.2]]
@@ -222,13 +222,13 @@ variables:
       bins: [[-4.8, 4.8, 0.2]]
       expression: "jeta_2"
     jdeta:
-      bins: [[0.0, 6.0, 0.2], [6.0, 10.0, 0.5]]
+      bins: [[0.0, 6.0, 0.2]]
       expression: "jdeta"
     bdeta:
       bins: [[0.0, 8.0, 0.2]]
       expression: "abs(beta_1-beta_2)"
     njets:
-      bins: [[-0.5, 10.5, 1.0]]
+      bins: [[-0.5, 6.5, 1.0]]
       expression: "njets"
     nbtag:
       bins: [[-0.5, 6.5, 1.0]]
@@ -240,7 +240,7 @@ variables:
       bins: [[0.0, 300.0, 5.0]]
       expression: "mt_1_puppi"
     ptvis:
-      bins: [[0.0, 500.0, 10.0]]
+      bins: [[0.0, 160.0, 5.0]]
       expression: "ptvis"
     pt_ttvisbb_highCSV_bReg:
       bins: [[0.0, 500.0, 10.0]]
@@ -258,16 +258,16 @@ variables:
       bins: [[0.0, 300.0, 5.0]]
       expression: "pt_ttjj_puppi"
     mjj:
-      bins: [[0.0, 800.0, 20.0]]
+      bins: [[0.0, 300.0, 10.0]]
       expression: "mjj"
     mbb_highCSV_bReg:
-      bins: [[20.0, 1000.0, 5.0]]
+      bins: [[25.0, 1000.0, 25.0]]
       expression: "mbb_highCSV_bReg"
     jm_1:
       bins: [[0.0, 250.0, 10.0]]
       expression: "jm_1"
     m_ttvisbb_highCSV_bReg:
-      bins: [[50.0, 400.0, 5.0]] #, [100.0, 800.0, 25.0], [800.0, 1000.0, 100.0], [1000.0, 2000.0, 250.0], [2000.0,3000.0,500.0], [3000.0,4000.0,1000.0]]
+      bins: [[50.0, 400.0, 25.0]] #, [100.0, 800.0, 25.0], [800.0, 1000.0, 100.0], [1000.0, 2000.0, 250.0], [2000.0,3000.0,500.0], [3000.0,4000.0,1000.0]]
       expression: "m_ttvisbb_highCSV_bReg"
     kinfit_mH:
       bins: [[120.0, 1500.0, 20.0]] #, [800.0, 1000.0, 100.0], [1000,2000,250.0], [2000,2000,250.0], [2000,4000,500.0]]
@@ -297,11 +297,11 @@ variables:
       bins: [[0.0, 800.0, 25.0]]
       expression: "pt_ttbb_puppi"
     dijetpt:
-      bins: [[0.0, 300.0, 5.0]]
+      bins: [[0.0, 160.0, 5.0]]
       expression: "dijetpt"
     pt_bb_highCSV_bReg:
       bins: [[0.0, 800.0, 20.0], [800.0, 1000.0, 100.0]]
-      expression: "pt_bb"
+      expression: "pt_bb_highCSV_bReg"
     jetUsedFordiBJetSystemIsTrueBJet:
       bins: [[-0.5, 1.5, 1.0]]
       expression: "jetUsedFordiBJetSystemIsTrueBJet"
@@ -319,10 +319,10 @@ variables:
       expression: "puppimet"
     bpt_bReg_1:
       bins: [[20.0, 250.0, 10.0]]
-      expression: "bpt_1"
+      expression: "bpt_bReg_1"
     bpt_bReg_2:
       bins: [[20.0, 200.0, 10.0]]
-      expression: "bpt_2"
+      expression: "bpt_bReg_1"
     bcsv_1:
       bins:     [[0.3, 1.0, 0.02]]
       expression: "bcsv_1"
