@@ -322,7 +322,7 @@ variables:
       expression: "bpt_bReg_1"
     bpt_bReg_2:
       bins: [[20.0, 200.0, 10.0]]
-      expression: "bpt_bReg_1"
+      expression: "bpt_bReg_2"
     bcsv_1:
       bins:     [[0.3, 1.0, 0.02]]
       expression: "bcsv_1"
