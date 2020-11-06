@@ -7,6 +7,9 @@ source utils/bashFunctionCollection.sh
 
 ERA=$1
 CHANNEL=$2
+MASS=$3
+BATCH=$4
+
 tauEstimation=emb
 jetEstimation=ff
 
@@ -14,7 +17,7 @@ jetEstimation=ff
 TRAIN_STAGE_ARG="--nmssm"
 
 source utils/setup_samples.sh $ERA 
-outdir=output/ml/${ERA}_${CHANNEL}
+outdir=output/ml/${ERA}_${CHANNEL}_${MASS}_${BATCH}
 [[ -d $outdir ]] ||  mkdir -p $outdir
 echo $FF_Friends
 if [ ${CHANNEL} != 'em' ]
@@ -33,6 +36,8 @@ logandrun python ml/write_dataset_config.py \
   --friend-paths $FRIENDS \
   --database $KAPPA_DATABASE \
   --output-path $outdir \
+  --mass $MASS \
+  --batch $BATCH \
   --output-filename training_dataset.root \
   --tree-path ${CHANNEL}_nominal/ntuple \
   --event-branch event \
@@ -41,7 +46,7 @@ logandrun python ml/write_dataset_config.py \
   --training-jetfakes-estimation-method $jetEstimation \
   --output-config $outdir/dataset_config.yaml \
   $TRAIN_STAGE_ARG
-
+exit
 # Create dataset files from config
 logandrun ./htt-ml/dataset/create_training_dataset.py $outdir/dataset_config.yaml
 

@@ -128,6 +128,14 @@ def parse_arguments():
                         default="ERA_CHANNEL",
                         type=str,
                         help="Tag of output files.")
+    parser.add_argument("--mass",
+                        default="SET_MASS",
+                        type=str,
+                        help="Mass of training")
+    parser.add_argument("--batch",
+                        default="SET_BATCH",
+                        type=str,
+                        help="Batch of training")
     parser.add_argument("--skip-systematic-variations",
                         default=False,
                         type=str,
@@ -227,10 +235,10 @@ def main(args):
     # yapf: disable
     directory = args.directory.replace("+CH+",channel)
     friend_directory = {
-        "mt": [x.replace("+CH+",channel) for x in args.mt_friend_directory],
-        "et": [x.replace("+CH+",channel) for x in args.et_friend_directory],
-        "tt": [x.replace("+CH+",channel) for x in args.tt_friend_directory],
-        "em": [x.replace("+CH+",channel) for x in args.em_friend_directory]}
+        "mt": [x.replace("+CH+",channel).replace("+MASS+",args.mass).replace("+BATCH+",args.batch) for x in args.mt_friend_directory],
+        "et": [x.replace("+CH+",channel).replace("+MASS+",args.mass).replace("+BATCH+",args.batch) for x in args.et_friend_directory],
+        "tt": [x.replace("+CH+",channel).replace("+MASS+",args.mass).replace("+BATCH+",args.batch) for x in args.tt_friend_directory],
+        "em": [x.replace("+CH+",channel).replace("+MASS+",args.mass).replace("+BATCH+",args.batch) for x in args.em_friend_directory]}
 
     if args.QCD_extrap_fit:
         smChannelsDict["mt"].cuts.remove("muon_iso")
@@ -283,12 +291,19 @@ def main(args):
 
     ww_nicks = {"ggHWW125", "qqHWW125", "WHWW125", "ZHWW125"}
 
+    # if args.gof_variable is None:
+    #     signal_nicks = {
+    #         "ttH125"} | {
+    #         ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict} | {
+    #         qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict}
+    # else:
+    print args.gof_variable
     
     if args.shape_group in ["all", "sm_signals"]:
         signal_nicks = {"ggH125", "qqH125", "ttH125", "VH125"}
     else:
         signal_nicks = set([])
-   
+    print signal_nicks
     if args.shape_group in ["all", "backgrounds"]:  
         pnameToEstD = {
             "data_obs": DataEstimation,
@@ -428,8 +443,8 @@ def main(args):
     # Read the NN output classes either from the training, or from the template
     binning = yaml.load(open(args.binning), Loader=yaml.Loader)
     def readclasses(channelname, selectedCategories):
-        confFileName = "output/ml/{}_{}/dataset_config.yaml".format(
-                args.era, channelname)
+        confFileName = "output/ml/{}_{}_{}_{}/dataset_config.yaml".format(
+                args.era, channelname, args.mass, args.batch)
         logger.info("Parse classes from " + confFileName)
         confdict = yaml.load(open(confFileName, "r"), Loader=yaml.Loader)
         logger.info(
@@ -474,21 +489,7 @@ def main(args):
                         ch_,
                         Cuts(maxIdxCut),
                         variable=score))
-                # if the net was trained on stage0 signals, add the stage1p1
-                # categories cutbased, otherwise use classes give
-                '''if label in ["ggh", "qqh"]:
-                    stxs = 100 if label == "ggh" else 200
-                    for i_e, e in enumerate(binning["stxs_stage1p1"][label]):
-                        score = Variable(
-                            "{}_max_score".format(chname_), VariableBinning(
-                                binning["analysis"][chname_][label]))
-                        catsL_.append(
-                            Category(
-                                "{}_{}".format(label, str(stxs + i_e)),
-                                ch_,
-                                Cuts(maxIdxCut,
-                                     Cut(e, "stxs_stage1p1_cut")),
-                                variable=score))'''
+
                 # find indices of stage 0 classes
                 if label in ["ggh", "qqh"]:
                     stage0_sig_idx.append(classdict[label])

@@ -35,6 +35,9 @@ def parse_arguments():
         "--friend-paths", nargs='+', default=[], help="Additional paths to Artus output friend files")
     parser.add_argument(
         "--output-path", required=True, help="Path to output directory")
+    parser.add_argument("--mass", required=True, help="Mass of mH")
+    parser.add_argument("--batch", required=True, help="Batch to select mh' mass")
+
     parser.add_argument(
         "--output-filename",
         required=True,
@@ -187,48 +190,50 @@ def main(args):
                 qqHEstimation("qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200125", era, args.base_path, channel),
                 ]
 
+
         elif args.nmssm:
             mass_dict = {
                 "heavy_mass": [240, 280, 320, 360, 400, 450, 500, 550, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2500, 3000],
                 "light_mass_coarse": [60, 70, 80, 90, 100, 120, 150, 170, 190, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800],
                 "light_mass_fine": [60, 70, 75, 80, 85, 90, 95, 100, 110, 120, 130, 150, 170, 190, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850],
             }
+            mass = int(args.mass)
+            batch = int(args.batch)
+            batches = {}
+            if mass<1001:
+                batches[1] = [60, 70, 75, 80]
+                batches[2] = [85, 90, 95, 100]
+                batches[3] = [110, 120, 130, 150]
+                batches[4] = [170, 190, 250, 300]
+                batches[5] = [350, 400, 450, 500]
+                batches[6] = [550, 600, 650, 700]
+                batches[7] = [750, 800, 850]
+            else:
+                batches[1] = [60, 70, 80, 90, 100]
+                batches[2] = [120, 150, 170, 190, 250, 300]
+		batches[3] = [350, 400, 450, 500, 550, 600, 650, 700]
+                batches[4] = [800, 900, 1000, 1100, 1200] 
+                batches[5] = [1300, 1400, 1600, 1800]
+                batches[6] = [2000, 2200, 2400, 2600, 2800] 
 
-            nmssm_classes = [
-                    "NMSSM_MH240to240_unboosted",
-                    "NMSSM_MH280to280_unboosted",
-                    "NMSSM_MH320to320_unboosted",
-                    "NMSSM_MH321to500_unboosted",
-                    "NMSSM_MH321to500_boosted",
-                    "NMSSM_MH501to700_unboosted",
-                    "NMSSM_MH501to700_boosted",
-                    "NMSSM_MH701to1000_unboosted",
-                    "NMSSM_MH701to1000_boosted",
-                    "NMSSM_MH1001toinfty_boosted",
-                ]
-
-            upper_edge = {}
-            for nmssm_class in nmssm_classes:
-                upper_edge[nmssm_class] = int(nmssm_class.split("to")[1].split("_")[0]) if nmssm_class.split("to")[1].split("_")[0]!="infty" else 10000
 
             classes_map = {}
             estimationMethodList = []
-            for heavy_mass in mass_dict["heavy_mass"]:
-                light_masses = mass_dict["light_mass_coarse"] if heavy_mass > 1001 else mass_dict["light_mass_fine"]
+            light_masses = batches[batch]
+            if mass<1001:
                 for light_mass in light_masses:
-                    if light_mass+125>heavy_mass:
+               	    if light_mass+125>mass:
                         continue
-                    thisclass = ""
-                    for nmssm_class in nmssm_classes:
-                        if heavy_mass<=upper_edge[nmssm_class]:
-                            thisclass = nmssm_class.replace("_boosted","").replace("_unboosted","")
-                            break
-                    if (heavy_mass>1001) or (heavy_mass-light_mass-125>=150):
-                        thisclass += "_boosted"
-                    else:
-                        thisclass += "_unboosted"
-                    classes_map["NMSSM_{}_125_{}".format(heavy_mass,light_mass)] = thisclass
-                    estimationMethodList.append(NMSSMEstimation(era,args.base_path,channel,heavy_mass=heavy_mass,light_mass=light_mass))
+                    classes_map["NMSSM_{}_125_{}".format(mass,light_mass)] = "NMSSM_MH{}_{}".format(mass,batch)
+                    estimationMethodList.append(NMSSMEstimation(era,args.base_path,channel,heavy_mass=mass,light_mass=light_mass))
+            else:
+                for mass_2 in [1200, 1400, 1600, 1800, 2000, 2500, 3000]:
+                    for light_mass in light_masses:
+                        if light_mass+125>mass_2:
+                            continue
+                        classes_map["NMSSM_{}_125_{}".format(mass_2,light_mass)] = "NMSSM_MHgt1000_{}".format(batch)
+                        estimationMethodList.append(NMSSMEstimation(era,args.base_path,channel,heavy_mass=mass_2,light_mass=light_mass))
+
 
 
 
@@ -291,8 +296,7 @@ def main(args):
                 "VVL": "misc",
                 "ggH125": "misc",
                 "qqH125": "misc",
-                "ttH125": "misc",
-		"VH125": "misc"
+                "ttH125": "misc"
             })            
         ######## Check for emb vs MC
         if args.training_z_estimation_method == "emb":

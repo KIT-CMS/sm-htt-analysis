@@ -556,6 +556,6 @@ if __name__ == "__main__":
             for light_mass in [100, max([x for x in light_masses if (x+125)<heavy_mass])]:
                if light_mass+125>heavy_mass:
                     continue
-        main(args,[320,500,900],[60,100,750])
+        main(args,[900,900,900,900],[60,70,80,90])
     else:
         prefit(args,500,100)

@@ -275,8 +275,8 @@ def main(args):
 
     mass_dict = {
         "heavy_mass": [320,500,900],
-        "light_mass_fine": [60,85,90,95,100,750],
-        "light_mass_coarse": [60,100,750],
+        "light_mass_fine": [60,70,80,90],
+        "light_mass_coarse": [60,100,120,150,300],
 
     }
 

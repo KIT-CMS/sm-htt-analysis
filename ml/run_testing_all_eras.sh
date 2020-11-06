@@ -2,6 +2,7 @@
 
 ERA=$1
 CHANNEL=$2
+TAG=$3
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
@@ -16,13 +17,8 @@ then
     source utils/setup_cuda.sh
 fi
 
-if [[ -z $3 ]]; then
-  tag="default"
-else
-  tag=$3
-fi
 
-[[ -z $tag ]] && outdir=output/ml/all_eras_${CHANNEL} ||  outdir=output/ml/all_eras_${CHANNEL}
+outdir=output/ml/all_eras_${CHANNEL}_${TAG}
 
 mkdir -p ${outdir}
 

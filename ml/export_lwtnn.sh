@@ -3,6 +3,7 @@ set -e
 
 ERA=$1
 CHANNEL=$2
+TAG=$3
 
 # source python3 LCG view
 LCG_RELEASE=94python3
@@ -24,18 +25,18 @@ fi
 
 if [[ $ERA == *"all"* ]]
 then
-  outdir=output/ml/all_eras_${CHANNEL}
+  outdir=output/ml/all_eras_${CHANNEL}_${TAG}
   for fold in 0 1;
   do
       python3 htt-ml/lwtnn/converters/keras2json.py ${outdir}/fold${fold}_keras_architecture.json  ${outdir}/fold${fold}_keras_variables.json ${outdir}/fold${fold}_keras_weights.h5 >  ${outdir}/fold${fold}_lwtnn.json
       for era in "2016" "2017" "2018"; do
-        era_out=output/ml/${era}_${CHANNEL}
+        era_out=output/ml/${era}_${CHANNEL}_${TAG}
         cp ${outdir}/fold${fold}_lwtnn.json ${era_out}
         ls ${era_out}/fold${fold}_lwtnn.json -lrth
       done
   done
 else
-  outdir=output/ml/${ERA}_${CHANNEL}
+  outdir=output/ml/${ERA}_${CHANNEL}_${TAG}
   for fold in 0 1;
   do
       python3 htt-ml/lwtnn/converters/keras2json.py ${outdir}/fold${fold}_keras_architecture.json  ${outdir}/fold${fold}_keras_variables.json ${outdir}/fold${fold}_keras_weights.h5 >  ${outdir}/fold${fold}_lwtnn.json
