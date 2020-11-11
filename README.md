@@ -1,6 +1,25 @@
 
 # NMSSM H->h(tautau)h'(bb) analysis
 
+## Train and apply machine learning methods
+
+```bash
+ERA="all" # all three years (2016,2017,2018) are trained in one go
+CHANNEL="tt" # other possibilities: mt, et
+./run_ml.sh $ERA $CHANNEL
+```
+
+## Produce analysis histograms
+
+```bash
+# Check utils/setup_samples.sh for correct paths
+ERA="2016" # other possibilities: 2017, 2018
+CHANNELS="tt" # other possibilities: mt, et
+./shapes/produce_nmssm_shapes.sh $ERA $CHANNEL ${CHANNEL}_max_score
+```
+
+# NMSSM H->h(tautau)h'(bb) analysis
+
 The workflow of the analysis consists of multiple steps: 
 
 0. Skimming the official CMS data (miniAOD format) to create our own KIT internal format ("Kappa"). This step is neglected for now as it will very likely not need to be redone anytime soon.
@@ -59,6 +78,7 @@ Opening the `TBrowser` is  a nice way of seeing the file content, however not re
 ```
 rootls -t output.root:tt_nominal/ntuple
 ```
+The most important TTree in each file is located in the folder `?t_nominal`, where `?t` is again mt, et or tt depending on the final state. 
 The names of the variables can be cryptic, they correspond to event information such as pT of the particles, invariant masses, correction factors, etc. To actually see the data in some distribution, you can also do
 ```
 root -l output.root 
@@ -68,10 +88,35 @@ ntuple->Draw("m_vis") # Creates a histogram of the visible di-tau mass
 ```
 As you can see, only very few events are in the file. To produce the events, we require a CPU batch system to parallelize the tasks.
 ```
-HiggsToTauTauAnalysis.py -a legacy --nmssm -i data/Samples/Run2Legacy_bjetRegression/Run2018/Tau_Run2018A_17Sep2018v1_13TeV_MINIAOD.txt  -b etp7 --dry-run --files-per-job 10 -c tt -w ${PWD}/workbase --se-path srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/${USER}/ntuple_testing/
+HiggsToTauTauAnalysis.py -a legacy --pipelines auto --nmssm -i data/Samples/Run2Legacy_bjetRegression/SAMPLES_TO_PRODUCE  -b etp7 --dry-run --files-per-job 10 -c tt -w ${PWD}/workbase --se-path srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/${USER}/ntuple_testing/
 ```
 `-b etp7` specifies that we will use the CentOS7 batch system of the ETP. `-w` specifies the working directory where grid control stores the job information. It is important that an absolute path is used here. 
 `--se-path ` specifies the remote disk where the output is written to. 
+Note that now also the option ` --pipelines auto` is used. In simulated samples, these create additional folders in the root file, in which systematic variations are propagated through  the analysis. An example is the folder `tt_btagEffDown`, in which the b-tagging efficiency is lowered within its uncertainty, and the effect on the analysis evaluated. These additional folders only exists for simulated or embedded events.
+
+After running the command above, you will get a command of the form `go.py ...` returned. By running this command, the task is sent to the batch system via the tool grid-control.
+After the task is complete, you will need to merge the outputs of the individual jobs using 
+```
+artusMergeOutputs.py /storage/gridka-nrg/${USER}/ntuple_testing/ --output-dir
+```
+
+
+This part can alternatively be very conveniently be run on the NAF cluster at DESY, which is where I always did it. The advantages are that usually many CPU cores are available, and the files will be stored on a mount with local read access.
+
+The code can be set up the same way on the NAF, by logging in using `ssh USER@naf-cms-el7.desy.de`.
+The command to 
+```
+HiggsToTauTauAnalysis.py -a legacy --pipelines auto --nmssm -i data/Samples/Run2Legacy_bjetRegression/SAMPLES_TO_PRODUCE  -b naf7 --dry-run --files-per-job 10 -c tt 
+```
+Note that you do not need to set the workdir and the se-path anymore. These will be automatically set to the disks mounted at `/nfs/dust/cms/user/`. 
+After the task is complete, you can merge on NAF using the command
+```
+artusMergeOutputs.py -b naf7 /nfs/dust/cms/user/PATH/TO/WORKDIR/
+```
+and then again submitting the grid-control command that is output from the command line. 
+
+
+
 
 ## Create friends trees
 
@@ -84,9 +129,27 @@ wget https://raw.githubusercontent.com/KIT-CMS/friend-tree-producer/nmssm_analys
 chmod u+x checkout.sh
 ./checkout.sh
 ```
+To set up the code in a new shell, use
+```bash
+export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch
+source $VO_CMS_SW_DIR/cmsset_default.sh
+cd /PATH/TO/CMSSW_10_2_14/src/
+cmsenv
+export PATH=$PATH:$CMSSW_BASE/src/grid-control
+export PATH=$PATH:$CMSSW_BASE/src/grid-control/scripts
+export X509_USER_PROXY=/home/${USER}/.globus/x509up
+voms-proxy-info
+voms-proxy-init --voms cms:/cms/dcms --valid 192:00 --out ${X509_USER_PROXY}
+```
+To set up a task of producing new friend trees, you first need the ntuples from the previous step. An example command is then
+```
+job_management.py --command submit --executable HHKinFit --custom_workdir_path /ceph/${USER}/nmssm/friends/tt  --input_ntuples_directory /ceph/jbechtel/nmssm/ntuples/tt/   --batch_cluster etp7 --events_per_job 20000 --cores 24 --restrict_to_channels tt
+```
+The executable can be either `HHKinFit`, `SVFit`, `FakeFactors` or (later)  `NNScore`. The four executables have very different run times. I usually set 20,000 events per job for HHKinFit, 5000 for SVFit and 100,000 for NNScore and FakeFactors, but this is up to you. Usually jobs with take on average ~15 minutes are very manageable.
 
+Again, after running the command above, you will get a command of the form `go.py ...` returned. By running this command, the task is sent to the batch system.
 
-
+When the command is complete, run the command from above again, only change `--command submit` to `--command collect`. This will merge the outputs of the individual tasks to single files.
 
 ## Train and apply machine learning methods
 
