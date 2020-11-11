@@ -97,11 +97,11 @@ Note that now also the option ` --pipelines auto` is used. In simulated samples,
 After running the command above, you will get a command of the form `go.py ...` returned. By running this command, the task is sent to the batch system via the tool grid-control.
 After the task is complete, you will need to merge the outputs of the individual jobs using 
 ```
-artusMergeOutputs.py /storage/gridka-nrg/${USER}/ntuple_testing/ --output-dir
+artusMergeOutputs.py -n 8 /storage/gridka-nrg/${USER}/ntuple_testing/ --output-dir /ceph/${USER}/YOUR/PATH/TO/OUTPUT
 ```
 
 
-This part can alternatively be very conveniently be run on the NAF cluster at DESY, which is where I always did it. The advantages are that usually many CPU cores are available, and the files will be stored on a mount with local read access.
+The submission of jobs can alternatively be very conveniently be run on the NAF cluster at DESY, which is where I always did it. The advantages are that usually many CPU cores are available, and the files will be stored on a mount with local read access.
 
 The code can be set up the same way on the NAF, by logging in using `ssh USER@naf-cms-el7.desy.de`.
 The command to 
