@@ -1,25 +1,6 @@
 
 # NMSSM H->h(tautau)h'(bb) analysis
 
-## Train and apply machine learning methods
-
-```bash
-ERA="all" # all three years (2016,2017,2018) are trained in one go
-CHANNEL="tt" # other possibilities: mt, et
-./run_ml.sh $ERA $CHANNEL
-```
-
-## Produce analysis histograms
-
-```bash
-# Check utils/setup_samples.sh for correct paths
-ERA="2016" # other possibilities: 2017, 2018
-CHANNELS="tt" # other possibilities: mt, et
-./shapes/produce_nmssm_shapes.sh $ERA $CHANNEL ${CHANNEL}_max_score
-```
-
-# NMSSM H->h(tautau)h'(bb) analysis
-
 The workflow of the analysis consists of multiple steps: 
 
 0. Skimming the official CMS data (miniAOD format) to create our own KIT internal format ("Kappa"). This step is neglected for now as it will very likely not need to be redone anytime soon.
@@ -101,10 +82,10 @@ artusMergeOutputs.py -n 8 /storage/gridka-nrg/${USER}/ntuple_testing/ --output-d
 ```
 
 
-The submission of jobs can alternatively be very conveniently be run on the NAF cluster at DESY, which is where I always did it. The advantages are that usually many CPU cores are available, and the files will be stored on a mount with local read access.
+The submission of jobs can alternatively be very conveniently be run on the NAF cluster at DESY, which is where I always did it. The advantages are that usually many CPU cores are available, and the files will be stored on a mount with local read AND write access, compared to the ETP where the files are stored at a mount with only read access locally.
 
 The code can be set up the same way on the NAF, by logging in using `ssh USER@naf-cms-el7.desy.de`.
-The command to 
+The command changes to
 ```
 HiggsToTauTauAnalysis.py -a legacy --pipelines auto --nmssm -i data/Samples/Run2Legacy_bjetRegression/SAMPLES_TO_PRODUCE  -b naf7 --dry-run --files-per-job 10 -c tt 
 ```
