@@ -162,7 +162,7 @@ MASS=500 # other possibilities: 240 280 320 360 400 450 500 550 600 700 800 900 
 BATCH=2 # check ml/get_nBatches.py for possibilites
 ./run_ml.sh $ERA $CHANNEL $MASS $BATCH
 ```
-If you look into the run_ml script, you will see that currently a specific set of signal masses are set, in which the training is performed. For testing / playing around with the network it is sufficient to train on one of these masses. For the full NMSSM analysis, 68 trainings were used. Whether this can be done in a smarter way, using only one training is an interesting point of study. The answer is probably yes. 
+For testing / playing around with the network it is sufficient to train on only one mass/batch pair. For the full NMSSM analysis, 68 trainings were used. Whether this can be done in a smarter way, using only one training is an interesting point of study. The answer is probably yes. 
 
 
 After running the script, a folder should be created in `output/ml/...`, containing json files of the form `fold*_lwtnn.json`. This contain the full description of the neural network function (all weights and biases), and are used to apply the model on the data. 
