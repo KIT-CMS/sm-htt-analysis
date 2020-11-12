@@ -46,7 +46,7 @@ logandrun python ml/write_dataset_config.py \
   --training-jetfakes-estimation-method $jetEstimation \
   --output-config $outdir/dataset_config.yaml \
   $TRAIN_STAGE_ARG
-exit
+
 # Create dataset files from config
 logandrun ./htt-ml/dataset/create_training_dataset.py $outdir/dataset_config.yaml
 
