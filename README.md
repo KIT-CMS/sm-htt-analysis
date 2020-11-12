@@ -1,4 +1,5 @@
 
+
 # NMSSM H->h(tautau)h'(bb) analysis
 
 The workflow of the analysis consists of multiple steps: 
@@ -14,7 +15,7 @@ The workflow of the analysis consists of multiple steps:
 The different steps usually uses different software, which will be explained below. All software has been tested on `portal1`, and should also work on `bms1` and `bms3`.
 
 
-## Creation of ntuples
+## 1. Creation of ntuples
 
 **You probably do not need to produce new ntuple currently** and can use the ones I used for the analysis. They are located in 
 ```
@@ -99,7 +100,7 @@ and then again submitting the grid-control command that is output from the comma
 
 
 
-## Create friends trees
+## 2. Create friends trees
 
 Friend trees need to be created for the FakeFactors, SVFit and HHKinFit. For this we use https://github.com/KIT-CMS/friend-tree-producer.
 
@@ -124,7 +125,7 @@ voms-proxy-init --voms cms:/cms/dcms --valid 192:00 --out ${X509_USER_PROXY}
 ```
 To set up a task of producing new friend trees, you first need the ntuples from the previous step. An example command is then
 ```
-job_management.py --command submit --executable HHKinFit --custom_workdir_path /ceph/${USER}/nmssm/friends/tt  --input_ntuples_directory /ceph/jbechtel/nmssm/ntuples/tt/   --batch_cluster etp7 --events_per_job 20000 --cores 24 --restrict_to_channels tt
+job_management.py --command submit --executable HHKinFit --custom_workdir_path /ceph/${USER}/nmssm/friends/2016/tt  --input_ntuples_directory /ceph/jbechtel/nmssm/ntuples/2016/tt/   --batch_cluster etp7 --events_per_job 20000 --cores 24 --restrict_to_channels tt
 ```
 The executable can be either `HHKinFit`, `SVFit`, `FakeFactors` or (later)  `NNScore`. The four executables have very different run times. I usually set 20,000 events per job for HHKinFit, 5000 for SVFit and 100,000 for NNScore and FakeFactors, but this is up to you. Usually jobs with take on average ~15 minutes are very manageable.
 
@@ -132,21 +133,64 @@ Again, after running the command above, you will get a command of the form `go.p
 
 When the command is complete, run the command from above again, only change `--command submit` to `--command collect`. This will merge the outputs of the individual tasks to single files.
 
-## Train and apply machine learning methods
+## 3. Train machine learning methods
 
+For this, you will need to check out the following software:
 ```bash
-ERA="all" # all three years (2016,2017,2018) are trained in one go
-CHANNEL="tt" # other possibilities: mt, et
-./run_ml.sh $ERA $CHANNEL
+git clone https://github.com/KIT-CMS/sm-htt-analysis -b nmssm_analysis
+cd sm-htt-analysis
+git submodule init
+git submodule update
 ```
+Before, setting up an ssh agent before is often useful to avoid entering the password every time:
+```bash
+eval `ssh-agent -s` 
+ssh-add
+```
+In this repository, the ntuples and friends produced in the previous steps need to be added in the file `utils/setup_samples.sh`. Please note that the programs will automatically replace the string `"+CH+" with the respective channel (mt, et or tt) that is selected for the training.
 
-## Produce analysis histograms
+The top-level script to run the machine learning training and testing is the script `run_ml.sh`. It consist of many individual steps, and it is worthwhile to check and understand the individual steps, which are: 
+1. Creation of training datasets
+2. Summation of training weights -> In the current implementation, training weights are automatically chosen such that each process has the same importance to the training. This is done to avoid the neural network to learn that rare processes (which are among the most interesting) anyhow never occur.
+3. Training of the network.
+4. Exporting the final network to a json file, to be used for application.
+5. "Testing" of the network, i.e. creation of performance metrics such as efficiency, purity but also a Taylor expansion of the NN response with respect to the input variables.
+```bash
+ERA="2016" #choices are 2016, 2017, 2018, or "all"
+CHANNEL="tt" # other possibilities: mt, et
+MASS=500 # other possibilities: 240 280 320 360 400 450 500 550 600 700 800 900 1000 1200
+BATCH=2 # check ml/get_nBatches.py for possibilites
+./run_ml.sh $ERA $CHANNEL $MASS $BATCH
+```
+If you look into the run_ml script, you will see that currently a specific set of signal masses are set, in which the training is performed. For testing / playing around with the network it is sufficient to train on one of these masses. For the full NMSSM analysis, 68 trainings were used. Whether this can be done in a smarter way, using only one training is an interesting point of study. The answer is probably yes. 
 
+
+After running the script, a folder should be created in `output/ml/...`, containing json files of the form `fold*_lwtnn.json`. This contain the full description of the neural network function (all weights and biases), and are used to apply the model on the data. 
+
+
+
+
+
+## 4. Apply ML model
+
+To apply it we use the friend tree producer from step 2, and run e.g. the command
+```bash
+job_management.py --command submit --executable NNScore --custom_workdir_path /ceph/${USER}/nmssm/temp  --input_ntuples_directory /ceph/jbechtel/nmssm/ntuples/2016/tt/   --batch_cluster etp7 --events_per_job 20000 --cores 24 --restrict_to_channels tt  --friend_ntuples_directories /ceph/jbechtel/nmssm/ntuples/2016/tt/FakeFactors_nmssm/ /ceph/jbechtel/nmssm/ntuples/2016/tt/HHKinFit/ /ceph/jbechtel/nmssm/ntuples/2016/tt/SVFit/  --conditional 0  --extra-parameters "--lwtnn_config /PATH/TO/ML/OUTPUT/FOLDER/"
+```
+Compared to the command of step 2, now also the options `--friend_ntuples_directories` (friend trees of step 2), `--conditional 0/1` (0 if only either 2016,2017 or 2018 were used for the training, 1 if all were used) and `--extra-parameters "--lwtnn_config ..."` (with the path to the output folder of the training) need to be set.
+
+After creating these friend trees, they can be added to the `utils/setup_samples.sh` and the full information of the NN response to each event is available.
+
+## 5. Produce analysis histograms
+
+If all ntuples in  `utils/setup_samples.sh` are correct, you can produce the analysis shapes via the commands:
 ```bash
 # Check utils/setup_samples.sh for correct paths
 ERA="2016" # other possibilities: 2017, 2018
-CHANNELS="tt" # other possibilities: mt, et
-./shapes/produce_nmssm_shapes.sh $ERA $CHANNEL ${CHANNEL}_max_score
+CHANNEL="tt" # other possibilities: mt, et
+MASS=500 # same as was used for the training
+BATCH=2 # same as was used for the training
+./shapes/produce_nmssm_shapes.sh $ERA $CHANNEL ${CHANNEL}_max_score $MASS $BATCH
 ```
 
 
