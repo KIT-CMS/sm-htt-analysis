@@ -162,11 +162,53 @@ MASS=500 # other possibilities: 240 280 320 360 400 450 500 550 600 700 800 900 
 BATCH=2 # check ml/get_nBatches.py for possibilites
 ./run_ml.sh $ERA $CHANNEL $MASS $BATCH
 ```
-For testing / playing around with the network it is sufficient to train on only one mass/batch pair. For the full NMSSM analysis, 68 trainings were used. Whether this can be done in a smarter way, using only one training is an interesting point of study. The answer is probably yes. 
+If you look into the run_ml script, you will see that currently a specific set of signal masses are set, in which the training is performed. For testing / playing around with the network it is sufficient to train on one of these masses. For the full NMSSM analysis, 68 trainings were used. Whether this can be done in a smarter way, using only one training is an interesting point of study. The answer is probably yes. 
 
 
 After running the script, a folder should be created in `output/ml/...`, containing json files of the form `fold*_lwtnn.json`. This contain the full description of the neural network function (all weights and biases), and are used to apply the model on the data. 
 
+The parameters of the trainings are set in the template files, found by 
+```
+ls ml/templates/*training*.yaml
+```
+The important parameters you can also play around with are
+```yaml
+model:
+  eventsPerClassAndBatch: 30 # how many events per batch are used before weights are updated
+  early_stopping: 50 # after how many epochs is the training considered converged
+  epochs: 100000 # Max number of epochs (is never reached)
+  name: smhtt_dropout_tanh # NN layout, defined in htt-ml/training/keras_models.py
+  save_best_only: true # saves best only
+  steps_per_epoch: 100 # After how many weight updates is the model compared to the validation sample
+```
+Furthermore, the variables that were used to train on are defined as
+```
+- pt_1 : pT of first tau decay product (electron, muon oder had. tau for et, mt tt)
+- pt_2 : pT of second (had. tau in all final states)
+- m_vis : invariant visible di-tau mass
+- ptvis : visible di-tau pT
+- m_sv_puppi : SVFit di-tau mass (consideres also neutrinos / MET)
+- nbtag : Number of b-jets
+- jpt_1 : pT of pT-leading jet
+- njets :  Number of non-b-jets
+- jdeta : Difference in eta between two non-b-jets 
+- mjj : Invariant mass of two non-b-jets
+- dijetpt : pT of two non-b-jets
+- bpt_bReg_1 : pT of leading b-jet
+- bpt_bReg_2 : pT of subleading b-jet
+- bm_bReg_1 : mass of leading b-jet
+- bm_bReg_2 : mass of subleading b-jet
+- bcsv_1 : B-jet discriminator score of leading b-jet
+- bcsv_2 : B-jet discriminator score of subleadig b-jet
+- jpt_2 : pT of subleading non-b-jet
+- mbb_highCSV_bReg : Invariant mass of two b-jets 
+- pt_bb_highCSV_bReg : pT of two b-jets
+- m_ttvisbb_highCSV_bReg : Invariant mass of two b-jets plus visible taus
+- kinfit_mH : bb+tautau mass (including neutrinos / MET using kinematic fit)
+- kinfit_mh2 : bb mass used for the fit
+- kinfit_chi2 : quality of the fit 
+- highCSVjetUsedFordiBJetSystemCSV : B-jet discriminator score of non-b-jet jet with highest of such scores
+```
 
 
 
