@@ -86,8 +86,8 @@ def buildprocesses(era, channelname):
 
     signal_nicks = (
         {"WH125", "ZH125", "VH125", "ttH125"}
-        | {ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict}
-        | {qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict}
+        | {"ggH125"}
+        | {"qqH125"}
         | ww_nicks
     )
         # add SUSY signals:
@@ -116,7 +116,7 @@ def buildprocesses(era, channelname):
     for m in susybbH_masses:
         name = "bbH_" + str(m)
         signal_nicks.add(name)
-    print len(signal_nicks)
+    print("Considering {} processes".format(len(signal_nicks)))
     background_nicks = set(
         trueTauBkgS
         | leptonTauBkgS
@@ -131,7 +131,7 @@ def buildprocesses(era, channelname):
     return processes[::-1]
 
 
-def write_gc(era, channel, nnclasses, processes, tag, workdir,tarballpath, mode):
+def write_gc(era, channel, nnclasses, processes, tag, workdir, tarballpath, mode):
     if mode == "normal":
         configfilepath = "{WORKDIR}/shapes_{ERA}_{CHANNEL}_{TAG}.conf".format(
             WORKDIR=workdir, ERA=era, CHANNEL=channel, TAG=tag
@@ -189,6 +189,8 @@ def write_gc(era, channel, nnclasses, processes, tag, workdir,tarballpath, mode)
 
 
 def build_tarball(workdir):
+    if not os.path.exists(workdir):
+        os.makedirs(workdir)
     print("building tarball...")
     cmd = "tar --dereference -czf {}/gc_tarball.tar.gz shape-producer/* shapes/* utils/* datasets/* ml/* fake-factor-application/* utils/* output/ml/*/dataset_config.yaml".format(
         workdir
