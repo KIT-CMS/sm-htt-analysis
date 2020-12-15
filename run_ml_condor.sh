@@ -5,7 +5,7 @@
 # b. The training on the cluster is started
 # c. The trained modells are tested
 
-ERA=$1 # Can be 2016, 2017, 2018 or "all"
+ERA_NAME=$1 # Can be 2016, 2017, 2018 or "all"
 CHANNEL=$2 # Can be et, mt or tt
 MASS=$3 # only train on mH=500 GeV
 BATCH=$4 # only train on mh' in 85, 90, 95, 100 GeV (see ml/get_nBatches.py for assignment)
@@ -16,18 +16,18 @@ RECALC=$5 # recalculate certain stages of the programm: "a" datasets, "b" traini
 #for BATCH in `python ml/get_nBatches.py ${MASS}`
 #do
 
-SET=${ERA}_${CHANNEL}_${MASS}_${BATCH}
+SET=${ERA_NAME}_${CHANNEL}_${MASS}_${BATCH}
 OUTPUT_PATH=output/ml/${SET}
-CEPH_PATH=/ceph/srv/tvoigtlaender/nmssm_data/${SET}
+CEPH_PATH=/ceph/srv/${USER}/nmssm_data/${SET}
 
 # use the above loops if you want to train on multiple masses sequentially (this was done for the analysis to derive the 68 trainings)
 
 echo "ERA=$ERA, CHANNEL=$CHANNEL, MASS=$MASS, BATCH=$BATCH, RECALC=$RECALC"
 
-if [[ $ERA == "all_eras" ]]; then
+if [[ $ERA_NAME == "all_eras" ]]; then
   ERAS="2016 2017 2018"
 else
-  ERAS=${ERA}
+  ERAS=${ERA_NAME}
 fi
 
 #---a---
@@ -42,9 +42,9 @@ if [[ ! -d output/log/logandrun ]]; then
 fi
 #Test if needed trainings data is on ceph
 CEPH_TEST=false
-for ERA_LOOP in ERAS; do
-  CEPH_PATH_LOOP=/ceph/srv/tvoigtlaender/nmssm_data/${ERA_LOOP}_${CHANNEL}_${MASS}_${BATCH}
-  if [[ $(ls -1 ${CEPH_PATH_LOOP}/* 2>/dev/null | wc -l ) -lt 2 ]]; then
+for ERA in ERAS; do
+  LOOP CEPH_PATH=/ceph/srv/${USER}/nmssm_data/${ERA}_${CHANNEL}_${MASS}_${BATCH}
+  if [[ $(ls -1 ${LOOP_CEPH_PATH}/* 2>/dev/null | wc -l ) -lt 2 ]]; then
     CEPH_TEST=true
   fi
 done
@@ -54,34 +54,33 @@ if ( ${CEPH_TEST} && [[ -z ${RECALC} ]] ) || [[ ${RECALC} == *"a"* ]]; then
   if [[ ! -f ${OUTPUT_PATH}/dataset_config.yaml ]] || [[ ${RECALC} == *"a"* ]]; then
     # Run dataset creation
     echo "creating Datasets"
-    if [[ $ERA == "all_eras" ]]; then
-      for ERA_LOOP in "2016" "2017" "2018"; do
-        ./ml/create_training_dataset.sh $ERA_LOOP $CHANNEL $MASS $BATCH &
+    if [[ $ERA_NAME == "all_eras" ]]; then
+      for ERA in "2016" "2017" "2018"; do
+        ./ml/create_training_dataset.sh $ERA $CHANNEL $MASS $BATCH &
       done
       wait
-      ./ml/combine_configs.sh all_eras $CHANNEL ${MASS}_${BATCH}
+      ./ml/combine_configs.sh $ERA_NAME $CHANNEL ${MASS}_${BATCH}
     else
       ./ml/create_training_dataset.sh $ERA $CHANNEL $MASS $BATCH
     fi
     # If dataset creation specified:
     if [[ ${RECALC} == *"a"* ]]; then
       # Remove data on ceph
-      for ERA_LOOP in ${ERAS}; do
-        CEPH_PATH_LOOP=/ceph/srv/tvoigtlaender/nmssm_data/${ERA_LOOP}_${CHANNEL}_${MASS}_${BATCH}
-        rm ${CEPH_PATH_LOOP}/*
+      for ERA in ${ERAS}; do
+        LOOP_CEPH_PATH=/ceph/srv/${USER}/nmssm_data/${ERA}_${CHANNEL}_${MASS}_${BATCH}
+        rm ${LOOP_CEPH_PATH}/*
       done
     fi
   fi
   # Upload dataset to ceph
-  for ERA_LOOP in ${ERAS}; do
-    SET_LOOP=${ERA_LOOP}_${CHANNEL}_${MASS}_${BATCH}
-    OUTPUT_PATH_LOOP=output/ml/${SET_LOOP}
-    CEPH_PATH_LOOP=/ceph/srv/tvoigtlaender/nmssm_data/${SET_LOOP}
+  for ERA in ${ERAS}; do
+    LOOP_OUTPUT_PATH=output/ml/${ERA}_${CHANNEL}_${MASS}_${BATCH}
+    LOOP_CEPH_PATH=/ceph/srv/tvoigtlaender/nmssm_data/${ERA}_${CHANNEL}_${MASS}_${BATCH}
     # create directories if needed
-    if [[ ! -d ${CEPH_PATH_LOOP} ]]; then
-      mkdir -p ${CEPH_PATH_LOOP}
+    if [[ ! -d ${LOOP_CEPH_PATH} ]]; then
+      mkdir -p ${LOOP_CEPH_PATH}
     fi
-    xrdcp ${OUTPUT_PATH_LOOP}/fold0_training_dataset.root ${OUTPUT_PATH_LOOP}/fold1_training_dataset.root ${CEPH_PATH_LOOP}
+    xrdcp ${LOOP_OUTPUT_PATH}/fold0_training_dataset.root ${LOOP_OUTPUT_PATH}/fold1_training_dataset.root ${LOOP_CEPH_PATH}
   done
 else
   echo "No new datasets needed"
@@ -102,13 +101,13 @@ if ( [[ $(ls -1 ${OUTPUT_PATH}/*.png 2>/dev/null | wc -l ) -lt 10 ]] && [[ -z ${
   # Export for testing and test modells
   echo "testing new models"
   ./ml/export_for_application.sh $ERA $CHANNEL ${MASS}_${BATCH}
-  if [[ $ERA == "all_eras" ]]
+  if [[ $ERA_NAME == "all_eras" ]]
   then
-    for ERA_2 in "2016" "2017" "2018"; do
-      ./ml/run_testing_all_eras.sh $ERA_2 $CHANNEL  ${MASS}_${BATCH}
+    for ERA in "2016" "2017" "2018"; do
+      ./ml/run_testing_all_eras.sh $ERA $CHANNEL ${MASS}_${BATCH}
     done
   else
-    ./ml/run_testing.sh $ERA $CHANNEL  ${MASS}_${BATCH}
+    ./ml/run_testing.sh $ERA $CHANNEL ${MASS}_${BATCH}
   fi
 else
   echo "no new testing needed"
