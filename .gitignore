@@ -8,6 +8,7 @@
 *.log
 *.txt
 *.tar.gz
+*.jdl
 .nfs*
 fold*
 *.html
@@ -19,6 +20,7 @@ ml/2016_??
 ml/2017_??
 ml/old
 ml/out
+ml_condor/condor_job.sh
 .env
 .vscode
 .userconfig

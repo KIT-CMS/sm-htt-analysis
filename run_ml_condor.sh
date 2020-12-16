@@ -43,13 +43,13 @@ fi
 #Test if needed trainings data is on ceph
 CEPH_TEST=false
 for ERA in ERAS; do
-  LOOP CEPH_PATH=/ceph/srv/${USER}/nmssm_data/${ERA}_${CHANNEL}_${MASS}_${BATCH}
+  LOOP_CEPH_PATH=/ceph/srv/${USER}/nmssm_data/${ERA}_${CHANNEL}_${MASS}_${BATCH}
   if [[ $(ls -1 ${LOOP_CEPH_PATH}/* 2>/dev/null | wc -l ) -lt 2 ]]; then
     CEPH_TEST=true
   fi
 done
 # If no datasets on ceph and no parts specified or if dataset creation specified: 
-if ( ${CEPH_TEST} && [[ -z ${RECALC} ]] ) || [[ ${RECALC} == *"a"* ]]; then
+if ( ( ${CEPH_TEST} || [[ ! -f ${OUTPUT_PATH}/dataset_config.yaml ]] ) && [[ -z ${RECALC} ]] ) || [[ ${RECALC} == *"a"* ]]; then
   # If there is no config file in the output directory or if dataset creation is specified:
   if [[ ! -f ${OUTPUT_PATH}/dataset_config.yaml ]] || [[ ${RECALC} == *"a"* ]]; then
     # Run dataset creation
@@ -90,7 +90,7 @@ fi
 if ( [[ $(ls -1 ${OUTPUT_PATH}/*.h5 2>/dev/null | wc -l ) -lt 2 ]] && [[ -z ${RECALC} ]] ) || [[ ${RECALC} == *"b"* ]]; then
   # Setup and run the training on condor 
   echo "training modells"
-  ./ml_condor/setup_condor_training.sh $ERA $CHANNEL ${MASS}_${BATCH}
+  ./ml_condor/setup_condor_training.sh $ERA_NAME $CHANNEL ${MASS}_${BATCH}
 else
   echo "no new training needed"
 fi

@@ -1,4 +1,5 @@
 #!/bin/bash
+#This script runs on the cluster
 #Called by ml_condor/condor_job.sh inside condor container
 
 #This script executes the neural network training on the condor cluster using GPU
@@ -14,28 +15,32 @@ ERA_NAME=$1
 CHANNEL=$2
 TAG=$3
 NAME_USER=$4
+folder=${ERA_NAME}_${CHANNEL}_${TAG}
+outdir=/tmp/${folder}
 #---1---
 cephdir=root://ceph-node-a.etp.kit.edu:1094//${NAME_USER}/nmssm_data
 if [[ $ERA_NAME == "all_eras" ]]; then
   ERAS="2016 2017 2018"
 else
- ERAS=$ERA
+ ERAS=$ERA_NAME
 fi
 
 echo $ERAS
 
 # Copy the needed datasets from /ceph
 for ERA in ${ERAS}; do
-  folder=${ERA}_${CHANNEL}_${TAG}
-  outdir=/tmp/${folder}
-  mkdir -p ${outdir_loop}
-  xrdcp -r ${cephdir}/${folder}/fold0_training_dataset.root ${cephdir}/${folder}/fold1_training_dataset.root ${outdir}
-  echo copy ${folder}
+  loop_folder=${ERA}_${CHANNEL}_${TAG}
+  loop_outdir=/tmp/${loop_folder}
+  mkdir -p ${loop_outdir}
+  xrdcp -r ${cephdir}/${loop_folder}/fold0_training_dataset.root ${cephdir}/${loop_folder}/fold1_training_dataset.root ${loop_outdir}
+  echo copy ${loop_folder}
 done
 # Unpacks htt-ml and utils directories
 tar -xf httml.tar.gz 
 #Fix paths of config-file to apply in container (output/ml/->/tmp/)
 sed -e 's@output/ml@/tmp@g' -i dataset_config.yaml
+cat dataset_config.yaml | grep output
+ls /tmp/ | grep 201
 #---2---
 source utils/bashFunctionCollection.sh
 export KERAS_BACKEND=tensorflow
@@ -48,7 +53,7 @@ export PATH=/usr/local:/usr/local/cuda-9.0/bin:$HOME/.local/pylibs-$(hostname)/b
 export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64:$LD_LIBRARY_PATH
 
 #---3---
-if [[ $ERA == "all_eras" ]]
+if [[ $ERA_NAME == "all_eras" ]]
 then
   mkdir -p $outdir
   python htt-ml/training/keras_training.py dataset_config.yaml 0 --balance-batches 1 --conditional 1 #--randomization 1
@@ -59,7 +64,5 @@ else
   python htt-ml/training/keras_training.py dataset_config.yaml 1 --balance-batches 1
 fi
 #---4---
-folder=${ERA_NAME}_${CHANNEL}_${TAG}
-outdir=/tmp/${folder}
 mkdir condor_output_${folder}
 cp ${outdir}/*.h5 ${outdir}/*.png ${outdir}/*.pdf ${outdir}/*.log ${outdir}/*.pickle condor_output_${folder}

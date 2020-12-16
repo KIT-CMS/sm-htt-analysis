@@ -31,6 +31,7 @@ TRANSFERED_FILES_OUT="condor_output_${ERA}_${CHANNEL}_${TAG}"
 #---2---
 # Create Job file with correcr dataset
 echo "#!/bin/bash" > ${JOB_EXECUTABLE}
+echo "#This script runs inside the cluster." >> ${JOB_EXECUTABLE}
 echo "#Written by ml_condor/write_condor_submission.sh" >> ${JOB_EXECUTABLE}
 echo "#Called by condor container as startup following job request from ml_condor/setup_condor_training.sh" >> ${JOB_EXECUTABLE}
 echo "./${EXECUTABLE} ${ERA} ${CHANNEL} ${TAG} ${USER}" >> ${JOB_EXECUTABLE}
