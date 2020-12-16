@@ -100,14 +100,14 @@ fi
 if ( [[ $(ls -1 ${OUTPUT_PATH}/*.png 2>/dev/null | wc -l ) -lt 10 ]] && [[ -z ${RECALC} ]] ) || [[ ${RECALC} == *"c"* ]]; then
   # Export for testing and test modells
   echo "testing new models"
-  ./ml/export_for_application.sh $ERA $CHANNEL ${MASS}_${BATCH}
+  ./ml/export_for_application.sh $ERA_NAME $CHANNEL ${MASS}_${BATCH}
   if [[ $ERA_NAME == "all_eras" ]]
   then
     for ERA in "2016" "2017" "2018"; do
       ./ml/run_testing_all_eras.sh $ERA $CHANNEL ${MASS}_${BATCH}
     done
   else
-    ./ml/run_testing.sh $ERA $CHANNEL ${MASS}_${BATCH}
+    ./ml/run_testing.sh $ERA_NAME $CHANNEL ${MASS}_${BATCH}
   fi
 else
   echo "no new testing needed"
