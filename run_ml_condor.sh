@@ -61,7 +61,7 @@ if ( ( ${CEPH_TEST} || [[ ! -f ${OUTPUT_PATH}/dataset_config.yaml ]] ) && [[ -z 
       wait
       ./ml/combine_configs.sh $ERA_NAME $CHANNEL ${MASS}_${BATCH}
     else
-      ./ml/create_training_dataset.sh $ERA $CHANNEL $MASS $BATCH
+      ./ml/create_training_dataset.sh $ERA_NAME $CHANNEL $MASS $BATCH
     fi
     # If dataset creation specified:
     if [[ ${RECALC} == *"a"* ]]; then
