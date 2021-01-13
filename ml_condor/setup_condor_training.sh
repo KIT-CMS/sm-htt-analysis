@@ -11,93 +11,105 @@
 ERA=$1 #2018
 CHANNEL=$2 #tt
 TAG=$3 #500_2
-OUTPUT_PATH=output/ml/${ERA}_${CHANNEL}_${TAG} 
-LOG_FILE=${OUTPUT_PATH}/condor_logs/log.txt 
-
+FORCE=$4
+CALC=$5
+OUTPUT_PATH=output/ml/${ERA}_${CHANNEL}_${TAG}
+LOG_DIR=condor_logs_${CALC}
+LOG_FILE=${OUTPUT_PATH}/${LOG_DIR}/log.txt
+echo ${LOG_FILE}
 #Check for other jobs on same dataset
 # If there is a lockfile in the output and there is a logfile for the condor job in the output:
 if [ -f "${OUTPUT_PATH}/lockfile.txt" ] && [ -f "${LOG_FILE}" ]; then
-  # Ask if the old condor job should be aborted
-  OLD_JOB_ID=$(cat ${LOG_FILE} | grep -o '000 ([0-9]*.' | sed 's/000 (//;s/\.//')
-  echo "Script paused because of lockfile in ${OUTPUT_PATH}."
-  echo "There is already a training running for ${ERA}_${CHANNEL}_${TAG} (${OLD_JOB_ID})."
-  read -p "Are you sure you want to start a new training [y/n] " -n 1 -r
-  echo ""
-  # If yes:
-  if [[ $REPLY =~ ^[Yy]$ ]]; then
+  OLD_JOB_ID=$(grep -o "000 ([0-9]*." ${LOG_FILE} | sed "s/000 (//;s/\.//")
+  if ${FORCE}; then
+    OVERWRITE=true
+  else
+     # Ask if the old condor job should be aborted
+    echo "Script paused because of lockfile in ${OUTPUT_PATH}."
+    echo "There is already a training running for ${ERA}_${CHANNEL}_${TAG} (${OLD_JOB_ID})."
+    read -p "Are you sure you want to start a new training [y/n] " -n 1 -r
+    echo ""
+    # If yes:
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+      OVERWRITE=true
+    else
+      OVERWRITE=false
+    fi
+  fi
+  if ${OVERWRITE}; then
     # Reset lockfile and remove old job from condor, then restart this script with the same parameters
     echo "Previous training will be overwritten"
     rm ${OUTPUT_PATH}/lockfile.txt
     echo "Removing old job from condor (${OLD_JOB_ID})"
     condor_rm ${OLD_JOB_ID}
-    ./ml_condor/setup_condor_training.sh ${ERA} ${CHANNEL} ${TAG}
   else
+    # End this script
     echo "Abort new training job"
+    exit 1
   fi
-  # End this script
-  exit 0
-else
+fi
   echo "This is the lock file for the dataset ${ERA}_${CHANNEL}_${TAG}.
 It is used to allow only one training on the condor cluster at once.
 If there is no training running on the cluster and this file still exists
 the training was aborted during a previous run and the file should be deleted." > ${OUTPUT_PATH}/lockfile.txt
-fi
 
 #remove possible remnants from previous trainings
 if [ -f "condor_output" ]; then
+  echo "removing all condor_output*"
   rm -r condor_output*
 fi
 #create condor_logs directory if needed
-if [ ! -d "${OUTPUT_PATH}/condor_logs" ]; then
-  mkdir ${OUTPUT_PATH}/condor_logs
+if [ ! -d "${OUTPUT_PATH}/${LOG_DIR}" ]; then
+  mkdir -p ${OUTPUT_PATH}/${LOG_DIR}
 fi
-if [ -f "${OUTPUT_PATH}/condor_logs/log.txt" ]; then
-  rm ${OUTPUT_PATH}/condor_logs/*.txt
+if [ -f "${OUTPUT_PATH}/${LOG_DIR}/log.txt" ]; then
+  rm ${OUTPUT_PATH}/${LOG_DIR}/*.txt
 fi
-#build .tar from htt-ml and utils if it doesn't exist
+#build .tar from htt-ml and utils if it doesn"t exist
 if [ ! -f "ml_condor/httml.tar.gz" ]; then
   tar --dereference -czf httml.tar.gz htt-ml utils
 fi
 
 #---2---
 #write submission file
-./ml_condor/write_condor_submission.sh ${ERA} ${CHANNEL} ${TAG}
+./ml_condor/write_condor_submission.sh ${ERA} ${CHANNEL} ${TAG} ${CALC}
 
 #---3---
 #start condor job
 condor_submit ${OUTPUT_PATH}/submission.jdl
 
 
-START_ID=$(cat ${LOG_FILE} | grep -o '000 ([0-9]*.' | sed 's/000 (//;s/\.//')
+START_ID=$(grep -o "000 ([0-9]*." ${LOG_FILE} | sed "s/000 (//;s/\.//")
 condor_working=true
 job_waiting=true
 
 #Check status of job during runtime
 while ${condor_working}; do
-  CURRENT_ID=$(cat ${LOG_FILE} | grep -o '000 ([0-9]*.' | sed 's/000 (//;s/\.//')
-  if [ ${START_ID} -ne ${CURRENT_ID} ] || [ ! -f "${LOG_FILE}" ]; then
+  CURRENT_ID=$(grep -o "000 ([0-9]*." ${LOG_FILE} | sed "s/000 (//;s/\.//")
+  if [[ ${START_ID} -ne ${CURRENT_ID} ]] || [[ ! -f ${LOG_FILE} ]] || grep "Job was aborted" ${LOG_FILE} | grep ${CURRENT_ID}; then
     #if another job ist started on same datatset this will abort this job
     echo "."
-    echo "Condor job (${START_ID}) or logfile was changed/deleted during runtime"
+    echo "Condor job with parameters ${ERA}_${CHANNEL}_${TAG} (${START_ID}) or its logfile was changed/deleted during runtime"
     exit 1
-  elif cat ${LOG_FILE} | grep -q "Job was held"; then
+  elif grep -q "Job was held" ${LOG_FILE}; then
+    grep "Job was held" ${LOG_FILE}
     echo "."
-    echo "Condor job was held"
-    condor_working=false
-  elif cat ${LOG_FILE} | grep -q "(return value 0)"; then
+    echo "Condor job with parameters ${ERA}_${CHANNEL}_${TAG}_${CALC} was held"
+    exit 1
+  elif grep -q "(return value 0)" ${LOG_FILE}; then
     echo "."
-    echo "Condor job was completed succesfully"
+    echo "Condor job with parameters ${ERA}_${CHANNEL}_${TAG}_${CALC} was completed succesfully"
     condor_working=false
-  elif cat ${LOG_FILE} | grep -q "(return value 1)"; then
+  elif grep -q "(return value 1)" ${LOG_FILE}; then
     echo "."
-    echo "Condor job encountered an error. Logfiles are in ${OUTPUT_PATH}/condor_logs/"
+    echo "Condor job with parameters ${ERA}_${CHANNEL}_${TAG}_${CALC} encountered an error. Logfiles are in ${OUTPUT_PATH}/${LOG_DIR}/"
     condor_working=false
-  else 
-    if cat ${LOG_FILE} |grep -q "Job executing on host" && ${job_waiting}; then
+  else
+    if grep -q "Job executing on host" ${LOG_FILE} && ${job_waiting}; then
       echo "."
-      echo "The job started execution"
+      echo "The job with parameters ${ERA}_${CHANNEL}_${TAG}_${CALC} started execution"
       job_waiting=false
-    else 
+    else
       echo -n "."
     fi
     sleep 5

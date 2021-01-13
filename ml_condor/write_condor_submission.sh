@@ -11,19 +11,21 @@
 ERA=$1
 CHANNEL=$2
 TAG=$3
+CALC=$4
 OUTPUT_PATH=output/ml/${ERA}_${CHANNEL}_${TAG}
 
 #---1---
-JOB_EXECUTABLE=ml_condor/condor_job.sh
+JOB_EXECUTABLE=${OUTPUT_PATH}/condor_job.sh
 EXECUTABLE=run_condor_training_gpu.sh
 SUBMISSION_FILE=${OUTPUT_PATH}/submission.jdl
-OUTLOG_FILE=${OUTPUT_PATH}/condor_logs/out.txt
-ERRLOG_FILE=${OUTPUT_PATH}/condor_logs/err.txt
-LOG_FILE=${OUTPUT_PATH}/condor_logs/log.txt
+LOGS_DIR=condor_logs_${CALC}
+OUTLOG_FILE=${OUTPUT_PATH}/${LOGS_DIR}/out.txt
+ERRLOG_FILE=${OUTPUT_PATH}/${LOGS_DIR}/err.txt
+LOG_FILE=${OUTPUT_PATH}/${LOGS_DIR}/log.txt
 NUM_GPUS=1
 ACC_GROUP=cms.higgs
 # This is where he used image is defined###
-DOCKER_IMAGE=tvoigtlaender/slc7-cuda9.0-tfgpu
+DOCKER_IMAGE=tvoigtlaender/slc7-cuda9.0-tf${CALC}
 ###########################################
 TRANSFERED_FILES_IN="ml_condor/${EXECUTABLE}, httml.tar.gz, ${OUTPUT_PATH}/dataset_config.yaml"
 TRANSFERED_FILES_OUT="condor_output_${ERA}_${CHANNEL}_${TAG}"
