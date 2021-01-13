@@ -339,7 +339,7 @@ def main(args):
                 processes[chname_][name] = Process(name, SUSYggHEstimation(era, directory, ch_, str(mass), ggH_contribution, weight, friend_directory=friend_directory[chname_]))
                 signal_nicks.add(name)
         for mass in susybbH_masses:
-            name = "bbH_" + str(m)
+            name = "bbH_" + str(mass)
             processes[chname_][name] = Process(name, SUSYbbHEstimation(era, directory, ch_, str(mass), friend_directory=friend_directory[chname_]))
             signal_nicks.add(name)
     # Create the jetFakes process for all channels but em
