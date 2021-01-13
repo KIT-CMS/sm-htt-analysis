@@ -36,7 +36,7 @@ for OPTION in ${OPTIONS}; do
           if [[ ${OPTION} == *"p"* ]]; then
             ./run_ml_condor.sh ${ERA} ${CHANNEL} ${MASS} ${BATCH} ${OPTION} &
           else
-            ./run_ml_condor.sh ${ERA} ${CHANNEL} ${MASS} ${BATCH} ${OPTIONS}
+            ./run_ml_condor.sh ${ERA} ${CHANNEL} ${MASS} ${BATCH} ${OPTION}
           fi
         done
       done
