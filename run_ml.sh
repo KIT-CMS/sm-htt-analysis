@@ -41,4 +41,3 @@ fi
 #done
 
 # Use friend_tree_producer afterwards with lwtnn files to produce NNScore friend trees.
- 

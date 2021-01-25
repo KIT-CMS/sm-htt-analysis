@@ -19,7 +19,7 @@ from yaml import Loader, Dumper
 from yaml.representer import SafeRepresenter
 
 def dict_representer(dumper, data):
-   return dumper.represent_dict(data.iteritems())
+   return dumper.represent_dict(data.items())
 Dumper.add_representer(OrderedDict, dict_representer)
 
 def dict_constructor(loader, node):
@@ -39,20 +39,20 @@ def parse_arguments():
 
 
 def dictToString(exdict):
-    return str(["{} : {}".format(key, value) for key, value in sorted(exdict.items(), key=lambda x: x[1])])
+    return str(["{} : {}".format(key, value) for key, value in sorted(exdict.items(), key=lambda x: str(x[1]))])
 
 
 def main(args):
     logger.info("Process training dataset %s.", args.dataset)
     f = ROOT.TFile(args.dataset)
 
-    dsConfDict= yaml.load(open(args.dataset_config_file, "r"))
+    dsConfDict= yaml.load(open(args.dataset_config_file, "r"), Loader=yaml.SafeLoader)
     ### use the classes that have processes mapped to them
-    classes = set([dsConfDict["processes"][key]["class"] for key in dsConfDict["processes"].keys()])
+    classes = set([dsConfDict["processes"][key]["class"] for key in list(dsConfDict["processes"].keys())])
 
     if args.training_template == None:
         args.training_template= "ml/templates/{}_{}_training.yaml".format(args.era, args.channel)
-    trainingTemplateDict=yaml.load(open(args.training_template, "r"))
+    trainingTemplateDict=yaml.load(open(args.training_template, "r"), Loader=yaml.SafeLoader)
 
     ### Weight Calculation
     counts = []
@@ -87,14 +87,14 @@ def main(args):
         newWeightsDict[name]=sum_all / counts[i]
 
     ### Warning for big changes
-    if set(trainingTemplateDict["class_weights"].keys())==set(newWeightsDict.keys()):
+    if set(list(trainingTemplateDict["class_weights"].keys()))==set(list(newWeightsDict.keys())):
         for i, name in enumerate(classes):
             oldweight=trainingTemplateDict["class_weights"][name]
             newweight=newWeightsDict[name]
             if newweight/oldweight > 2 or newweight/oldweight < .5:
                 logger.warning( "{}-{}: Class weights for {} changing by more than a factor of 2".format(args.era, args.channel,name))
     else:
-        logger.warn("Training classes in {} and {} differ".format(args.dataset_config_file,args.training_template))
+        logger.warning("Training classes in {} and {} differ".format(args.dataset_config_file,args.training_template))
 
     ## Sort the clases, so testing plots/... are easierer to compare
     priolist=["qqh","ggh","emb","ztt","tt","db","misc","zll","w","noniso","ss","ff"]
@@ -110,14 +110,14 @@ def main(args):
 
     ###
     # attach the weights dict with the classes to the dsConfDict
-    dsConfDict["classes"]=odDict.keys()
+    dsConfDict["classes"]=list(odDict.keys())
     dsConfDict["class_weights"]=odDict
 
 
     ############ Logic for merging the configs
-    if "classes" in trainingTemplateDict.keys():
+    if "classes" in list(trainingTemplateDict.keys()):
         if set(trainingTemplateDict["classes"])!=set(classes):
-            logger.warn("Training classes in {} and {} differ".format(args.dataset_config_file,args.training_template))
+            logger.warning("Training classes in {} and {} differ".format(args.dataset_config_file,args.training_template))
         #exit 1
 
     mergeddict=OrderedDict({})
@@ -125,12 +125,12 @@ def main(args):
     ## dsConfDict has priority over trainingTemplateDict
     ## nothing that is provided by the write_dataset_config.py is overwritten
     for d in [dsConfDict, trainingTemplateDict]:
-        for key in ["classes","class_weights"]+d.keys():
+        for key in ["classes","class_weights"]+list(d.keys()):
             #if True:
             # making sure processes appear at the end
             if key not in ["processes"]:
                 if key in mergeddict and mergeddict[key]!=d[key]:
-                    logger.warn("Key overlap for key {}, {} should overwrite {}".format(key,d[key],mergeddict[key]))
+                    logger.warning("Key overlap for key {}, {} should overwrite {}".format(key,d[key],mergeddict[key]))
                 else: mergeddict[key]=d[key]
     mergeddict["processes"]=dsConfDict["processes"]
     with open(mergeddict["output_path"]+"/dataset_config.yaml","w") as f:

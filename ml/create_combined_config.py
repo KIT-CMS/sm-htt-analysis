@@ -28,10 +28,10 @@ def main(args):
     for era in eras:
         config_path = "output/ml/{}_{}_{}/dataset_config.yaml".format(era, args.channel,args.tag)
         logger.info("Try to open {}".format(config_path))
-        config = yaml.load(open(config_path, 'r'))
+        config = yaml.load(open(config_path, 'r'), Loader =yaml.SafeLoader)
         configs.append(config)
 
-    all_era_template = yaml.load(open('ml/templates/all_eras_training_{}.yaml'.format(args.channel)))
+    all_era_template = yaml.load(open('ml/templates/all_eras_training_{}.yaml'.format(args.channel)), Loader=yaml.SafeLoader)
 
     for i_era, era in enumerate(eras):
         all_era_template["datasets_{}".format(era)] = configs[i_era]["datasets"]

@@ -2,7 +2,9 @@
 if [[ ! -z $LCG_RELEASE ]]; then
     :
 else
-    export LCG_RELEASE=95
+#    export LCG_RELEASE=97python3
+#    export LCG_RELEASE=98python3
+    export LCG_RELEASE=99cuda
 fi
 
 echo "Using LCG ${LCG_RELEASE}"

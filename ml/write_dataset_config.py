@@ -8,6 +8,8 @@ import argparse
 import yaml
 import copy
 
+import shape_producer.cutstring
+
 from shape_producer.cutstring import Weights, Weight
 from shape_producer.channel import *
 
@@ -211,7 +213,7 @@ def main(args):
             else:
                 batches[1] = [60, 70, 80, 90, 100]
                 batches[2] = [120, 150, 170, 190, 250, 300]
-		batches[3] = [350, 400, 450, 500, 550, 600, 650, 700]
+                batches[3] = [350, 400, 450, 500, 550, 600, 650, 700]
                 batches[4] = [800, 900, 1000, 1100, 1200] 
                 batches[5] = [1300, 1400, 1600, 1800]
                 batches[6] = [2000, 2200, 2400, 2600, 2800] 
@@ -222,7 +224,7 @@ def main(args):
             light_masses = batches[batch]
             if mass<1001:
                 for light_mass in light_masses:
-               	    if light_mass+125>mass:
+                    if light_mass+125>mass:
                         continue
                     classes_map["NMSSM_{}_125_{}".format(mass,light_mass)] = "NMSSM_MH{}_{}".format(mass,batch)
                     estimationMethodList.append(NMSSMEstimation(era,args.base_path,channel,heavy_mass=mass,light_mass=light_mass))
