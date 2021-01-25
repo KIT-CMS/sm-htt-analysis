@@ -36,7 +36,7 @@ echo "Timestamp copy in start: ${now}"
 
 for ERA in ${ERAS}; do
   loop_folder=${ERA}_${CHANNEL}_${TAG}
-  loop_outdir=/tmp/
+  loop_outdir=/tmp/${loop_folder}
   echo ${loop_outdir}
   mkdir -p ${loop_outdir}
   xrdcp ${cephdir}/${loop_folder}/fold0_training_dataset.root ${cephdir}/${loop_folder}/fold1_training_dataset.root ${loop_outdir}
