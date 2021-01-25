@@ -12,7 +12,7 @@
 	url = https://github.com/KIT-CMS/Dumbledraw.git
 [submodule "tensorflow_derivative"]
 	path = tensorflow_derivative
-	url = https://github.com/KIT-CMS/tensorflow_derivative/tree/Tensorflow_2.git
+	url = https://github.com/KIT-CMS/tensorflow_derivative.git
 [submodule "jdl_creator"]
 	path = jdl_creator
 	url = ssh://git@github.com/KIT-CMS/jdl_creator

@@ -6,21 +6,13 @@ ERAS="all_eras"
 #Can be: all_eras 2016 2017 2018
 CHANNELS="tt"
 #Can be: et mt tt
-<<<<<<< HEAD
-MASSES="240"
-=======
 MASSES="550"
->>>>>>> 89aab0b99de5f90f119d781792ff6acb158fdd07
 #Can be: 240 280 320 360 400 450 500 550 600 700 800 900 1000 1200
 BATCHES="1"
 #Can be: 1 2 3 4 5 6 7
 #Use `python ml/get_nBatches.py ${MASS}` when also iterating over masses
 
-<<<<<<< HEAD
 OPTIONS="2p 2pc"
-=======
-OPTIONS="2p"
->>>>>>> 89aab0b99de5f90f119d781792ff6acb158fdd07
 #One series of runs is started per set of options
 #Possible options (order doesn't matter):
 #1 - Remake the training data
