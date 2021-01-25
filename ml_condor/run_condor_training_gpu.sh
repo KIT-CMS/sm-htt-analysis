@@ -31,6 +31,10 @@ else
 fi
 
 # Copy the needed datasets from /ceph
+<<<<<<< HEAD
+=======
+
+>>>>>>> 89aab0b99de5f90f119d781792ff6acb158fdd07
 now=$(date +"%T")
 echo "Timestamp copy in start: ${now}"
 
@@ -55,6 +59,12 @@ fi
 tar -xf httml.tar.gz 
 #Fix paths of config-file to apply in container (output/ml/->/tmp/)
 sed -e 's@output/ml@/tmp@g' -i dataset_config.yaml
+<<<<<<< HEAD
+=======
+grep output dataset_config.yaml
+ls /tmp/${folder}
+pwd
+>>>>>>> 89aab0b99de5f90f119d781792ff6acb158fdd07
 #---2---
 source utils/bashFunctionCollection.sh
 export KERAS_BACKEND=tensorflow

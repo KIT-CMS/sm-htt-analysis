@@ -24,8 +24,13 @@ ERRLOG_FILE=${OUTPUT_PATH}/${LOGS_DIR}/err.txt
 LOG_FILE=${OUTPUT_PATH}/${LOGS_DIR}/log.txt
 NUM_GPUS=1
 ACC_GROUP=cms.higgs
+<<<<<<< HEAD
 # This is where the used image is defined###
 DOCKER_IMAGE=kahnjms/slc7-condocker-cuda-10.1-cudnn7-runtime
+=======
+# This is where he used image is defined###
+DOCKER_IMAGE=tvoigtlaender/slc7-cuda9.0-tf${CALC}
+>>>>>>> 89aab0b99de5f90f119d781792ff6acb158fdd07
 ###########################################
 TRANSFERED_FILES_IN="ml_condor/${EXECUTABLE}, httml.tar.gz, ${OUTPUT_PATH}/dataset_config.yaml"
 TRANSFERED_FILES_OUT="condor_output_${ERA}_${CHANNEL}_${TAG}"

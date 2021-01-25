@@ -1,16 +1,31 @@
 #!/bin/bash
 
 # This script runs the nmssm analysis. The training of the neural network is performed using the condor cluster. If the GPU of the cluster is used is decided by the image used in ml_condor/wite_condor_submission.sh
+<<<<<<< HEAD
 # This script can be called by multi_run_ml.sh
 # 1. The training dataset is constructed from skimmed data
 # 2. The training on the cluster is started
 # 3. The trained modells are tested
+=======
+#This script can be called by multi_run_ml.sh
+# a. The training dataset is constructed from skimmed data
+# b. The training on the cluster is started
+# c. The trained modells are tested
+>>>>>>> 89aab0b99de5f90f119d781792ff6acb158fdd07
 
 ERA_NAME=$1 # Can be 2016, 2017, 2018 or "all"
 CHANNEL=$2 # Can be et, mt or tt
 MASS=$3 # only train on mH=500 GeV
 BATCH=$4 # only train on mh' in 85, 90, 95, 100 GeV (see ml/get_nBatches.py for assignment)
 OPTIONS=$5 # recalculate certain stages of the programm: "1" datasets, "2" training, "3" testing, "c" for using cpu instead of gpu. Can be combined (13, 2c3)
+<<<<<<< HEAD
+=======
+
+#for MASS in 240 280 320 360 400 450 500 550 600 700 800 900 1000 1200 
+#do
+#for BATCH in `python ml/get_nBatches.py ${MASS}`
+#do
+>>>>>>> 89aab0b99de5f90f119d781792ff6acb158fdd07
 
 SET=${ERA_NAME}_${CHANNEL}_${MASS}_${BATCH}
 OUTPUT_PATH=output/ml/${SET}
