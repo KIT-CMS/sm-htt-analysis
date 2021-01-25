@@ -12,7 +12,7 @@ BATCHES="1"
 #Can be: 1 2 3 4 5 6 7
 #Use `python ml/get_nBatches.py ${MASS}` when also iterating over masses
 
-OPTIONS="123p 2pc"
+OPTIONS="2p 2pc"
 #One series of runs is started per set of options
 #Possible options (order doesn't matter):
 #1 - Remake the training data
