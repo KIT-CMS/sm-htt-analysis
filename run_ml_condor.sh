@@ -1,6 +1,8 @@
 #!/bin/bash
+set -e
 
-# This script runs the nmssm analysis. The training of the neural network is performed using the condor cluster. If the GPU of the cluster is used is decided by the image used in ml_condor/wite_condor_submission.sh
+# This script runs the nmssm analysis. The training of the neural network is performed using the condor cluster. 
+# If the GPU of the cluster is used is decided by the image used in ml_condor/wite_condor_submission.sh
 # This script can be called by multi_run_ml.sh
 # 1. The training dataset is constructed from skimmed data
 # 2. The training on the cluster is started
@@ -10,13 +12,13 @@ ERA_NAME=$1 # Can be 2016, 2017, 2018 or "all"
 CHANNEL=$2 # Can be et, mt or tt
 MASS=$3 # only train on mH=500 GeV
 BATCH=$4 # only train on mh' in 85, 90, 95, 100 GeV (see ml/get_nBatches.py for assignment)
-OPTIONS=$5 # recalculate certain stages of the programm: "1" datasets, "2" training, "3" testing, "c" for using cpu instead of gpu. Can be combined (13, 2c3)
+OPTIONS=$5 # recalculate certain stages of the programm: "1" datasets, "2" training, "3" testing,
+# "c" for using cpu instead of gpu, "f" to run training on cluster even if training on same data is already running. 
+#Can be combined (13, 2c3). No option is equivalent to "123" (but not "123c")
 
 SET=${ERA_NAME}_${CHANNEL}_${MASS}_${BATCH}
 OUTPUT_PATH=output/ml/${SET}
 CEPH_PATH=/ceph/srv/${USER}/nmssm_data/${SET}
-
-# use the above loops if you want to train on multiple masses sequentially (this was done for the analysis to derive the 68 trainings)
 
 echo "ERA=${ERA}, CHANNEL=${CHANNEL}, MASS=${MASS}, BATCH=${BATCH}, OPTIONS=${OPTIONS}"
 
@@ -36,16 +38,9 @@ if [[ ! -d output/log/logandrun ]]; then
   echo create output/log/logandrun
   mkdir -p output/log/logandrun
 fi
-#Test if needed trainings data is on ceph
-CEPH_TEST=false
-for ERA in ERAS; do
-  LOOP_CEPH_PATH=/ceph/srv/${USER}/nmssm_data/${ERA}_${CHANNEL}_${MASS}_${BATCH}
-  if [[ $(ls -1 ${LOOP_CEPH_PATH}/* 2>/dev/null | wc -l ) -lt 2 ]]; then
-    CEPH_TEST=true
-  fi
-done
-# If no datasets on ceph and no parts specified or if dataset creation specified: 
-if ( ( ${CEPH_TEST} || [[ ! -f ${OUTPUT_PATH}/dataset_config.yaml ]] ) && [[ -z ${OPTIONS} ]] ) || [[ ${OPTIONS} == *"1"* ]]; then
+
+# If dataset creation specified: 
+if [[ -z ${OPTIONS} ]] || [[ ${OPTIONS} == *"1"* ]]; then
   # Run dataset creation
   echo "creating Datasets"
   if [[ ${ERA_NAME} == "all_eras" ]]; then
@@ -77,15 +72,10 @@ else
   echo "No new datasets needed"
 fi
 #---2---
-# If there are at least two model files (two are created by (b)) and no parts are specified or if training is specified:
-if ( [[ $(ls -1 ${OUTPUT_PATH}/*.h5 2>/dev/null | wc -l ) -lt 2 ]] && [[ -z ${OPTIONS} ]] ) || [[ ${OPTIONS} == *"2"* ]]; then
+# If training is specified:
+if [[ -z ${OPTIONS} ]] || [[ ${OPTIONS} == *"2"* ]]; then
   # Setup and run the training on condor 
   echo "training modells"
-  if [[ ${OPTIONS} == *"2"* ]]; then
-    force=true
-  else
-    force=false
-  fi
   if [[ ${OPTIONS} == *"c"* ]]; then
     CALC=cpu
     echo "The training is using CPUs"
@@ -93,15 +83,20 @@ if ( [[ $(ls -1 ${OUTPUT_PATH}/*.h5 2>/dev/null | wc -l ) -lt 2 ]] && [[ -z ${OP
     CALC=gpu
     echo "The training is using GPUs"
   fi
-  ./ml_condor/setup_condor_training.sh ${ERA_NAME} ${CHANNEL} ${MASS}_${BATCH} ${force} ${CALC}
+  if [[ ${OPTIONS} == *"f"* ]]; then
+    FORCE=True
+  else
+    FORCE=False
+  fi
+  ./ml_condor/setup_condor_training.sh ${ERA_NAME} ${CHANNEL} ${MASS}_${BATCH} ${FORCE} ${CALC}
   grep Timestamp ${OUTPUT_PATH}/condor_logs_${CALC}/out.txt > ${OUTPUT_PATH}/condor_logs_${CALC}/times.txt
 else
   echo "no new training needed"
 fi
 
 #---3---
-# If there are not enough pictures (.png) in the output directory and no part is specified or if testing is specified:
-if ( [[ $(ls -1 ${OUTPUT_PATH}/*.png 2>/dev/null | wc -l ) -lt 10 ]] && [[ -z ${OPTIONS} ]] ) || [[ ${OPTIONS} == *"3"* ]]; then
+# If testing is specified:
+if [[ -z ${OPTIONS} ]] || [[ ${OPTIONS} == *"3"* ]]; then
   # Export for testing and test modells
   echo "testing new models"
   for ERA in ${ERAS}; do

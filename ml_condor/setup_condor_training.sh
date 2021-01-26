@@ -19,7 +19,7 @@ LOG_FILE=${OUTPUT_PATH}/${LOG_DIR}/log.txt
 echo ${LOG_FILE}
 #Check for other jobs on same dataset
 # If there is a lockfile in the output and there is a logfile for the condor job in the output:
-if [ -f "${OUTPUT_PATH}/lockfile.txt" ] && [ -f "${LOG_FILE}" ]; then
+if [[ -f "${OUTPUT_PATH}/lockfile.txt" ]] && [[ -f "${LOG_FILE}" ]]; then
   OLD_JOB_ID=$(grep -o "000 ([0-9]*." ${LOG_FILE} | sed "s/000 (//;s/\.//")
   if ${FORCE}; then
     OVERWRITE=true
@@ -30,7 +30,7 @@ if [ -f "${OUTPUT_PATH}/lockfile.txt" ] && [ -f "${LOG_FILE}" ]; then
     read -p "Are you sure you want to start a new training [y/n] " -n 1 -r
     echo ""
     # If yes:
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
+    if [[ ${REPLY} =~ ^[Yy]$ ]]; then
       OVERWRITE=true
     else
       OVERWRITE=false
@@ -77,9 +77,10 @@ fi
 #---3---
 #start condor job
 condor_submit ${OUTPUT_PATH}/submission.jdl
-
-
 START_ID=$(grep -o "000 ([0-9]*." ${LOG_FILE} | sed "s/000 (//;s/\.//")
+echo ${START_ID}
+trap "condor_rm ${START_ID}; rm ${OUTPUT_PATH}/lockfile.txt; exit 1" INT
+
 condor_working=true
 job_waiting=true
 
@@ -112,10 +113,9 @@ while ${condor_working}; do
     else
       echo -n "."
     fi
-    sleep 5
+    sleep 10
   fi
 done
-
 #---4---
 #move results to matching directory
 mv condor_output_${ERA}_${CHANNEL}_${TAG}/* ${OUTPUT_PATH}

@@ -1,18 +1,18 @@
 #!/bin/bash
-
+set -e
 #This script starts multiple runs with the given settings using the run_ml_condor.sh script
 
 ERAS="all_eras"
 #Can be: all_eras 2016 2017 2018
 CHANNELS="tt"
 #Can be: et mt tt
-MASSES="550"
+MASSES="500"
 #Can be: 240 280 320 360 400 450 500 550 600 700 800 900 1000 1200
-BATCHES="1"
+BATCHES="2"
 #Can be: 1 2 3 4 5 6 7
 #Use `python ml/get_nBatches.py ${MASS}` when also iterating over masses
 
-OPTIONS="2p 2pc"
+OPTIONS="2"
 #One series of runs is started per set of options
 #Possible options (order doesn't matter):
 #1 - Remake the training data
@@ -21,6 +21,7 @@ OPTIONS="2p 2pc"
 #c - use CPU instead of GPU to train modells
 #p - run all runs parallel
 #n - don't wait for subprocesses after run
+#a - allow batches ignoring restrictions of ml/get_nBatches.py
 
 #Loop for multiple sets of runs
 for OPTION in ${OPTIONS}; do
@@ -30,13 +31,20 @@ for OPTION in ${OPTIONS}; do
     for CHANNEL in ${CHANNELS}; do
       #Loop for different Masses
       for MASS in ${MASSES}; do
+        # Check which batches are allowed for mass
+        ALLOWED_BATCHES=`python ml/get_nBatches.py ${MASS}`
         #Loop for different Batches
         for BATCH in ${BATCHES}; do
-          #Decide if runs are parallel and start runs with training on condor
-          if [[ ${OPTION} == *"p"* ]]; then
-            ./run_ml_condor.sh ${ERA} ${CHANNEL} ${MASS} ${BATCH} ${OPTION} &
+          #Check if batch is possible for mass
+          if ( [[ " ${ALLOWED_BATCHES[@]} " =~ " ${BATCH} " ]] || [[ ${OPTION} == *"a"* ]] ); then
+            #Decide if runs are parallel and start runs with training on condor
+            if [[ ${OPTION} == *"p"* ]]; then
+              ./run_ml_condor.sh ${ERA} ${CHANNEL} ${MASS} ${BATCH} ${OPTION} &
+            else
+              ./run_ml_condor.sh ${ERA} ${CHANNEL} ${MASS} ${BATCH} ${OPTION}
+            fi
           else
-            ./run_ml_condor.sh ${ERA} ${CHANNEL} ${MASS} ${BATCH} ${OPTION}
+            echo "Run with mass ${MASS} and batch ${BATCH} not allowed."
           fi
         done
       done

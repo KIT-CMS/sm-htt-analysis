@@ -22,7 +22,8 @@ LOGS_DIR=condor_logs_${CALC}
 OUTLOG_FILE=${OUTPUT_PATH}/${LOGS_DIR}/out.txt
 ERRLOG_FILE=${OUTPUT_PATH}/${LOGS_DIR}/err.txt
 LOG_FILE=${OUTPUT_PATH}/${LOGS_DIR}/log.txt
-NUM_GPUS=1
+NUM_CPU=1
+NUM_GPUS=3
 ACC_GROUP=cms.higgs
 # This is where the used image is defined###
 DOCKER_IMAGE=kahnjms/slc7-condocker-cuda-10.1-cudnn7-runtime
@@ -66,7 +67,7 @@ echo "+RemoteJob = True" >> ${SUBMISSION_FILE}
 echo "+RequestWalltime = 3600" >> ${SUBMISSION_FILE}
 # Set # of used CPU
 ## single CPU"
-echo "RequestCPUs = 1" >> ${SUBMISSION_FILE}
+echo "RequestCPUs = ${NUM_CPU}" >> ${SUBMISSION_FILE}
 # Set amount os used RAM
 ## 4GB RAM"
 echo "RequestMemory = 4000" >> ${SUBMISSION_FILE}
