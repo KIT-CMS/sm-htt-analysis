@@ -152,7 +152,7 @@ In this repository, the ntuples and friends produced in the previous steps need 
 The top-level script to run the machine learning training and testing is the script `run_ml.sh`. It consist of many individual steps, and it is worthwhile to check and understand the individual steps, which are: 
 1. Creation of training datasets
 2. Summation of training weights -> In the current implementation, training weights are automatically chosen such that each process has the same importance to the training. This is done to avoid the neural network to learn that rare processes (which are among the most interesting) anyhow never occur.
-3. Training of the network.
+3. Training of the network. This Training can also be performed on htcondor utilizing either CPUs or GPUs.
 4. Exporting the final network to a json file, to be used for application.
 5. "Testing" of the network, i.e. creation of performance metrics such as efficiency, purity but also a Taylor expansion of the NN response with respect to the input variables.
 ```bash
@@ -160,12 +160,17 @@ ERA="2016" #choices are 2016, 2017, 2018, or "all"
 CHANNEL="tt" # other possibilities: mt, et
 MASS=500 # other possibilities: 240 280 320 360 400 450 500 550 600 700 800 900 1000 1200
 BATCH=2 # check ml/get_nBatches.py for possibilites
-./run_ml.sh $ERA $CHANNEL $MASS $BATCH
+OPTIONS="123" # check run_ml_condor.sh and multi_run_ml.sh for all possible Options
+./run_ml_condor.sh $ERA $CHANNEL $MASS $BATCH $OPTIONS
 ```
+The multi_run_ml.sh script helps with large numbers of trainings by starting them up in parallel using the run_ml_condor.sh script.
+
 If you look into the run_ml script, you will see that currently a specific set of signal masses are set, in which the training is performed. For testing / playing around with the network it is sufficient to train on one of these masses. For the full NMSSM analysis, 68 trainings were used. Whether this can be done in a smarter way, using only one training is an interesting point of study. The answer is probably yes. 
 
 
 After running the script, a folder should be created in `output/ml/...`, containing json files of the form `fold*_lwtnn.json`. This contain the full description of the neural network function (all weights and biases), and are used to apply the model on the data. 
+
+When using run_ml_condor.sh the training data will be stored on /ceph/srv/*user* instead
 
 The parameters of the trainings are set in the template files, found by 
 ```
