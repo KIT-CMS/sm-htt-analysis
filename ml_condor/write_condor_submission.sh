@@ -3,7 +3,7 @@
 #This script is used to write the submission and the job file for setup_training_gpu.sh
 #1. The variables for the submission are defined
 #2. The job file is written (necessary as the proper options for the training can't be given in the submission file)
-# "In this file the differentiation between cpu and gpu is made. By changing the used image" 
+# "In this file the differentiation between cpu and gpu is made. By changing the used image"
 # "to one with the non-gpu version of tensorflow (tensorflow==2.3.0) only cpu will be used"
 # "Minor changes to the run_condor_training_gpu.sh file may be necessary to use the correct $PATH."
 #3. The submission file is written to match the used datasets and the usage of GPU
@@ -23,12 +23,12 @@ OUTLOG_FILE=${OUTPUT_PATH}/${LOGS_DIR}/out.txt
 ERRLOG_FILE=${OUTPUT_PATH}/${LOGS_DIR}/err.txt
 LOG_FILE=${OUTPUT_PATH}/${LOGS_DIR}/log.txt
 NUM_CPU=1
-NUM_GPUS=3
+NUM_GPUS=1
 ACC_GROUP=cms.higgs
 # This is where the used image is defined###
 DOCKER_IMAGE=kahnjms/slc7-condocker-cuda-10.1-cudnn7-runtime
 ###########################################
-TRANSFERED_FILES_IN="ml_condor/${EXECUTABLE}, httml.tar.gz, ${OUTPUT_PATH}/dataset_config.yaml"
+TRANSFERED_FILES_IN="ml_condor/${EXECUTABLE}, httml.tar.gz"
 TRANSFERED_FILES_OUT="condor_output_${ERA}_${CHANNEL}_${TAG}"
 
 #---2---

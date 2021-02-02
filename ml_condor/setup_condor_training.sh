@@ -21,8 +21,8 @@ echo ${LOG_FILE}
 # If there is a lockfile in the output and there is a logfile for the condor job in the output:
 if [[ -f "${OUTPUT_PATH}/lockfile.txt" ]] && [[ -f "${LOG_FILE}" ]]; then
   OLD_JOB_ID=$(grep -o "000 ([0-9]*." ${LOG_FILE} | sed "s/000 (//;s/\.//")
-  if ${FORCE}; then
-    OVERWRITE=true
+  if [[ ${FORCE} == "True" ]]; then
+    OVERWRITE=True
   else
      # Ask if the old condor job should be aborted
     echo "Script paused because of lockfile in ${OUTPUT_PATH}."
@@ -31,12 +31,12 @@ if [[ -f "${OUTPUT_PATH}/lockfile.txt" ]] && [[ -f "${LOG_FILE}" ]]; then
     echo ""
     # If yes:
     if [[ ${REPLY} =~ ^[Yy]$ ]]; then
-      OVERWRITE=true
+      OVERWRITE=True
     else
-      OVERWRITE=false
+      OVERWRITE=False
     fi
   fi
-  if ${OVERWRITE}; then
+  if [[ ${OVERWRITE} == "True" ]]; then
     # Reset lockfile and remove old job from condor, then restart this script with the same parameters
     echo "Previous training will be overwritten"
     rm ${OUTPUT_PATH}/lockfile.txt
@@ -78,7 +78,6 @@ fi
 #start condor job
 condor_submit ${OUTPUT_PATH}/submission.jdl
 START_ID=$(grep -o "000 ([0-9]*." ${LOG_FILE} | sed "s/000 (//;s/\.//")
-echo ${START_ID}
 trap "condor_rm ${START_ID}; rm ${OUTPUT_PATH}/lockfile.txt; exit 1" INT
 
 condor_working=true
@@ -93,22 +92,21 @@ while ${condor_working}; do
     echo "Condor job with parameters ${ERA}_${CHANNEL}_${TAG} (${START_ID}) or its logfile was changed/deleted during runtime"
     exit 1
   elif grep -q "Job was held" ${LOG_FILE}; then
-    grep "Job was held" ${LOG_FILE}
     echo "."
-    echo "Condor job with parameters ${ERA}_${CHANNEL}_${TAG}_${CALC} was held"
+    echo "Condor job with parameters ${ERA}_${CHANNEL}_${TAG}_${CALC} (${START_ID}) was held"
     exit 1
   elif grep -q "(return value 0)" ${LOG_FILE}; then
     echo "."
-    echo "Condor job with parameters ${ERA}_${CHANNEL}_${TAG}_${CALC} was completed succesfully"
+    echo "Condor job with parameters ${ERA}_${CHANNEL}_${TAG}_${CALC} (${START_ID}) was completed succesfully"
     condor_working=false
   elif grep -q "(return value 1)" ${LOG_FILE}; then
     echo "."
-    echo "Condor job with parameters ${ERA}_${CHANNEL}_${TAG}_${CALC} encountered an error. Logfiles are in ${OUTPUT_PATH}/${LOG_DIR}/"
+    echo "Condor job with parameters ${ERA}_${CHANNEL}_${TAG}_${CALC} (${START_ID}) encountered an error"
     condor_working=false
   else
     if grep -q "Job executing on host" ${LOG_FILE} && ${job_waiting}; then
       echo "."
-      echo "The job with parameters ${ERA}_${CHANNEL}_${TAG}_${CALC} started execution"
+      echo "The job with parameters ${ERA}_${CHANNEL}_${TAG}_${CALC} (${START_ID}) started execution with ID ${START_ID}"
       job_waiting=false
     else
       echo -n "."
@@ -116,6 +114,7 @@ while ${condor_working}; do
     sleep 10
   fi
 done
+echo "Logfiles are in ${OUTPUT_PATH}/${LOG_DIR}/"
 #---4---
 #move results to matching directory
 mv condor_output_${ERA}_${CHANNEL}_${TAG}/* ${OUTPUT_PATH}

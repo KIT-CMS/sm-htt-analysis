@@ -12,8 +12,7 @@
 
 ls /tmp | grep 201
 
-now=$(date +"%T")
-echo "Timestamp startup: ${now}"
+echo "Timestamp startup: $(date +"%T")"
 
 set -e
 ERA_NAME=$1
@@ -31,20 +30,22 @@ else
 fi
 
 # Copy the needed datasets from /ceph
-now=$(date +"%T")
-echo "Timestamp copy in start: ${now}"
 
+echo "Timestamp copy in start: $(date +"%T")"
 for ERA in ${ERAS}; do
   loop_folder=${ERA}_${CHANNEL}_${TAG}
   loop_outdir=/tmp/${loop_folder}
   echo ${loop_outdir}
   mkdir -p ${loop_outdir}
+  echo "copy ${cephdir}/${loop_folder}/fold*.root to ${loop_outdir}"
   xrdcp ${cephdir}/${loop_folder}/fold0_training_dataset.root ${cephdir}/${loop_folder}/fold1_training_dataset.root ${loop_outdir}
   echo copy ${loop_folder}
 done
+xrdcp ${cephdir}/${folder}/dataset_config.yaml .
 
-now=$(date +"%T")
-echo "Timestamp copy in end and unpack start: ${now}"
+echo "Timestamp copy in end and unpack start: $(date +"%T")"
+
+ls /tmp
 
 if [[ ! -d ${outdir} ]]; then
   mkdir -p ${outdir}
@@ -61,38 +62,27 @@ export KERAS_BACKEND=tensorflow
 export OMP_NUM_THREADS=12
 export THEANO_FLAGS=gcc.cxxflags=-march=corei7
 source utils/setup_cvmfs_sft.sh
-export PYTHONUSERBASE=$HOME/.local/pylibs-$(hostname)
-export PYTHONPATH=/usr/local/python2.7/site-packages:$HOME/.local/pylibs-$(hostname)/lib/python2.7/site-packages:$PYTHONPATH
-export PATH=/usr/local:/usr/local/cuda-9.0/bin:$HOME/.local/pylibs-$(hostname)/bin:$PATH
-export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64:$LD_LIBRARY_PATH
 
-now=$(date +"%T")
-echo "Timestamp unpack end and calc 1 start: ${now}"
+echo "Timestamp unpack end and calc start: $(date +"%T")"
 
 #---3---
 if [[ $ERA_NAME == "all_eras" ]]
 then
-  mkdir -p $outdir
-  echo "Test0"
-  python htt-ml/training/keras_training.py dataset_config.yaml 0 --balance-batches 1 --conditional 1 #--randomization 1
-  now=$(date +"%T")
-  echo "Timestamp calc 1 end and calc 2 start: ${now}"
-  python htt-ml/training/keras_training.py dataset_config.yaml 1 --balance-batches 1 --conditional 1 #--randomization 1
+  #  ${outdir}/
+  python htt-ml/training/keras_training.py dataset_config.yaml 0 --balance-batches 1 --conditional 1 & #--randomization 1
+  echo "Timestamp calc 1 end: $(date +"%T")"
+  python htt-ml/training/keras_training.py dataset_config.yaml 1 --balance-batches 1 --conditional 1 & #--randomization 1
 else
-  mkdir -p $outdir
-  python htt-ml/training/keras_training.py dataset_config.yaml 0 --balance-batches 1
-  now=$(date +"%T")
-  echo "Timestamp calc 1 end and calc 2 start: ${now}"
-  python htt-ml/training/keras_training.py dataset_config.yaml 1 --balance-batches 1
+  python htt-ml/training/keras_training.py dataset_config.yaml 0 --balance-batches 1 &
+  echo "Timestamp calc 1 end: $(date +"%T")"
+  python htt-ml/training/keras_training.py dataset_config.yaml 1 --balance-batches 1 &
 fi
+wait
 #---4---
 
-now=$(date +"%T")
-echo "Timestamp calc 2 end: ${now}"
+echo "Timestamp calc 2 end: $(date +"%T")"
 
-ls /tmp/${folder}
 mkdir condor_output_${folder}
 cp ${outdir}/*.h5 ${outdir}/*.png ${outdir}/*.pdf ${outdir}/*.log ${outdir}/*.pickle condor_output_${folder}
 
-now=$(date +"%T")
-echo "Timestamp end script: ${now}"
+echo "Timestamp end script: $(date +"%T")"
