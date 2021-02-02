@@ -90,10 +90,12 @@ while ${condor_working}; do
     #if another job ist started on same datatset this will abort this job
     echo "."
     echo "Condor job with parameters ${ERA}_${CHANNEL}_${TAG} (${START_ID}) or its logfile was changed/deleted during runtime"
+    echo "Logfiles are in ${OUTPUT_PATH}/${LOG_DIR}/"
     exit 1
   elif grep -q "Job was held" ${LOG_FILE}; then
     echo "."
     echo "Condor job with parameters ${ERA}_${CHANNEL}_${TAG}_${CALC} (${START_ID}) was held"
+    echo "Logfiles are in ${OUTPUT_PATH}/${LOG_DIR}/"
     exit 1
   elif grep -q "(return value 0)" ${LOG_FILE}; then
     echo "."
@@ -106,7 +108,7 @@ while ${condor_working}; do
   else
     if grep -q "Job executing on host" ${LOG_FILE} && ${job_waiting}; then
       echo "."
-      echo "The job with parameters ${ERA}_${CHANNEL}_${TAG}_${CALC} (${START_ID}) started execution with ID ${START_ID}"
+      echo "The job with parameters ${ERA}_${CHANNEL}_${TAG}_${CALC} (${START_ID}) started execution"
       job_waiting=false
     else
       echo -n "."

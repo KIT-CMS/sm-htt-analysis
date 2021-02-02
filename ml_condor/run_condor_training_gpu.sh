@@ -10,8 +10,6 @@
 
 # Steps 2 and 3 are functionally identical to ml/run_training.sh
 
-ls /tmp | grep 201
-
 echo "Timestamp startup: $(date +"%T")"
 
 set -e
@@ -45,8 +43,6 @@ xrdcp ${cephdir}/${folder}/dataset_config.yaml .
 
 echo "Timestamp copy in end and unpack start: $(date +"%T")"
 
-ls /tmp
-
 if [[ ! -d ${outdir} ]]; then
   mkdir -p ${outdir}
 fi
@@ -68,7 +64,6 @@ echo "Timestamp unpack end and calc start: $(date +"%T")"
 #---3---
 if [[ $ERA_NAME == "all_eras" ]]
 then
-  #  ${outdir}/
   python htt-ml/training/keras_training.py dataset_config.yaml 0 --balance-batches 1 --conditional 1 & #--randomization 1
   echo "Timestamp calc 1 end: $(date +"%T")"
   python htt-ml/training/keras_training.py dataset_config.yaml 1 --balance-batches 1 --conditional 1 & #--randomization 1

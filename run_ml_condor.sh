@@ -15,17 +15,20 @@ BATCH=$4 # only train on mh' in 85, 90, 95, 100 GeV (see ml/get_nBatches.py for 
 OPTIONS=$5 # recalculate certain stages of the programm: "1" datasets, "2" training, "3" testing,
 # "c" for using cpu instead of gpu, "f" to run training on cluster even if training on same data is already running. 
 #Can be combined (13, 2c3). If no stage option is given, it is treated as "123" ( "c" becomes "c123" etc.)
+CHANGE_USER=$6 # Use data of specifid USER on ceph
 
+# Enable all stages if none were given
 if [[ ! ${OPTIONS} =~ [1-3] ]]; then
   OPTIONS="${OPTIONS}123"
 fi
-
+# Change used USER if specified
+if [[ ${CHANGE_USER} ]]; then
+  USER=${CHANGE_USER}
+fi
+# Initialize
 SET=${ERA_NAME}_${CHANNEL}_${MASS}_${BATCH}
 OUTPUT_PATH=output/ml/${SET}
 CEPH_PATH=/ceph/srv/${USER}/nmssm_data/${SET}
-
-echo "ERA=${ERA_NAME}, CHANNEL=${CHANNEL}, MASS=${MASS}, BATCH=${BATCH}, OPTIONS=${OPTIONS}"
-
 if [[ ${ERA_NAME} == "all_eras" ]]; then
   ERAS="2016 2017 2018"
   ERAS_ALL="2016 2017 2018 all_eras"
@@ -33,8 +36,6 @@ else
   ERAS=${ERA_NAME}
   ERAS_ALL=${ERA_NAME}
 fi
-
-#---1---
 # Create log directory if needed
 if [[ ! -d output/log/logandrun ]]; then
   echo create output/log/logandrun
@@ -45,9 +46,17 @@ if [[ ! -d ${CEPH_PATH} ]]; then
   echo create ${CEPH_PATH}
   mkdir -p ${CEPH_PATH}
 fi
+# Create output directory if needed
+if [[ ! -d ${OUTPUT_PATH} ]]; then
+  echo create ${OUTPUT_PATH}
+  mkdir -p ${OUTPUT_PATH}
+fi
 
-# If dataset creation specified: 
-if [[ ${OPTIONS} == *"1"* ]]; then
+echo "ERA=${ERA_NAME}, CHANNEL=${CHANNEL}, MASS=${MASS}, BATCH=${BATCH}, OPTIONS=${OPTIONS}"
+
+#---1---
+# If dataset creation specified:
+if ( [[ ${OPTIONS} == *"1"* ]] && [[ ! ${CHANGE_USER} ]] ); then
   # Run dataset creation
   echo "creating Datasets"
   for ERA in ${ERAS}; do
@@ -75,6 +84,9 @@ if [[ ${OPTIONS} == *"1"* ]]; then
     fi
   done
 else
+  if [[ ${CHANGE_USER} ]]; then
+    echo "Data of others can't be overwritten. The data of ${CHANGE_USER} will be used."
+  fi
   echo "No new datasets needed"
 fi
 #---2---
