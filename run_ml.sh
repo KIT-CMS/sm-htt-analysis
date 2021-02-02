@@ -9,7 +9,7 @@ for ERA_2 in "2016" "2017" "2018"; do
 done
 wait
 
-python ml/create_combined_config.py  --tag "" --channel $CHANNEL --output_dir output/ml/all_eras_${CHANNEL}
+./ml/combine_configs.sh all_eras $CHANNEL
 
 
 ./ml/run_training.sh $ERA $CHANNEL 
