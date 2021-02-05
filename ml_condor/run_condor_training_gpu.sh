@@ -51,11 +51,14 @@ fi
 tar -xf httml.tar.gz 
 #Fix paths of config-file to apply in container (output/ml/->/tmp/)
 sed -e 's@output/ml@/tmp@g' -i dataset_config.yaml
+sed -e 's@100000@10@g' -i dataset_config.yaml
 
 #---2---
 source utils/bashFunctionCollection.sh
 export KERAS_BACKEND=tensorflow
-export OMP_NUM_THREADS=12
+#export OMP_NUM_THREADS=2
+export TF_NUM_INTEROP_THREADS=2
+export TF_NUM_INTRAOP_THREADS=2
 export THEANO_FLAGS=gcc.cxxflags=-march=corei7
 source utils/setup_cvmfs_sft.sh
 
@@ -64,15 +67,14 @@ echo "Timestamp unpack end and calc start: $(date +"%T")"
 #---3---
 if [[ $ERA_NAME == "all_eras" ]]
 then
-  python htt-ml/training/keras_training.py dataset_config.yaml 0 --balance-batches 1 --conditional 1 & #--randomization 1
+  python htt-ml/training/keras_training.py dataset_config.yaml 0 --balance-batches 1 --conditional 1 #--randomization 1
   echo "Timestamp calc 1 end: $(date +"%T")"
-  python htt-ml/training/keras_training.py dataset_config.yaml 1 --balance-batches 1 --conditional 1 & #--randomization 1
+  python htt-ml/training/keras_training.py dataset_config.yaml 1 --balance-batches 1 --conditional 1 #--randomization 1
 else
-  python htt-ml/training/keras_training.py dataset_config.yaml 0 --balance-batches 1 &
+  python htt-ml/training/keras_training.py dataset_config.yaml 0 --balance-batches 1
   echo "Timestamp calc 1 end: $(date +"%T")"
-  python htt-ml/training/keras_training.py dataset_config.yaml 1 --balance-batches 1 &
+  python htt-ml/training/keras_training.py dataset_config.yaml 1 --balance-batches 1
 fi
-wait
 #---4---
 
 echo "Timestamp calc 2 end: $(date +"%T")"

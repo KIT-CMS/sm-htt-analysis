@@ -21,10 +21,18 @@ CHANGE_USER=$6 # Use data of specifid USER on ceph
 if [[ ! ${OPTIONS} =~ [1-3] ]]; then
   OPTIONS="${OPTIONS}123"
 fi
+
 # Change used USER if specified
 if [[ ${CHANGE_USER} ]]; then
-  USER=${CHANGE_USER}
+  if [[ ${CHANGE_USER} == ${USER} ]]; then
+    CHANGE_USER=""
+  else
+    USER=${CHANGE_USER}
+  fi
 fi
+
+echo "ERA=${ERA_NAME}, CHANNEL=${CHANNEL}, MASS=${MASS}, BATCH=${BATCH}, OPTIONS=${OPTIONS}, USER=${USER}"
+
 # Initialize
 SET=${ERA_NAME}_${CHANNEL}_${MASS}_${BATCH}
 OUTPUT_PATH=output/ml/${SET}
@@ -51,8 +59,6 @@ if [[ ! -d ${OUTPUT_PATH} ]]; then
   echo create ${OUTPUT_PATH}
   mkdir -p ${OUTPUT_PATH}
 fi
-
-echo "ERA=${ERA_NAME}, CHANNEL=${CHANNEL}, MASS=${MASS}, BATCH=${BATCH}, OPTIONS=${OPTIONS}"
 
 #---1---
 # If dataset creation specified:
@@ -82,6 +88,7 @@ if ( [[ ${OPTIONS} == *"1"* ]] && [[ ! ${CHANGE_USER} ]] ); then
       echo "Upload ${LOOP_OUTPUT_PATH}/foldx_training_dataset.root"
       xrdcp ${LOOP_OUTPUT_PATH}/fold0_training_dataset.root ${LOOP_OUTPUT_PATH}/fold1_training_dataset.root ${LOOP_CEPH_PATH}
     fi
+  rm -f ${LOOP_OUTPUT_PATH}/*.root ${LOOP_OUTPUT_PATH}/*.yaml
   done
 else
   if [[ ${CHANGE_USER} ]]; then

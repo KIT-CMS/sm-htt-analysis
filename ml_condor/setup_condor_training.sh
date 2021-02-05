@@ -16,7 +16,6 @@ CALC=$5
 OUTPUT_PATH=output/ml/${ERA}_${CHANNEL}_${TAG}
 LOG_DIR=condor_logs_${CALC}
 LOG_FILE=${OUTPUT_PATH}/${LOG_DIR}/log.txt
-echo ${LOG_FILE}
 #Check for other jobs on same dataset
 # If there is a lockfile in the output and there is a logfile for the condor job in the output:
 if [[ -f "${OUTPUT_PATH}/lockfile.txt" ]] && [[ -f "${LOG_FILE}" ]]; then
@@ -117,6 +116,7 @@ while ${condor_working}; do
   fi
 done
 echo "Logfiles are in ${OUTPUT_PATH}/${LOG_DIR}/"
+
 #---4---
 #move results to matching directory
 mv condor_output_${ERA}_${CHANNEL}_${TAG}/* ${OUTPUT_PATH}
