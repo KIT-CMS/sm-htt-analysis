@@ -51,7 +51,9 @@ fi
 tar -xf httml.tar.gz 
 #Fix paths of config-file to apply in container (output/ml/->/tmp/)
 sed -e 's@output/ml@/tmp@g' -i dataset_config.yaml
-sed -e 's@100000@10@g' -i dataset_config.yaml
+
+#Uncomment following line to shorten training to 10 generations for testing
+#sed -e 's@100000@10@g' -i dataset_config.yaml
 
 #---2---
 source utils/bashFunctionCollection.sh
