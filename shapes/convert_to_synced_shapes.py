@@ -76,6 +76,9 @@ def main(args):
             # convert jetFakes to jetFakesSM naming to destinguish between SM and MSSM FFs
             if ("jetFakes" in name_output):
                 systematic = systematic.replace("CMS_ff_", "CMS_ffSM_")
+            # temp rename trigger uncertainties to xtrigger_t in tautau channel
+            if ("eff_trigger" in systematic and channel == "tt"):
+                systematic = systematic.replace("CMS_eff_trigger", "CMS_eff_xtrigger_t")
 
             name_output += "_" + systematic
         hist_map[channel][category][name] = name_output
@@ -99,6 +102,7 @@ def main(args):
             file_output.cd()
             dir_name = "{CHANNEL}_{CATEGORY}".format(
                 CHANNEL=channel, CATEGORY=category)
+            print dir_name
             file_output.mkdir(dir_name)
             file_output.cd(dir_name)
             for name in sorted(hist_map[channel][category]):
@@ -121,8 +125,8 @@ def main(args):
                         logger.info("Found histogram with negative bin: " + name)
                         logger.info("Negative yield: %f"%neg)
                         logger.info("Total yield: %f"%(neg+pos))
-                    if neg<-10.0:
-                        if (not "#QCD#" in name) or ("#em_" in name) or (neg<-10.0): # in case of QCD in et, mt, tt be a bit more generous since this is only for cross checks
+                    if neg<-15.0:
+                        if (not "#QCD#" in name) or ("#em_" in name) or (neg<-15.0): # in case of QCD in et, mt, tt be a bit more generous since this is only for cross checks
                             logger.fatal("Found histogram with a yield of negative bins larger than 1.0!")
                             raise Exception
                     

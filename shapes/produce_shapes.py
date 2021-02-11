@@ -1075,7 +1075,7 @@ def main(args):
     # Tau trigger variations
     for chname_ in selectedChannels & {"tt"}:
         for histname_, pS_ in {
-            "CMS_eff_trigger_tt_dm{dm}_{era}": signal_nicks |
+            "CMS_eff_xtrigger_t_tt_dm{dm}_{era}": signal_nicks |
                 MCBkgDS[chname_]}.items():
             tau_trigger_variations = []
             for shift_direction in ["Up", "Down"]:
@@ -1100,8 +1100,8 @@ def main(args):
     # Tau trigger variations for Embedded
     for chname_ in selectedChannels & {"tt"}:
         for histname_, pS_ in {
-            "CMS_eff_trigger_tt_dm{dm}_{era}": {"EMB"}
-                , "CMS_eff_trigger_emb_tt_dm{dm}_{era}": {"EMB"}}.items():
+            "CMS_eff_xtrigger_t_tt_dm{dm}_{era}": {"EMB"}
+                , "CMS_eff_xtrigger_t_emb_tt_dm{dm}_{era}": {"EMB"}}.items():
             tau_trigger_variations = []
             for shift_direction in ["Up", "Down"]:
                 for decaymode in [0, 1, 10, 11]:
