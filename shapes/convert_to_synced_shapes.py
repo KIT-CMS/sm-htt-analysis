@@ -34,18 +34,26 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def rescale_negative_signal_shapes(hist, name, integral):
-    for i in range(hist.GetNbinsX()):
-        if hist.GetBinContent(i+1)<0.0:
-            logger.info("Negative Bin {} - {}".format(i, hist.GetBinContent(i+1)))
-            hist.SetBinContent(i+1, 0.001)
-            logger.info("After fixing: {} - {}".format(i, hist.GetBinContent(i+1)))
-    if integral == 0.0:
+def correct_nominal_shape(hist, name, integral):
+    if integral >= 0:
+         # if integral is larger than 0, everything is fine
+        sf = 1.0
+    elif integral == 0.0:
+        logger.info("Nominal histogram is empty: {}".format(name))
+        # if integral of nominal is 0, we make sure to scale the histogram with 0.0
         sf = 0
     else:
+        logger.info("Nominal histogram is negative : {} --> fixing it now...".format(name))
+        # if the histogram is negative, the make all negative bins positive,
+        # and scale the histogram to a small positive value
+        for i in range(hist.GetNbinsX()):
+            if hist.GetBinContent(i+1)<0.0:
+                logger.info("Negative Bin {} - {}".format(i, hist.GetBinContent(i+1)))
+                hist.SetBinContent(i+1, 0.001)
+                logger.info("After fixing: {} - {}".format(i, hist.GetBinContent(i+1)))
         sf = 0.001 / integral
-    logger.warning("Apply sf :" + str(sf))
     hist.Scale(sf)
+    return hist
 
 def write_shapes_per_category(config: tuple):
     category, keys, channel, ofname, ifname = config
@@ -64,12 +72,9 @@ def write_shapes_per_category(config: tuple):
         if "_xxh#bb" in name or "_xxh#gg" in name:
             integral = hist.Integral()
             if name.split("#")[-1]=="":
-                if integral <= 0.0:
-                    logger.warning("Integral: {}  --> Rescaling negative nominal shape {}".format(integral, name))
-                    rescale_negative_signal_shapes(hist, name, integral)
-                nominal = hist
+                nominal = correct_nominal_shape(hist, name, integral)
+            # if the integral of the shape is negative, set it to the corrected nominal shape
             elif integral <= 0.0:
-                    #logger.warning("Setting systemtic {} to nominal".format(name.split("#")[-1]))
                     hist = nominal
             else:
                 for i in range(hist.GetNbinsX()):
@@ -84,8 +89,6 @@ def write_shapes_per_category(config: tuple):
                         hist.Scale((neg+pos)/pos)
 
         else:
-            pos = 0.0
-            neg = 0.0
             for i in range(hist.GetNbinsX()):
                 cont = hist.GetBinContent(i+1)
                 if cont<0.0:
