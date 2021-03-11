@@ -47,9 +47,9 @@ voms-proxy-init --voms cms:/cms/dcms --valid 192:00 --out ${X509_USER_PROXY}
 Afterwards, you can create an example ntuple from a skimmed file:
 ```bash
 cd HiggsAnalysis/KITHiggsToTauTau/
-HiggsToTauTauAnalysis.py -a legacy --nmssm -c tt -i data/Samples/Run2Legacy_bjetRegression/Run2018/Tau_Run2018A_17Sep2018v1_13TeV_MINIAOD.txt  -f 1
+HiggsToTauTauAnalysis.py -a legacy --nmssm -c tt -i data/Samples/Run2Legacy_MSSM/Run2018/Tau_Run2018A_17Sep2018v1_13TeV_MINIAOD.txt  -f 1
 ```
-The option `-a legacy` is used for all legacy analyses on Run2 data. `--nmssm` is needed for the NMSSM analysis to apply a cut on the number of b-jets and to write out additional information. `-c tt` specifies that only the `tt` final state will be considered. `-i ` specifies the input file, for a complete set of ntuples, all files in the lists in `data/Samples/Run2Legacy_bjetRegression` need to be used. `-f 1` just tells the program to stop after one file (for testing).
+The option `-a legacy` is used for all legacy analyses on Run2 data. `--nmssm` is needed for the NMSSM analysis to apply a cut on the number of b-jets and to write out additional information. `-c tt` specifies that only the `tt` final state will be considered. `-i ` specifies the input file, for a complete set of ntuples, all files in the lists in `data/Samples/Run2Legacy_MSSM` need to be used. `-f 1` just tells the program to stop after one file (for testing).
 The command creates an output file called `output.root`. You can see the content of the file via 
 ```
 root -l output.root 
