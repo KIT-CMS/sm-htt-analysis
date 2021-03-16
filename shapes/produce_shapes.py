@@ -136,6 +136,7 @@ def parse_arguments():
     return parser.parse_args()
 
 def main(args):
+    usepowheg = True
     # Container for all distributions to be drawn
     logger.info("Set up shape variations.")
 
@@ -168,7 +169,7 @@ def main(args):
             "tt": TTMSSM2016(),
             "em": EMMSSM2016()
         }
-        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimation, VVLEstimation, VVTEstimation, VVJEstimation, TTLEstimation, TTTEstimation, TTJEstimation, QCDEstimation_SStoOS_MTETEM, QCDEstimationTT, ZTTEmbeddedEstimation, FakeEstimationLT, NewFakeEstimationLT, FakeEstimationTT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation
+        from shape_producer.estimation_methods_2016 import DataEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimation, VVLEstimation, VVTEstimation, VVJEstimation, TTLEstimation, TTTEstimation, TTJEstimation, QCDEstimation_SStoOS_MTETEM, QCDEstimationTT, ZTTEmbeddedEstimation, NewFakeEstimationLT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation, SUSYggHEstimationPowheg, SUSYbbHEstimationPowheg
         from shape_producer.era import Run2016
         era = Run2016(args.datasets)
     elif "2017" == args.era:
@@ -179,7 +180,7 @@ def main(args):
             "tt": TTMSSM2017(),
             "em": EMMSSM2017()
         }
-        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, HWWEstimation, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation
+        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation, SUSYggHEstimationPowheg, SUSYbbHEstimationPowheg
 
         from shape_producer.era import Run2017
         era = Run2017(args.datasets)
@@ -191,7 +192,7 @@ def main(args):
             "tt": TTMSSM2018(),
             "em": EMMSSM2018()
         }
-        from shape_producer.estimation_methods_2018 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, HWWEstimation, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation
+        from shape_producer.estimation_methods_2018 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation, SUSYggHEstimationPowheg, SUSYbbHEstimationPowheg
 
         from shape_producer.era import Run2018
         era = Run2018(args.datasets)
@@ -325,23 +326,54 @@ def main(args):
             "bbH_nlo": [80, 90, 100, 110, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500],
         }
     }
+    mass_dict_powheg = {
+        "2016": {
+            "ggH": [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 2000, 2300, 2600, 2900, 3200, 3500],
+            "bbH": [60,80,100,120,125,130,140,160,180,200,250,350,400,450,500,600,800,900,1200,1400,1600,1800,2000,2300,2600,2900,3200,3500] # Missing 300,700,1000
+        },
+        "2017": {
+            "ggH": [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 2000, 2300, 2600, 2900, 3200, 3500],
+            "bbH": [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500],
+        },
+        "2018": {
+            "ggH": [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 2000, 2300, 2600, 2900, 3200, 3500],
+            "bbH": [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500],
+        }
+    }
 
-    susyggH_masses = mass_dict[args.era]["ggH"]
-    susybbH_masses = mass_dict[args.era]["bbH_nlo"]
 
-    for chname_, ch_ in selectedChannelsTuples:
-        # mssm ggH and bbH signals
-        gghfraction_corrections = json.load(open("shapes/ggphi_contirbution_weights.json","r"))
-        for ggH_contribution in ["ggh_t", "ggh_b", "ggh_i", "ggH_t", "ggH_b", "ggH_i", "ggA_t", "ggA_b", "ggA_i"]:
-            for mass in susyggH_masses:
-                name = ggH_contribution + "_" + str(mass)
-                weight = gghfraction_corrections[args.era][str(mass)][ggH_contribution]
-                processes[chname_][name] = Process(name, SUSYggHEstimation(era, directory, ch_, str(mass), ggH_contribution, weight, friend_directory=friend_directory[chname_]))
+    if usepowheg:
+        susyggH_masses = mass_dict_powheg[args.era]["ggH"]
+        susybbH_masses = mass_dict_powheg[args.era]["bbH"]
+        print friend_directory[chname_]
+        for chname_, ch_ in selectedChannelsTuples:
+            # mssm ggH and bbH signals
+            for ggH_contribution in ["ggh_t", "ggh_b", "ggh_i", "ggH_t", "ggH_b", "ggH_i", "ggA_t", "ggA_b", "ggA_i"]:
+                for mass in susyggH_masses:
+                    name = ggH_contribution + "_" + str(mass)
+                    processes[chname_][name] = Process(name, SUSYggHEstimationPowheg(era, directory, ch_, str(mass), ggH_contribution, friend_directory=[friend for friend in friend_directory[chname_] if "TauTriggers" not in friend] ))
+                    signal_nicks.add(name)
+            for mass in susybbH_masses:
+                name = "bbH_" + str(mass)
+                processes[chname_][name] = Process(name, SUSYbbHEstimationPowheg(era, directory, ch_, str(mass), friend_directory=friend_directory[chname_]))
                 signal_nicks.add(name)
-        for mass in susybbH_masses:
-            name = "bbH_" + str(mass)
-            processes[chname_][name] = Process(name, SUSYbbHEstimation(era, directory, ch_, str(mass), friend_directory=friend_directory[chname_]))
-            signal_nicks.add(name)
+
+    else:
+        susyggH_masses = mass_dict[args.era]["ggH"]
+        susybbH_masses = mass_dict[args.era]["bbH_nlo"]
+        for chname_, ch_ in selectedChannelsTuples:
+            # mssm ggH and bbH signals
+            gghfraction_corrections = json.load(open("shapes/ggphi_contirbution_weights.json", "r"))
+            for ggH_contribution in ["ggh_t", "ggh_b", "ggh_i", "ggH_t", "ggH_b", "ggH_i", "ggA_t", "ggA_b", "ggA_i"]:
+                for mass in susyggH_masses:
+                    name = ggH_contribution + "_" + str(mass)
+                    weight = gghfraction_corrections[args.era][str(mass)][ggH_contribution]
+                    processes[chname_][name] = Process(name, SUSYggHEstimation(era, directory, ch_, str(mass), ggH_contribution, weight, friend_directory=friend_directory[chname_]))
+                    signal_nicks.add(name)
+            for mass in susybbH_masses:
+                name = "bbH_" + str(mass)
+                processes[chname_][name] = Process(name, SUSYbbHEstimation(era, directory, ch_, str(mass), friend_directory=friend_directory[chname_]))
+                signal_nicks.add(name)
     # Create the jetFakes process for all channels but em
     for chname_, ch_ in selectedChannelsTuplesNoEM:
         if chname_ != "tt":

@@ -1,9 +1,9 @@
 ### batch system for NNScore application
-export cluster=naf7 #lxplus7 # etp7
+export cluster=etp7 #lxplus7 # etp7
 export sm_htt_analysis_dir=$( pwd ) ### local sm-htt repo !
 
 ### local = etp paths for the friend tree producer
-export cmssw_src_local="/portal/ekpbms3/home/${USER}/CMSSW_10_2_14/src" ### local CMSSW !
+export cmssw_src_local="/work/${USER}/friend_tree_producer/CMSSW_10_2_14/src" ### local CMSSW !
 export batch_out_local=${sm_htt_analysis_dir}/output/friend_trees
 
 

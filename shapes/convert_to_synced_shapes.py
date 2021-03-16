@@ -30,28 +30,21 @@ def parse_arguments():
     parser.add_argument("--input", required=True, type=str, help="Path to single input ROOT file.")
     parser.add_argument("--output", required=True, type=str, help="Path to output directory")
     parser.add_argument("--tag", required=False, type=str, help="Name to add to the output filename")
-    parser.add_argument("-n", "--num-processes", default=10, type=int, help="Number of processes used.")
+    parser.add_argument("-n", "--num-processes", default=1, type=int, help="Number of processes used.")
     return parser.parse_args()
 
 
-def correct_nominal_shape(hist, name, integral):
-    if integral >= 0:
-         # if integral is larger than 0, everything is fine
-        sf = 1.0
-    elif integral == 0.0:
-        logger.info("Nominal histogram is empty: {}".format(name))
-        # if integral of nominal is 0, we make sure to scale the histogram with 0.0
+def rescale_negative_signal_shapes(hist, name, integral):
+    for i in range(hist.GetNbinsX()):
+        if hist.GetBinContent(i+1) < 0.0:
+            logger.info("Negative Bin {} - {}".format(i, hist.GetBinContent(i+1)))
+            hist.SetBinContent(i+1, 0.001)
+            logger.info("After fixing: {} - {}".format(i, hist.GetBinContent(i+1)))
+    if integral == 0.0:
         sf = 0
     else:
-        logger.info("Nominal histogram is negative : {} --> fixing it now...".format(name))
-        # if the histogram is negative, the make all negative bins positive,
-        # and scale the histogram to a small positive value
-        for i in range(hist.GetNbinsX()):
-            if hist.GetBinContent(i+1)<0.0:
-                logger.info("Negative Bin {} - {}".format(i, hist.GetBinContent(i+1)))
-                hist.SetBinContent(i+1, 0.001)
-                logger.info("After fixing: {} - {}".format(i, hist.GetBinContent(i+1)))
-        sf = 0.001 / integral
+        sf = 0.001 / hist.Integral()
+    logger.warning("Apply sf :" + str(sf))
     hist.Scale(sf)
     return hist
 
@@ -105,8 +98,11 @@ def write_shapes_per_category(config: tuple):
                     logger.info("Found histogram with negative bin: " + name)
                     logger.info("Negative yield: %f"%neg)
                     logger.info("Total yield: %f"%(neg+pos))
-                if neg<-15.0:
-                    if (not "#QCD#" in name) or ("#em_" in name) or (neg<-15.0): # in case of QCD in et, mt, tt be a bit more generous since this is only for cross checks
+                if neg<-100.0:
+                    if (not "#QCD#" in name) or ("#em_" in name) or (not "#ggA_" in name): # in case of QCD in et, mt, tt be a bit more generous since this is only for cross checks
+                        logger.info("LAAARGE: " + name)
+                        logger.info("Negative yield: %f"%neg)
+                        logger.info("Total yield: %f"%(neg+pos))
                         logger.fatal("Found histogram with a yield of negative bins larger than 1.0!")
                         raise Exception
 
