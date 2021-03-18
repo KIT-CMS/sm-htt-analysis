@@ -20,7 +20,7 @@ ARTUS_OUTPUTS_2016="$basedir/2016/ntuples/"
 NNScore_Friends_2016=""
 SVFit_Friends_2016="$basedir/2016/friends/SVFit/"
 MELA_Friends_2016="$basedir/2016/friends/MELA/"
-#FF_Friends_2016="$basedir/2016/friends/FakeFactors_final_v5/"
+FF_Friends_2016="$basedir/2016/friends/FakeFactors/"
 TauTriggers_Friends_2016="$basedir/2016/friends/TauTriggers/"
 ElectronSF_Friends_2016="$basedir/2016/friends/ElectronSF/"
 
@@ -29,7 +29,7 @@ ARTUS_OUTPUTS_2017="$basedir/2017/ntuples/"
 NNScore_Friends_2017=""
 SVFit_Friends_2017="$basedir/2017/friends/SVFit/"
 MELA_Friends_2017="$basedir/2017/friends/MELA/"
-#FF_Friends_2017="$basedir/2017/friends/FakeFactors_final_v5/"
+FF_Friends_2017="$basedir/2017/friends/FakeFactors/"
 TauTriggers_Friends_2017="$basedir/2017/friends/TauTriggers/"
 ElectronSF_Friends_2017="$basedir/2017/friends/ElectronSF/"
 
@@ -39,56 +39,56 @@ ARTUS_OUTPUTS_2018="$basedir/2018/ntuples/"
 NNScore_Friends_2018=""
 SVFit_Friends_2018="$basedir/2018/friends/SVFit/"
 MELA_Friends_2018="$basedir/2018/friends/MELA/"
-#FF_Friends_2018="$basedir/2018/friends/FakeFactors_final_v5/"
+FF_Friends_2018="$basedir/2018/friends/FakeFactors/"
 TauTriggers_Friends_2018="$basedir/2018/friends/TauTriggers/"
 ElectronSF_Friends_2018="$basedir/2018/friends/ElectronSF/"
 
-# FF specific handling:
-if [[ $CHANNEL == *"tt"* ]]
-then
-    if [[ $ERA == *"2016"* ]]
-    then
-    FF_Friends_2016="/ceph/jbechtel/friend-tree-workdirs/ff_njet_correction_split_tt_pt2only/2016/FakeFactors_workdir/FakeFactors_collected/"
-    elif [[ $ERA == *"2017"* ]]
-    then
-    FF_Friends_2017="/ceph/jbechtel/friend-tree-workdirs/ff_njet_correction_split_tt_pt2only/2017/FakeFactors_workdir/FakeFactors_collected/"
-    else
-    FF_Friends_2018="/ceph/jbechtel/friend-tree-workdirs/ff_njet_correction_split_tt_pt2only/2018/FakeFactors_workdir/FakeFactors_collected/"
-    fi
-elif [[ $CHANNEL == *"et"* ]]
-then
-    if [[ $ERA == *"2016"* ]]
-    then
-    FF_Friends_2016="/ceph/htautau/deeptau_04-27/2016/friends/FakeFactors_final_v5/"
-    elif [[ $ERA == *"2017"* ]]
-    then
-    FF_Friends_2017="/ceph/jbechtel/friend-tree-workdirs/auto_v8/FakeFactors_workdir/FakeFactors_collected/"
-    else
-    FF_Friends_2018="/ceph/jbechtel/friend-tree-workdirs/auto_v8/2018/et/FakeFactors_workdir/FakeFactors_collected/"
-    fi
-elif [[ $CHANNEL == *"mt"* ]]
-then
-    if [[ $ERA == *"2016"* ]]
-    then
-    FF_Friends_2016="/ceph/jbechtel/friend-tree-workdirs/auto_v8/2016/mt/FakeFactors_workdir/FakeFactors_collected/"
-    elif [[ $ERA == *"2017"* ]]
-    then
-    FF_Friends_2017="/ceph/jbechtel/friend-tree-workdirs/auto_v8/FakeFactors_workdir/FakeFactors_collected/"
-    else
-    FF_Friends_2018="/ceph/htautau/deeptau_04-27/2018/friends/FakeFactors_final_v5/"
-    fi
-elif [[ $CHANNEL == *"em"* ]]
-then
-    if [[ $ERA == *"2016"* ]]
-    then
-    FF_Friends_2016="/ceph/jbechtel/friend-tree-workdirs/auto_v8/2016/mt/FakeFactors_workdir/FakeFactors_collected/"
-    elif [[ $ERA == *"2017"* ]]
-    then
-    FF_Friends_2017="/ceph/jbechtel/friend-tree-workdirs/auto_v8/FakeFactors_workdir/FakeFactors_collected/"
-    else
-    FF_Friends_2018="/ceph/htautau/deeptau_04-27/2018/friends/FakeFactors_final_v5/"
-    fi
-fi
+# # FF specific handling:
+# if [[ $CHANNEL == *"tt"* ]]
+# then
+#     if [[ $ERA == *"2016"* ]]
+#     then
+#     FF_Friends_2016="/ceph/jbechtel/friend-tree-workdirs/ff_njet_correction_split_tt_pt2only/2016/FakeFactors_workdir/FakeFactors_collected/"
+#     elif [[ $ERA == *"2017"* ]]
+#     then
+#     FF_Friends_2017="/ceph/jbechtel/friend-tree-workdirs/ff_njet_correction_split_tt_pt2only/2017/FakeFactors_workdir/FakeFactors_collected/"
+#     else
+#     FF_Friends_2018="/ceph/jbechtel/friend-tree-workdirs/ff_njet_correction_split_tt_pt2only/2018/FakeFactors_workdir/FakeFactors_collected/"
+#     fi
+# elif [[ $CHANNEL == *"et"* ]]
+# then
+#     if [[ $ERA == *"2016"* ]]
+#     then
+#     FF_Friends_2016="/ceph/htautau/deeptau_04-27/2016/friends/FakeFactors_final_v5/"
+#     elif [[ $ERA == *"2017"* ]]
+#     then
+#     FF_Friends_2017="/ceph/jbechtel/friend-tree-workdirs/auto_v8/FakeFactors_workdir/FakeFactors_collected/"
+#     else
+#     FF_Friends_2018="/ceph/jbechtel/friend-tree-workdirs/auto_v8/2018/et/FakeFactors_workdir/FakeFactors_collected/"
+#     fi
+# elif [[ $CHANNEL == *"mt"* ]]
+# then
+#     if [[ $ERA == *"2016"* ]]
+#     then
+#     FF_Friends_2016="/ceph/jbechtel/friend-tree-workdirs/auto_v8/2016/mt/FakeFactors_workdir/FakeFactors_collected/"
+#     elif [[ $ERA == *"2017"* ]]
+#     then
+#     FF_Friends_2017="/ceph/jbechtel/friend-tree-workdirs/auto_v8/FakeFactors_workdir/FakeFactors_collected/"
+#     else
+#     FF_Friends_2018="/ceph/htautau/deeptau_04-27/2018/friends/FakeFactors_final_v5/"
+#     fi
+# elif [[ $CHANNEL == *"em"* ]]
+# then
+#     if [[ $ERA == *"2016"* ]]
+#     then
+#     FF_Friends_2016="/ceph/jbechtel/friend-tree-workdirs/auto_v8/2016/mt/FakeFactors_workdir/FakeFactors_collected/"
+#     elif [[ $ERA == *"2017"* ]]
+#     then
+#     FF_Friends_2017="/ceph/jbechtel/friend-tree-workdirs/auto_v8/FakeFactors_workdir/FakeFactors_collected/"
+#     else
+#     FF_Friends_2018="/ceph/htautau/deeptau_04-27/2018/friends/FakeFactors_final_v5/"
+#     fi
+# fi
 
 # ERA handling
 if [[ $ERA == *"2016"* ]]
