@@ -247,7 +247,7 @@ def main(args):
 
     # defines the signal sets
     ww_nicks = {"ggHWW125", "qqHWW125", "WHWW125", "ZHWW125"}
-
+    powheg_nicks = set()
     if args.gof_variable is None:
         signal_nicks = {
             "WH125", "ZH125", "VH125", "ttH125"} | {
@@ -341,7 +341,6 @@ def main(args):
         }
     }
 
-
     if usepowheg:
         susyggH_masses = mass_dict_powheg[args.era]["ggH"]
         susybbH_masses = mass_dict_powheg[args.era]["bbH"]
@@ -352,10 +351,12 @@ def main(args):
                 for mass in susyggH_masses:
                     name = ggH_contribution + "_" + str(mass)
                     processes[chname_][name] = Process(name, SUSYggHEstimationPowheg(era, directory, ch_, str(mass), ggH_contribution, friend_directory=[friend for friend in friend_directory[chname_] if "TauTriggers" not in friend] ))
+                    powheg_nicks.add(name)
                     signal_nicks.add(name)
             for mass in susybbH_masses:
                 name = "bbH_" + str(mass)
-                processes[chname_][name] = Process(name, SUSYbbHEstimationPowheg(era, directory, ch_, str(mass), friend_directory=friend_directory[chname_]))
+                processes[chname_][name] = Process(name, SUSYbbHEstimationPowheg(era, directory, ch_, str(mass), friend_directory=[friend for friend in friend_directory[chname_] if "TauTriggers" not in friend]))
+                powheg_nicks.add(name)
                 signal_nicks.add(name)
 
     else:
@@ -1024,7 +1025,7 @@ def main(args):
     # Tau trigger variations for MC
     for chname_ in selectedChannels & {"mt", "et"}:
         for histname_, pS_ in {
-            "CMS_eff_xtrigger_t_{ch}_dm{dm}_{era}": signal_nicks | MCBkgDS[chname_]}.items():
+            "CMS_eff_xtrigger_t_{ch}_dm{dm}_{era}": sm_signal_nicks | MCBkgDS[chname_]}.items():
             tau_trigger_variations = []
             for shift_direction in ["Up", "Down"]:
                 for decaymode in [0, 1, 10, 11]:
@@ -1049,6 +1050,34 @@ def main(args):
                 for process_nick in selectedProcesses & pS_:
                     variationsToAdd[chname_][process_nick].append(
                         variation_)
+        # special for powheg samples
+        for histname_, pS_ in {
+            "CMS_eff_xtrigger_t_{ch}_dm{dm}_{era}": powheg_nicks }.items():
+            tau_trigger_variations = []
+            for shift_direction in ["Up", "Down"]:
+                for decaymode in [0, 1, 10, 11]:
+                    weightstr = "({lt_eff}+(pt_1<{ptcut})*(abs(eta_2)<2.1)*{xtrigger_leptonweight}*(((decayMode_2=={dm})*((crossTriggerDataEfficiencyWeight_Tight_DeepTau_2/crossTriggerMCEfficiencyWeight_Tight_DeepTau_2)*(1{operator}TMath::Sqrt(((crossTriggerDataEfficiencyWeight_Tight_DeepTau_2-crossTriggerDataEfficiencyWeightDown_Tight_DeepTau_2)/crossTriggerDataEfficiencyWeight_Tight_DeepTau_2)**2+((crossTriggerMCEfficiencyWeight_Tight_DeepTau_2-crossTriggerMCEfficiencyWeightDown_Tight_DeepTau_2)/crossTriggerMCEfficiencyWeight_Tight_DeepTau_2)**2))))+((decayMode_2!={dm})*(crossTriggerDataEfficiencyWeight_Tight_DeepTau_2/crossTriggerMCEfficiencyWeight_Tight_DeepTau_2))))"
+                    tau_trigger_variations.append(
+                        ReplaceWeight(
+                            histname_.format(
+                                dm=decaymode, era=args.era,
+                                ch=chname_),
+                            "triggerweight",
+                            Weight(
+                                weightstr.format(
+                                    dm=decaymode,
+                                    operator="+" if shift_direction is "Up" else "-",
+                                    lt_eff=lteff_exp[args.era][chname_],
+                                    ptcut=lteffCutD[chname_],
+                                    xtrigger_leptonweight=xtrg_lep_weight[args.era][chname_]),
+                                "triggerweight"),
+                            shift_direction))
+            # run two times, one for regular, one for embedding
+            for variation_ in tau_trigger_variations:
+                for process_nick in selectedProcesses & pS_:
+                    variationsToAdd[chname_][process_nick].append(
+                        variation_)
+
 
     # Tau trigger variations for Embedded
     lteff_exp = {
@@ -1107,12 +1136,34 @@ def main(args):
     # Tau trigger variations
     for chname_ in selectedChannels & {"tt"}:
         for histname_, pS_ in {
-            "CMS_eff_xtrigger_t_tt_dm{dm}_{era}": signal_nicks |
+            "CMS_eff_xtrigger_t_tt_dm{dm}_{era}": sm_signal_nicks |
                 MCBkgDS[chname_]}.items():
             tau_trigger_variations = []
             for shift_direction in ["Up", "Down"]:
                 for decaymode in [0, 1, 10, 11]:
                     weightstr = "(((decayMode_1=={dm})*((crossTriggerCorrectedDataEfficiencyWeight_tight_DeepTau_1/crossTriggerCorrectedMCEfficiencyWeight_tight_DeepTau_1)*(1{operator}TMath::Sqrt(((crossTriggerCorrectedDataEfficiencyWeight_tight_DeepTau_1-crossTriggerCorrectedDataEfficiencyWeightDown_tight_DeepTau_1)/crossTriggerCorrectedDataEfficiencyWeight_tight_DeepTau_1)**2+((crossTriggerCorrectedMCEfficiencyWeight_tight_DeepTau_1-crossTriggerCorrectedMCEfficiencyWeightDown_tight_DeepTau_1)/crossTriggerCorrectedMCEfficiencyWeight_tight_DeepTau_1)**2)))+((decayMode_1!={dm})*(crossTriggerCorrectedDataEfficiencyWeight_tight_DeepTau_1/crossTriggerCorrectedMCEfficiencyWeight_tight_DeepTau_1)))*(((decayMode_2=={dm})*((crossTriggerCorrectedDataEfficiencyWeight_tight_DeepTau_2/crossTriggerCorrectedMCEfficiencyWeight_tight_DeepTau_2)*(1{operator}TMath::Sqrt(((crossTriggerCorrectedDataEfficiencyWeight_tight_DeepTau_2-crossTriggerCorrectedDataEfficiencyWeightDown_tight_DeepTau_2)/crossTriggerCorrectedDataEfficiencyWeight_tight_DeepTau_2)**2+((crossTriggerCorrectedMCEfficiencyWeight_tight_DeepTau_2-crossTriggerCorrectedMCEfficiencyWeightDown_tight_DeepTau_2)/crossTriggerCorrectedMCEfficiencyWeight_tight_DeepTau_2)**2))))+((decayMode_2!={dm})*(crossTriggerCorrectedDataEfficiencyWeight_tight_DeepTau_2/crossTriggerCorrectedMCEfficiencyWeight_tight_DeepTau_2))))"
+                    tau_trigger_variations.append(
+                        ReplaceWeight(
+                            histname_.format(
+                                dm=decaymode, era=args.era),
+                            "triggerweight",
+                            Weight(
+                                weightstr.format(
+                                    dm=decaymode,operator="+" if shift_direction is "Up" else "-"),
+                                "triggerweight"),
+                            shift_direction))
+            # run two times, one for regular, one for embedding
+            for variation_ in tau_trigger_variations:
+                for process_nick in selectedProcesses & pS_:
+                    variationsToAdd[chname_][process_nick].append(
+                        variation_)
+        # Special case for powheg samples
+        for histname_, pS_ in {
+            "CMS_eff_xtrigger_t_tt_dm{dm}_{era}": powheg_nicks }.items():
+            tau_trigger_variations = []
+            for shift_direction in ["Up", "Down"]:
+                for decaymode in [0, 1, 10, 11]:
+                    weightstr = "(((decayMode_1=={dm})*((crossTriggerDataEfficiencyWeight_Tight_DeepTau_1/crossTriggerMCEfficiencyWeight_Tight_DeepTau_1)*(1{operator}TMath::Sqrt(((crossTriggerDataEfficiencyWeight_Tight_DeepTau_1-crossTriggerDataEfficiencyWeightDown_Tight_DeepTau_1)/crossTriggerDataEfficiencyWeight_Tight_DeepTau_1)**2+((crossTriggerMCEfficiencyWeight_Tight_DeepTau_1-crossTriggerMCEfficiencyWeightDown_Tight_DeepTau_1)/crossTriggerMCEfficiencyWeight_Tight_DeepTau_1)**2)))+((decayMode_1!={dm})*(crossTriggerDataEfficiencyWeight_Tight_DeepTau_1/crossTriggerMCEfficiencyWeight_Tight_DeepTau_1)))*(((decayMode_2=={dm})*((crossTriggerDataEfficiencyWeight_Tight_DeepTau_2/crossTriggerMCEfficiencyWeight_Tight_DeepTau_2)*(1{operator}TMath::Sqrt(((crossTriggerDataEfficiencyWeight_Tight_DeepTau_2-crossTriggerDataEfficiencyWeightDown_Tight_DeepTau_2)/crossTriggerDataEfficiencyWeight_Tight_DeepTau_2)**2+((crossTriggerMCEfficiencyWeight_Tight_DeepTau_2-crossTriggerMCEfficiencyWeightDown_Tight_DeepTau_2)/crossTriggerMCEfficiencyWeight_Tight_DeepTau_2)**2))))+((decayMode_2!={dm})*(crossTriggerDataEfficiencyWeight_Tight_DeepTau_2/crossTriggerMCEfficiencyWeight_Tight_DeepTau_2))))"
                     tau_trigger_variations.append(
                         ReplaceWeight(
                             histname_.format(
