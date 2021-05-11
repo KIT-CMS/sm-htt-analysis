@@ -21,6 +21,8 @@ ml/2017_??
 ml/old
 ml/out
 output
+custom_condor_data_dir*
+logs
 .env
 .vscode
 .userconfig

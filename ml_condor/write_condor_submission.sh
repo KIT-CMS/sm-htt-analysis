@@ -22,11 +22,14 @@ LOGS_DIR=condor_logs_${CALC}
 OUTLOG_FILE=${OUTPUT_PATH}/${LOGS_DIR}/out.txt
 ERRLOG_FILE=${OUTPUT_PATH}/${LOGS_DIR}/err.txt
 LOG_FILE=${OUTPUT_PATH}/${LOGS_DIR}/log.txt
-NUM_CPU=2
+NUM_CPU=3
 NUM_GPUS=1
 ACC_GROUP=cms.higgs
 # This is where the used image is defined###
-DOCKER_IMAGE=kahnjms/slc7-condocker-cuda-10.1-cudnn7-runtime
+
+DOCKER_IMAGE=tvoigtlaender/slc7-condocker-cuda-10.1-cudnn7-devel:tensorboard
+
+#DOCKER_IMAGE=tvoigtlaender/slc7-cuda10.1-tfgpu:devel
 ###########################################
 TRANSFERED_FILES_IN="ml_condor/${EXECUTABLE}, httml.tar.gz"
 TRANSFERED_FILES_OUT="condor_output_${ERA}_${CHANNEL}_${TAG}"
@@ -59,7 +62,8 @@ echo "Error = ${ERRLOG_FILE}" >> ${SUBMISSION_FILE}
 echo "Log = ${LOG_FILE}" >> ${SUBMISSION_FILE}
 # Set # of used GPU
 echo "request_GPUs = ${NUM_GPUS}" >> ${SUBMISSION_FILE}
-echo 'requirements = (Cloudsite == "topas") && (Machine =!= "f03-001-159-e.gridka.de")' >> ${SUBMISSION_FILE}
+echo 'requirements = (Cloudsite == "topas") && (Machine == "f03-001-159-e.gridka.de")' >> ${SUBMISSION_FILE}
+# echo 'requirements = (Cloudsite == "topas") && (Machine == "f03-001-163-e.gridka.de")' >> ${SUBMISSION_FILE}
 # For the ETP queue specifically"
 echo "+RemoteJob = True" >> ${SUBMISSION_FILE}
 # Set maximum runtime

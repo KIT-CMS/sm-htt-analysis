@@ -2,7 +2,8 @@
 if [[ ! -z $LCG_RELEASE ]]; then
     :
 else
-    export LCG_RELEASE=99cuda
+    export LCG_RELEASE=96python3
+    # export LCG_RELEASE=99cuda
 fi
 
 echo "Using LCG ${LCG_RELEASE}"
@@ -20,3 +21,7 @@ then
 else
     source /cvmfs/sft.cern.ch/lcg/views/LCG_${LCG_RELEASE}/x86_64-slc6-gcc8-opt/setup.sh
 fi
+
+export PATH=/usr/local/python3.6:/usr/local/cuda-11.0/bin:/usr/local/cuda-11.0/extras/CUPTI/lib64/:${PATH}
+export PYTHONPATH=/usr/local/python3.6/site-packages:${PYTHONPATH}
+export LD_LIBRARY_PATH=/usr/local/cuda/extras/CUPTI/lib64/:/usr/local/cuda-11.0/extras/CUPTI/lib64/:${LD_LIBRARY_PATH}

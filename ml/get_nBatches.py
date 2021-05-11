@@ -21,11 +21,11 @@ else:
     batches[5] = [1300, 1400, 1600, 1800]
     batches[6] = [2000, 2200, 2400, 2600, 2800]
 
-    print "1 2 3 4 5 6"
+    print ("1 2 3 4 5 6")
     exit(0)
 nMax = len(batches.keys())
 output = ""
 for i in range(1,nMax+1):
     if ((batches[i][0]+125) < mass):
         output+= str(i)+" "
-print output
+print (output)

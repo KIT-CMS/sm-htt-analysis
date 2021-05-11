@@ -26,6 +26,11 @@ else
     export PATH=$HOME/.local/pylibs-$(hostname)/bin:$PATH
 fi
 
+
+export TF_NUM_INTEROP_THREADS=3
+export TF_NUM_INTRAOP_THREADS=3
+export TF_GPU_THREAD_MODE="gpu_private"
+
 if [[ $ERA == *"all"* ]]
 then
   outdir=output/ml/all_eras_${CHANNEL}_${TAG}
