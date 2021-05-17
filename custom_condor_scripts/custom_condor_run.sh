@@ -39,6 +39,9 @@
 #   -q
 #       Run the skript in quiet mode, only showing the script that is run, the timer and a message when the job is completed
 #       instead of repeating input, outputs, config and submission files and displaying the resulting stdout and stderr
+#   -t
+#       Run the skript without a timer. This prevents the script from displaying the time since the submission of the script.
+#       The actual times can still be found in the log files
 #
 #EXAMPLE 
 #   custom_condor_scripts/custom_condor_run.sh 'echo "Hello World" > hello.txt' -o hello.txt -s custom_condor_scripts/custom_condor_default_submission.jdl
@@ -152,6 +155,16 @@ function evaluate_opt() {
                 set_quiet=1
             fi
             ;;
+        #Option "-t" given:
+        t)
+            # Exactly zero arguments are mandatory
+            if [[ ! -z "${arg_para}" ]]; then
+                echo "Option ${option_para} expected no arguments, but some were given."
+            else
+                #Quiet flag is set
+                no_timer=1
+            fi
+            ;;
         #Any other option is given
         *)
             echo "option not recognized"
@@ -200,21 +213,6 @@ function parse_from_file(){
             ;;
         esac
     done < $1;
-}
-
-###Function to copy the basic templates from the script directory to either the current directory or another directory
-#inputs: target directory where templates should be copied to
-#outputs: None (files are copied)
-function get_templates() {
-    # Get current or given path
-    if [[ ! -z $1 ]]; then
-        target_dir=$(cd "$1"; pwd)
-    else
-        target_dir=$(pwd)
-    fi
-    #Copy files
-    echo "Copy templates custom_condor_default_config.txt and custom_condor_default_submission.jdl from ${path_to_script_dir} to ${target_dir}"
-    cp ${path_to_script_dir}/custom_condor_default_config.txt ${path_to_script_dir}/custom_condor_default_submission.jdl ${target_dir}
 }
 
 ###Function to scan HTCondor log file for Codes (3 digit numbers at the start of a new log entry)
@@ -318,7 +316,7 @@ function read_last_code() {
 ###Removes job from HTC, clock subprocess and generated temporary files
 #inputs: None (Takes information from existing variables)
 #outputs: None
-function cleanup(){
+function shutdown(){
     #Removes directory from gfal server
     gfal-rm -r ${gfal_data_dir}
     #Removes .tar files
@@ -331,6 +329,8 @@ function cleanup(){
     if [[ ! -z ${last_sub_ID} ]]; then
         kill ${last_sub_ID}; wait ${last_sub_ID} 2>/dev/null; echo ""
     fi
+    #Disable extended globbing
+    shopt -u extglob
 }
 
 ###Function to run commands on HTC
@@ -339,8 +339,9 @@ function cleanup(){
 function custom_condor_run() {
     #Save startuptime (nanoseconds)
     t_init="$(date +%F-%H-%M-%S-%N)"
-    #Initialize quiet flag to be False
+    #Initialize quiet flag to be False and no_timer to be False
     set_quiet=0
+    no_timer=0
     
     #Parse additional options and arguments
     parse_arguments "$@"
@@ -364,7 +365,7 @@ function custom_condor_run() {
     fi
 
     #trap SIGINT (Ctr-c) to ensure proper exit
-    trap "cleanup; exit 1" SIGINT
+    trap "shutdown; exit 1" SIGINT
     #Create directory for temporary files and outpus logs if necessary
     if [[ ! -d "custom_condor_data_dir" ]]; then
         mkdir custom_condor_data_dir 2>/dev/null
@@ -382,9 +383,11 @@ function custom_condor_run() {
     #The created directory is then set as the default location for this instance of the script
     data_dir="custom_condor_data_dir/${t_init}"
 
-    #A matching directory is created on the gfal server
-    gfal_data_dir="${storage_path}/${t_init}"
-    gfal-mkdir "${gfal_data_dir}"
+    if ( [[ ! -z ${input_arg} ]] || [[ ! -z ${output_arg} ]] ); then
+        #A matching directory is created on the gfal server
+        gfal_data_dir="${storage_path}/${t_init}"
+        gfal-mkdir "${gfal_data_dir}"
+    fi
 
     #Create skript string
     #Go through all given command arguments
@@ -457,8 +460,12 @@ function custom_condor_run() {
 
     echo "#!/bin/bash" > ${condor_script}
 
-    #source grid ui for gfal
-    echo 'source /cvmfs/grid.cern.ch/centos7-ui-4.0.3-1_umd4v4/etc/profile.d/setup-c7-ui-example.sh' >> ${condor_script}   
+    if ( [[ ! -z ${input_arg} ]] || [[ ! -z ${output_arg} ]] ); then
+        #source grid ui for gfal
+        echo 'source /cvmfs/grid.cern.ch/centos7-ui-4.0.3-1_umd4v4/etc/profile.d/setup-c7-ui-example.sh' >> ${condor_script} 
+        #Enable extended globbing
+        echo 'shopt -s extglob' >> ${condor_script}
+    fi  
     if [[ ! -z ${input_arg} ]]; then
         #copy in condor_input_files.tar 
         echo 'gfal-copy -f "'"${gfal_data_dir}"'/condor_input_files.tar" "./condor_input_files.tar" 1> /dev/null' >> ${condor_script}
@@ -466,7 +473,9 @@ function custom_condor_run() {
         echo 'gfal-rm "'"${gfal_data_dir}"'/condor_input_files.tar" 1> /dev/null' >> ${condor_script}
     fi
     #Get name of initial directory
-    echo 'starting_path=$(pwd)' >> ${condor_script}
+    if ( [[ ! -z ${input_arg} ]] || [[ ! -z ${output_arg} ]] ); then
+        echo 'starting_path=$(pwd)' >> ${condor_script}
+    fi
     #Change to tmp directory
     echo "cd tmp" >> ${condor_script}
     #Unpack files from condor_input_files.tar to tmp
@@ -494,9 +503,11 @@ function custom_condor_run() {
     #remove all .tar files from initial directory to prevent it from beeing copied again
     if ( [[ ! -z ${input_arg} ]] || [[ ! -z ${output_arg} ]] ); then
         echo 'rm ${starting_path}/*.tar 1> /dev/null' >> ${condor_script}
+        #Disable extended globbing
+        echo 'shopt -u extglob' >> ${condor_script}
     fi
     #remove docker_stderror from initial directory to prevent it from beeing copied back
-    echo 'rm ${starting_path}/docker_stderror' >> ${condor_script}
+    echo 'rm -f ${starting_path}/docker_stderror' >> ${condor_script}
 
     #Set user proxy for gfal
     add_commands="x509userproxy=/tmp/x509up_u$(id -u) data_dir=${data_dir}"
@@ -522,8 +533,9 @@ function custom_condor_run() {
     last_submitted_jobID=$(echo ${submission_message} | sed "s/.*submitted to cluster \([0-9]\+\)\.$/\1/g")
     #Get time at moment of submission in seconds
 
-    submission_date=$(date +%s)
-
+    if [[ ${no_timer} -eq 0 ]]; then
+        submission_date=$(date +%s)
+    fi
     echo "Submitting job to cluster ${last_submitted_jobID} (Script started at ${t_init})"
 
     #Abort if HTCondor doesn't responde
@@ -542,17 +554,18 @@ function custom_condor_run() {
         done;
     fi
 
-    #Start clock in subprocess
-    (
-    while : ; do
-    #Display time since submission_date in hh:mm:ss format in same line
-    echo -ne "$(date -u --date @$(($(date +%s) - $submission_date)) +%H:%M:%S)\033[0K\r"
-    sleep 1
-    done;
-    ) &
-    #Get ID of clock subprocess
-    last_sub_ID=$!
-
+    if [[ ${no_timer} -eq 0 ]]; then
+        #Start clock in subprocess
+        (
+        while : ; do
+        #Display time since submission_date in hh:mm:ss format in same line
+        echo -ne "$(date -u --date @$(($(date +%s) - $submission_date)) +%H:%M:%S)\033[0K\r"
+        sleep 1
+        done;
+        ) &
+        #Get ID of clock subprocess
+        last_sub_ID=$!
+    fi
     #Reset end signal
     job_finished=0
     #Repeat until end signal is set:
@@ -594,9 +607,10 @@ function custom_condor_run() {
             fi
         done;
     done;
-    #Stop clock subprocess
-    kill ${last_sub_ID}; wait ${last_sub_ID} 2>/dev/null; echo ""
-    
+    if [[ ${no_timer} -eq 0 ]]; then
+        #Stop clock subprocess
+        kill ${last_sub_ID}; wait ${last_sub_ID} 2>/dev/null; echo ""
+    fi
     #Print output/errors during command execution to terminal
     if [[ ${set_quiet} -eq 0 ]]; then
         echo "############"
@@ -616,19 +630,60 @@ function custom_condor_run() {
         #Copy in files
         gfal-copy -f "${gfal_data_dir}/condor_output_files.tar" "${data_dir}" 1> /dev/null
         #remove .tar from gfal server
-        gfal-rm -r "${gfal_data_dir}" 1> /dev/null
+        gfal-rm -r "${gfal_data_dir}/condor_output_files.tar" 1> /dev/null
         #unpack .tar
         tar -xf "${data_dir}/condor_output_files.tar"
         #remove .tar locally
         rm "${data_dir}/condor_output_files.tar"
     fi
+    if ( [[ ! -z ${input_arg} ]] || [[ ! -z ${output_arg} ]] ); then
+        gfal-rm -r "${gfal_data_dir}" 1> /dev/null
+    fi
     #Move logs of finnished job to directory with job id prepended
     mv ${data_dir} "custom_condor_data_dir/${last_submitted_jobID}_${t_init}"
+}
+
+###Function to copy the basic templates from the script directory to either the current directory or another directory
+#inputs: target directory where templates should be copied to
+#outputs: None (files are copied)
+function get_templates() {
+    # Get current or given path
+    if [[ ! -z $1 ]]; then
+        target_dir=$(cd "$1"; pwd)
+    else
+        target_dir=$(pwd)
+    fi
+    #Copy files
+    echo "Copy templates custom_condor_default_config.txt and custom_condor_default_submission.jdl from ${path_to_script_dir} to ${target_dir}"
+    cp ${path_to_script_dir}/custom_condor_default_config.txt ${path_to_script_dir}/custom_condor_default_submission.jdl ${target_dir}
+}
+
+###Function to delete ALL directories in the storage_path. 
+#   DO NOT USE THIS IF THERE ARE CURRENTLY JOBS RUNNING. IT PREVENTS THEM FROM RETURNING THEIR DATA
+#inputs: None
+#outputs: None
+function cleanup() {
+    gfal-ls ${storage_path}
+    read -p "Are you sure you want delete all these directories in ${storage_path}? [y/n] " -n 1 -r
+    echo ""
+    # If yes:
+    if [[ ${REPLY} =~ ^[Yy]$ ]]; then
+        #Get all directories in the users storage_path
+        for dir in $(gfal-ls ${storage_path}); do
+            #Remove all those directories
+            gfal-rm -r ${storage_path}/${dir}
+        done;
+    else
+      echo "Cleanup canceled"
+    fi
 }
 
 ####################################
 #########Start of script############
 ####################################
+
+#Enable extended globbing
+shopt -s extglob
 
 #Initialize paths
 path_to_script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
@@ -654,7 +709,13 @@ export X509_USER_PROXY=/tmp/x509up_u$(id -u)
 if [[ "$1" == "get" ]]; then
     #get templates if "get" is given as an option
     get_templates $2
+elif [[ "$1" == "clean" ]]; then
+    #Remove ALL directories from remote gfal storage (storage_path/*)
+    cleanup
 else
     #Run command on HTC
     custom_condor_run "$@"
 fi
+
+#Disable extended globbing
+shopt -u extglob

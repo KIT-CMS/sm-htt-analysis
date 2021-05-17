@@ -37,10 +37,10 @@ export KERAS_BACKEND=tensorflow
 TEST_TAYLOR_1D=1
 if [ -n "$TEST_TAYLOR_1D" ]; then
 logandrun python htt-ml/testing/keras_taylor_1D.py \
-    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${CHANNEL}.yaml 0 --era $ERA --normalize
+    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${CHANNEL}.yaml 0 --era $ERA
 
 logandrun python htt-ml/testing/keras_taylor_1D.py \
-    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${CHANNEL}.yaml 1 --era $ERA --normalize
+    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${CHANNEL}.yaml 1 --era $ERA
 fi
 
 # Taylor analysis (ranking)
