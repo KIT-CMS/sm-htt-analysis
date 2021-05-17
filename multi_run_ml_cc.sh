@@ -4,9 +4,9 @@ set -e
 
 ERAS="2016"
 #Can be: all_eras 2016 2017 2018
-CHANNELS="tt"
+CHANNELS="tt" #et mt"
 #Can be: et mt tt
-MASSES="500" #240 280 320 360 400 450 500 550 600 700 800 900 1000 1200"
+MASSES="500"
 #Can be: 240 280 320 360 400 450 500 550 600 700 800 900 1000 1200
 BATCHES="2"
 #Can be: 1 2 3 4 5 6 7
@@ -24,7 +24,7 @@ for ERA in ${ERAS}; do
       for BATCH in ${BATCHES}; do
         #Check if batch is possible for mass
         if [[ " ${ALLOWED_BATCHES[@]} " =~ " ${BATCH} " ]]; then
-        custom_condor_scripts/custom_condor_run.sh "run_ml.sh ${ERA} ${CHANNEL} ${MASS} ${BATCH}" \
+        custom_condor_scripts/custom_condor_run.sh "run_ml.sh ${ERA} ${CHANNEL} ${MASS} ${BATCH} GET_REMOTE" \
           -i output/log/logandrun/ htt-ml/ utils/ ml/ \
           -o output/ml/${ERA}_${CHANNEL}_${MASS}_${BATCH}/'*.!(root)' \
           -s custom_condor_scripts/custom_condor_default_submission.jdl \
