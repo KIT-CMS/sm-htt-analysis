@@ -1,0 +1,46 @@
+########################
+# Submit description file for test program
+# Follow instructions from https://wiki.ekp.kit.edu/bin/view/EkpMain/EKPCondorCluster
+########################
+Executable = $(data_dir)/custom_condor_pre_script.sh
+#Should usually not be changed ^
+Universe = docker
+Output = $(data_dir)/condor_out.txt
+stream_output = True
+Error = $(data_dir)/condor_err.txt
+stream_error = True
+Log = $(data_dir)/condor_log.txt
+request_GPUs = 1
+requirements = ( CloudSite == "topas" )
+# && (Machine == "f03-001-159-e.gridka.de")
+
+# For the ETP queue specifically
++RemoteJob = True
+## 1 hour walltime
++RequestWalltime = 3600
+## single CPU
+RequestCPUs = 16
+## 8GB RAM
+RequestMemory = 16000
+## 10GB Disk
+RequestDisk = 16000000
+## select accounting group 
+### belle, ams, 
+### cms.top, cms.higgs, cms.production, cms.jet
+accounting_group = cms.higgs
+
+# Choose a appropriate image to run inside
+docker_image = tvoigtlaender/slc7-condocker-cuda-11.0-cudnn8-devel-tfto:tf2.5_uproot
+
+# Specifying files to transfer between submission and execution host
+should_transfer_files = YES
+# Conda:
+transfer_input_files = $(data_dir)/condor_input_files.tar
+# PIP:
+#transfer_input_files = tensorflow_keras_test.py,requirements.txt
+
+transfer_output_files = condor_output_files.tar
+transfer_output_remaps = "condor_output_files.tar = $(data_dir)/condor_output_files.tar"
+#Should usually not be changed ^
+
+Queue

@@ -27,8 +27,8 @@ else
 fi
 
 
-export TF_NUM_INTEROP_THREADS=3
-export TF_NUM_INTRAOP_THREADS=3
+export TF_NUM_INTEROP_THREADS=2
+export TF_NUM_INTRAOP_THREADS=2
 export TF_GPU_THREAD_MODE="gpu_private"
 
 if [[ $ERA == *"all"* ]]

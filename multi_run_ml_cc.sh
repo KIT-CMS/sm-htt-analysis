@@ -6,7 +6,7 @@ ERAS="2016"
 #Can be: all_eras 2016 2017 2018
 CHANNELS="tt" #et mt"
 #Can be: et mt tt
-MASSES="500"
+MASSES="500 550"
 #Can be: 240 280 320 360 400 450 500 550 600 700 800 900 1000 1200
 BATCHES="2"
 #Can be: 1 2 3 4 5 6 7

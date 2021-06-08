@@ -6,14 +6,7 @@ MASS=$3 # only train on mH=500 GeV
 BATCH=$4 # only train on mh' in 85, 90, 95, 100 GeV (see ml/get_nBatches.py for assignment)
 GET_REMOTE=$5
 
-#for MASS in 240 280 320 360 400 450 500 550 600 700 800 900 1000 1200 
-#do
-#for BATCH in `python ml/get_nBatches.py ${MASS}`
-#do
-
-# use the above loops if you want to train on multiple masses sequentially (this was done for the analysis to derive the 68 trainings)
-
-if [[${GET_REMOTE} == *"GET_REMOTE"* ]]
+if [[ ${GET_REMOTE} == *"GET_REMOTE"* ]]; then
     ./ml/get_from_remote.sh ${ERA} ${CHANNEL} ${MASS} ${BATCH}
 else
     if [[ ${ERA} == *"all_eras"* ]]; then
@@ -27,8 +20,6 @@ else
     fi
 fi
 
-
-mkdir logs
 ./ml/run_training.sh ${ERA} ${CHANNEL} ${MASS}_${BATCH}
 
 
@@ -41,8 +32,5 @@ if [[ ${ERA} == *"all_eras"* ]]; then
 else
     ./ml/run_testing.sh ${ERA} ${CHANNEL} ${MASS}_${BATCH}
 fi
-
-#done
-#done
 
 # Use friend_tree_producer afterwards with lwtnn files to produce NNScore friend trees.
