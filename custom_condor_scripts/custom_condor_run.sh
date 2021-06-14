@@ -148,7 +148,7 @@ function evaluate_opt() {
                 fi
             fi
             ;;
-        #Option "-n" given:
+        #Option "-d" given:
         d)
             # Exactly one argument mandatory, further arguments are ignored
             if [[ -z "${arg_para}" ]]; then
@@ -616,20 +616,20 @@ function custom_condor_run() {
                 #Can be modified fairly easily
                 case ${line_code} in
                     000)
-                        echo -e "\nJob ${last_submitted_jobID}  ${batch_name_message}sent"
+                        echo -e "\nJob ${last_submitted_jobID} ${batch_name_message}sent"
                         ;;
                     001)
-                        echo -e "\nJob ${last_submitted_jobID}  ${batch_name_message}started"
+                        echo -e "\nJob ${last_submitted_jobID} ${batch_name_message}started"
                         ;;
                     005)
                         #On return code: Get return value and set end signl
                         return_value=$(sed -n "$((line + 1)){p;q}" ${log_file} | sed "s/.*(return value \([0-9]\+\))$/\1/g")
-                        echo -e "\nJob ${last_submitted_jobID}  ${batch_name_message}finished with return value ${return_value}"
+                        echo -e "\nJob ${last_submitted_jobID} ${batch_name_message}finished with return value ${return_value}"
                         job_finished=1
                         ;;
                     012)
                         #On held job code:
-                        echo -e "\nJob ${last_submitted_jobID}  ${batch_name_message}was held"
+                        echo -e "\nJob ${last_submitted_jobID} ${batch_name_message}was held"
                         # Optional: remove held job
                         #condor_rm ${last_submitted_jobID}
                         # Optional: Set end signal

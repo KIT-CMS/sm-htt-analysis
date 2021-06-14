@@ -11,7 +11,6 @@ CHANNEL=$2 # Can be et, mt or tt
 MASS=$3 # only train on mH=500 GeV
 BATCH=$4 # only train on mh' in 85, 90, 95, 100 GeV (see ml/get_nBatches.py for assignment)
 OPTIONS=$5
-SIZE=$6
 
 # Do all steps if none are specified
 if [[ ! ${OPTIONS} =~ [1-3] ]]; then
@@ -106,7 +105,7 @@ if [[ ${OPTIONS} == *"3"* ]]; then
       -i ml/ htt-ml/ utils/ output/log/logandrun/ ${OUTDIR}/*.h5 ${OUTDIR}/*.pickle \
       -o "${OUTDIR}/"'*.!(root)' \
       -s custom_condor_scripts/NNtraining_testing.jdl \
-      -d ${CONDOR_OUTPUT}/NN_testing_all_eras_${SIZE}/ \
+      -d ${CONDOR_OUTPUT}/NN_testing_all_eras/ \
       -q -t
   else
     # Run job with ./ml/run_testing.sh on HTCondor (will NOT perform work in current directory)
@@ -117,7 +116,7 @@ if [[ ${OPTIONS} == *"3"* ]]; then
       -i ml/ htt-ml/ utils/ output/log/logandrun/ ${OUTDIR}/*.h5 ${OUTDIR}/*.pickle \
       -o "${OUTDIR}/"'*.!(root)' \
       -s custom_condor_scripts/NNtraining_testing.jdl \
-      -d ${CONDOR_OUTPUT}/NN_testing_${SIZE}/ \
+      -d ${CONDOR_OUTPUT}/NN_testing/ \
       -q -t
   fi
 else
