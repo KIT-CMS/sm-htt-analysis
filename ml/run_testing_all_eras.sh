@@ -26,10 +26,10 @@ mkdir -p ${outdir}
 TEST_CONFUSION_MATRIX=1
 if [ -n "$TEST_CONFUSION_MATRIX" ]; then
 logandrun python htt-ml/testing/keras_confusion_matrix.py \
-    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${CHANNEL}.yaml 0 --era $ERA
+    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${CHANNEL}.yaml 0 --era $ERA --Num_Events 100000
 
 logandrun python htt-ml/testing/keras_confusion_matrix.py \
-    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${CHANNEL}.yaml 1 --era $ERA
+    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${CHANNEL}.yaml 1 --era $ERA --Num_Events 100000
 fi
 
 # Taylor analysis (1D)
@@ -37,10 +37,10 @@ export KERAS_BACKEND=tensorflow
 TEST_TAYLOR_1D=1
 if [ -n "$TEST_TAYLOR_1D" ]; then
 logandrun python htt-ml/testing/keras_taylor_1D.py \
-    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${CHANNEL}.yaml 0 --era $ERA
+    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${CHANNEL}.yaml 0 --era $ERA --Num_Events 100000 --normalize
 
 logandrun python htt-ml/testing/keras_taylor_1D.py \
-    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${CHANNEL}.yaml 1 --era $ERA
+    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${CHANNEL}.yaml 1 --era $ERA --Num_Events 100000 --normalize
 fi
 
 # Taylor analysis (ranking)
@@ -48,8 +48,8 @@ export KERAS_BACKEND=tensorflow
 TEST_TAYLOR_RANKING=1
 if [ -n "$TEST_TAYLOR_RANKING" ]; then
 logandrun python htt-ml/testing/keras_taylor_ranking.py \
-    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${CHANNEL}.yaml 0 --era $ERA
+    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${CHANNEL}.yaml 0 --era $ERA --Num_Events 100000
 
 logandrun python htt-ml/testing/keras_taylor_ranking.py \
-    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${CHANNEL}.yaml 1 --era $ERA
+    ${outdir}/dataset_config.yaml ml/templates/all_eras_testing_${CHANNEL}.yaml 1 --era $ERA --Num_Events 100000
 fi

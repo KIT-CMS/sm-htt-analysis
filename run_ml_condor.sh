@@ -1,151 +1,126 @@
 #!/bin/bash
-set -e
+# set -e
 
-# This script runs the nmssm analysis. The training of the neural network is performed using the condor cluster. 
-# If the GPU of the cluster is used is decided by the image used in ml_condor/wite_condor_submission.sh
-# This script can be called by multi_run_ml.sh
-# 1. The training dataset is constructed from skimmed data
-# 2. The training on the cluster is started
+# This script runs the nmssm analysis using the HTCondor cluster.
+# 1. The training dataset is constructed from skimmed data 
+# 2. The training is performed
 # 3. The trained modells are tested
 
-ERA_NAME=$1 # Can be 2016, 2017, 2018 or "all"
+ERA=$1 # Can be 2016, 2017, 2018 or all_eras
 CHANNEL=$2 # Can be et, mt or tt
 MASS=$3 # only train on mH=500 GeV
 BATCH=$4 # only train on mh' in 85, 90, 95, 100 GeV (see ml/get_nBatches.py for assignment)
-OPTIONS=$5 # recalculate certain stages of the programm: "1" datasets, "2" training, "3" testing,
-# "c" for using cpu instead of gpu, "f" to run training on cluster even if training on same data is already running. 
-#Can be combined (13, 2c3). If no stage option is given, it is treated as "123" ( "c" becomes "c123" etc.)
-CHANGE_USER=$6 # Use data of specifid USER on ceph
+OPTIONS=$5
+SIZE=$6
 
-# Enable all stages if none were given
+# Do all steps if none are specified
 if [[ ! ${OPTIONS} =~ [1-3] ]]; then
   OPTIONS="${OPTIONS}123"
 fi
 
-# Change used USER if specified
-if [[ ${CHANGE_USER} ]]; then
-  if [[ ${CHANGE_USER} == ${USER} ]]; then
-    CHANGE_USER=""
-  else
-    USER=${CHANGE_USER}
-  fi
-fi
+# Set name of output directory and name of analysis. Standard is 68 trainings
+ANALYSIS_NAME=final_test
+OUTPUT_PATH=output/ml
 
-echo "ERA=${ERA_NAME}, CHANNEL=${CHANNEL}, MASS=${MASS}, BATCH=${BATCH}, OPTIONS=${OPTIONS}, USER=${USER}"
+OUTDIR=${OUTPUT_PATH}/${ERA}_${CHANNEL}_${MASS}_${BATCH}
+CONDOR_OUTPUT=${OUTDIR}/condor_logs
+CEPH_PATH=/ceph/srv/${USER}/${ANALYSIS_NAME}
+CEPHDIR=${CEPH_PATH}/${ERA}_${CHANNEL}_${MASS}_${BATCH}
 
-# Initialize
-SET=${ERA_NAME}_${CHANNEL}_${MASS}_${BATCH}
-OUTPUT_PATH=output/ml/${SET}
-CEPH_PATH=/ceph/srv/${USER}/nmssm_data/${SET}
-if [[ ${ERA_NAME} == "all_eras" ]]; then
+shopt -s extglob
+# Loop through all eras if all_eras is set
+if [[ ${ERA} == "all_eras" ]]; then
   ERAS="2016 2017 2018"
-  ERAS_ALL="2016 2017 2018 all_eras"
 else
-  ERAS=${ERA_NAME}
-  ERAS_ALL=${ERA_NAME}
-fi
-# Create log directory if needed
-if [[ ! -d output/log/logandrun ]]; then
-  echo create output/log/logandrun
-  mkdir -p output/log/logandrun
-fi
-# Create ceph directory if needed
-if [[ ! -d ${CEPH_PATH} ]]; then
-  echo create ${CEPH_PATH}
-  mkdir -p ${CEPH_PATH}
-fi
-# Create output directory if needed
-if [[ ! -d ${OUTPUT_PATH} ]]; then
-  echo create ${OUTPUT_PATH}
-  mkdir -p ${OUTPUT_PATH}
+  ERAS=${ERA}
 fi
 
-#---1---
-# If dataset creation specified:
-if ( [[ ${OPTIONS} == *"1"* ]] && [[ ! ${CHANGE_USER} ]] ); then
-  # Run dataset creation
-  echo "creating Datasets"
-  for ERA in ${ERAS}; do
-    ./ml/create_training_dataset.sh ${ERA} ${CHANNEL} ${MASS} ${BATCH} &
+# Step 1: Create trainings datasets and move them to /ceph/srv
+if [[ ${OPTIONS} == *"1"* ]]; then
+  for ERA_ in ${ERAS}; do
+    # Run job with ./ml/create_training_dataset.sh on HTCondor (will perform work in current directory)
+    # Stdout and Stderr are streamed to ${CONDOR_OUTPUT}/dataset_creation_${ERA_}/
+    custom_condor_scripts/custom_condor_run.sh "cd $(pwd)" "./ml/create_training_dataset.sh ${ERA_} ${CHANNEL} ${MASS} ${BATCH}" \
+      -s custom_condor_scripts/dataset_creation.jdl \
+      -d ${CONDOR_OUTPUT}/dataset_creation_${ERA_}/ \
+      -q -t &
   done
   wait
-  if [[ ${ERA_NAME} == "all_eras" ]]; then
-    ./ml/combine_configs.sh ${ERA_NAME} ${CHANNEL} ${MASS}_${BATCH}
+  # Modify dataset_config.yaml if all_eras is used
+  if [[ ${ERA} == "all_eras" ]]; then
+    ./ml/combine_configs.sh all_eras ${CHANNEL} ${MASS}_${BATCH}
   fi
-  for ERA in ${ERAS_ALL}; do
-    LOOP_CEPH_PATH=/ceph/srv/${USER}/nmssm_data/${ERA}_${CHANNEL}_${MASS}_${BATCH}
-    LOOP_OUTPUT_PATH=output/ml/${ERA}_${CHANNEL}_${MASS}_${BATCH}
-    if [[ ! -d ${LOOP_CEPH_PATH} ]]; then
-      # create directories if needed
-      mkdir -p ${LOOP_CEPH_PATH}
-    else
-      # Remove data on ceph
-      rm -f ${LOOP_CEPH_PATH}/*
+  for ERA_ in ${ERAS}; do
+    OUTDIR_=${OUTPUT_PATH}/${ERA_}_${CHANNEL}_${MASS}_${BATCH}
+    CEPHDIR_=${CEPH_PATH}/${ERA_}_${CHANNEL}_${MASS}_${BATCH}
+    # Create directories if needed
+    if [[ ! -d ${CEPHDIR_} ]]; then
+      echo "create ${CEPHDIR_}"
+      mkdir -p ${CEPHDIR_}
     fi
-    # Upload dataset and config file to ceph
-    xrdcp ${LOOP_OUTPUT_PATH}/dataset_config.yaml ${LOOP_CEPH_PATH}
-    if [[ ! ${ERA} == "all_eras" ]]; then
-      echo "Upload ${LOOP_OUTPUT_PATH}/foldx_training_dataset.root"
-      xrdcp ${LOOP_OUTPUT_PATH}/fold0_training_dataset.root ${LOOP_OUTPUT_PATH}/fold1_training_dataset.root ${LOOP_CEPH_PATH}
-    fi
-  rm -f ${LOOP_OUTPUT_PATH}/*.root ${LOOP_OUTPUT_PATH}/*.yaml
+    # Copy relevant root files to /ceph/srv 
+    echo "Copy ${OUTDIR_}/fold0_training_dataset.root and ${OUTDIR_}/fold1_training_dataset.root to ${CEPHDIR_}"
+    xrdcp ${OUTDIR_}/fold0_training_dataset.root ${OUTDIR_}/fold1_training_dataset.root ${CEPHDIR_}/
+    # Remove all root files from local directory
+    rm ${OUTDIR_}/*.root
   done
+  # Create directories if needed
+  if [[ ! -d ${CEPHDIR} ]]; then
+    echo "create ${CEPHDIR}"
+    mkdir -p ${CEPHDIR}
+  fi
+  # Copy dataset_config.yaml to /ceph/srv 
+  echo "Copy ${OUTDIR}/dataset_config.yaml to ${CEPHDIR}"
+  xrdcp ${OUTDIR}/dataset_config.yaml ${CEPHDIR}/
+  # Remove all root files from local directory
+  rm ${OUTDIR}/dataset_config.yaml
 else
-  if [[ ${CHANGE_USER} ]]; then
-    echo "Data of others can't be overwritten. The data of ${CHANGE_USER} will be used."
-  fi
-  echo "No new datasets needed"
-fi
-#---2---
-# If training is specified:
-if [[ ${OPTIONS} == *"2"* ]]; then
-  # Setup and run the training on condor 
-  echo "training modells"
-  if [[ ${OPTIONS} == *"c"* ]]; then
-    CALC=cpu
-    echo "The training is using CPUs"
-  else
-    CALC=gpu
-    echo "The training is using GPUs"
-  fi
-  if [[ ${OPTIONS} == *"f"* ]]; then
-    FORCE=True
-  else
-    FORCE=False
-  fi
-  now=$(date +"%T")
-  if [[ ! -d ${OUTPUT_PATH}/condor_logs_${CALC} ]]; then
-    mkdir ${OUTPUT_PATH}/condor_logs_${CALC}
-  fi
-  echo "Timestamp job sent: ${now}" > ${OUTPUT_PATH}/condor_logs_${CALC}/times.txt
-  ./ml_condor/setup_condor_training.sh ${ERA_NAME} ${CHANNEL} ${MASS}_${BATCH} ${FORCE} ${CALC}
-  grep Timestamp ${OUTPUT_PATH}/condor_logs_${CALC}/out.txt >> ${OUTPUT_PATH}/condor_logs_${CALC}/times.txt
-else
-  echo "no new training needed"
+  echo "No new datasets required."
 fi
 
-#---3---
-# If testing is specified:
-if [[ ${OPTIONS} == *"3"* ]]; then
-  # Export for testing and test modells
-  echo "testing new models"
-  xrdcp ${CEPH_PATH}/dataset_config.yaml ${OUTPUT_PATH}
-  for ERA in ${ERAS}; do
-    LOOP_OUTPUT_PATH=output/ml/${ERA}_${CHANNEL}_${MASS}_${BATCH}
-    LOOP_CEPH_PATH=/ceph/srv/${USER}/nmssm_data/${ERA}_${CHANNEL}_${MASS}_${BATCH}
-    xrdcp ${LOOP_CEPH_PATH}/fold*.root ${LOOP_OUTPUT_PATH}/*.yaml ${LOOP_OUTPUT_PATH}
-  done
-  ./ml/export_for_application.sh ${ERA_NAME} ${CHANNEL} ${MASS}_${BATCH}
-  for ERA in ${ERAS}; do
-    if [[ ${ERA_NAME} = "all_eras" ]]; then
-      ./ml/run_testing_all_eras.sh ${ERA} ${CHANNEL} ${MASS}_${BATCH} $
-    else
-    ./ml/run_testing.sh ${ERA_NAME} ${CHANNEL} ${MASS}_${BATCH}
-    fi
-    wait
-    rm ${LOOP_OUTPUT_PATH}/fold*.root
-  done
-  rm ${OUTPUT_PATH}/dataset_config.yaml
+# Step 2: Perform training and export for application
+if [[ ${OPTIONS} == *"2"* ]]; then
+  # Run job with ./ml/run_training.sh and ./ml/export_for_application.sh on HTCondor (will NOT perform work in current directory)
+  # Stdout and Stderr are streamed to ${CONDOR_OUTPUT}/NN_training/
+  custom_condor_scripts/custom_condor_run.sh \
+    "./ml/get_from_remote.sh ${ERA} ${CHANNEL} ${MASS} ${BATCH} ${USER} ${ANALYSIS_NAME}" \
+    "./ml/run_training.sh ${ERA} ${CHANNEL} ${MASS}_${BATCH}" \
+    "./ml/export_for_application.sh ${ERA} ${CHANNEL} ${MASS}_${BATCH}" \
+    -i ml/ htt-ml/ utils/ output/log/logandrun/ \
+    -o "${OUTDIR}/"'*.h5' "${OUTDIR}/"'*.pickle' "${OUTDIR}/"'*.png' "${OUTDIR}/"'*.pdf' \
+    -s custom_condor_scripts/NNtraining_testing.jdl \
+    -d ${CONDOR_OUTPUT}/NN_training/ \
+    -q -t
 else
-  echo "no new testing needed"
+  echo "No training required."
 fi
+
+# Step 3: Perform testing
+if [[ ${OPTIONS} == *"3"* ]]; then
+  if [[ ${ERA} == "all_eras" ]]; then
+    # Run job with ./ml/run_testing_all_eras.sh on HTCondor for all eras (will NOT perform work in current directory)
+    # Stdout and Stderr are streamed to ${CONDOR_OUTPUT}/NN_testing_all_eras/
+    custom_condor_scripts/custom_condor_run.sh \
+      "./ml/get_from_remote.sh ${ERA} ${CHANNEL} ${MASS} ${BATCH} ${USER} ${ANALYSIS_NAME}" \
+      'for ERA_2 in 2016 2017 2018; do ./ml/run_testing_all_eras.sh ${ERA_2}'" ${CHANNEL} ${MASS}_${BATCH}; done" \
+      -i ml/ htt-ml/ utils/ output/log/logandrun/ ${OUTDIR}/*.h5 ${OUTDIR}/*.pickle \
+      -o "${OUTDIR}/"'*.!(root)' \
+      -s custom_condor_scripts/NNtraining_testing.jdl \
+      -d ${CONDOR_OUTPUT}/NN_testing_all_eras_${SIZE}/ \
+      -q -t
+  else
+    # Run job with ./ml/run_testing.sh on HTCondor (will NOT perform work in current directory)
+    # Stdout and Stderr are streamed to ${CONDOR_OUTPUT}/NN_testing/
+    custom_condor_scripts/custom_condor_run.sh \
+      "./ml/get_from_remote.sh ${ERA} ${CHANNEL} ${MASS} ${BATCH} ${USER} ${ANALYSIS_NAME}" \
+      "./ml/run_testing.sh ${ERA} ${CHANNEL} ${MASS}_${BATCH}" \
+      -i ml/ htt-ml/ utils/ output/log/logandrun/ ${OUTDIR}/*.h5 ${OUTDIR}/*.pickle \
+      -o "${OUTDIR}/"'*.!(root)' \
+      -s custom_condor_scripts/NNtraining_testing.jdl \
+      -d ${CONDOR_OUTPUT}/NN_testing_${SIZE}/ \
+      -q -t
+  fi
+else
+  echo "No testing required."
+fi
+shopt -u extglob

@@ -148,6 +148,19 @@ function evaluate_opt() {
                 fi
             fi
             ;;
+        #Option "-n" given:
+        d)
+            # Exactly one argument mandatory, further arguments are ignored
+            if [[ -z "${arg_para}" ]]; then
+                echo "Option ${option_para} expected 1 argument, but none were given."
+            else
+                #argument is set as config file
+                dir_arg="${arg_para[0]}"
+                if [[ ${#arg_para[@]} -gt 1 ]]; then
+                    echo "Only the first given config file (${arg_para[0]}) will be used."
+                fi
+            fi
+            ;;
         #Option "-q" given:
         q)
             # Exactly zero arguments are mandatory
@@ -367,22 +380,30 @@ function custom_condor_run() {
 
     #trap SIGINT (Ctr-c) to ensure proper exit
     trap "shutdown; exit 1" SIGINT
-    #Create directory for temporary files and outpus logs if necessary
-    if [[ ! -d "custom_condor_data_dir" ]]; then
-        mkdir custom_condor_data_dir 2>/dev/null
-    fi
-    #Create file with maching startup time as singular step
-    #This prevents two instances of the script from using the same directory
-    while : ; do
-        if mkdir "custom_condor_data_dir/${t_init}" 2>/dev/null; then
-            break;
+    if [[ ${dir_arg} ]]; then
+        if [[ -d ${dir_arg} ]]; then
+            rm -r ${dir_arg}
         fi
-        #If the directory cannot be created (because it already exists) a "_0" is appended to the time
-        #And it is tried again until it succeeds
-        t_init="${t_init}_0"
-    done;
-    #The created directory is then set as the default location for this instance of the script
-    data_dir="custom_condor_data_dir/${t_init}"
+        mkdir -p ${dir_arg}
+        data_dir="${dir_arg}"
+    else
+        #Create directory for temporary files and outpus logs if necessary
+        if [[ ! -d "custom_condor_data_dir" ]]; then
+            mkdir -p custom_condor_data_dir 2>/dev/null
+        fi
+        #Create file with maching startup time as singular step
+        #This prevents two instances of the script from using the same directory
+        while : ; do
+            if mkdir "custom_condor_data_dir/${t_init}" 2>/dev/null; then
+                break;
+            fi
+            #If the directory cannot be created (because it already exists) a "_0" is appended to the time
+            #And it is tried again until it succeeds
+            t_init="${t_init}_0"
+        done;
+        #The created directory is then set as the default location for this instance of the script
+        data_dir="custom_condor_data_dir/${t_init}"
+    fi
 
     #Create skript string
     #Go through all given command arguments
@@ -407,6 +428,13 @@ function custom_condor_run() {
     if [[ ! -z ${config_arg} ]]; then
         if [[ ${set_quiet} -eq 0 ]]; then
             echo "Config file: ${config_arg}"
+        fi
+    fi
+
+    #Print work directory
+    if [[ ! -z ${dir_arg} ]]; then
+        if [[ ${set_quiet} -eq 0 ]]; then
+            echo "Log directory: ${dir_arg}"
         fi
     fi
     
@@ -506,11 +534,12 @@ function custom_condor_run() {
     echo 'rm -f ${starting_path}/docker_stderror' >> ${condor_script}
 
     #Set user proxy
-    add_commands="x509userproxy=/tmp/x509up_u$(id -u) data_dir=${data_dir}"
+    # add_commands="x509userproxy=/tmp/x509up_u$(id -u) data_dir=${data_dir}"
+    add_commands="data_dir=${data_dir}"
 
-    ###########################################################################
-    #Start monitored job with specified submission file and additional commands
-    ###########################################################################
+    # ###########################################################################
+    # #Start monitored job with specified submission file and additional commands
+    # ###########################################################################
     
     #Get name of log file from submission .jdl file
     log_file=$(grep "^Log" ${submission_file} | sed 's/Log \?= \?\(.*\)/\1/g;s@$(data_dir)@'"${data_dir}"'@')
@@ -523,8 +552,15 @@ function custom_condor_run() {
             add_command_string="${add_command_string}-append ${command} "
         done;
     fi
+
+    # Change name of batch in cluster
+    if [[ ! -z ${dir_arg} ]]; then
+        batch_name_string="-batch-name ${dir_arg//\//}"
+        batch_name_message="with the name ${dir_arg//\//} "
+    fi
+
     #Send job submission and catch submission message
-    submission_message=$(condor_submit ${submission_file} ${add_command_string})
+    submission_message=$(condor_submit ${submission_file} ${add_command_string} ${batch_name_string})
     #Get Job ID from submission message
     last_submitted_jobID=$(echo ${submission_message} | sed "s/.*submitted to cluster \([0-9]\+\)\.$/\1/g")
     #Get time at moment of submission in seconds
@@ -532,7 +568,7 @@ function custom_condor_run() {
     if [[ ${no_timer} -eq 0 ]]; then
         submission_date=$(date +%s)
     fi
-    echo "Submitting job to cluster ${last_submitted_jobID} (Script started at ${t_init})"
+    echo "Submitting job to cluster ${last_submitted_jobID} ${batch_name_message}(Script started at ${t_init})"
 
     #Abort if HTCondor doesn't responde
     if [[ ! -f ${log_file} ]]; then
@@ -580,20 +616,20 @@ function custom_condor_run() {
                 #Can be modified fairly easily
                 case ${line_code} in
                     000)
-                        echo -e "\nJob ${last_submitted_jobID} sent"
+                        echo -e "\nJob ${last_submitted_jobID}  ${batch_name_message}sent"
                         ;;
                     001)
-                        echo -e "\nJob ${last_submitted_jobID} started"
+                        echo -e "\nJob ${last_submitted_jobID}  ${batch_name_message}started"
                         ;;
                     005)
                         #On return code: Get return value and set end signl
                         return_value=$(sed -n "$((line + 1)){p;q}" ${log_file} | sed "s/.*(return value \([0-9]\+\))$/\1/g")
-                        echo -e "\nJob ${last_submitted_jobID} finished with return value ${return_value}"
+                        echo -e "\nJob ${last_submitted_jobID}  ${batch_name_message}finished with return value ${return_value}"
                         job_finished=1
                         ;;
                     012)
                         #On held job code:
-                        echo -e "\nJob ${last_submitted_jobID} was held"
+                        echo -e "\nJob ${last_submitted_jobID}  ${batch_name_message}was held"
                         # Optional: remove held job
                         #condor_rm ${last_submitted_jobID}
                         # Optional: Set end signal
@@ -629,7 +665,9 @@ function custom_condor_run() {
     #remove .tar locally
     rm "${data_dir}/condor_output_files.tar" "${data_dir}/condor_input_files.tar"
     #Move logs of finnished job to directory with job id prepended
-    mv ${data_dir} "custom_condor_data_dir/${last_submitted_jobID}_${t_init}"
+    if [[ ! ${dir_arg} ]]; then
+        mv ${data_dir} "custom_condor_data_dir/${last_submitted_jobID}_${t_init}"
+    fi
 }
 
 ###Function to copy the basic templates from the script directory to either the current directory or another directory
@@ -661,17 +699,17 @@ path_to_script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && 
 storage_path="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/${USER}/custom_condor_tmp_storage"
 
 #Check if user proxy exists
-if ( [[ ! -f /tmp/x509up_u$(id -u) ]] || [[ $(voms-proxy-info | grep "timeleft  : 0:00:00") ]] ); then
-    echo "No valid proxy found. Creating a new one"
-    #Create user proxy valid for 8 days
-    voms-proxy-init -voms cms:/cms/dcms -rfc -b 2048 -valid 192:00
-    if ( [[ ! -f /tmp/x509up_u$(id -u) ]] || [[ $(voms-proxy-info | grep "timeleft  : 0:00:00") ]] ); then
-        echo "Still no valid proxy found. Exiting script now."
-        exit 1
-    fi
-fi
+# if ( [[ ! -f /tmp/x509up_u$(id -u) ]] || [[ $(voms-proxy-info | grep "timeleft  : 0:00:00") ]] ); then
+#     echo "No valid proxy found. Creating a new one"
+#     #Create user proxy valid for 8 days
+#     voms-proxy-init -voms cms:/cms/dcms -rfc -b 2048 -valid 192:00
+#     if ( [[ ! -f /tmp/x509up_u$(id -u) ]] || [[ $(voms-proxy-info | grep "timeleft  : 0:00:00") ]] ); then
+#         echo "Still no valid proxy found. Exiting script now."
+#         exit 1
+#     fi
+# fi
 #Set Proxy path for current user
-export X509_USER_PROXY=/tmp/x509up_u$(id -u)
+# export X509_USER_PROXY=/tmp/x509up_u$(id -u)
 #start script if command is given
 if [[ "$1" == "get" ]]; then
     #get templates if "get" is given as an option

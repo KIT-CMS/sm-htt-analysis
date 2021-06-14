@@ -20,8 +20,8 @@ requirements = ( CloudSite == "topas" )
 +RequestWalltime = 3600
 ## single CPU
 RequestCPUs = 3
-## 8GB RAM
-RequestMemory = 8000
+## 4GB RAM
+RequestMemory = 4000
 ## 8GB Disk
 RequestDisk = 8000000
 ## select accounting group 
