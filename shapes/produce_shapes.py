@@ -169,7 +169,7 @@ def main(args):
             "tt": TTMSSM2016(),
             "em": EMMSSM2016()
         }
-        from shape_producer.estimation_methods_2016 import DataEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimation, VVLEstimation, VVTEstimation, VVJEstimation, TTLEstimation, TTTEstimation, TTJEstimation, QCDEstimation_SStoOS_MTETEM, QCDEstimationTT, ZTTEmbeddedEstimation, NewFakeEstimationLT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation, SUSYggHEstimationPowheg, SUSYbbHEstimationPowheg
+        from shape_producer.estimation_methods_2016 import DataEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimation, VVLEstimation, VVTEstimation, VVJEstimation, TTLEstimation, TTTEstimation, TTJEstimation, QCDEstimation_SStoOS_MTETEM, QCDEstimationTT, ZTTEmbeddedEstimation, NewFakeEstimationLT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation, SUSYggHEstimationPowheg, SUSYbbHEstimationPowheg, ggH95Estimation, qqH95Estimation
         from shape_producer.era import Run2016
         era = Run2016(args.datasets)
     elif "2017" == args.era:
@@ -180,7 +180,7 @@ def main(args):
             "tt": TTMSSM2017(),
             "em": EMMSSM2017()
         }
-        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation, SUSYggHEstimationPowheg, SUSYbbHEstimationPowheg
+        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation, SUSYggHEstimationPowheg, SUSYbbHEstimationPowheg, ggH95Estimation, qqH95Estimation
 
         from shape_producer.era import Run2017
         era = Run2017(args.datasets)
@@ -192,7 +192,7 @@ def main(args):
             "tt": TTMSSM2018(),
             "em": EMMSSM2018()
         }
-        from shape_producer.estimation_methods_2018 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation, SUSYggHEstimationPowheg, SUSYbbHEstimationPowheg
+        from shape_producer.estimation_methods_2018 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation, SUSYggHEstimationPowheg, SUSYbbHEstimationPowheg, ggH95Estimation, qqH95Estimation
 
         from shape_producer.era import Run2018
         era = Run2018(args.datasets)
@@ -252,9 +252,9 @@ def main(args):
         signal_nicks = {
             "WH125", "ZH125", "VH125", "ttH125"} | {
             ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict} | {
-            qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict} | ww_nicks
+            qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict} | ww_nicks | {"ggH95", "qqH95"}
     else:
-        signal_nicks = {"ggH125", "qqH125", "WH125", "ZH125", "ttH125"} | ww_nicks
+        signal_nicks = {"ggH125", "qqH125", "WH125", "ZH125", "ttH125"} | ww_nicks | {"ggH95", "qqH95"}
 
     sm_signal_nicks = deepcopy(signal_nicks)
     pnameToEstD = {
@@ -278,8 +278,9 @@ def main(args):
         "qqHWW125": qqHWWEstimation,
         "WHWW125": WHWWEstimation,
         "ZHWW125": ZHWWEstimation,
+        "ggH95": ggH95Estimation,
+        "qqH95": qqH95Estimation
     }
-
     # provide lambda functions, as the signal estimation methods need an
     # additional argument to determine the stxs class
     pnameToEstD.update(
@@ -308,9 +309,21 @@ def main(args):
                     era,
                     directory,
                     ch_,
-                    friend_directory=friend_directory[chname_])) for processname in
-            pS_}
-
+                    friend_directory=friend_directory[chname_])) for processname in pS_}
+        processes[chname_]["ggH95"] = Process(
+                "ggH95",
+                pnameToEstD["ggH95"](
+                    era,
+                    directory,
+                    ch_,
+                    friend_directory=[friend for friend in friend_directory[chname_] if "TauTriggers" not in friend and "ElectronSF" not in friend]))
+        processes[chname_]["qqH95"] = Process(
+                "qqH95",
+                pnameToEstD["qqH95"](
+                    era,
+                    directory,
+                    ch_,
+                    friend_directory=[friend for friend in friend_directory[chname_] if "TauTriggers" not in friend and "ElectronSF" not in friend]))
     # add SUSY signals:
     mass_dict = {
         "2016": {
@@ -328,16 +341,16 @@ def main(args):
     }
     mass_dict_powheg = {
         "2016": {
-            "ggH": [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 2000, 2300, 2600, 2900, 3200, 3500],
+            "ggH": [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500],
             "bbH": [60,80,100,120,125,130,140,160,180,200,250,350,400,450,500,600,800,900,1200,1400,1600,1800,2000,2300,2600,2900,3200,3500] # Missing 300,700,1000
         },
         "2017": {
-            "ggH": [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 2000, 2300, 2600, 2900, 3200, 3500],
+            "ggH": [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800,2000, 2300, 2600, 2900, 3200, 3500],
             "bbH": [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500],
         },
         "2018": {
-            "ggH": [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 2000, 2300, 2600, 2900, 3200, 3500],
-            "bbH": [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500],
+            "ggH": [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500],
+            "bbH": [60, 80, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500], # missing 1000
         }
     }
 
@@ -350,12 +363,12 @@ def main(args):
             for ggH_contribution in ["ggh_t", "ggh_b", "ggh_i", "ggH_t", "ggH_b", "ggH_i", "ggA_t", "ggA_b", "ggA_i"]:
                 for mass in susyggH_masses:
                     name = ggH_contribution + "_" + str(mass)
-                    processes[chname_][name] = Process(name, SUSYggHEstimationPowheg(era, directory, ch_, str(mass), ggH_contribution, friend_directory=[friend for friend in friend_directory[chname_] if "TauTriggers" not in friend] ))
+                    processes[chname_][name] = Process(name, SUSYggHEstimationPowheg(era, directory, ch_, str(mass), ggH_contribution, friend_directory=[friend for friend in friend_directory[chname_] if "TauTriggers" not in friend and "ElectronSF" not in friend] ))
                     powheg_nicks.add(name)
                     signal_nicks.add(name)
             for mass in susybbH_masses:
                 name = "bbH_" + str(mass)
-                processes[chname_][name] = Process(name, SUSYbbHEstimationPowheg(era, directory, ch_, str(mass), friend_directory=[friend for friend in friend_directory[chname_] if "TauTriggers" not in friend]))
+                processes[chname_][name] = Process(name, SUSYbbHEstimationPowheg(era, directory, ch_, str(mass), friend_directory=[friend for friend in friend_directory[chname_] if "TauTriggers" not in friend and "ElectronSF" not in friend]))
                 powheg_nicks.add(name)
                 signal_nicks.add(name)
 
@@ -1048,11 +1061,13 @@ def main(args):
             # run two times, one for regular, one for embedding
             for variation_ in tau_trigger_variations:
                 for process_nick in selectedProcesses & pS_:
+                    if "95" in process_nick:
+                        continue
                     variationsToAdd[chname_][process_nick].append(
                         variation_)
         # special for powheg samples
         for histname_, pS_ in {
-            "CMS_eff_xtrigger_t_{ch}_dm{dm}_{era}": powheg_nicks }.items():
+            "CMS_eff_xtrigger_t_{ch}_dm{dm}_{era}": powheg_nicks | {"ggH95", "qqH95"} }.items():
             tau_trigger_variations = []
             for shift_direction in ["Up", "Down"]:
                 for decaymode in [0, 1, 10, 11]:
@@ -1557,7 +1572,7 @@ def main(args):
         for variation_ in ggh_variations:
             for process_nick in selectedProcesses & {
                     nick for nick in sm_signal_nicks
-                    if "ggH" in nick and "HWW" not in nick
+                    if "ggH" in nick and "HWW" not in nick and not "95" in nick
             }:
                 for chname_ in selectedChannels:
                     variationsToAdd[chname_][process_nick].append(variation_)
@@ -1639,7 +1654,7 @@ def main(args):
             for chname_, _ in selectedChannelsTuples:
                 for process_nick in selectedProcesses & {
                         nick for nick in sm_signal_nicks
-                        if "ggH" in nick
+                        if "ggH" in nick and not "95" in nick
                 }:
                     variationsToAdd[chname_][process_nick].append(variation_)
         stxs_acceptance_variations_qqH = []
@@ -1665,10 +1680,33 @@ def main(args):
             for chname_, _ in selectedChannelsTuples:
                 for process_nick in selectedProcesses & {
                         nick for nick in sm_signal_nicks
-                        if "qqH" in nick
+                        if "qqH" in nick and not "95" in nick
                 }:
                     variationsToAdd[chname_][process_nick].append(variation_)
 
+    if usepowheg:
+        hdamp_variations_ggH = []
+        for hdamp_variation in [
+            "ggA_i",
+            "ggA_t",
+            "ggA_b",
+            "ggh_i",
+            "ggh_t",
+            "ggh_b"]:
+            hdamp_variations_ggH.append(ReplaceWeight(
+                "Hdamp_{}_Reweight_up".format(hdamp_variation), "contributionWeight", Weight(
+                    "{}_weight_hdamp_up".format(hdamp_variation), "contributionWeight"), "Up"))
+            hdamp_variations_ggH.append(ReplaceWeight(
+                "Hdamp_{}_Reweight_down".format(hdamp_variation), "contributionWeight", Weight(
+                    "{}_weight_hdamp_down".format(hdamp_variation), "contributionWeight"), "Down"))
+        for variation_ in hdamp_variations_ggH:
+            for chname_, _ in selectedChannelsTuples:
+                for process_nick in selectedProcesses & {
+                        nick for nick in powheg_nicks
+                        if "gg" in nick
+                }:
+                    print "adding " ,variation_
+                    variationsToAdd[chname_][process_nick].append(variation_)
 
     # add all variation from the systematics
     for chname_, ch_ in selectedChannelsTuples:
