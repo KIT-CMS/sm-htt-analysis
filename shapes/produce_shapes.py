@@ -1732,7 +1732,7 @@ def main(args):
                     "{}_weight_scale_up".format(hdamp_variation), "contributionWeight"), "Up"))
             hdamp_variations_ggH.append(ReplaceWeight(
                 "QCDscale_ggH_REWEIGHT", "contributionWeight", Weight(
-                    "{}__weight_scale_down".format(hdamp_variation), "contributionWeight"), "Down"))
+                    "{}_weight_scale_down".format(hdamp_variation), "contributionWeight"), "Down"))
         for variation_ in hdamp_variations_ggH:
             for chname_, _ in selectedChannelsTuples:
                 for process_nick in selectedProcesses & {
