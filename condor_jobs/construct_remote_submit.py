@@ -127,9 +127,8 @@ def buildprocesses(era, channelname):
                            | {"FAKES"}
                            | {"QCD"}) | {"data_obs"}
     processes = [[signal_nick] for signal_nick in signal_nicks]
-    processes.append([['ggA_t_95'], ['ggH_t_95'], ['ggA_b_95'], ['ggH_i_95'], ['ggA_i_95'], ['ggh_i_95'], ['ggH_b_95'], ['ggh_b_95'], ['ggh_t_95']])
+    processes.extend([sig] for sig in ['ggA_t_95', 'ggH_t_95', 'ggA_b_95', 'ggH_i_95', 'ggA_i_95', 'ggh_i_95', 'ggH_b_95', 'ggh_b_95', 'ggh_t_95'])
     processes.append(list(background_nicks))
-
     print("Considering {} processes".format(len(processes)))
     # this way, background shapes are processed first
     return processes[::-1]
