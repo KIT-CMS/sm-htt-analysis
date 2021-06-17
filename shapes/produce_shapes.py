@@ -169,7 +169,7 @@ def main(args):
             "tt": TTMSSM2016(),
             "em": EMMSSM2016()
         }
-        from shape_producer.estimation_methods_2016 import DataEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimation, VVLEstimation, VVTEstimation, VVJEstimation, TTLEstimation, TTTEstimation, TTJEstimation, QCDEstimation_SStoOS_MTETEM, QCDEstimationTT, ZTTEmbeddedEstimation, NewFakeEstimationLT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation, SUSYggHEstimationPowheg, SUSYbbHEstimationPowheg, ggH95Estimation, qqH95Estimation
+        from shape_producer.estimation_methods_2016 import DataEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimation, VVLEstimation, VVTEstimation, VVJEstimation, TTLEstimation, TTTEstimation, TTJEstimation, QCDEstimation_SStoOS_MTETEM, QCDEstimationTT, ZTTEmbeddedEstimation, NewFakeEstimationLT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation, SUSYggHEstimationPowheg, SUSYbbHEstimationPowheg, ggH95Estimation, qqH95Estimation, ggH95EstimationSplit
         from shape_producer.era import Run2016
         era = Run2016(args.datasets)
     elif "2017" == args.era:
@@ -180,7 +180,7 @@ def main(args):
             "tt": TTMSSM2017(),
             "em": EMMSSM2017()
         }
-        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation, SUSYggHEstimationPowheg, SUSYbbHEstimationPowheg, ggH95Estimation, qqH95Estimation
+        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation, SUSYggHEstimationPowheg, SUSYbbHEstimationPowheg, ggH95Estimation, qqH95Estimation, ggH95EstimationSplit
 
         from shape_producer.era import Run2017
         era = Run2017(args.datasets)
@@ -192,7 +192,7 @@ def main(args):
             "tt": TTMSSM2018(),
             "em": EMMSSM2018()
         }
-        from shape_producer.estimation_methods_2018 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation, SUSYggHEstimationPowheg, SUSYbbHEstimationPowheg, ggH95Estimation, qqH95Estimation
+        from shape_producer.estimation_methods_2018 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation, SUSYggHEstimationPowheg, SUSYbbHEstimationPowheg, ggH95Estimation, qqH95Estimation, ggH95EstimationSplit
 
         from shape_producer.era import Run2018
         era = Run2018(args.datasets)
@@ -248,15 +248,18 @@ def main(args):
     # defines the signal sets
     ww_nicks = {"ggHWW125", "qqHWW125", "WHWW125", "ZHWW125"}
     powheg_nicks = set()
+    m95_nicks = set()
     if args.gof_variable is None:
         signal_nicks = {
             "WH125", "ZH125", "VH125", "ttH125"} | {
             ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict} | {
-            qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict} | ww_nicks | {"ggH95", "qqH95"}
+            qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict} | ww_nicks | {"ggH95", "qqH95", "ggH95_old", "qqH95_old"}
     else:
-        signal_nicks = {"ggH125", "qqH125", "WH125", "ZH125", "ttH125"} | ww_nicks | {"ggH95", "qqH95"}
+        signal_nicks = {"ggH125", "qqH125", "WH125", "ZH125", "ttH125"} | ww_nicks | {"ggH95", "qqH95", "ggH95_old", "qqH95_old"}
 
     sm_signal_nicks = deepcopy(signal_nicks)
+    sm_signal_nicks_no95 = deepcopy(signal_nicks)
+    sm_signal_nicks_no95.difference_update(["ggH95", "qqH95", "ggH95_old", "qqH95_old"])
     pnameToEstD = {
         "data_obs": DataEstimation,
         "EMB": ZTTEmbeddedEstimation,
@@ -278,7 +281,9 @@ def main(args):
         "qqHWW125": qqHWWEstimation,
         "WHWW125": WHWWEstimation,
         "ZHWW125": ZHWWEstimation,
-        "ggH95": ggH95Estimation,
+        "ggH95_old": ggH95Estimation,
+        "qqH95_old": qqH95Estimation,
+        "ggH95": ggH95EstimationSplit,
         "qqH95": qqH95Estimation
     }
     # provide lambda functions, as the signal estimation methods need an
@@ -301,7 +306,7 @@ def main(args):
     # Generate dict mapping processnames to proceses
     processes = {}
     for chname_, ch_ in selectedChannelsTuples:
-        pS_ = {"data_obs"} | signal_nicks | MCBkgDS[chname_] | {"EMB"}
+        pS_ = {"data_obs"} | sm_signal_nicks_no95 | MCBkgDS[chname_] | {"EMB"}
         processes[chname_] = {
             processname: Process(
                 processname,
@@ -316,10 +321,25 @@ def main(args):
                     era,
                     directory,
                     ch_,
+                    "lululu",
                     friend_directory=[friend for friend in friend_directory[chname_] if "TauTriggers" not in friend and "ElectronSF" not in friend]))
         processes[chname_]["qqH95"] = Process(
                 "qqH95",
                 pnameToEstD["qqH95"](
+                    era,
+                    directory,
+                    ch_,
+                    friend_directory=[friend for friend in friend_directory[chname_] if "TauTriggers" not in friend and "ElectronSF" not in friend]))
+        processes[chname_]["ggH95_old"] = Process(
+                "ggH95_old",
+                pnameToEstD["ggH95_old"](
+                    era,
+                    directory,
+                    ch_,
+                    friend_directory=[friend for friend in friend_directory[chname_] if "TauTriggers" not in friend and "ElectronSF" not in friend]))
+        processes[chname_]["qqH95_old"] = Process(
+                "qqH95_old",
+                pnameToEstD["qqH95_old"](
                     era,
                     directory,
                     ch_,
@@ -355,9 +375,17 @@ def main(args):
     }
 
     if usepowheg:
+        # add ggHM95 templates
+        for chname_, ch_ in selectedChannelsTuples:
+            for ggH_contribution in ["ggh_t", "ggh_b", "ggh_i", "ggH_t", "ggH_b", "ggH_i", "ggA_t", "ggA_b", "ggA_i"]:
+                name = ggH_contribution + "_95"
+                processes[chname_][name] = Process(name, ggH95EstimationSplit(era, directory, ch_, ggH_contribution, friend_directory=[friend for friend in friend_directory[chname_] if "TauTriggers" not in friend and "ElectronSF" not in friend]))
+                powheg_nicks.add(name)
+                signal_nicks.add(name)
+                m95_nicks.add(name)
+        print m95_nicks
         susyggH_masses = mass_dict_powheg[args.era]["ggH"]
         susybbH_masses = mass_dict_powheg[args.era]["bbH"]
-        print friend_directory[chname_]
         for chname_, ch_ in selectedChannelsTuples:
             # mssm ggH and bbH signals
             for ggH_contribution in ["ggh_t", "ggh_b", "ggh_i", "ggH_t", "ggH_b", "ggH_i", "ggA_t", "ggA_b", "ggA_i"]:
@@ -371,7 +399,6 @@ def main(args):
                 processes[chname_][name] = Process(name, SUSYbbHEstimationPowheg(era, directory, ch_, str(mass), friend_directory=[friend for friend in friend_directory[chname_] if "TauTriggers" not in friend and "ElectronSF" not in friend]))
                 powheg_nicks.add(name)
                 signal_nicks.add(name)
-
     else:
         susyggH_masses = mass_dict[args.era]["ggH"]
         susybbH_masses = mass_dict[args.era]["bbH_nlo"]
@@ -1038,7 +1065,7 @@ def main(args):
     # Tau trigger variations for MC
     for chname_ in selectedChannels & {"mt", "et"}:
         for histname_, pS_ in {
-            "CMS_eff_xtrigger_t_{ch}_dm{dm}_{era}": sm_signal_nicks | MCBkgDS[chname_]}.items():
+            "CMS_eff_xtrigger_t_{ch}_dm{dm}_{era}": sm_signal_nicks_no95 | MCBkgDS[chname_]}.items():
             tau_trigger_variations = []
             for shift_direction in ["Up", "Down"]:
                 for decaymode in [0, 1, 10, 11]:
@@ -1067,7 +1094,7 @@ def main(args):
                         variation_)
         # special for powheg samples
         for histname_, pS_ in {
-            "CMS_eff_xtrigger_t_{ch}_dm{dm}_{era}": powheg_nicks | {"ggH95", "qqH95"} }.items():
+            "CMS_eff_xtrigger_t_{ch}_dm{dm}_{era}": powheg_nicks | m95_nicks | {"ggH95", "qqH95", "ggH95_old", "qqH95_old"} }.items():
             tau_trigger_variations = []
             for shift_direction in ["Up", "Down"]:
                 for decaymode in [0, 1, 10, 11]:
@@ -1151,7 +1178,7 @@ def main(args):
     # Tau trigger variations
     for chname_ in selectedChannels & {"tt"}:
         for histname_, pS_ in {
-            "CMS_eff_xtrigger_t_tt_dm{dm}_{era}": sm_signal_nicks |
+            "CMS_eff_xtrigger_t_tt_dm{dm}_{era}": sm_signal_nicks_no95  |
                 MCBkgDS[chname_]}.items():
             tau_trigger_variations = []
             for shift_direction in ["Up", "Down"]:
@@ -1174,7 +1201,7 @@ def main(args):
                         variation_)
         # Special case for powheg samples
         for histname_, pS_ in {
-            "CMS_eff_xtrigger_t_tt_dm{dm}_{era}": powheg_nicks }.items():
+            "CMS_eff_xtrigger_t_tt_dm{dm}_{era}": powheg_nicks | m95_nicks | {"ggH95", "qqH95", "ggH95_old", "qqH95_old"} }.items():
             tau_trigger_variations = []
             for shift_direction in ["Up", "Down"]:
                 for decaymode in [0, 1, 10, 11]:
@@ -1216,6 +1243,7 @@ def main(args):
                             shift_direction))
             # run two times, one for regular, one for embedding
             for variation_ in tau_trigger_variations:
+                print variation_
                 for process_nick in selectedProcesses & pS_:
                     variationsToAdd[chname_][process_nick].append(
                         variation_)
@@ -1611,7 +1639,7 @@ def main(args):
         for variation_ in qqh_variations:
             for process_nick in selectedProcesses & {
                     nick for nick in sm_signal_nicks
-                    if "qqH" in nick and "qqHWW" not in nick
+                    if "qqH" in nick and "qqHWW" not in nick and not "95" in nick
             }:
                 for chname_ in selectedChannels:
                     variationsToAdd[chname_][process_nick].append(variation_)
@@ -1694,20 +1722,48 @@ def main(args):
             "ggh_t",
             "ggh_b"]:
             hdamp_variations_ggH.append(ReplaceWeight(
-                "Hdamp_{}_Reweight_up".format(hdamp_variation), "contributionWeight", Weight(
+                "Hdamp_{}_REWEIGHT".format(hdamp_variation), "contributionWeight", Weight(
                     "{}_weight_hdamp_up".format(hdamp_variation), "contributionWeight"), "Up"))
             hdamp_variations_ggH.append(ReplaceWeight(
-                "Hdamp_{}_Reweight_down".format(hdamp_variation), "contributionWeight", Weight(
+                "Hdamp_{}_RREWEIGHT".format(hdamp_variation), "contributionWeight", Weight(
                     "{}_weight_hdamp_down".format(hdamp_variation), "contributionWeight"), "Down"))
+            hdamp_variations_ggH.append(ReplaceWeight(
+                "QCDscale_ggH_REWEIGHT", "contributionWeight", Weight(
+                    "{}_weight_scale_up".format(hdamp_variation), "contributionWeight"), "Up"))
+            hdamp_variations_ggH.append(ReplaceWeight(
+                "QCDscale_ggH_REWEIGHT", "contributionWeight", Weight(
+                    "{}__weight_scale_down".format(hdamp_variation), "contributionWeight"), "Down"))
         for variation_ in hdamp_variations_ggH:
             for chname_, _ in selectedChannelsTuples:
                 for process_nick in selectedProcesses & {
-                        nick for nick in powheg_nicks
-                        if "gg" in nick
+                        nick for nick in powheg_nicks if "gg" in nick
                 }:
-                    print "adding " ,variation_
                     variationsToAdd[chname_][process_nick].append(variation_)
-
+        # for m95
+        hdamp_variations_ggH = []
+        for hdamp_variation in [
+            "ggA_i",
+            "ggA_t",
+            "ggA_b",
+            "ggh_i",
+            "ggh_t",
+            "ggh_b"]:
+            hdamp_variations_ggH.append(ReplaceWeight(
+                "Hdamp_{}_REWEIGHT".format(hdamp_variation), "contributionWeight", Weight(
+                    "{}_weight_hdamp_up".format(hdamp_variation), "contributionWeight"), "Up"))
+            hdamp_variations_ggH.append(ReplaceWeight(
+                "Hdamp_{}_RREWEIGHT".format(hdamp_variation), "contributionWeight", Weight(
+                    "{}_weight_hdamp_down".format(hdamp_variation), "contributionWeight"), "Down"))
+            hdamp_variations_ggH.append(ReplaceWeight(
+                "QCDscale_ggH_REWEIGHT", "contributionWeight", Weight(
+                    "{}_weight_scale_up".format(hdamp_variation), "contributionWeight"), "Up"))
+            hdamp_variations_ggH.append(ReplaceWeight(
+                "QCDscale_ggH_REWEIGHT", "contributionWeight", Weight(
+                    "{}_weight_scale_down".format(hdamp_variation), "contributionWeight"), "Down"))
+        for variation_ in hdamp_variations_ggH:
+            for chname_, _ in selectedChannelsTuples:
+                for process_nick in selectedProcesses & { nick for nick in m95_nicks }:
+                    variationsToAdd[chname_][process_nick].append(variation_)
     # add all variation from the systematics
     for chname_, ch_ in selectedChannelsTuples:
         for process_nick in processes[chname_]:
