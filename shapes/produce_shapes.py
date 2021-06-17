@@ -1727,43 +1727,25 @@ def main(args):
             hdamp_variations_ggH.append(ReplaceWeight(
                 "Hdamp_{}_RREWEIGHT".format(hdamp_variation), "contributionWeight", Weight(
                     "{}_weight_hdamp_down".format(hdamp_variation), "contributionWeight"), "Down"))
-            hdamp_variations_ggH.append(ReplaceWeight(
-                "QCDscale_ggH_REWEIGHT", "contributionWeight", Weight(
-                    "{}_weight_scale_up".format(hdamp_variation), "contributionWeight"), "Up"))
-            hdamp_variations_ggH.append(ReplaceWeight(
-                "QCDscale_ggH_REWEIGHT", "contributionWeight", Weight(
-                    "{}_weight_scale_down".format(hdamp_variation), "contributionWeight"), "Down"))
         for variation_ in hdamp_variations_ggH:
             for chname_, _ in selectedChannelsTuples:
                 for process_nick in selectedProcesses & {
                         nick for nick in powheg_nicks if "gg" in nick
                 }:
                     variationsToAdd[chname_][process_nick].append(variation_)
-        # for m95
-        hdamp_variations_ggH = []
-        for hdamp_variation in [
-            "ggA_i",
-            "ggA_t",
-            "ggA_b",
-            "ggh_i",
-            "ggh_t",
-            "ggh_b"]:
-            hdamp_variations_ggH.append(ReplaceWeight(
-                "Hdamp_{}_REWEIGHT".format(hdamp_variation), "contributionWeight", Weight(
-                    "{}_weight_hdamp_up".format(hdamp_variation), "contributionWeight"), "Up"))
-            hdamp_variations_ggH.append(ReplaceWeight(
-                "Hdamp_{}_RREWEIGHT".format(hdamp_variation), "contributionWeight", Weight(
-                    "{}_weight_hdamp_down".format(hdamp_variation), "contributionWeight"), "Down"))
-            hdamp_variations_ggH.append(ReplaceWeight(
-                "QCDscale_ggH_REWEIGHT", "contributionWeight", Weight(
-                    "{}_weight_scale_up".format(hdamp_variation), "contributionWeight"), "Up"))
-            hdamp_variations_ggH.append(ReplaceWeight(
-                "QCDscale_ggH_REWEIGHT", "contributionWeight", Weight(
-                    "{}_weight_scale_down".format(hdamp_variation), "contributionWeight"), "Down"))
-        for variation_ in hdamp_variations_ggH:
-            for chname_, _ in selectedChannelsTuples:
-                for process_nick in selectedProcesses & { nick for nick in m95_nicks }:
-                    variationsToAdd[chname_][process_nick].append(variation_)
+        #QCD Scale Variations
+        for chname_, _ in selectedChannelsTuples:
+            for process_nick in selectedProcesses & {
+                    nick for nick in powheg_nicks if "gg" in nick}:
+                contrib = process_nick.split("_")[0] + "_" + process_nick.split("_")[1]
+                up = ReplaceWeight(
+                    "QCDscale_ggH_REWEIGHT", "contributionWeight", Weight(
+                    "{}_weight_scale_up".format(contrib), "contributionWeight"), "Up")
+                down = ReplaceWeight(
+                    "QCDscale_ggH_REWEIGHT", "contributionWeight", Weight(
+                    "{}_weight_scale_down".format(contrib), "contributionWeight"), "Down")
+                variationsToAdd[chname_][process_nick].append(up)
+                variationsToAdd[chname_][process_nick].append(down)
     # add all variation from the systematics
     for chname_, ch_ in selectedChannelsTuples:
         for process_nick in processes[chname_]:
