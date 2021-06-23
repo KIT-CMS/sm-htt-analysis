@@ -1721,11 +1721,15 @@ def main(args):
             "ggh_i",
             "ggh_t",
             "ggh_b"]:
+            if "ggh" in hdamp_variation:
+                naming = "ggH_" + hdamp_variation.split("_")[1]
+            else:
+                naming = hdamp_variation
             hdamp_variations_ggH.append(ReplaceWeight(
-                "Hdamp_{}_REWEIGHT".format(hdamp_variation), "contributionWeight", Weight(
+                "Hdamp_{}_REWEIGHT".format(naming), "contributionWeight", Weight(
                     "{}_weight_hdamp_up".format(hdamp_variation), "contributionWeight"), "Up"))
             hdamp_variations_ggH.append(ReplaceWeight(
-                "Hdamp_{}_RREWEIGHT".format(hdamp_variation), "contributionWeight", Weight(
+                "Hdamp_{}_REWEIGHT".format(naming), "contributionWeight", Weight(
                     "{}_weight_hdamp_down".format(hdamp_variation), "contributionWeight"), "Down"))
         for variation_ in hdamp_variations_ggH:
             for chname_, _ in selectedChannelsTuples:

@@ -30,21 +30,28 @@ def parse_arguments():
     parser.add_argument("--input", required=True, type=str, help="Path to single input ROOT file.")
     parser.add_argument("--output", required=True, type=str, help="Path to output directory")
     parser.add_argument("--tag", required=False, type=str, help="Name to add to the output filename")
-    parser.add_argument("-n", "--num-processes", default=1, type=int, help="Number of processes used.")
+    parser.add_argument("-n", "--num-processes", default=6, type=int, help="Number of processes used.")
     return parser.parse_args()
 
 
-def rescale_negative_signal_shapes(hist, name, integral):
-    for i in range(hist.GetNbinsX()):
-        if hist.GetBinContent(i+1) < 0.0:
-            logger.info("Negative Bin {} - {}".format(i, hist.GetBinContent(i+1)))
-            hist.SetBinContent(i+1, 0.001)
-            logger.info("After fixing: {} - {}".format(i, hist.GetBinContent(i+1)))
-    if integral == 0.0:
+def correct_nominal_shape(hist, name, integral):
+    if integral >= 0:
+         # if integral is larger than 0, everything is fine
+        sf = 1.0
+    elif integral == 0.0:
+        logger.info("Nominal histogram is empty: {}".format(name))
+        # if integral of nominal is 0, we make sure to scale the histogram with 0.0
         sf = 0
     else:
+        logger.info("Nominal histogram is negative : {} --> fixing it now...".format(name))
+        # if the histogram is negative, the make all negative bins positive,
+        # and scale the histogram to a small positive value
+        for i in range(hist.GetNbinsX()):
+            if hist.GetBinContent(i+1)<0.0:
+                logger.info("Negative Bin {} - {}".format(i, hist.GetBinContent(i+1)))
+                hist.SetBinContent(i+1, 0.001)
+                logger.info("After fixing: {} - {}".format(i, hist.GetBinContent(i+1)))
         sf = 0.001 / hist.Integral()
-    logger.warning("Apply sf :" + str(sf))
     hist.Scale(sf)
     return hist
 
@@ -62,7 +69,7 @@ def write_shapes_per_category(config: tuple):
         hist = infile.Get(name)
         pos = 0.0
         neg = 0.0
-        if "_xxh#bb" in name or "_xxh#gg" in name:
+        if "_xxh#bb" in name or ("_xxh#gg" in name and not "_i_" in name):
             integral = hist.Integral()
             if name.split("#")[-1]=="":
                 nominal = correct_nominal_shape(hist, name, integral)
@@ -80,7 +87,8 @@ def write_shapes_per_category(config: tuple):
                 if neg<0:
                     if (neg+pos)>0.0:
                         hist.Scale((neg+pos)/pos)
-
+        elif "_xxh#gg" in name and "_i_" in name:
+            print("Not doing andthing for interference ggH shapes ...: {}".format(name))
         else:
             for i in range(hist.GetNbinsX()):
                 cont = hist.GetBinContent(i+1)
@@ -104,7 +112,7 @@ def write_shapes_per_category(config: tuple):
                         logger.info("Negative yield: %f"%neg)
                         logger.info("Total yield: %f"%(neg+pos))
                         logger.fatal("Found histogram with a yield of negative bins larger than 1.0!")
-                        raise Exception
+                        #raise Exception
 
         if (not "ZTTpTTTauTau" in name) and ("CMS_htt_emb_ttbar" in name):
             continue
@@ -184,6 +192,13 @@ def main(args):
             # temp rename trigger uncertainties to xtrigger_t in tautau channel
             if ("eff_trigger" in systematic and channel == "tt"):
                 systematic = systematic.replace("CMS_eff_trigger", "CMS_eff_xtrigger_t")
+            # convert REWEIGHT Systematics to correct naming
+            if ("REWEIGHT" in systematic and "Hdamp" in systematic):
+                sys_old = systematic
+                if("RREWEIGHT" in systematic):
+                    systematic = systematic.replace("RREWEIGHT","REWEIGHT")
+                systematic = systematic.replace("ggh","ggH")
+                print("Changed {} to {}".format(sys_old, systematic))
 
             name_output += "_" + systematic
         hist_map[channel][category][name] = name_output

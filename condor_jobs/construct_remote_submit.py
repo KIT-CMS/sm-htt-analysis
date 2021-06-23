@@ -107,7 +107,7 @@ def buildprocesses(era, channelname):
     }
 
     susyggH_masses = mass_dict[era]["ggH"]
-    susybbH_masses = mass_dict[era]["ggH"]
+    susybbH_masses = mass_dict[era]["bbH"]
     # mssm ggH and bbH signals
     for ggH_contribution in [
             "ggh_t", "ggh_b", "ggh_i", "ggH_t", "ggH_b", "ggH_i", "ggA_t",
@@ -116,9 +116,11 @@ def buildprocesses(era, channelname):
         for mass in susyggH_masses:
             name = ggH_contribution + "_" + str(mass)
             signal_nicks.add(name)
-    # for m in susybbH_masses:
-    #     name = "bbH_" + str(m)
-    #     signal_nicks.add(name)
+    signal_bb = []
+    for m in susybbH_masses:
+        name = "bbH_" + str(m)
+        signal_nicks.add(name)
+        signal_bb.append(name)
 
     background_nicks = set(trueTauBkgS
                            | leptonTauBkgS
@@ -126,7 +128,7 @@ def buildprocesses(era, channelname):
                            | {"EMB"}
                            | {"FAKES"}
                            | {"QCD"}) | {"data_obs"}
-    processes = [[signal_nick] for signal_nick in signal_nicks]
+    processes = [[signal_nick] for signal_nick in signal_bb]
     processes.extend([sig] for sig in ['ggA_t_95', 'ggH_t_95', 'ggA_b_95', 'ggH_i_95', 'ggA_i_95', 'ggh_i_95', 'ggH_b_95', 'ggh_b_95', 'ggh_t_95'])
     processes.append(list(background_nicks))
     print("Considering {} processes".format(len(processes)))
