@@ -238,7 +238,7 @@ function provideCluster() (
         [[ ! -d $llwtnndir_sel ]] && mkdir -p $llwtnndir_sel
         for fold in 0 1;
         do
-            updateSymlink $sm_htt_analysis_dir/output/ml/${era}_${channel}_${tag}/fold${fold}_lwtnn.json  $llwtnndir_sel/fold${fold}_lwtnn.json
+            rsync $sm_htt_analysis_dir/output/ml/${era}_${channel}_${tag}/fold${fold}_lwtnn.json  $llwtnndir_sel/fold${fold}_lwtnn.json
         done
     done
     updateSymlink $sm_htt_analysis_dir/datasets/datasets.json $cmssw_src_local/HiggsAnalysis/friend-tree-producer/data/input_params/datasets.json
@@ -355,13 +355,13 @@ function submitBatchShapes()(
         export X509_USER_PROXY=/home/${USER}/.globus/x509up
         echo "Setting proxy path to $X509_USER_PROXY"
     fi
-    logandrun python ./condor_jobs/construct_remote_submit.py --eras $erasarg --channels $channelsarg --tags $tagsarg --mode submit --gcmode optimal --workdir output/condor_jobs_wd
+    logandrun python ./condor_jobs/construct_remote_submit.py --eras $erasarg --channels $channelsarg --tags $tagsarg --mode submit --gcmode optimal --workdir output/condor_jobs
 )
 
 function mergeBatchShapes()(
     source utils/setup_cvmfs_sft.sh
     source utils/setup_python.sh
-    logandrun python ./condor_jobs/construct_remote_submit.py --eras $erasarg --channels $channelsarg --tag $tagsarg --mode merge --gcmode optimal --workdir output/condor_jobs_wd
+    logandrun python ./condor_jobs/construct_remote_submit.py --eras $erasarg --channels $channelsarg --tag $tagsarg --mode merge --gcmode optimal --workdir output/condor_jobs
     condwait
 )
 
