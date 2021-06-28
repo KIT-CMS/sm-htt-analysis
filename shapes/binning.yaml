@@ -108,6 +108,18 @@ standard_binning_5classes: &standard_binning_5classes
 standard_binning_8classes: &standard_binning_8classes
     [0.125, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0]
 
+binning_xxh_bin1: &binning_xxh_bin1
+    [0.0, 0.2, 0.3, 0.4, 0.5, 0.65, 0.8, 1.0]
+binning_xxh_bin2: &binning_xxh_bin2
+    [0.0, 0.2, 0.3, 0.4, 0.5, 0.65]
+binning_xxh_bin3: &binning_xxh_bin3
+    [0.0, 0.2, 0.3, 0.4, 0.5]
+binning_xxh_bin4: &binning_xxh_bin4
+    [0.0, 0.2, 0.3, 0.4]
+binning_xxh_bin5: &binning_xxh_bin5
+    [0.0, 0.2, 0.3]
+binning_xxh_bin6: &binning_xxh_bin6
+    [0.8, 0.85, 0.9, 0.92, 0.94, 0.96, 0.98, 1.0]
 # Define binning used in analysis
 analysis:
   em:
@@ -121,6 +133,12 @@ analysis:
     emb:           *fine_binning_Xclasses
     misc:         *fine_binning_Xclasses
     db:           *fine_binning_Xclasses
+    xxh_1:        *binning_xxh_bin1
+    xxh_2:        *binning_xxh_bin2
+    xxh_3:        *binning_xxh_bin3
+    xxh_4:        *binning_xxh_bin4
+    xxh_5:        *binning_xxh_bin5
+    xxh_6:        *binning_xxh_bin6
     ggh_unrolled: *ggh_fine_full_unrolling_8classes
     qqh_unrolled: *qqh_fine_full_unrolling_8classes
     vbftopo_highmjj:    *fine_binning_Xclasses
@@ -156,6 +174,12 @@ analysis:
     tt:           *fine_binning_Xclasses
     ss:           *fine_binning_Xclasses
     misc:         *fine_binning_Xclasses
+    xxh_1:        *binning_xxh_bin1
+    xxh_2:        *binning_xxh_bin2
+    xxh_3:        *binning_xxh_bin3
+    xxh_4:        *binning_xxh_bin4
+    xxh_5:        *binning_xxh_bin5
+    xxh_6:        *binning_xxh_bin6
     ggh_unrolled: *ggh_fine_full_unrolling_8classes
     qqh_unrolled: *qqh_fine_full_unrolling_8classes
     vbftopo_highmjj:    *fine_binning_Xclasses
@@ -191,6 +215,12 @@ analysis:
     tt:           *fine_binning_Xclasses
     ss:           *fine_binning_Xclasses
     misc:         *fine_binning_Xclasses
+    xxh_1:        *binning_xxh_bin1
+    xxh_2:        *binning_xxh_bin2
+    xxh_3:        *binning_xxh_bin3
+    xxh_4:        *binning_xxh_bin4
+    xxh_5:        *binning_xxh_bin5
+    xxh_6:        *binning_xxh_bin6
     ggh_unrolled: *ggh_fine_full_unrolling_8classes
     qqh_unrolled: *qqh_fine_full_unrolling_8classes
     vbftopo_highmjj:    *fine_binning_Xclasses
@@ -223,6 +253,12 @@ analysis:
     emb:           *fine_binning_Xclasses
     noniso:       *fine_binning_Xclasses
     misc:         *fine_binning_Xclasses
+    xxh_1:        *binning_xxh_bin1
+    xxh_2:        *binning_xxh_bin2
+    xxh_3:        *binning_xxh_bin3
+    xxh_4:        *binning_xxh_bin4
+    xxh_5:        *binning_xxh_bin5
+    xxh_6:        *binning_xxh_bin6
     ggh_unrolled: *ggh_fine_full_unrolling_5classes
     qqh_unrolled: *qqh_fine_full_unrolling_5classes
     vbftopo_highmjj:    *fine_binning_Xclasses
@@ -288,7 +324,6 @@ stxs_stage0_2Ddiscr_28: "(0.5
                 +26.0*({channel}_qqh>=0.96&&{channel}_qqh<0.98)
                 +27.0*({channel}_qqh>=0.98)
                 )"
-    
 # Define STXS stage 1 cuts for unrolling
 stxs_stage1:
   lt:

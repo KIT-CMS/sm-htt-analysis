@@ -587,6 +587,35 @@ def main(args):
                         Cuts(
                             Cut("("+"||".join(["{channel}_max_index=={index}".format(channel=chname_, index=idx) for idx in stage0_sig_idx])+")", "exclusive_score")),
                         variable=score))
+            # add the unrolled 2D discriminants as well
+            stage0_index = []
+            for label in ["ggh", "qqh"]:
+                stage0_index.append(classdict[label])
+            xxh_unroll_cuts = {
+                1: ") && ({channel}_qqh<0.35))",
+                2: ") && ({channel}_qqh>=0.35 && {channel}_qqh<0.5))",
+                3: ") && ({channel}_qqh>=0.5 && {channel}_qqh<0.6))",
+                4: ") && ({channel}_qqh>=0.6 && {channel}_qqh<0.7))",
+                5: ") && ({channel}_qqh>=0.7 && {channel}_qqh<0.8))",
+                6: ") && ({channel}_qqh>=0.8))"
+                }
+            for bin in xxh_unroll_cuts.keys():
+                label = "xxh_{}".format(bin)
+                bin_score = Variable(
+                    "{}_max_score".format(chname_),
+                    VariableBinning(binning["analysis"][chname_][label]), "{}_ggh".format(chname_))
+                if bin == 6:
+                    bin_score = Variable(
+                    "{}_max_score".format(chname_),
+                    VariableBinning(binning["analysis"][chname_][label]), "{}_qqh".format(chname_))
+                bincut = Cut("(("+" || ".join(["{channel}_max_index=={index}".format(channel=chname_, index=idx) for idx in stage0_index]) +
+                                xxh_unroll_cuts[bin].format(channel=chname_),
+                                "exclusive_score")
+                print(bincut)
+                catsL_.append( Category(
+                        "xxh_bin_{}".format(bin), ch_, Cuts(bincut),
+                        variable=bin_score))
+
 
     # if gof test
     else:
