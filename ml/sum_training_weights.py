@@ -45,8 +45,18 @@ def dictToString(exdict):
 def main(args):
     logger.info("Process training dataset %s.", args.dataset)
     f = ROOT.TFile(args.dataset)
-
     dsConfDict= yaml.load(open(args.dataset_config_file, "r"), Loader=yaml.SafeLoader)
+    fold0 = ROOT.TFile(dsConfDict["datasets"][0],"UPDATE")
+    fold1 = ROOT.TFile(dsConfDict["datasets"][1],"UPDATE")
+    #remove all classes exept of nmssm
+    # fold0.Delete("emb;1")
+    # fold0.Delete("misc;1")
+    # fold0.Delete("ff;1")
+    # fold0.Delete("tt;1")
+    # fold1.Delete("emb;1")
+    # fold1.Delete("misc;1")
+    # fold1.Delete("ff;1")
+    # fold1.Delete("tt;1")
     ### use the classes that have processes mapped to them
     classes = set([dsConfDict["processes"][key]["class"] for key in list(dsConfDict["processes"].keys())])
 
@@ -71,9 +81,10 @@ def main(args):
                 raise Exception
             else:
                 sum_ += evw
+        
         sum_all += sum_
         counts.append(sum_)
-
+    
     ### Weight printing
     for i, name in enumerate(classes):
         logger.info(

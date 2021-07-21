@@ -20,13 +20,14 @@ def parse_arguments():
     parser.add_argument("--tag", required=True, help="The tag of the folder, usually mc, emb, ff etc.")
     parser.add_argument("--channel", required=True, help="Analysis channel")
     parser.add_argument("--output_dir", type=str,required=True, help="Output directory")
+    parser.add_argument("--analysis_name", type=str,required=True, help="superior output directory")
     return parser.parse_args()
 
 def main(args):
     eras = ["2016", "2017", "2018"]
     configs = []
     for era in eras:
-        config_path = "output/ml/{}_{}_{}/dataset_config.yaml".format(era, args.channel,args.tag)
+        config_path = "output/ml/{}/{}_{}_{}/dataset_config.yaml".format(args.analysis_name, era, args.channel,args.tag)
         logger.info("Try to open {}".format(config_path))
         config = yaml.load(open(config_path, 'r'), Loader =yaml.SafeLoader)
         configs.append(config)
@@ -44,7 +45,7 @@ def main(args):
     all_era_template["variables"] = configs[0]["variables"]
 
     all_era_template["output_path"] = args.output_dir
-
+    all_era_template["training_path"] = "output/ml/{}/all_eras_{}/".format(args.analysis_name,args.channel)
     output_file = args.output_dir + "/dataset_config.yaml"
 
     logger.info("Writing new dataset config for all eras to {}".format(output_file))

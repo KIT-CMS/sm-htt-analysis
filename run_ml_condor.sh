@@ -18,8 +18,8 @@ if [[ ! ${OPTIONS} =~ [1-3] ]]; then
 fi
 
 # Set name of output directory and name of analysis. Standard is 68 trainings
-ANALYSIS_NAME=final_test
-OUTPUT_PATH=output/ml
+ANALYSIS_NAME=next_test_functional_HIG_20_014_280_2_700_4
+OUTPUT_PATH=output/ml/${ANALYSIS_NAME}
 
 OUTDIR=${OUTPUT_PATH}/${ERA}_${CHANNEL}_${MASS}_${BATCH}
 CONDOR_OUTPUT=${OUTDIR}/condor_logs
@@ -39,7 +39,7 @@ if [[ ${OPTIONS} == *"1"* ]]; then
   for ERA_ in ${ERAS}; do
     # Run job with ./ml/create_training_dataset.sh on HTCondor (will perform work in current directory)
     # Stdout and Stderr are streamed to ${CONDOR_OUTPUT}/dataset_creation_${ERA_}/
-    custom_condor_scripts/custom_condor_run.sh "cd $(pwd)" "./ml/create_training_dataset.sh ${ERA_} ${CHANNEL} ${MASS} ${BATCH}" \
+    custom_condor_scripts/custom_condor_run.sh "cd $(pwd)" "./ml/create_training_dataset.sh ${ERA_} ${CHANNEL} ${MASS} ${BATCH} ${ANALYSIS_NAME}" \
       -s custom_condor_scripts/dataset_creation.jdl \
       -d ${CONDOR_OUTPUT}/dataset_creation_${ERA_}/ \
       -q -t &
@@ -47,7 +47,11 @@ if [[ ${OPTIONS} == *"1"* ]]; then
   wait
   # Modify dataset_config.yaml if all_eras is used
   if [[ ${ERA} == "all_eras" ]]; then
-    ./ml/combine_configs.sh all_eras ${CHANNEL} ${MASS}_${BATCH}
+    if [[ ! -d ${OUTPUT_PATH}/all_eras_${CHANNEL} ]]; then
+      echo "create ${OUTPUT_PATH}/all_eras_${CHANNEL}"
+      mkdir -p ${OUTPUT_PATH}/all_eras_${CHANNEL}
+    fi
+    ./ml/combine_configs.sh all_eras ${CHANNEL} ${ANALYSIS_NAME} ${MASS}_${BATCH}
   fi
   for ERA_ in ${ERAS}; do
     OUTDIR_=${OUTPUT_PATH}/${ERA_}_${CHANNEL}_${MASS}_${BATCH}
@@ -61,7 +65,7 @@ if [[ ${OPTIONS} == *"1"* ]]; then
     echo "Copy ${OUTDIR_}/fold0_training_dataset.root and ${OUTDIR_}/fold1_training_dataset.root to ${CEPHDIR_}"
     xrdcp ${OUTDIR_}/fold0_training_dataset.root ${OUTDIR_}/fold1_training_dataset.root ${CEPHDIR_}/
     # Remove all root files from local directory
-    rm ${OUTDIR_}/*.root
+    #rm ${OUTDIR_}/*.root
   done
   # Create directories if needed
   if [[ ! -d ${CEPHDIR} ]]; then
@@ -72,7 +76,7 @@ if [[ ${OPTIONS} == *"1"* ]]; then
   echo "Copy ${OUTDIR}/dataset_config.yaml to ${CEPHDIR}"
   xrdcp ${OUTDIR}/dataset_config.yaml ${CEPHDIR}/
   # Remove all root files from local directory
-  rm ${OUTDIR}/dataset_config.yaml
+  #rm ${OUTDIR}/dataset_config.yaml
 else
   echo "No new datasets required."
 fi
@@ -83,10 +87,11 @@ if [[ ${OPTIONS} == *"2"* ]]; then
   # Stdout and Stderr are streamed to ${CONDOR_OUTPUT}/NN_training/
   custom_condor_scripts/custom_condor_run.sh \
     "./ml/get_from_remote.sh ${ERA} ${CHANNEL} ${MASS} ${BATCH} ${USER} ${ANALYSIS_NAME}" \
-    "./ml/run_training.sh ${ERA} ${CHANNEL} ${MASS}_${BATCH}" \
-    "./ml/export_for_application.sh ${ERA} ${CHANNEL} ${MASS}_${BATCH}" \
-    -i ml/ htt-ml/ utils/ output/log/logandrun/ \
-    -o "${OUTDIR}/"'*.h5' "${OUTDIR}/"'*.pickle' "${OUTDIR}/"'*.png' "${OUTDIR}/"'*.pdf' \
+    "./ml/get_from_remote.sh ${ERA} ${CHANNEL} 700 4 ${USER} ${ANALYSIS_NAME}" \
+    "./ml/run_training.sh ${ERA} ${CHANNEL} ${ANALYSIS_NAME} " \
+    "./ml/export_for_application.sh ${ERA} ${CHANNEL} ${ANALYSIS_NAME} ${MASS} ${BATCH}" \
+    -i ml/ htt-ml/ utils/ output/log/logandrun/ output/ml/${ANALYSIS_NAME}/all_eras_${CHANNEL} \
+    -o "${OUTPUT_PATH}/all_eras_${CHANNEL}/"'*.h5' "${OUTDIR}/"'*.pickle' "${OUTPUT_PATH}/all_eras_${CHANNEL}/"'*.png' "${OUTPUT_PATH}/all_eras_${CHANNEL}/"'*.pdf' "${OUTPUT_PATH}/all_eras_${CHANNEL}/"'*.json'\
     -s custom_condor_scripts/NNtraining_testing.jdl \
     -d ${CONDOR_OUTPUT}/NN_training/ \
     -q -t

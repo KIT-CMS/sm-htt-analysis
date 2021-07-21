@@ -45,6 +45,10 @@ def parse_arguments():
         required=True,
         help="Filename postifx of output filename")
     parser.add_argument(
+        "--training_path",
+        required=True,
+        help="path to the superior directory in functional NN, where the training model is saved to")
+    parser.add_argument(
         "--tree-path", required=True, help="Path to tree in ROOT files")
     parser.add_argument(
         "--event-branch", required=True, help="Branch with event numbers")
@@ -93,6 +97,7 @@ def main(args):
     logger.debug("Write argparse arguments to YAML config.")
     output_config = {}
     output_config["base_path"] = args.base_path.replace("+CH+",args.channel)
+    output_config["training_path"] =args.training_path
     output_config["friend_paths"] = [x.replace("+CH+",args.channel) for x in args.friend_paths]
     output_config["output_path"] = args.output_path
     output_config["output_filename"] = args.output_filename

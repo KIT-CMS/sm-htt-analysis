@@ -63,9 +63,9 @@ seed: 1234
 
 # Define the model parameter
 model:
-    name: smhtt_dropout_tanh
-    eventsPerClassAndBatch: 30
-    epochs: 100000
-    early_stopping: 50
-    save_best_only: true
-    steps_per_epoch: 100
+  eventsPerClassAndBatch: 512
+  early_stopping: 50
+  epochs: 100000
+  name: functional
+  save_best_only: true
+  steps_per_epoch: 100

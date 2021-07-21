@@ -22,10 +22,10 @@ datasets:
 event_weights: training_weight
 global_weight_scale: 1.0
 model:
-  eventsPerClassAndBatch: 30
+  eventsPerClassAndBatch: 512
   early_stopping: 50
   epochs: 100000
-  name: smhtt_dropout_tanh
+  name: functional
   save_best_only: true
   steps_per_epoch: 100
 output_path: ml/2017_mt

@@ -2,8 +2,12 @@
 
 ERA=$1
 CHANNEL=$2
-TAG=$3
+ANALYSIS_NAME=$3
+MASS=$4
+BATCH=$5
 
 
-./ml/translate_models.sh $ERA $CHANNEL $TAG
-./ml/export_lwtnn.sh $ERA $CHANNEL $TAG
+
+
+./ml/translate_models.sh $ERA $CHANNEL $ANALYSIS_NAME 
+./ml/export_lwtnn.sh $ERA $CHANNEL $ANALYSIS_NAME $MASS $BATCH

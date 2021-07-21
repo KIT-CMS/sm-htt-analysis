@@ -2,10 +2,10 @@
 set -e
 ERA=$1
 CHANNEL=$2
-TAG=$3
+ANALYSIS_NAME=$3
 
 source utils/bashFunctionCollection.sh
-
+echo $CONFIGS
 export KERAS_BACKEND=tensorflow
 export OMP_NUM_THREADS=12
 export THEANO_FLAGS=gcc.cxxflags=-march=corei7
@@ -33,15 +33,11 @@ export TF_GPU_THREAD_MODE="gpu_private"
 
 if [[ $ERA == *"all"* ]]
 then
-  outdir=output/ml/all_eras_${CHANNEL}_${TAG}
-
-  mkdir -p $outdir
-  logandrun python htt-ml/training/keras_training.py ${outdir}/dataset_config.yaml 0 --balance-batches 1 --conditional 1 #--randomization 1
-  logandrun python htt-ml/training/keras_training.py ${outdir}/dataset_config.yaml 1 --balance-batches 1 --conditional 1 #--randomization 1
+  CONFIGS=output/ml/${ANALYSIS_NAME}/all_eras_${CHANNEL}*/dataset_config.yaml
+  logandrun python htt-ml/training/keras_training.py --configs ${CONFIGS} --fold 0 --balance-batches 1 --conditional 1 #--randomization 1
+  logandrun python htt-ml/training/keras_training.py --configs ${CONFIGS} --fold 1 --balance-batches 1 --conditional 1 #--randomization 1
 else
-  outdir=output/ml/${ERA}_${CHANNEL}_${TAG}
-
-  mkdir -p $outdir
-  logandrun python htt-ml/training/keras_training.py ${outdir}/dataset_config.yaml 0 --balance-batches 1
-  logandrun python htt-ml/training/keras_training.py ${outdir}/dataset_config.yaml 1 --balance-batches 1
+  CONFIGS=output/ml/${ANALYSIS_NAME}/${ERA}_${CHANNEL}*/dataset_config.yaml
+  logandrun python htt-ml/training/keras_training.py --configs ${CONFIGS} --fold 0 --balance-batches 1
+  logandrun python htt-ml/training/keras_training.py --configs ${CONFIGS} --fold 1 --balance-batches 1
 fi

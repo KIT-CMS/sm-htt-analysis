@@ -9,7 +9,7 @@ ERA=$1
 CHANNEL=$2
 MASS=$3
 BATCH=$4
-
+ANALYSIS_NAME=$5
 tauEstimation=emb
 jetEstimation=ff
 
@@ -17,7 +17,7 @@ jetEstimation=ff
 TRAIN_STAGE_ARG="--nmssm"
 
 source utils/setup_samples.sh $ERA 
-outdir=output/ml/${ERA}_${CHANNEL}_${MASS}_${BATCH}
+outdir=output/ml/${ANALYSIS_NAME}/${ERA}_${CHANNEL}_${MASS}_${BATCH}
 [[ -d $outdir ]] ||  mkdir -p $outdir
 echo $FF_Friends
 if [ ${CHANNEL} != 'em' ]
@@ -45,6 +45,7 @@ logandrun python ml/write_dataset_config.py \
   --training-z-estimation-method $tauEstimation \
   --training-jetfakes-estimation-method $jetEstimation \
   --output-config $outdir/dataset_config.yaml \
+  --training_path output/ml/${ANALYSIS_NAME}/ \
   $TRAIN_STAGE_ARG
 
 # Create dataset files from config
@@ -68,5 +69,4 @@ logandrun python ./ml/sum_training_weights.py \
   --dataset $outdir/combined_training_dataset.root \
   --dataset-config-file "$outdir/dataset_config.yaml" \
   --training-template "ml/templates/${ERA}_${CHANNEL}_training.yaml" \
-  --channel $CHANNEL \
   --write-weights True
