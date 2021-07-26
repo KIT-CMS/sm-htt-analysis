@@ -162,35 +162,35 @@ def main(args):
         skip_systematic_variations=args.skip_systematic_variations)
     # Era selection
     if "2016" == args.era:
-        from shape_producer.channel import ETSM2016, MTSM2016, TTSM2016, EMSM2016
+        from shape_producer.channel import ETMSSM2016, MTMSSM2016, TTMSSM2016, EMMSSM2016
         smChannelsDict = {
-            "et": ETSM2016(),
-            "mt": MTSM2016(),
-            "tt": TTSM2016(),
-            "em": EMSM2016()
+            "et": ETMSSM2016(),
+            "mt": MTMSSM2016(),
+            "tt": TTMSSM2016(),
+            "em": EMMSSM2016()
         }
         from shape_producer.estimation_methods_2016 import DataEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimation, VVLEstimation, VVTEstimation, VVJEstimation, TTLEstimation, TTTEstimation, TTJEstimation, QCDEstimation_SStoOS_MTETEM, QCDEstimationTT, ZTTEmbeddedEstimation, NewFakeEstimationLT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation, SUSYggHEstimationPowheg, SUSYbbHEstimationPowheg, ggH95Estimation, qqH95Estimation, ggH95EstimationSplit
         from shape_producer.era import Run2016
         era = Run2016(args.datasets)
     elif "2017" == args.era:
-        from shape_producer.channel import ETSM2017, MTSM2017, TTSM2017, EMSM2017
+        from shape_producer.channel import ETMSSM2017, MTMSSM2017, TTMSSM2017, EMMSSM2017
         smChannelsDict = {
-            "et": ETSM2017(),
-            "mt": MTSM2017(),
-            "tt": TTSM2017(),
-            "em": EMSM2017()
+            "et": ETMSSM2017(),
+            "mt": MTMSSM2017(),
+            "tt": TTMSSM2017(),
+            "em": EMMSSM2017()
         }
         from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation, SUSYggHEstimationPowheg, SUSYbbHEstimationPowheg, ggH95Estimation, qqH95Estimation, ggH95EstimationSplit
 
         from shape_producer.era import Run2017
         era = Run2017(args.datasets)
     elif "2018" == args.era:
-        from shape_producer.channel import ETSM2018, MTSM2018, TTSM2018, EMSM2018
+        from shape_producer.channel import ETMSSM2018, MTMSSM2018, TTMSSM2018, EMMSSM2018
         smChannelsDict = {
-            "et": ETSM2018(),
-            "mt": MTSM2018(),
-            "tt": TTSM2018(),
-            "em": EMSM2018()
+            "et": ETMSSM2018(),
+            "mt": MTMSSM2018(),
+            "tt": TTMSSM2018(),
+            "em": EMMSSM2018()
         }
         from shape_producer.estimation_methods_2018 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation, SUSYbbHEstimation, SUSYggHEstimation, SUSYggHEstimationPowheg, SUSYbbHEstimationPowheg, ggH95Estimation, qqH95Estimation, ggH95EstimationSplit
 
