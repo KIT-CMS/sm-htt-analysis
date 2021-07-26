@@ -68,6 +68,7 @@ def readclasses(channelname, era, tag):
         confdict["classes"].remove("ggh")
         confdict["classes"].remove("qqh")
         confdict["classes"].append("ggh,qqh")
+        confdict["classes"].extend(["2d_1","2d_2","2d_3","2d_4","2d_5","2d_6"])
     return confdict["classes"]
 
 
