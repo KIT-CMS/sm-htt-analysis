@@ -166,7 +166,7 @@ def main(args):
             "tt": TTSM2016(),
             "em": EMSM2016()
         }
-        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimation, VVLEstimation, VVTEstimation, VVJEstimation, TTLEstimation, TTTEstimation, TTJEstimation, QCDEstimation_SStoOS_MTETEM, QCDEstimationTT, ZTTEmbeddedEstimation, FakeEstimationLT, NewFakeEstimationLT, FakeEstimationTT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation
+        from shape_producer.estimation_methods_2016 import DataEstimation, HTTEstimation, ggHEstimation, ggZH_hadEstimation, qqHEstimation, WH_hadEstimation, ZH_hadEstimation, VHEstimation, WHEstimation, ZHEstimation, ggZHEstimation, ttHEstimation, ZTTEstimation, ZLEstimation, ZJEstimation, WEstimation, VVLEstimation, VVTEstimation, VVJEstimation, TTLEstimation, TTTEstimation, TTJEstimation, QCDEstimation_SStoOS_MTETEM, QCDEstimationTT, ZTTEmbeddedEstimation, FakeEstimationLT, NewFakeEstimationLT, FakeEstimationTT, NewFakeEstimationTT, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation
         from shape_producer.era import Run2016
         era = Run2016(args.datasets)
     elif "2017" == args.era:
@@ -177,7 +177,7 @@ def main(args):
             "tt": TTSM2017(),
             "em": EMSM2017()
         }
-        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, HWWEstimation, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation
+        from shape_producer.estimation_methods_2017 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, ggZH_hadEstimation, qqHEstimation, WH_hadEstimation, ZH_hadEstimation, VHEstimation, WHEstimation, ZHEstimation, ggZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, HWWEstimation, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation
 
         from shape_producer.era import Run2017
         era = Run2017(args.datasets)
@@ -189,7 +189,7 @@ def main(args):
             "tt": TTSM2018(),
             "em": EMSM2018()
         }
-        from shape_producer.estimation_methods_2018 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, qqHEstimation, VHEstimation, WHEstimation, ZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, HWWEstimation, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation
+        from shape_producer.estimation_methods_2018 import DataEstimation, ZTTEstimation, ZTTEmbeddedEstimation, ZLEstimation, ZJEstimation, TTLEstimation, TTJEstimation, TTTEstimation, VVLEstimation, VVTEstimation, VVJEstimation, WEstimation, ggHEstimation, ggZH_hadEstimation, qqHEstimation, WH_hadEstimation, ZH_hadEstimation, VHEstimation, WHEstimation, ZHEstimation, ggZHEstimation, ttHEstimation, QCDEstimation_ABCD_TT_ISO2, QCDEstimation_SStoOS_MTETEM, NewFakeEstimationLT, NewFakeEstimationTT, HWWEstimation, ggHWWEstimation, qqHWWEstimation, WHWWEstimation, ZHWWEstimation
 
         from shape_producer.era import Run2018
         era = Run2018(args.datasets)
@@ -247,9 +247,15 @@ def main(args):
 
     if args.gof_variable is None:
         signal_nicks = {
-            "WH125", "ZH125", "VH125", "ttH125"} | {
+            "VH125", "ttH125"} | {
+            WH_htxs for WH_htxs in WHEstimation.htxs_dict} | {
+            ZH_htxs for ZH_htxs in ZHEstimation.htxs_dict} | {
+            ggZH_htxs for ggZH_htxs in ggZHEstimation.htxs_dict} | {
             ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict} | {
-            qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict} | ww_nicks
+            ggH_htxs.replace("ggH", "ggZH_had").replace("GG2H", "GG2HQQ") for ggH_htxs in ggHEstimation.htxs_dict} | {
+            qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict} | {
+            qqH_htxs.replace("qqH", "WH_had") for qqH_htxs in qqHEstimation.htxs_dict} | {
+            qqH_htxs.replace("qqH", "ZH_had") for qqH_htxs in qqHEstimation.htxs_dict} | ww_nicks
     else:
         signal_nicks = {"ggH125", "qqH125", "WH125", "ZH125", "ttH125"} | ww_nicks
 
@@ -267,8 +273,6 @@ def main(args):
         "TTJ": TTJEstimation,
         "ZJ": ZJEstimation,
         "VH125": VHEstimation,
-        "WH125": WHEstimation,
-        "ZH125": ZHEstimation,
         "ttH125": ttHEstimation,
         "ggHWW125": ggHWWEstimation,
         "qqHWW125": qqHWWEstimation,
@@ -286,12 +290,54 @@ def main(args):
              friend_directory=friend_directory)
          for ggH_htxs in ggHEstimation.htxs_dict})
     pnameToEstD.update(
+        {ggH_htxs.replace("ggH", "ggZH_had").replace("GG2H", "GG2HQQ"): lambda era, directory, channel,
+         friend_directory, ggH_htxs=ggH_htxs.replace("ggH", "ggZH_had").replace("GG2H", "GG2HQQ"):
+         ggZH_hadEstimation(
+             ggH_htxs, era, directory, channel,
+             friend_directory=friend_directory)
+         for ggH_htxs in ggHEstimation.htxs_dict})
+    pnameToEstD.update(
         {qqH_htxs: lambda era, directory, channel,
          friend_directory, qqH_htxs=qqH_htxs:
          qqHEstimation(
              qqH_htxs, era, directory, channel,
              friend_directory=friend_directory)
          for qqH_htxs in qqHEstimation.htxs_dict})
+    pnameToEstD.update(
+        {qqH_htxs.replace("qqH", "WH_had"): lambda era, directory, channel,
+         friend_directory, qqH_htxs=qqH_htxs.replace("qqH", "WH_had"):
+         WH_hadEstimation(
+             qqH_htxs, era, directory, channel,
+             friend_directory=friend_directory)
+         for qqH_htxs in qqHEstimation.htxs_dict})
+    pnameToEstD.update(
+        {qqH_htxs.replace("qqH", "ZH_had"): lambda era, directory, channel,
+         friend_directory, qqH_htxs=qqH_htxs.replace("qqH", "ZH_had"):
+         ZH_hadEstimation(
+             qqH_htxs, era, directory, channel,
+             friend_directory=friend_directory)
+         for qqH_htxs in qqHEstimation.htxs_dict})
+    pnameToEstD.update(
+        {WH_htxs: lambda era, directory, channel,
+         friend_directory, WH_htxs=WH_htxs:
+         WHEstimation(
+             WH_htxs, era, directory, channel,
+             friend_directory=friend_directory)
+         for WH_htxs in WHEstimation.htxs_dict})
+    pnameToEstD.update(
+        {ZH_htxs: lambda era, directory, channel,
+         friend_directory, ZH_htxs=ZH_htxs:
+         ZHEstimation(
+             ZH_htxs, era, directory, channel,
+             friend_directory=friend_directory)
+         for ZH_htxs in ZHEstimation.htxs_dict})
+    pnameToEstD.update(
+        {ggZH_htxs: lambda era, directory, channel,
+         friend_directory, ggZH_htxs=ggZH_htxs:
+         ggZHEstimation(
+             ggZH_htxs, era, directory, channel,
+             friend_directory=friend_directory)
+         for ggZH_htxs in ggZHEstimation.htxs_dict})
 
     # Generate dict mapping processnames to proceses
     processes = {}
@@ -1256,11 +1302,12 @@ def main(args):
                                     syst=systname_), "fake_factor"), shift_direction)
                     variationsToAdd[chname_]["FAKES"].append(variation_)
 
-            ff_lnN_factor = {
-                "tt": "1.096",
-                "et": "1.057",
-                "mt": "1.064"
-            }
+        ff_lnN_factor = {
+            "tt": "1.096",
+            "et": "1.057",
+            "mt": "1.064"
+        }
+        if chname_!="em":
             variationff_lnN_factor = []
             variationff_lnN_factor.append(AddWeight("CMS_ff_jetbinned_stat_0jet_norm{ch}{era}".format(ch="_" + chname_,era="_" + args.era),"0jet_norm_weight",Weight("((njets==0)*{}+(njets==1)+(njets>1))".format(ff_lnN_factor[chname_]),"0jet_norm_weight"),"Up"))
             variationff_lnN_factor.append(AddWeight("CMS_ff_jetbinned_stat_0jet_norm{ch}{era}".format(ch="_" + chname_,era="_" + args.era),"0jet_norm_weight",Weight("((njets==0)*(1.0/{})+(njets==1)+(njets>1))".format(ff_lnN_factor[chname_]),"0jet_norm_weight"),"Down"))
@@ -1439,7 +1486,7 @@ def main(args):
         for variation_ in ggh_variations:
             for process_nick in selectedProcesses & {
                     nick for nick in signal_nicks
-                    if "ggH" in nick and "HWW" not in nick
+                    if ("ggH" in nick or "ggZH_had" in nick) and "HWW" not in nick
             }:
                 for chname_ in selectedChannels:
                     variationsToAdd[chname_][process_nick].append(variation_)
@@ -1478,7 +1525,7 @@ def main(args):
         for variation_ in qqh_variations:
             for process_nick in selectedProcesses & {
                     nick for nick in signal_nicks
-                    if "qqH" in nick and "qqHWW" not in nick
+                    if ("qqH" in nick or "WH_had" in nick or "ZH_had" in nick) and "qqHWW" not in nick and "ggZH_had" not in nick
             }:
                 for chname_ in selectedChannels:
                     variationsToAdd[chname_][process_nick].append(variation_)

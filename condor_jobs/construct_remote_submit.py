@@ -3,7 +3,7 @@ import argparse
 import os
 import shutil
 import stat
-from shape_producer.estimation_methods_2016 import ggHEstimation, qqHEstimation
+from shape_producer.estimation_methods_2016 import ggHEstimation, qqHEstimation, WHEstimation, ZHEstimation, ggZHEstimation
 
 ###
 # this script is used to create split the submit of the shape
@@ -85,9 +85,14 @@ def buildprocesses(era, channelname):
     ww_nicks = {"ggHWW125", "qqHWW125", "WHWW125", "ZHWW125"}
 
     signal_nicks = (
-        {"WH125", "ZH125", "VH125", "ttH125"}
+        {WH_htxs for WH_htxs in WHEstimation.htxs_dict}
+        | {ZH_htxs for ZH_htxs in ZHEstimation.htxs_dict}
+        | {ggZH_htxs for ggZH_htxs in ggZHEstimation.htxs_dict}
         | {ggH_htxs for ggH_htxs in ggHEstimation.htxs_dict}
+        | {ggH_htxs.replace("ggH", "ggZH_had").replace("GG2H", "GG2HQQ") for ggH_htxs in ggHEstimation.htxs_dict}
         | {qqH_htxs for qqH_htxs in qqHEstimation.htxs_dict}
+        | {qqH_htxs.replace("qqH", "WH_had") for qqH_htxs in qqHEstimation.htxs_dict}
+        | {qqH_htxs.replace("qqH", "ZH_had") for qqH_htxs in qqHEstimation.htxs_dict}
         | ww_nicks
     )
     

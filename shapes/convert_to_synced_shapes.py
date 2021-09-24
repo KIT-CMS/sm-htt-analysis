@@ -68,8 +68,11 @@ def main(args):
                     name))
             raise Exception
         name_output = "{PROCESS}".format(PROCESS=process)
-        name_output = name_output.replace("GG2H_", "").replace("QQ2HQQ_", "").replace("125", "_htt125").replace("HWW_htt125", "H_hww")
-        if ("WH" in name_output or "ZH" in name_output or "ttH" in name_output):
+        name_output = name_output.replace("GG2H_", "").replace("GG2HQQ_", "").replace("QQ2HQQ_", "").replace("QQ2HLNU_", "").replace("QQ2HLL_", "").replace("GG2HLL_", "").replace("125", "_htt125").replace("HWW_htt125", "H_hww")
+        #if ("WH_lep" in name_output or "ZH_lep" in name_output or "ttH" in name_output):
+        if ("WH_lep" in name_output or "ZH_lep" in name_output) and not name_output.endswith("125"):
+            name_output+="_htt125"
+        if "ttH" in name_output:
             name_output = name_output.replace("125", "")
         if len(properties) == 8:
             systematic = properties[7]
@@ -119,7 +122,7 @@ def main(args):
                         logger.info("Total yield: %f"%(neg+pos))
                     if neg<-1.5:
                         if (not "#QCD#" in name) or ("#em_" in name) or (neg<-10.0): # in case of QCD in et, mt, tt be a bit more generous since this is only for cross checks
-                            logger.fatal("Found histogram with a yield of negative bins larger than 1.0!")
+                            logger.fatal("Found histogram with a yield of negative bins larger than 1.0! %s %f"%(name, neg))
                             raise Exception
                     
                 if (not "ZTTpTTTauTau" in name) and ("CMS_htt_emb_ttbar" in name):
