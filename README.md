@@ -217,9 +217,9 @@ Furthermore, the variables that were used to train on are defined as
 
 To apply it we use the friend tree producer from step 2, and run e.g. the command
 ```bash
-job_management.py --command submit --executable NNScore --custom_workdir_path /ceph/${USER}/nmssm/temp  --input_ntuples_directory /ceph/jbechtel/nmssm/ntuples/2016/tt/   --batch_cluster etp7 --events_per_job 20000 --cores 24 --restrict_to_channels tt  --friend_ntuples_directories /ceph/jbechtel/nmssm/ntuples/2016/tt/FakeFactors_nmssm/ /ceph/jbechtel/nmssm/ntuples/2016/tt/HHKinFit/ /ceph/jbechtel/nmssm/ntuples/2016/tt/SVFit/  --conditional 0  --extra-parameters "--lwtnn_config /PATH/TO/ML/OUTPUT/FOLDER/"
+job_management.py --command submit --executable NNScore --custom_workdir_path /ceph/${USER}/nmssm/temp  --input_ntuples_directory /ceph/jbechtel/nmssm/ntuples/2016/tt/   --batch_cluster etp7 --events_per_job 20000 --cores 24 --restrict_to_channels tt  --friend_ntuples_directories /ceph/jbechtel/nmssm/ntuples/2016/tt/FakeFactors_nmssm/ /ceph/jbechtel/nmssm/ntuples/2016/tt/HHKinFit/ /ceph/jbechtel/nmssm/ntuples/2016/tt/SVFit/  --conditional 1  --extra-parameters "--lwtnn_config /PATH/TO/ML/OUTPUT/FOLDER/"
 ```
-Compared to the command of step 2, now also the options `--friend_ntuples_directories` (friend trees of step 2), `--conditional 0/1` (0 if only either 2016,2017 or 2018 were used for the training, 1 if all were used) and `--extra-parameters "--lwtnn_config ..."` (with the path to the output folder of the training) need to be set.
+Compared to the command of step 2, now also the options `--friend_ntuples_directories` (friend trees of step 2), `--conditional 1` (if all eras are used: --conditional 1, if only 2016/2017 or 2018 is used: --conditional) and `--extra-parameters "--lwtnn_config ..."` (with the path to the output folder of the training) need to be set.
 
 After creating these friend trees, they can be added to the `utils/setup_samples.sh` and the full information of the NN response to each event is available.
 
