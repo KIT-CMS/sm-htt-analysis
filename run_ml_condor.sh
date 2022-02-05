@@ -8,9 +8,7 @@
 
 ERA=$1 # Can be 2016, 2017, 2018 or all_eras
 CHANNEL=$2 # Can be et, mt or tt
-MASS=$3 # only train on mH=500 GeV
-BATCH=$4 # only train on mh' in 85, 90, 95, 100 GeV (see ml/get_nBatches.py for assignment)
-OPTIONS=$5
+OPTIONS=$3
 
 # Do all steps if none are specified
 if [[ ! ${OPTIONS} =~ [1-3] ]]; then
@@ -18,13 +16,13 @@ if [[ ! ${OPTIONS} =~ [1-3] ]]; then
 fi
 
 # Set name of output directory and name of analysis. Standard is 68 trainings
-ANALYSIS_NAME=final_test
-OUTPUT_PATH=output/ml
+ANALYSIS_NAME=final_test7
+OUTPUT_PATH=output/ml/${ANALYSIS_NAME}
 
-OUTDIR=${OUTPUT_PATH}/${ERA}_${CHANNEL}_${MASS}_${BATCH}
+OUTDIR=${OUTPUT_PATH}/${ERA}_${CHANNEL}
 CONDOR_OUTPUT=${OUTDIR}/condor_logs
 CEPH_PATH=/ceph/srv/${USER}/${ANALYSIS_NAME}
-CEPHDIR=${CEPH_PATH}/${ERA}_${CHANNEL}_${MASS}_${BATCH}
+CEPHDIR=${CEPH_PATH}/${ERA}_${CHANNEL}
 
 shopt -s extglob
 # Loop through all eras if all_eras is set
@@ -39,7 +37,7 @@ if [[ ${OPTIONS} == *"1"* ]]; then
   for ERA_ in ${ERAS}; do
     # Run job with ./ml/create_training_dataset.sh on HTCondor (will perform work in current directory)
     # Stdout and Stderr are streamed to ${CONDOR_OUTPUT}/dataset_creation_${ERA_}/
-    custom_condor_scripts/custom_condor_run.sh "cd $(pwd)" "./ml/create_training_dataset.sh ${ERA_} ${CHANNEL} ${MASS} ${BATCH}" \
+    custom_condor_scripts/custom_condor_run.sh "cd $(pwd)" "./ml/create_training_dataset.sh ${ERA_} ${CHANNEL} ${ANALYSIS_NAME}" \
       -s custom_condor_scripts/dataset_creation.jdl \
       -d ${CONDOR_OUTPUT}/dataset_creation_${ERA_}/ \
       -q -t &
@@ -47,11 +45,11 @@ if [[ ${OPTIONS} == *"1"* ]]; then
   wait
   # Modify dataset_config.yaml if all_eras is used
   if [[ ${ERA} == "all_eras" ]]; then
-    ./ml/combine_configs.sh all_eras ${CHANNEL} ${MASS}_${BATCH}
+    ./ml/combine_configs.sh all_eras ${CHANNEL} ${ANALYSIS_NAME}
   fi
   for ERA_ in ${ERAS}; do
-    OUTDIR_=${OUTPUT_PATH}/${ERA_}_${CHANNEL}_${MASS}_${BATCH}
-    CEPHDIR_=${CEPH_PATH}/${ERA_}_${CHANNEL}_${MASS}_${BATCH}
+    OUTDIR_=${OUTPUT_PATH}/${ERA_}_${CHANNEL}
+    CEPHDIR_=${CEPH_PATH}/${ERA_}_${CHANNEL}
     # Create directories if needed
     if [[ ! -d ${CEPHDIR_} ]]; then
       echo "create ${CEPHDIR_}"
@@ -82,11 +80,11 @@ if [[ ${OPTIONS} == *"2"* ]]; then
   # Run job with ./ml/run_training.sh and ./ml/export_for_application.sh on HTCondor (will NOT perform work in current directory)
   # Stdout and Stderr are streamed to ${CONDOR_OUTPUT}/NN_training/
   custom_condor_scripts/custom_condor_run.sh \
-    "./ml/get_from_remote.sh ${ERA} ${CHANNEL} ${MASS} ${BATCH} ${USER} ${ANALYSIS_NAME}" \
-    "./ml/run_training.sh ${ERA} ${CHANNEL} ${MASS}_${BATCH}" \
-    "./ml/export_for_application.sh ${ERA} ${CHANNEL} ${MASS}_${BATCH}" \
+    "./ml/get_from_remote.sh ${ERA} ${CHANNEL} ${USER} ${ANALYSIS_NAME}" \
+    "./ml/run_training.sh ${ERA} ${CHANNEL} ${ANALYSIS_NAME}" \
+    "./ml/export_for_application.sh ${ERA} ${CHANNEL} ${ANALYSIS_NAME}" \
     -i ml/ htt-ml/ utils/ output/log/logandrun/ \
-    -o "${OUTDIR}/"'*.h5' "${OUTDIR}/"'*.pickle' "${OUTDIR}/"'*.png' "${OUTDIR}/"'*.pdf' \
+    -o "${OUTDIR}/"'*.h5' "${OUTDIR}/"'*.pickle' "${OUTDIR}/"'*.png' "${OUTDIR}/"'*.pdf' "${OUTDIR}/"'*.json' \
     -s custom_condor_scripts/NNtraining_testing.jdl \
     -d ${CONDOR_OUTPUT}/NN_training/ \
     -q -t
@@ -100,8 +98,8 @@ if [[ ${OPTIONS} == *"3"* ]]; then
     # Run job with ./ml/run_testing_all_eras.sh on HTCondor for all eras (will NOT perform work in current directory)
     # Stdout and Stderr are streamed to ${CONDOR_OUTPUT}/NN_testing_all_eras/
     custom_condor_scripts/custom_condor_run.sh \
-      "./ml/get_from_remote.sh ${ERA} ${CHANNEL} ${MASS} ${BATCH} ${USER} ${ANALYSIS_NAME}" \
-      'for ERA_2 in 2016 2017 2018; do ./ml/run_testing_all_eras.sh ${ERA_2}'" ${CHANNEL} ${MASS}_${BATCH}; done" \
+      "./ml/get_from_remote.sh ${ERA} ${CHANNEL} ${USER} ${ANALYSIS_NAME}" \
+      'for ERA_2 in 2016 2017 2018; do ./ml/run_testing_all_eras.sh ${ERA_2}'" ${CHANNEL} ${ANALYSIS_NAME}; done" \
       -i ml/ htt-ml/ utils/ output/log/logandrun/ ${OUTDIR}/*.h5 ${OUTDIR}/*.pickle \
       -o "${OUTDIR}/"'*.!(root)' \
       -s custom_condor_scripts/NNtraining_testing.jdl \
@@ -111,8 +109,8 @@ if [[ ${OPTIONS} == *"3"* ]]; then
     # Run job with ./ml/run_testing.sh on HTCondor (will NOT perform work in current directory)
     # Stdout and Stderr are streamed to ${CONDOR_OUTPUT}/NN_testing/
     custom_condor_scripts/custom_condor_run.sh \
-      "./ml/get_from_remote.sh ${ERA} ${CHANNEL} ${MASS} ${BATCH} ${USER} ${ANALYSIS_NAME}" \
-      "./ml/run_testing.sh ${ERA} ${CHANNEL} ${MASS}_${BATCH}" \
+      "./ml/get_from_remote.sh ${ERA} ${CHANNEL} ${USER} ${ANALYSIS_NAME}" \
+      "./ml/run_testing.sh ${ERA} ${CHANNEL} ${ANALYSIS_NAME}" \
       -i ml/ htt-ml/ utils/ output/log/logandrun/ ${OUTDIR}/*.h5 ${OUTDIR}/*.pickle \
       -o "${OUTDIR}/"'*.!(root)' \
       -s custom_condor_scripts/NNtraining_testing.jdl \

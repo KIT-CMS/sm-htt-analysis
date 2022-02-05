@@ -7,8 +7,7 @@ source utils/bashFunctionCollection.sh
 
 ERA=$1
 CHANNEL=$2
-MASS=$3
-BATCH=$4
+ANALYSIS_NAME=$3
 
 tauEstimation=emb
 jetEstimation=ff
@@ -17,7 +16,7 @@ jetEstimation=ff
 TRAIN_STAGE_ARG="--nmssm"
 
 source utils/setup_samples.sh $ERA 
-outdir=output/ml/${ERA}_${CHANNEL}_${MASS}_${BATCH}
+outdir=output/ml/${ANALYSIS_NAME}/${ERA}_${CHANNEL}
 [[ -d $outdir ]] ||  mkdir -p $outdir
 echo $FF_Friends
 if [ ${CHANNEL} != 'em' ]
@@ -36,8 +35,6 @@ logandrun python ml/write_dataset_config.py \
   --friend-paths $FRIENDS \
   --database $KAPPA_DATABASE \
   --output-path $outdir \
-  --mass $MASS \
-  --batch $BATCH \
   --output-filename training_dataset.root \
   --tree-path ${CHANNEL}_nominal/ntuple \
   --event-branch event \

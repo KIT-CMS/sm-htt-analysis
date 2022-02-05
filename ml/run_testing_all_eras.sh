@@ -2,7 +2,7 @@
 
 ERA=$1
 CHANNEL=$2
-TAG=$3
+ANALYSIS_NAME=$3
 
 source utils/setup_cvmfs_sft.sh
 source utils/setup_python.sh
@@ -18,7 +18,7 @@ then
 fi
 
 
-outdir=output/ml/all_eras_${CHANNEL}_${TAG}
+outdir=output/ml/${ANALYSIS_NAME}/all_eras_${CHANNEL}
 
 mkdir -p ${outdir}
 

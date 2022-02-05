@@ -51,7 +51,7 @@ variables:
 - kinfit_mh2
 - kinfit_chi2
 - highCSVjetUsedFordiBJetSystemCSV
-
+- NMSSM_light_mass
 # Split of dataset in training and validation (in TMVA called training and testing)
 train_test_split: 0.75
 

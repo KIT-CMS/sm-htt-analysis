@@ -57,4 +57,5 @@ variables:
 - kinfit_mH
 - kinfit_mh2
 - kinfit_chi2
+- NMSSM_light_mass
 # - highCSVjetUsedFordiBJetSystemCSV
